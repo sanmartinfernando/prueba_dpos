@@ -1,0 +1,39 @@
+<nav class="navbar navbar-expand-md bg-customer navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" routerLink="">
+           <!-- {{'navBarIcon' | translate}}  -->&nbsp;
+        </a>  
+        <button #navbarToggler class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse"  data-bs-target="#collapseNavBar">
+            <span class="navbar-toggler-icon"></span>
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="collapseNavBar">
+            <ul id="navBarMain" class="navbar-nav navbar-nav-scroll ms-5 py-2" >
+                <li class="nav-item px-3">
+                    <a class="nav-link" routerLink="/">
+                        {{'webTitle' | translate}}
+                    </a>
+                </li>
+                <li *ngFor="let page of pages" class="nav-item px-3">
+                    <a class="nav-link" routerLink="/{{ page.code }}" routerLinkActive="active-link" (click)="component(page.code)">
+                        {{ page.code | translate }}
+                    </a>
+                </li>
+            </ul>
+            <!-- <div class="navbar-nav ml-auto">
+                <a class="nav-link" routerLink="/login">
+                <small>Login</small>&nbsp;&nbsp;<i class='fas fa-sign-in-alt'></i>&nbsp;&nbsp;</a>
+            </div> -->
+            <div class="navbar-nav ml-auto">
+                <a class="nav-link" *ngIf="username; else loginLink" (click)="logOut()" style="cursor: pointer;">
+                  <small>{{ username }}</small>&nbsp;&nbsp;<i class='fas fa-sign-out-alt'></i>&nbsp;&nbsp;
+                </a>
+                <ng-template #loginLink>
+                  <a class="nav-link" routerLink="/login">
+                    <small>Login</small>&nbsp;&nbsp;<i class='fas fa-sign-in-alt'></i>&nbsp;&nbsp;
+                  </a>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+</nav>

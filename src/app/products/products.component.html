@@ -1,0 +1,236 @@
+<div class="container-fluid pt-4">
+    <h5>Productos</h5>
+    <hr>
+    <section id="search-helper mb-3">
+        <div class="p-3 bg-light border rounded">
+            <!-- Buscador por defecto -->
+            <div *ngIf="standarSearch">
+                <form [formGroup]="formSearch">
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-4 mb-3">
+                            <label class="form-label">Nombre</label>
+                            <div class="input-group">
+                                <select class="form-select w-25" formControlName="nameSelect" name="nameSelect">
+                                    <option>empieza por</option>
+                                    <option>termina por</option>
+                                    <option selected="select">contiene</option>
+                                </select>
+                                <input type="text" class="form-control w-75" name="name" formControlName="name" (keydown.enter)="formData()">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-lg-4 d-flex mb-3">
+                            <div class="me-2"><a type="button"><i class='fas fa-toggle-off fa-2x' (click)="showAdvanced()"></i></a></div>
+                            <div class="mt-1"><label class="form-label">Busqueda Avanzada</label></div>
+                        </div>
+                        <div class="col col-lg-8">
+                            <div class="d-flex justify-content-end">
+                                <div class="mt-2 mx-1"><label class="form-label">Nº Max Registros</label></div>
+                                <div class="mb-3 mt-1 mx-1">
+                                    <select class="form-select" formControlName="nRecordsForm" name="nRecords">
+                                        <option>100</option>
+                                        <option>200</option>
+                                        <option>500</option>
+                                        <option>1000</option>
+                                        <option>10000</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3 mx-1">
+                                    <a type="button" class="btn btn-danger rounded-pill" (click)="clean()"><i class='fas fa-eraser'></i>&nbsp;&nbsp;Limpiar</a>
+                                    <a type="button" class="btn btn-info rounded-pill" (click)="formData()"><i class='fas fa-search'></i>&nbsp;&nbsp;Buscar</a>                
+                                </div>
+                            </div>
+                        </div>    
+                    </div>
+                </form>    
+            </div>
+            <!-- Buscador avanzado -->
+            <div *ngIf="advancedSearch">
+                <form [formGroup]="formSearch">
+                    <div class="row">
+                        <div class="col-12 col-md-4 col-lg-3 mb-3">
+                            <label class="form-label">Nombre</label>
+                            <div class="input-group">
+                                <select class="form-select w-25" formControlName="nameSelect" name="nameSelect">
+                                    <option>empieza por</option>
+                                    <option>termina por</option>
+                                    <option selected="select">contiene</option>
+                                </select>
+                                <input type="text" class="form-control w-75" formControlName="name" name="name" (keydown.enter)="formData()">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-3 mb-3">
+                            <label class="form-label">Categorias</label>
+                            <div class="input-group">  
+                                <select class="form-select w-25" formControlName="categoriesSelect" name="categoriesSelect">
+                                    <option>empieza por</option>
+                                    <option>termina por</option>
+                                    <option selected="select">contiene</option>
+                                </select>
+                                <select class="form-select w-75" formControlName="categories" name="categories">
+                                    <option><input class="form-check-input" type="checkbox"></option>
+                                    <option *ngFor="let listCategory of categoriesList.Data">
+                                        {{ listCategory.Name }}
+                                      </option>
+                                </select>
+                            </div>    
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-3 mb-3">
+                            <label class="form-label">Referencia</label>
+                            <div class="input-group">
+                                <select class="form-select w-25" formControlName="referenceSelect" name="referenceSelect">
+                                    <option>empieza por</option>
+                                    <option>termina por</option>
+                                    <option selected="select">contiene</option>
+                                </select>
+                                <input type="text" class="form-control w-75" formControlName="reference" name="reference" (keydown.enter)="formData()">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-3 mb-3">
+                            <label class="form-label">Codigo de barras</label>
+                            <div class="input-group">
+                                <select class="form-select w-25" formControlName="codeSelect" name="codeSelect">
+                                    <option>empieza por</option>
+                                    <option>termina por</option>
+                                    <option selected="select">contiene</option>
+                                </select>
+                                <input type="text" class="form-control w-75" formControlName="code" name="code" (keydown.enter)="formData()">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-lg-4 d-flex mb-3">
+                            <div class="me-2"><a type="button"><i class='fas fa-toggle-on fa-2x' (click)="showAdvanced()"></i></a></div>
+                            <div class="mt-1"><label class="form-label">Busqueda Avanzada</label></div>
+                        </div>
+                        <div class="col col-lg-8">
+                            <div class="d-flex justify-content-end">
+                                <div class="mt-2 mx-1"><label class="form-label">Nº Max Registros</label></div>
+                                <div class="mb-3 mt-1 mx-1">
+                                    <select class="form-select" formControlName="nRecordsForm" name="nRecords">
+                                        <option>100</option>
+                                        <option>200</option>
+                                        <option>500</option>
+                                        <option>1000</option>
+                                        <option>10000</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3 mx-1">
+                                    <a type="button" class="btn btn-danger rounded-pill" (click)="clean()"><i class='fas fa-eraser'></i>&nbsp;&nbsp;Limpiar</a>
+                                    <a type="button" class="btn btn-info rounded-pill" (click)="formData()"><i class='fas fa-search'></i>&nbsp;&nbsp;Buscar</a>                
+                                </div>
+                            </div>
+                        </div>    
+                    </div> 
+                </form>                    
+            </div>
+        </div>
+    </section>
+    <section id="saleslist">
+        <!-- Contenedor botones antes de la tabla de productos -->
+        <div class="row mt-4 mb-1">
+            <div class="col-12 col-md-4">
+                    <label><small><span class="text-danger">{{nRecords}}</span>&nbsp;registros >></small></label>&nbsp;
+                    <label><small><em>{{selectedRecords}} registros están seleccionados</em></small></label>&nbsp;
+                    <a type="button" class="btn btn-link" (click)="toggleSelectAll()"><small>{{linkSelectAll}}</small></a>
+            </div>
+            <div class="col-12 col-md-8 text-right">
+                <button class="btn btn-info rounded-pill" [disabled]="downloadDisabled"><i class='fas fa-file-excel'></i>&nbsp;&nbsp;Descargar</button>
+                <a type="button" class="btn btn-customer rounded-pill">Importar Productos</a>
+                <a [routerLink]="['/addProducts']" type="button" class="btn btn-customer rounded-pill">Añadir Productos</a>
+                <button class="btn btn-danger rounded-pill" [disabled]="deleteDisabled" (click)="deleteSelected()"><i class='fas fa-trash-alt'></i>&nbsp;&nbsp;Eliminar</button>
+            </div>
+        </div>
+        <!-- Load -->
+        <div *ngIf="!loadCompleted" class="d-flex justify-content-center">
+            <div class="spinner-border text-danger"></div>
+        </div>
+        <!-- Listado de ventas --> 
+        <div *ngIf="loadCompleted" class="row mb-3">
+            <div class="col-12">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <div class="form-check form-check-customer ms-1">
+                                        <input class="form-check-input" type="checkbox" id="ch_all" (click)="toggleSelectTen()" [checked]="selectTen">
+                                    </div>
+                                </th>
+                                <th>Referencia</th>
+                                <th>Código de barras</th>
+                                <th>Nombre</th>
+                                <th>Precio</th>
+                                <th>Stock</th>
+                                <th>Categorías</th>
+                                <th>IVA (%)</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let list of products.Data | paginate: { itemsPerPage: 10, currentPage: nPage }">
+                                <td>
+                                    <div class="form-check form-check-customer ms-1">
+                                        <input class="form-check-input checks" type="checkbox" [ngModel]="isSelected(list)" (ngModelChange)="toggleCheckbox(list)">
+                                    </div>
+                                </td>
+                                <td>{{ list.Reference != null ? list.Reference : '' }}</td>
+                                <td>{{ list.BarCode != null ? list.BarCode : '' }}</td>
+                                <td>{{ list.Name }}</td>
+                                <td>{{ (list.Price / 100).toFixed(2) }}&nbsp;€</td>
+                                <td>{{ list.StockQuantity }}</td>
+                                <td>{{ list.Categories != null ? list.Categories[0]?.Name : '' }}</td>
+                                <td>{{ list.Tax?.Name }}</td>
+                                <td class="text-right">
+                                    <a [routerLink]="['/editProduct',list.ProductId]" type="button" class="btn btn-info rounded-circle"><i class='fas fa-pen fa-lg'></i></a>
+                                    <a type="button" class="btn btn-danger rounded-circle" (click)="deleteOne(list.ProductId)"><i class='fas fa-trash-alt fa-lg'></i></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-12">
+                <pagination-controls (pageChange)="nPage = $event"></pagination-controls>
+            </div>
+        </div>
+    </section>
+</div>
+<!-- Modal de comfirmación -->
+<div class="modal-backdrop" [ngStyle]="{'display':modalComfirm}"></div>
+<div class="modal" tabindex="-1" role="dialog"  [ngStyle]="{'display':modalComfirm}">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">&#9888;&#65039;Confirmar acción</h4>
+            <button type="button" class="close" aria-label="Close" (click)="onCloseHandledComfirm()"><span aria-hidden="true">&times;</span></button>
+          </div>
+          <div class="modal-body">
+            <p>¿Está seguro de eliminar este producto"?</p>
+          </div>
+          <div class="modal-footer">
+            <a type="button" class="btn btn-danger rounded-pill" (click)="onCloseHandledComfirm()">Cancelar</a>
+            <a type="button" class="btn btn-customer rounded-pill" (click)="deleteMultiple()">Aceptar</a>
+          </div>
+        </div>
+      </div>
+    </div> 
+<!-- Modal de borrado -->
+<div class="modal-backdrop" [ngStyle]="{'display':modal}"></div>
+<div class="modal" tabindex="-1" role="dialog"  [ngStyle]="{'display':modal}">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Producto borrado</h4>
+                <button type="button" class="close" aria-label="Close" (click)="onCloseHandled()"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                    <p>El producto {{modalMessage}}</p>
+            </div>
+            <div class="modal-footer">
+                <a type="button" class="btn btn-info rounded-pill" (click)="onCloseHandled()">Cerrar</a>
+            </div>
+        </div>
+    </div>
+</div>

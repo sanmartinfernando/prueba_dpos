@@ -1,0 +1,110 @@
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, Subject, firstValueFrom } from 'rxjs';
+import { environment } from 'src/environments/environment.development';
+import { User } from '../_models/user.model';
+import Helper from '../_helpers/helper';
+import { RestRoutes } from '../_config/rest-routes.config';
+import { LoginRequest } from '../_models/LoginRequest.model';
+
+const TOKEN_KEY = 'dmf-token';
+const USERNAME_KEY = 'dmf-username';
+
+const httpOptions = {
+  headers: new HttpHeaders(
+    {
+      'Content-Type': 'application/json'
+    }
+  )
+};
+
+@Injectable({
+  providedIn: 'root',
+})
+export class AuthService {
+  public configObservable = new Subject<User>();
+
+  isLoggedIn: boolean = false;
+  _storageService;
+
+  constructor(private http: HttpClient) { }
+
+  async login(UserName: string, Password: string): Promise<string> {
+    let urlLogin: string = `${environment.urlWS}${RestRoutes.AUTH}/login`;
+    var loginRequest = new LoginRequest();
+    loginRequest.UserName=UserName;
+    loginRequest.Password = Password;
+    console.log(loginRequest);
+    await fetch(urlLogin, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'accept': 'application/json'
+      },
+      body: JSON.stringify(loginRequest)
+    })
+      .then(Helper.handleErrors)
+      .then((response) => response.json())
+      .then(async (result) => {
+        console.log(result);
+        this.saveToken(result.token);
+        this.saveUserName(result.userName);
+        let validation = await this.validate();
+        console.log(validation);
+        var userInfo = new User();
+        userInfo.user = result.userName;
+        this.loginEvent(userInfo);
+      });
+    return this.getToken(); // llamar al obs de actualizar usuario en todos lados
+  }
+
+
+  async validate(): Promise<object> {
+    let url: string = `${environment.urlWS}${RestRoutes.AUTH}/validateAuth`;
+    return firstValueFrom(this.http.post(url, httpOptions));
+  }
+
+  async getUserInfo(): Promise<User> {
+    let urlUser: string = `${environment.urlWS}${RestRoutes.USER}`;
+    return firstValueFrom(this.http.get<User>(urlUser, httpOptions));
+  }
+  loginEvent(user: User) {
+    this.configObservable.next(user);
+  }
+  setLoggedIn() {
+    this.isLoggedIn = true;
+  }
+
+  getLoggedIn() {
+    return this.isLoggedIn;
+  }
+
+  logOut() {
+    window.localStorage.clear();
+    this.configObservable.next(null);
+  }
+
+  public saveUserName(username: any): void {
+    console.log('save:'+username);
+    window.localStorage.removeItem(USERNAME_KEY);
+    window.localStorage.setItem(USERNAME_KEY, username);//
+  }
+
+  public saveToken(token: any): void {
+    window.localStorage.removeItem(TOKEN_KEY);
+    window.localStorage.setItem(TOKEN_KEY, token);//
+  }
+
+  public getToken(): string {
+    const token = window.localStorage.getItem(TOKEN_KEY);
+    if (token) {
+      return token;
+    }
+    return "";
+  }
+
+  public clearToken(): void {
+    window.localStorage.removeItem(TOKEN_KEY);
+  }
+
+}

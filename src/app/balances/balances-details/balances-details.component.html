@@ -1,0 +1,198 @@
+<h5 class="m-4">Detalle de cierre de caja</h5>
+<div class="col-3 ms-4" *ngIf="loadCompleted">
+  <a [routerLink]="['/balances']" type="button" class="btn btn-info rounded-circle"><i class='fas fa-arrow-left fa-lg'></i></a>
+  <span class="ms-3">Referencia:{{balances.Reference}}</span>
+</div>
+
+    <div class="col-12 col-sm-8 offset-sm-2 col-lg-4 offset-lg-4">
+        <div class="card card-customer">
+            <div class="card-header d-flex">
+                <div class="flex-fill">
+                    <h4 class="card-title mt-3">Comercio TalparaCual</h4>
+                </div>
+                <div class="flex-fill text-right" >
+                    <label id="lblcomercial_cif" class="text-white"><small>{{balances.BalanceCommerce?.NIF}}</small></label><br/>
+                    <label id="lblcomercial_address" class="text-white"><small>{{balances.BalanceCommerce?.Address}}</small></label><br/>
+                    <label id="lblcomercial_email" class="text-white"><small>{{balances.BalanceCommerce?.Email}}</small></label><br/>
+                    <label id="lbldate" type="date" class="mt-2"><small>{{balances.FinishedAt | date:'dd/MM/yyyy HH:mm:ss'}}</small></label>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="d-flex">    
+                    <div class="flex-fill"><label><small>Referencia:{{balances.Reference}}</small></label></div>
+                    <div class="flex-fill text-right"><label><small>Nº de terminal: {{balances.TerminalNumber}}</small></label></div>
+                </div>
+            </div>
+            <div class="card-footer pb-5">
+                <div class="row px-2 pb-2">
+                    <div class="col-7 col-md-9">
+                        <label class="text-bold">Saldo inicial caja:</label>
+                    </div>
+                    <div class="col-5 col-md-3 text-right">
+                        <label>{{getDecimal(balances.Opening)}} €</label>
+                    </div> 
+                </div>
+                <div class="row px-2 pb-2">
+                    <div class="col-7 col-md-9">
+                        <label class="text-bold">Descuadre de caja:</label>
+                    </div>
+                    <div class="col-5 col-md-3 text-right">
+                        <label>{{getDecimal(balances.OutCount)}} €</label>
+                    </div> 
+                </div>   
+                <div class="row px-2 pb-2">
+                    <div class="col-7 col-md-9">
+                        <label class="text-bold">Entradas de efectivo:</label>
+                    </div>
+                    <div class="col-5 col-md-3 text-right">
+                        <label>{{getDecimal(balances.In)}} €</label>
+                    </div> 
+                </div> 
+                <div class="row px-2 pb-2">
+                    <div class="col-7 col-md-9">
+                        <label class="text-bold">Salidas de efectivo:</label>
+                    </div>
+                    <div class="col-5 col-md-3 text-right">
+                        <label>{{getDecimal(balances.Out)}} €</label>
+                    </div> 
+                </div>    
+                <div class="row px-2 pb-2"> 
+                    <div class="col-7 col-md-9">
+                        <label class="text-bold">Recuento automático de efectivo:</label>
+                    </div>
+                    <div class="col-5 col-md-3 text-right">
+                        <label>{{getDecimal(balances.AutoCashRecount)}} €</label>
+                    </div> 
+                </div>
+                <div class="row px-2 pb-2">
+                    <div class="col-7 col-md-9">
+                        <label class="text-bold">Recuento manual de efectivo:</label>
+                    </div>
+                    <div class="col-5 col-md-3 text-right">
+                        <label>{{getDecimal(balances.ManualCashRecount)}} €</label>
+                    </div> 
+                </div>
+                <div class="row px-2 pb-2">
+                    <div class="col-7 col-md-9">
+                        <label class="text-bold">Total devoluciones:</label>
+                    </div>
+                    <div class="col-5 col-md-3 text-right">
+                        <label>{{getDecimal(balances.Refunds)}} €</label>
+                    </div> 
+                </div>    
+                <div class="row px-2 pb-2"> 
+                    <div class="col-7 col-md-9">
+                        <label class="text-bold">Total ventas:</label>
+                    </div>
+                    <div class="col-5 col-md-3 text-right">
+                        <label>{{getDecimal(balances.Sales)}} €</label>
+                    </div> 
+                </div>
+                <div class="row px-2 pb-4">
+                    <div class="col-7 col-md-9">
+                        <label class="text-bold">Nº total operaciones:</label>
+                    </div>
+                    <div class="col-5 col-md-3 text-right">
+                        <label id="lblcash">{{balances.SalesCount}}</label>
+                    </div> 
+                </div>
+                <div class="col mb-3">
+                    <h6 class="text-success border-bottom"><small>Resumen impuestos</small></h6>
+                    <div class="alert alert-secondary">
+                        <div class="table-responsive">
+                            <table class="table table-borderless table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>&nbsp;</th>
+                                        <th class="text-right">Base</th>
+                                        <th class="text-right">Cuota</th>
+                                        <th class="text-right">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody >
+                                    <tr *ngFor=" let item of balances?.impuestos">
+                                        <td >{{item.ItemName}}</td>
+                                        <td class="text-right text-nowrap">{{getDecimal(item.Base)}}€</td>
+                                        <td class="text-right text-nowrap">{{getDecimal(item.Tax)}}€  </td>
+                                        <td class="text-right text-nowrap">{{getDecimal(item.Total)}}€ </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>    
+                </div>
+                <div class="col mb-3">
+                    <h6 class="text-success border-bottom"><small>Resumen por métodos de pago</small></h6>
+                    <div class="alert alert-secondary">
+                        <div class="table-responsive">
+                            <table class="table table-borderless table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>&nbsp;</th>
+                                        <th class="text-right">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor=" let item of balances?.impuestos2">
+                                        <td>{{item.ItemName}}</td>
+                                        <td class="text-right text-nowrap">{{getDecimal(item.Total)}}€</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>    
+                </div>
+                <div class="col mb-3">
+                    <h6 class="text-success border-bottom"><small>Resumen marcas de tarjeta</small></h6>
+                    <div class="alert alert-secondary">
+                        <div class="table-responsive">
+                            <table class="table table-borderless table-sm" *ngFor=" let item of balances?.impuestos3">
+                                <thead>
+                                    <tr *ngIf="item.ItemName=='VISA';else noVisa" ><!-- aqui tiene que haber un if si hay visa -->
+                                        <th  >Marca de tarjeta</th>
+                                        <th class="text-right">Total</th>
+                                    </tr>
+                                    <ng-template #noVisa><tr><th >No se han efectuado pagos con tarjeta</th></tr> </ng-template>
+                                </thead>
+                                <tbody>
+                                     <tr>
+                                        <td>{{item.ItemName}}</td>
+                                        <td  class="text-right text-nowrap">{{getDecimal(item.Total)}}€</td>  
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>    
+                </div>
+                <div class="col mb-3">
+                    <h6 class="text-success border-bottom"><small>Resumen otros (sin identificar)</small></h6>
+                    <div class="alert alert-secondary">
+                        <div class="table-responsive">
+                            <table class="table table-borderless table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>&nbsp;</th>
+                                        <th class="text-right">Base</th>
+                                        <th class="text-right">Cuota</th>
+                                        <th class="text-right">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor=" let item of balances?.impuestos3">
+                                        <td>{{  item.ItemName  }}</td>
+                                        <td class="text-right text-nowrap">{{getDecimal(item.Base)}}€</td>
+                                        <td class="text-right text-nowrap">{{getDecimal(item.Tax)}}€ </td>
+                                        <td class="text-right text-nowrap">{{getDecimal(item.Total)}}€ </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>    
+                </div>                       
+            </div>
+        </div>
+    </div>
+     
+    
+
+    

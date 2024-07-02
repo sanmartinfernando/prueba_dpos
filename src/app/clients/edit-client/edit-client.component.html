@@ -1,0 +1,72 @@
+<h5 class="m-4">Clientes</h5>
+<div class="col-3 ms-4">
+    <a type="button" class="btn btn-info rounded-circle" ><i class='fas fa-arrow-left fa-lg'></i></a>&nbsp;&nbsp;
+    <i class='fas fa-user fa-1x' style='color:#00c4ad'></i>
+    <span class="ms-3">Editar cliente</span>
+    <span class="ms-3 text-bold">NIF: <span>{{clients.NIF}}</span></span>
+</div>
+<hr>
+<!-- Formulario de Editar Clientes -->
+<div class="col-11 mx-auto my-2">
+    <form>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3 mt-3">
+                    <label class="form-label">NIF *</label>&nbsp;<label class="text-danger" data-bs-toggle="tooltip"
+                        title="Campo obligatorio"><small>(*)</small></label>
+                    <input type="text" class="form-control" id="name" placeholder="***************" required>
+                </div>
+                <div class="mb-3 mt-3">
+                    <label class="form-label">Nombre * </label>&nbsp;<label class="text-danger" data-bs-toggle="tooltip"
+                        title="Campo obligatorio"><small>(*)</small></label>
+                    <input type="text" class="form-control" id="name" placeholder="***************" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Apellidos * </label>
+                    <input type="text" class="form-control" formControlName="code" id="code" placeholder="***************">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="text" class="form-control" formControlName="reference" id="reference" placeholder="***************">
+                </div>
+                <div class="mb-3 mt-3">
+                    <label class="form-label">Teléfono</label>&nbsp;<label class="text-danger" data-bs-toggle="tooltip"
+                        title="Campo obligatorio"><small>(*)</small></label>
+                    <input type="text" class="form-control" id="name" placeholder="***************" required>
+                </div>
+
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3 mt-3">
+                    <label class="form-label">Dirección</label>&nbsp;<label class="text-danger" data-bs-toggle="tooltip"
+                        title="Campo obligatorio"><small>(*)</small></label>
+                    <input type="text" class="form-control" id="name" placeholder="***************" required>
+                </div>
+                <div class="mb-3 mt-3">
+                    <label class="form-label">Ciudad</label>&nbsp;<label class="text-danger" data-bs-toggle="tooltip"
+                        title="Campo obligatorio"><small>(*)</small></label>
+                    <input type="text" class="form-control" id="name" placeholder="***************" required>
+                </div>
+                <div class="mb-3 mt-3">
+                    <label class="form-label">Código postal</label>&nbsp;<label class="text-danger"
+                        data-bs-toggle="tooltip" title="Campo obligatorio"><small>(*)</small></label>
+                    <input type="text" class="form-control" id="name" placeholder="***************" required>
+                </div>
+                <div class="mb-3 mt-3">
+                    <label class="form-label">Provincia</label>&nbsp;<label class="text-danger" data-bs-toggle="tooltip"
+                        title="Campo obligatorio"><small>(*)</small></label>
+                    <input type="text" class="form-control" id="name" placeholder="***************" required>
+                </div>
+                <div class="mb-3 mt-3">
+                    <label class="form-label">País</label>&nbsp;<label class="text-danger" data-bs-toggle="tooltip"
+                        title="Campo obligatorio"><small>(*)</small></label>
+                    <input type="text" class="form-control" id="name" placeholder="***************" required>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex flex-row-reverse">
+            <div class="mx-1"><a type="button" class="btn btn-customer rounded-pill">Aceptar</a></div>
+            <div class="mx-1"><a type="button" class="btn btn-danger rounded-pill">Cancelar</a></div>
+        </div>
+    </form>
+</div>

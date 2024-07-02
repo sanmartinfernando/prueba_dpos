@@ -1,0 +1,42 @@
+<div class="container mt-5 col-md-6 offset-md-3">
+  <div class="card">
+    <div class="row">
+      <div class="col-12 col-md-8 offset-md-3">
+        <img id="img" src="" style="max-width:100%; max-height:auto; display: block;" />
+      </div>
+    </div>
+    <form *ngIf="!isLoggedIn" [formGroup]="loginForm" (ngSubmit)="loginForm.valid && onSubmit()" novalidate>
+      <div class="form-group my-2 ms-5 me-5">
+        <label for="username">Username</label>
+        <input type="username" class="form-control" formControlName="username" />
+        <div *ngIf="loginForm.value.username.errors && loginForm.submitted" class="invalid-feedback">
+          Username is required!
+        </div>
+      </div>
+      <div class="form-group my-2 ms-5 me-5">
+        <label for="password">Password</label>
+        <input type="password" matInput class="form-control" placeholder="" formControlName="pw" minlength="4" />
+        <div *ngIf="loginForm.value.pw.errors && loginForm.submitted" class="invalid-feedback">
+          <div *ngIf="loginForm.value.pw.errors['required']">
+            Password is required
+          </div>
+          <div *ngIf="loginForm.value.pw.errors['minlength']">
+            Password must be at least 4 characters
+          </div>
+        </div>
+      </div>
+      <div class="form-group my-2 ms-2 me-2 center ">
+        <div style="padding: 10px;">
+          <button [disabled]="!loginForm.valid" type="submit" class="btn button">
+            Login
+          </button>
+        </div>
+      </div>
+      <div class="form-group">
+        <div *ngIf="isLoginFailed" class="alert alert-danger" role="alert">
+          Login failed: {{ errorMessage }}
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
