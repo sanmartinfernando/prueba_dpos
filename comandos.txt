@@ -1,0 +1,30 @@
+1. para instalar las cosas, requiere tener instalado node
+npm install -g @angular/cli
+npm install
+2. para lanzar la web de desarrollo
+ng serve
+
+
+# comandos angular 
+ng serve <--- carga la web para desarrollo
+ng build --prod
+ng build --prod --aot --output-hashing=all
+ng build --aot --output-hashing=all
+
+ng serve -c inte  <--- conectando contra inte
+
+-Componentes:ng generate component my-new-component
+–Directivas: ng g directive my-new-directive
+–Pipe:ng g pipe my-new-pipe
+–Servicios: ng g service my-new-service
+–Clases:ng g class my-new-class
+–Interface:ng g interface my-new-interface
+–Enumerados:ng g enummy-new-enum
+–Módulos:ng g module my-module
+
+# INSTALAR DEPENDENCIAS DEL PROYECTO
+
+npm install
+
+# comandos node INICIAR WEB
+node main.js

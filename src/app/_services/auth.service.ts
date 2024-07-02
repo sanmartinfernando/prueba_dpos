@@ -32,8 +32,8 @@ export class AuthService {
   async login(UserName: string, Password: string): Promise<string> {
     let urlLogin: string = `${environment.urlWS}${RestRoutes.AUTH}/login`;
     var loginRequest = new LoginRequest();
-    loginRequest.UserName=UserName;
-    loginRequest.Password = Password;
+    loginRequest.userName=UserName;
+    loginRequest.password = Password;
     console.log(loginRequest);
     await fetch(urlLogin, {
       method: 'POST',

@@ -1,4 +1,5 @@
 export const environment = {
     production: false,
-    urlWS:'https://dclaims_dev_dmf_api.diusframi.tech:38443/',
+    urlWS:'https://dpos.diusframi.tech:39443/wstickets/',
+    urlAuth:'https://dpos.diusframi.tech:39443/wsauth/',
 };
