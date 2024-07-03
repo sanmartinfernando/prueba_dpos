@@ -30,7 +30,7 @@ export class AuthService {
   constructor(private http: HttpClient) { }
 
   async login(UserName: string, Password: string): Promise<string> {
-    let urlLogin: string = `${environment.urlWS}${RestRoutes.AUTH}/login`;
+    let urlLogin: string = `${environment.urlAuth}${RestRoutes.AUTH}/login`;
     var loginRequest = new LoginRequest();
     loginRequest.userName=UserName;
     loginRequest.password = Password;

@@ -24,7 +24,7 @@ export class ProductsComponent extends BaseComponent implements OnInit{
   // Lista de productos, lista de categorias
   products:any = [];
   categoriesList:any = [];
-  url: string = 'https://quickshopv4.diusframi.tech:39443/api/products?from=0&size=3000&qs={"and":[{"field":"Deleted","op":"=","value":"false"}]}';
+  url: string = 'https://dpos.diusframi.tech:39443/wstickets/api/Balances?size=25&offset=0';
   urlCategories:string = "https://quickshopv4.diusframi.tech:39443/api/categories?from=0&size=300&qs=";
   
   // Paginación, numero de registros de la tabla
@@ -88,7 +88,7 @@ export class ProductsComponent extends BaseComponent implements OnInit{
   override ngOnInit(): void {
 
     // Si estas logueado devolvera true
-    this.logged = this.storageService.isLoggedIn();
+    this.logged = true;// RDP TRUCO ESTO PARA VER EL CORS DE TICKETS this.storageService.isLoggedIn();
     if (this.logged==true) {
       this.productsService.showProducts(this.url).subscribe(listProducts=>{
         this.products=listProducts;

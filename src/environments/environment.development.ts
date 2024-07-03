@@ -1,6 +1,5 @@
 export const environment = {
     production: false,
-    urlPages:'http://localhost:8080/api/pages/',
-    urlWS:'http://localhost/DMFAPI/',
-    urlWSDclaims:'http://localhost/DClaimsAPI/'
+    urlWS:'https://dpos.diusframi.tech:39443/wstickets/',
+    urlAuth:'https://localhost:54153/',
 };

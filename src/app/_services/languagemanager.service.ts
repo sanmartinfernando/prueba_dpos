@@ -29,7 +29,7 @@ export class LanguageManagerService {
   userLang = navigator.language; 
 
   constructor(private languageService: LanguageService,private titleService: Title) { 
-    this.GetLanguagesDictionaryWithCache('');
+    //this.GetLanguagesDictionaryWithCache('');
   }
   SetLanguageDefault(){
     var userLangAux = this.userLang;
