@@ -31,6 +31,7 @@ export class AuthService {
 
   async login(UserName: string, Password: string): Promise<string> {
     let urlLogin: string = `${environment.urlAuth}${RestRoutes.AUTH}/login`;
+    console.log(urlLogin)
     var loginRequest = new LoginRequest();
     loginRequest.userName=UserName;
     loginRequest.password = Password;
@@ -60,12 +61,12 @@ export class AuthService {
 
 
   async validate(): Promise<object> {
-    let url: string = `${environment.urlWS}${RestRoutes.AUTH}/validateAuth`;
+    let url: string = `${environment.urlAuth}${RestRoutes.AUTH}/validate`;
     return firstValueFrom(this.http.post(url, httpOptions));
   }
 
   async getUserInfo(): Promise<User> {
-    let urlUser: string = `${environment.urlWS}${RestRoutes.USER}`;
+    let urlUser: string = `${environment.urlAuth}${RestRoutes.USER}`;
     return firstValueFrom(this.http.get<User>(urlUser, httpOptions));
   }
   loginEvent(user: User) {

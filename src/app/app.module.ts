@@ -28,6 +28,8 @@ import { AddProductComponent } from './products/add-product/add-product.componen
 import { EditProductComponent } from './products/edit-product/edit-product.component';
 import { ClientServiceService } from './clients/client.service.service';
 import { RouterModule } from '@angular/router';
+import { NgxChartsModule }from '@swimlane/ngx-charts';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 @NgModule({ declarations: [
@@ -49,17 +51,25 @@ import { RouterModule } from '@angular/router';
         AddProductComponent,
         EditProductComponent,
     ],
-    bootstrap: [AppComponent], imports: [BrowserModule,
+    bootstrap: [AppComponent],
+    imports: [BrowserModule,
         AppRoutingModule,
         FormsModule,
         NgxPaginationModule,
         ReactiveFormsModule,
-        RouterModule], providers: [
+        RouterModule,
+        NgxChartsModule,
+        BrowserAnimationsModule
+      ],
+        providers: [
         httpInterceptorProviders,
         LanguageManagerService,
         DataServices,
         DatePipe,
         ClientServiceService,
-        provideHttpClient(withInterceptorsFromDi())
+        provideHttpClient(withInterceptorsFromDi()),
+        NgxChartsModule,
+        BrowserAnimationsModule
+
     ] })
 export class AppModule { }

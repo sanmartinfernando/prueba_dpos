@@ -20,7 +20,17 @@ export class HeaderComponent {
 
     this.pages=_pagesService.pages;
     this.username = this.storageService.getUsername();
-    
+
+  }
+
+  title: string= "DPOS"
+  title0: string= "DPOS"
+
+  titleHeader(name){
+    console.log(this.title)
+    console.log(name)
+      this.title=name;
+      console.log(this.title)
   }
 
   logOut(){
