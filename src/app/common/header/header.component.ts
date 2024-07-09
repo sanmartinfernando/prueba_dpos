@@ -27,10 +27,7 @@ export class HeaderComponent {
   title0: string= "DPOS"
 
   titleHeader(name){
-    console.log(this.title)
-    console.log(name)
       this.title=name;
-      console.log(this.title)
   }
 
   logOut(){

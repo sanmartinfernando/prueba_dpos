@@ -23,4 +23,5 @@ export const RestRoutes = {
   ALERT_CONFIGURATIONS_PROPERTIES: `${API}/AlertConfigurations/properties`,
   ALERT_CONFIGURATIONS_UPDATE_FALSE_POSITIVE: `${API}/AlertConfigurations/update/alert/state/false-positive`,
   ALERT_CONFIGURATIONS_UPDATE_OK: `${API}/AlertConfigurations/update/alert/state/ok`,
+  BALANCE_ID:`api/Balances/`,
 }

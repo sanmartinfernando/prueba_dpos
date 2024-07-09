@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './common/header/header.component';
 import { FooterComponent } from './common/footer/footer.component';
 import { HomeComponent } from './home/home.component';
-import { ProductsComponent } from './products/products.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 import { SalesComponent } from './sales/sales.component';
 import { ClientsComponent } from './clients/clients.component';
 import { ErrorComponent } from './common/error/error.component';
@@ -24,8 +24,6 @@ import {NgxPaginationModule} from 'ngx-pagination';
 import { BalancesDetailsComponent } from './balances/balances-details/balances-details.component';
 import { DataServices } from './balances/data.services';
 import { DatePipe } from '@angular/common';
-import { AddProductComponent } from './products/add-product/add-product.component';
-import { EditProductComponent } from './products/edit-product/edit-product.component';
 import { ClientServiceService } from './clients/client.service.service';
 import { RouterModule } from '@angular/router';
 import { NgxChartsModule }from '@swimlane/ngx-charts';
@@ -38,7 +36,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         HeaderComponent,
         FooterComponent,
         HomeComponent,
-        ProductsComponent,
+        DashboardComponent,
         SalesComponent,
         ClientsComponent,
         ErrorComponent,
@@ -48,8 +46,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         BalancesComponent,
         DetailsComponent,
         BalancesDetailsComponent,
-        AddProductComponent,
-        EditProductComponent,
     ],
     bootstrap: [AppComponent],
     imports: [BrowserModule,

@@ -60,6 +60,40 @@ src:url(Fonts/fa-solid-900.eot?#iefix) format("embedded-opentype"),
 .far{font-family:"FontAwesome 5 Free Regular"; font-weight:400; line-height: 1.5em;}
 .fa,.fas{font-family:"FontAwesome 5 Free Solid"; font-weight:900; line-height: 1.5em;}
 
+#navBar1{
+	height: 86%;
+}
+
+#salesBorder {
+	border: solid #ccc;
+	border-bottom-color: #071B60 !important;
+	border-width: 1px 1px 6px 1px;
+}
+
+#averageTicketBorder {
+	border: solid #ccc;
+	border-bottom-color: #A4BFF1 !important;
+	border-width: 1px 1px 6px 1px;
+}
+
+#refundsBorder {
+	border: solid #ccc;
+	border-bottom-color: #FA0019 !important;
+	border-width: 1px 1px 6px 1px;
+}
+
+#casmovBorder {
+	border: solid #ccc;
+	border-bottom-color: #FCBF28 !important;
+	border-width: 1px 1px 6px 1px;
+}
+
+#balanceBorder {
+	border: solid #ccc;
+	border-bottom-color: #2ACAA5 !important;
+	border-width: 1px 1px 6px 1px;
+}
+
 :root,
 [data-bs-theme=light] {
   --bs-primary: #59B3B7;
@@ -71,6 +105,7 @@ src:url(Fonts/fa-solid-900.eot?#iefix) format("embedded-opentype"),
   --bs-light: #E3F2ED;
   --bs-dark: #0b273a;
   --bs-customer1: #13196D;
+  --bs-customer2: #EBF5FF;
   --bs-primary-rgb: 89, 179, 183;
   --bs-secondary-rgb: 38, 131, 198;
   --bs-success-rgb: 129, 201, 132;
@@ -160,6 +195,9 @@ background-color:#13196D;
   /* *opacity:0.5; */
   background-color:#E5F2F3;
   }
+.br-customer2 {
+	border-color: #EBF5FF;
+}
 .navbar {
 box-shadow: 0 16px 38px -12px rgba(0,0,0,.56), 0 4px 25px 0 rgba(0,0,0,.12), 0 8px 10px -5px rgba(0,0,0,.2);
 }
@@ -214,6 +252,11 @@ overflow-x: hidden;
   -webkit-box-shadow: 0px 2px 15px -2px rgba(74,155,130,0.60);
   -moz-box-shadow: 0px 2px 15px -2px rgba(74,155,130,0.60);
   box-shadow: 0px 2px 15px -2px rgba(74,155,130,0.60);
+}
+
+div.focus:hover, div.focus:focus {
+  background-color:var(--bs-customer2);
+  border-width: 0px 0px 6px 0px !important;
 }
 
 main, .main {
