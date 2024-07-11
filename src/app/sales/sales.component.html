@@ -1,278 +1,198 @@
-<div *ngIf="translationLoaded">
-    <div class="container-fluid pt-4">
-        <h5>{{ '@@QuickShop.Products_Sales' | translate }}</h5>
-        <hr>
-        <section id="search-helper mb-3">
-            <div class="p-3 bg-light border rounded">
-                <!-- Buscador por defecto -->
-                <div *ngIf="standarSearch">
-                    <form [formGroup]="formSearch">
-                        <!--Referencia-->
-                        <div class="row">
-                            <div class="col-12 col-md-6 col-lg-4 mb-3">
-                                <label class="form-label">{{ '@@Base_Reference' | translate }}</label>
-                                <div class="input-group">
-                                    <select class="form-select w-25" formControlName="referenceSelect" name="referenceSelect">
-                                        <option>{{ '@@BASE_Contains2' | translate }}</option>
-                                        <option>{{ '@@BASE_StartsWith' | translate }}</option>
-                                        <option>{{ '@@BASE_EndsBy' | translate }}</option>
-                                    </select>
-                                    <input type="text" class="form-control w-75" name="reference" formControlName="reference" (keydown.enter)="formData()">
-                                </div>
-                            </div>
-                            <!--Terminal-->
-                            <div class="col-12 col-md-6 col-lg-4 mb-3">
-                                <label class="form-label">{{ '@@QuickShop.Clients_Terminal' | translate }}</label>
-                                <div class="input-group">  
-                                    <select class="form-select w-25" name="igual">
-                                        <option selected="select">{{ '@@BASE_Equal' | translate }}</option>
-                                    </select>
-                                    <select class="form-select w-75" formControlName="terminal" name="terminal">
-                                        <option>{{ '@@BASE_All' | translate }}</option>
-                                        <option>20201029-001</option>
-                                        <option>00000002</option>
-                                        <option>20201029-002</option>
-                                        <option>20201029-010</option>
-                                        <option>20201029-011</option>
-                                        <option>20201029-012</option>
-                                        <option>20201029-087</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col col-lg-4 d-flex mb-3">
-                                <div class="me-2"><a type="button"><i class='fas fa-toggle-off fa-2x' (click)="showAdvanced()"></i></a></div>
-                                <div class="mt-1"><label class="form-label">{{ '@@BASE_AdvancedSearch' | translate }}</label></div>
-                            </div>
-                            <!--Nº Registros-->
-                            <div class="col col-lg-8">
-                                <div class="d-flex justify-content-end">
-                                    <div class="mt-2 mx-1"><label class="form-label">{{ '@@Base_TotalRecords' | translate }}</label></div>
-                                    <div class="mb-3 mt-1 mx-1">
-                                        <select class="form-select" formControlName="nRecordsForm" name="nRecords">
-                                            <option>100</option>
-                                            <option>200</option>
-                                            <option>500</option>
-                                            <option>1000</option>
-                                            <option>10000</option>
-                                        </select>
-                                    </div>
-                                    <div class="mb-3 mx-1">
-                                        <a type="button" class="btn btn-danger rounded-pill" (click)="clean()"><i class='fas fa-eraser'></i>&nbsp;&nbsp;{{ '@@BASE_Clean' | translate }}</a>
-                                        <a type="button" class="btn btn-info rounded-pill" (click)="formData()"><i class='fas fa-search'></i>&nbsp;&nbsp;{{ '@@BASE_Search' | translate }}</a>                
-                                    </div>
-                                </div>
-                            </div>    
-                        </div>
-                    </form>    
-                </div>
-                <!-- Buscador avanzado -->
-                <div *ngIf="advancedSearch">
-                    <form [formGroup]="formSearch">
-                        <div class="row">
-                            <!--Referencia-->
-                            <div class="col-12 col-md-4 col-lg-3 mb-3">
-                                <label class="form-label">{{ '@@Base_Reference' | translate }}</label>
-                                <div class="input-group">
-                                    <select class="form-select w-50" formControlName="referenceSelect" name="referenceSelect">
-                                        <option>{{ '@@BASE_Contains2' | translate }}</option>
-                                        <option>{{ '@@BASE_StartsWith' | translate }}</option>
-                                        <option>{{ '@@BASE_EndsBy' | translate }}</option>
-                                    </select>
-                                    <input type="text" class="form-control w-50" formControlName="reference" name="reference" (keydown.enter)="formData()">
-                                </div>
-                            </div>
-                            <!--Terminal-->
-                            <div class="col-12 col-md-4 col-lg-3 mb-3">
-                                <label class="form-label">{{ '@@QuickShop.Clients_Terminal' | translate }}</label>
-                                <div class="input-group">  
-                                    <select class="form-select w-25" name="igual">
-                                        <option selected="select">{{ '@@BASE_Equal' | translate }}</option>
-                                    </select>
-                                    <select class="form-select w-75" formControlName="terminal" name="terminal">
-                                        <option>{{ '@@BASE_All' | translate }}</option>
-                                        <option>20201029-001</option>
-                                        <option>00000002</option>
-                                        <option>20201029-002</option>
-                                        <option>20201029-010</option>
-                                        <option>20201029-011</option>
-                                        <option>20201029-012</option>
-                                        <option>20201029-087</option>
-                                    </select>
-                                </div>    
-                            </div>
-                            <!--Fecha (desde)-->
-                            <div class="col-12 col-md-4 col-lg-3 mb-3">
-                                <label class="form-label">{{ '@@Base_DateFrom' | translate }}</label>
-                                <div class="input-group">
-                                    <select class="form-select w-50" name="mayor1">
-                                        <option selected="select">{{ '@@BASE_GreaterThan' | translate }}</option>
-                                    </select>
-                                    <input type="date" class="form-control w-50" formControlName="since">
-                                </div>
-                            </div>
-                            <!--Fecha (hasta)-->
-                            <div class="col-12 col-md-4 col-lg-3 mb-3">
-                                <label class="form-label">{{ '@@Base_DateTo' | translate }}</label>
-                                <div class="input-group">
-                                    <select class="form-select w-50" name="mayor1">
-                                        <option selected="select">{{ '@@BASE_Smaller' | translate }}</option>
-                                    </select>
-                                    <input type="date" class="form-control w-50" formControlName="until">
-                                </div>        
-                            </div>
-                            <!--Tipo-->
-                            <div class="col-12 col-md-4 col-lg-3 mb-3">
-                                <label class="form-label">{{ '@@BASE_Type' | translate }}</label>
-                                <div class="input-group">  
-                                    <select class="form-select w-25" name="igual2">
-                                        <option selected="select">{{ '@@BASE_Equal' | translate }}</option>
-                                    </select>
-                                    <select class="form-select w-75" formControlName="type" name=type>
-                                        <option>{{ '@@BASE_All' | translate }}</option>
-                                        <option>{{ '@@QuickShop.Products_Sales' | translate }}</option>
-                                        <option>{{ '@@QuickShop.Orders_Bill' | translate }}</option>
-                                        <option>{{ '@@BASE_Return2' | translate }}</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col col-lg-4 d-flex mb-3">
-                                <div class="me-2"><a type="button"><i class='fas fa-toggle-on fa-2x' (click)="showAdvanced()"></i></a></div>
-                                <div class="mt-1"><label class="form-label">{{ '@@BASE_AdvancedSearch' | translate }}</label></div>
-                            </div>
-                            <!--Nº Registros-->
-                            <div class="col col-lg-8">
-                                <div class="d-flex justify-content-end">
-                                    <div class="mt-2 mx-1"><label class="form-label">{{ '@@Base_TotalRecords' | translate }}</label></div>
-                                    <div class="mb-3 mt-1 mx-1">
-                                        <select class="form-select" formControlName="nRecordsForm" name="nRecords">
-                                            <option>100</option>
-                                            <option>200</option>
-                                            <option>500</option>
-                                            <option>1000</option>
-                                            <option>10000</option>
-                                        </select>
-                                    </div>
-                                    <div class="mb-3 mx-1">
-                                        <a type="button" class="btn btn-danger rounded-pill" (click)="clean()"><i class='fas fa-eraser'></i>&nbsp;&nbsp;{{ '@@BASE_Clean' | translate }}</a>
-                                        <a type="button" class="btn btn-info rounded-pill" (click)="formData()"><i class='fas fa-search'></i>&nbsp;&nbsp;{{ '@@BASE_Search' | translate }}</a>                
-                                    </div>
-                                </div>
-                            </div>    
-                        </div> 
-                    </form>                    
-                </div>
+<br />
+<div class="container-fluid header-main">
+  <div>
+    <!-- Formulario de búsqueda -->
+    <form class="d-flex flex-wrap mx-1">
+      <div class="me-3">
+        <label class="form-label">Terminal</label>
+        <select
+          class="form-select"
+          name="terminal"
+          [(ngModel)]="terminalVarSearch"
+        >
+          <option></option>
+          <option *ngFor="let terminal of selectSales[0]; index as i">
+            {{ terminal }}
+          </option>
+        </select>
+      </div>
+      <div class="mx-3">
+        <label class="form-label">Desde</label>
+        <input type="date" class="form-select" id="sinceDate" />
+      </div>
+      <div class="mx-3">
+        <label class="form-label">Hasta</label>
+        <input type="date" class="form-select" id="tilDate" />
+      </div>
+      <div class="mx-3">
+        <label class="form-label">Tipo de operación</label>
+        <select
+          class="form-select"
+          name="operation"
+          [(ngModel)]="typeVarSearch"
+        >
+          <option></option>
+          <option *ngFor="let type of selectSales[1]; index as i">
+            {{ type }}
+          </option>
+        </select>
+      </div>
+      <div class="mx-3">
+        <label class="form-label">Nº de documento/Serie</label>
+        <select
+          class="form-select"
+          name="documentN"
+          [(ngModel)]="documentVarSearch"
+        >
+          <option></option>
+          <option *ngFor="let document of selectSales[2]; index as i">
+            {{ document }}
+          </option>
+        </select>
+      </div>
+      <div id="searchButtonsDiv" class="ms-5 d-flex overflow-auto">
+        <a type="button" class="btn btn-danger align-self-end"
+          ><i class="fas fa-eraser"></i>
+        </a>
+        <a
+          type="button"
+          class="btn btn-info align-self-end"
+          (click)="searchSales()"
+          ><i class="fas fa-search"></i>&nbsp;&nbsp;Buscar</a
+        >
+      </div>
+    </form>
+  </div>
+  <br />
+<!-- Tabla e indicadores -->
+  <br />
+  <div class="card">
+    <div class="card-body">
+      <div class="row mb-4">
+        <div class="col">
+          <h5><b>Operaciones</b></h5>
+        </div>
+        <!-- Indicadores -->
+        <div class="col-3 justify-content-end">
+          <label for="operationN" class="me-2">Nº operaciones</label>
+          <input
+            type="text"
+            id="inputHeadSales"
+            class="border me-5 bg-customer2 text-customer2 fw-bold text-end"
+            [(ngModel)]="operationN"
+            disabled
+          />
+          <label for="totalSales" class="me-2">Total</label>
+          <input
+            type="text"
+            id="inputHeadSales1"
+            class="border bg-customer2 text-customer2 fw-bold text-end mx-3"
+            [(ngModel)]="totalSalesString"
+            disabled
+          />
+          <button class="btn btn-sm btn-secondary-customer">
+            <i class="fa-solid fa-file-csv fa-xl" style="color: #008000"></i>
+          </button>
+        </div>
+      </div>
+      <!-- Tabla -->
+      <div class="row">
+        <div class="col">
+          <div class="table-responsive">
+            <table
+              class="table table-hover order-table"
+              data-pagination="true"
+              data-page-size="10"
+            >
+              <thead class="text-customer">
+                <tr>
+                  <th class="text-center">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      [checked]="isAllSelected"
+                      (change)="CheckAll($event)"
+                    />
+                  </th>
+                  <th class="text-center">Documento</th>
+                  <th class="text-center">Tipo</th>
+                  <th class="text-center">Fecha</th>
+                  <th class="text-center">Terminal</th>
+                  <th class="text-center">Factura verificada</th>
+                  <th class="text-center">Subtotal</th>
+                  <th class="text-center">Descuentos</th>
+                  <th class="text-center">Base imponible</th>
+                  <th class="text-center">Cuota de IVA</th>
+                  <th class="text-center">Total</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <ng-template #empty
+                ><td colspan="5">
+                  <b>No existen registros que mostrar</b>
+                </td></ng-template
+              >
+              <tbody>
+                <ng-container *ngIf="emptySearch == false; else empty">
+                  <tr
+                    *ngFor="
+                      let sale of sales.data
+                        | paginate : { itemsPerPage: 10, currentPage: page };
+                      index as i
+                    "
+                  >
+                    <td class="text-center align-middle">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        [checked]="isAllSelected"
+                      />
+                    </td>
+                    <td class="text-center align-middle" id="massivetransfer">
+                      {{ sale.reference }}
+                    </td>
+                    <td class="text-center align-middle">
+                      {{ sale.type }}
+                    </td>
+                    <td class="text-center align-middle">
+                      {{ sale.createdAt | date : "dd/MM/yyyy hh:mm" }}
+                    </td>
+                    <td class="text-center align-middle">
+                      {{ sale.terminalNumber }}
+                    </td>
+                    <td class="text-center align-middle">Verificada</td>
+                    <td class="text-center align-middle">
+                      {{ sale.subTotal }}
+                    </td>
+                    <td class="text-center align-middle">
+                      {{ sale.totalDiscount }}
+                    </td>
+                    <td class="text-center align-middle">
+                      {{ sale.orderTaxes[0].base }}
+                    </td>
+                    <td class="text-center align-middle">
+                      {{ sale.orderTaxes[0].total }}
+                    </td>
+                    <td class="text-center align-middle">
+                      {{ sale.total }}
+                    </td>
+                    <td>
+                      <a [routerLink]="">
+                        <i class="fa-solid fa-eye" style="color: #74c0fc"></i
+                      ></a>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+            <div class="has-text-centered">
+              <pagination-controls
+                (pageChange)="page = $event"
+              ></pagination-controls>
             </div>
-        </section>
-        <section id="saleslist">
-            <!-- Contenedor botones antes de la tabla de productos -->
-            <div class="row mt-4 mb-1">
-                <div class="col-12 col-md-7">
-                    <label><small><span class="text-danger">{{nRecords}}</span>&nbsp;{{ '@@BASE_Records' | translate }} >></small></label>&nbsp;
-                    <label><small><em>{{selectedRecords}} {{ '@@Base_SelectedRecords' | translate }}</em></small></label>&nbsp;
-                    <a type="button" class="btn btn-link" (click)="toggleSelectAll()"><small>{{linkSelectAll | translate}}</small></a>
-                </div>
-                <div class="col-12 col-md-5 text-right">
-                    <button class="btn btn-info rounded-pill" [disabled]="downloadDisabled"><i class='fas fa-file-excel'></i>&nbsp;&nbsp;{{ '@@Base_Download' | translate }}</button>
-                </div>
-            </div>
-            <!-- Load -->
-            <div *ngIf="!loadCompleted" class="d-flex justify-content-center">
-                <div class="spinner-border text-danger"></div>
-            </div>
-            <!-- Listado de ventas --> 
-            <div *ngIf="logged && loadCompleted;else login" class="row mb-3">
-                <div class="col-12">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        <div class="form-check form-check-customer ms-1">
-                                            <input class="form-check-input" type="checkbox" id="ch_all" (click)="toggleSelectTen()" [checked]="selectTen">
-                                        </div>
-                                    </th>
-                                    <th>{{ '@@Base_Reference' | translate }}</th>
-                                    <th>{{ '@@QuickShop.Clients_Terminal' | translate }}</th>
-                                    <th>{{ '@@BASE_Type' | translate }}</th>
-                                    <th>{{ '@@BASE_Date' | translate }}</th>
-                                    <th>{{ '@@QuickShop.PaymentMethods_PaymentMethods' | translate }}</th>
-                                    <th>{{ '@@QuickShop.Orders_TicketBaiId' | translate }}</th>
-                                    <th>{{ '@@BASE_Total' | translate }}</th>
-                                    <th>{{ '@@QuickShop.Orders_TaxTotal' | translate }}</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let list of sales.Data | paginate: { itemsPerPage: 10, currentPage: nPage }">
-                                    <td>
-                                        <div class="form-check form-check-customer ms-1">
-                                            <input class="form-check-input checks" type="checkbox" [ngModel]="isSelected(list)" (ngModelChange)="toggleCheckbox(list)">
-                                        </div>
-                                    </td>
-                                    <td>{{ list.Reference }}</td>
-                                    <td>{{ list.TerminalNumber }}</td>
-                                    <td [ngSwitch]="list.Type">
-                                        <span *ngSwitchCase="0">Venta</span>
-                                        <span *ngSwitchCase="1">Factura</span>
-                                        <span *ngSwitchCase="2">Devolución</span>
-                                    </td>
-                                    <td>{{ list.FinishedAt | date:'yyyy-MM-dd HH:mm' }}</td>
-                                    <td>{{list.OrderPayments[0].Name}}</td>
-                                    <td></td>
-                                    <td *ngIf="list.Type==2;else colorlessTotal" class="text-red">
-                                        {{ (list.Total/100).toFixed(2) }}&nbsp;€
-                                    </td>
-                                    <ng-template #colorlessTotal>
-                                        <td>{{ (list.Total/100).toFixed(2) }}&nbsp;€</td>
-                                    </ng-template>
-                                    <td *ngIf="list.Type==2;else colorlessTotalTaxes" class="text-red">
-                                        {{ (list.TotalTaxes/100).toFixed(2) }}&nbsp;€
-                                    </td>
-                                    <ng-template #colorlessTotalTaxes>
-                                        <td>{{ (list.TotalTaxes/100).toFixed(2) }}&nbsp;€</td>
-                                    </ng-template>
-                                    <td>
-                                        <a [routerLink]="['/details',list.OrderId]" type="button" class="btn btn-info rounded-circle" ><i class='fas fa-eye fa-lg'></i></a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="col-12">
-                    <pagination-controls (pageChange)="nPage = $event"></pagination-controls>
-                </div>
-            </div>
-            <ng-template #login>
-            <!-- Modal -->
-            <div class="modal-backdrop" [ngStyle]="{'display':modal}"></div>
-            <div class="modal" tabindex="-1" role="dialog"  [ngStyle]="{'display':modal}">
-                <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                    <h4 class="modal-title">&#10003;Inicio de Sesión</h4>
-                            </div>
-                            <div class="modal-body">
-                                    <p>Inicia sesión para poder visualizar las ventas</p>
-                            </div>
-                                <div class="modal-footer">
-                                    <a routerLink="/home" type="button" class="btn btn-info rounded-pill">Home</a>
-                                    <a type="button" class="btn btn-danger rounded-pill" (click)="closeModal()">Login</a>
-                            </div>
-                        </div>
-                </div>
-            </div>
-            </ng-template>
-        </section>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
-<!-- <div *ngIf="!translationLoaded" class="d-flex justify-content-center mt-5">
-    <div class="spinner-border text-danger"></div>
-</div> -->
-<div *ngIf="!translationLoaded" class="d-flex align-items-center justify-content-center vh-100">
-    <div class="spinner-border text-danger"></div>
-</div>    

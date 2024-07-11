@@ -1,3 +1,4 @@
+import { SalesinfoService } from './../_services/salesinfo.service';
 import { Component, OnInit } from '@angular/core';
 import { BaseComponent } from '../common/base/base.component';
 import { Router } from '@angular/router';
@@ -8,251 +9,292 @@ import { DatePipe } from '@angular/common';
 import { AuthService } from '../_services/auth.service';
 import { StorageService } from '../_services/storage.service';
 import { LanguageManagerService } from '../_services/languagemanager.service';
-
+import { SalesInfo } from '../_models/SalesInfo.model';
+import { count } from '@swimlane/ngx-charts';
 
 @Component({
   selector: 'QSC-sales',
   templateUrl: './sales.component.html',
-  styleUrls: ['./sales.component.css']
+  styleUrls: ['./sales.component.css'],
 })
-export class SalesComponent extends BaseComponent implements OnInit{
+export class SalesComponent implements OnInit {
+  constructor(private SalesinfoService: SalesinfoService) {}
 
-/* --------Propiedades-------- */
+  size: number = 2147483647;
+  sales: SalesInfo;
+  selectSales = new Array(3);
+  operationN: number;
+  totalSales: number = 0;
+  totalSalesString: string;
+  page: number = 0;
+  searchParams0: string = '';
 
-  // Mostrar busqueda avanzada
-  standarSearch :boolean = true;
-  advancedSearch:boolean = false;
+  //Parámetros de búsqueda
+  terminalVarSearch: string = '';
+  searchCounter: boolean = false;
+  sinceDate: string;
+  sinceDateMilli: number;
+  tilDate: string;
+  tilDateMilli: number;
+  today: Date = new Date();
+  todayMilli = this.today.getTime();
+  typeVarSearch: string = '';
+  documentVarSearch: string = '';
+  varSearch: string = '';
+  emptySearch: boolean = false;
 
-  // Listado de ventas, url, número de registros
-  sales:any = [];
-  languages = [];
-  url: string = 'https://quickshopv4.diusframi.tech:39443/api/orders?from=0&size=200&qs=';
-  nRecords:number;
-  translationDict: any;
+  // Checkboxes
+  selectedIndices: number[] = [];
+  isAllSelected: boolean = false;
+  counter = 0;
 
-  // Paginación
-  nPage:number=1;
+  ngOnInit(): void {
+    this.SalesinfoService.GetSalesInfo(this.size, this.searchParams0).subscribe(
+      (sale) => {
+        this.sales = sale;
+        this.operationN = this.sales.data.length;
+        for (let i = 0; i < this.sales.data.length; i++) {
+          this.totalSales = this.totalSales + Number(this.sales.data[i].total);
+        }
+        this.totalSalesString = this.totalSales.toString() + ' €';
 
-  // Selección checkboxes
-  loadCompleted: boolean = false;
-  downloadDisabled:boolean = true;
-  selectedRecords:number = 0;
-  selectAll: boolean = false;
-  selectTen: boolean  = false;
-  selectedCheckboxes: any[] = [];
-  linkSelectAll:string = "@@BASE_SelectAll";
+        for (let i = 0; i < 3; i++) {
+          this.selectSales[i] = new Array(this.sales.data.length);
+        }
 
-  // Formulario de búsqueda
-  referenceSelect:any;
-  reference:any;
-  terminal:any;
-  nRecordsForm:any;
-  since:any;
-  until:any;
-  type:any;
-  qs:any;
+      //Creación de arrays del select del formulario de búsqueda
+        //Terminal
 
-  formSearch = new FormGroup({
-    'referenceSelect': new FormControl(''),
-    'reference': new FormControl(''),
-    'terminal': new FormControl(''),
-    'nRecordsForm': new FormControl('200'),
-    'since': new FormControl (''),
-    'until': new FormControl(''),
-    'type': new FormControl('')
-  });
+        for (let i = 0; i < this.sales.data.length; i++) {
+          let counterSelect: boolean = false;
+          if (i == 0) {
+            this.selectSales[0][i] = this.sales.data[i].terminalNumber;
+            console.log(this.selectSales[0][i]);
+          } else {
+            for (let z = 0; z <= i; z++) {
+              if (
+                this.selectSales[0][z] == this.sales.data[i].terminalNumber ||
+                counterSelect == true
+              ) {
+                counterSelect = true;
+              }
+              if (counterSelect == false && z == i) {
+                this.selectSales[0][i] = this.sales.data[i].terminalNumber;
+              }
+            }
+            counterSelect = false;
+          }
+        //Tipo de operación
+          if (i == 0) {
+            this.selectSales[1][i] = this.sales.data[i].type;
+          } else {
+            for (let z = 0; z <= i; z++) {
+              if (
+                this.selectSales[1][z] == this.sales.data[i].type ||
+                counterSelect == true
+              ) {
+                counterSelect = true;
 
-  //login
-  logged:boolean;
-  modal:string = "none";
-  translationLoaded:boolean = false;
+              }
 
-  /* --------Constructor  ngOnInit--------- */
+              if (counterSelect == false && z == i) {
 
-  constructor(public override router: Router, private salesService: SalesService, private datePipe: DatePipe,
-    private authService:AuthService,private storageService:StorageService,private languageManager:LanguageManagerService) {
-    super(router);
-  }
+                this.selectSales[1][i] = this.sales.data[i].type;
+              }
+            }
+            counterSelect = false;
+          }
+          //Nº de documento
+          if (i == 0) {
+            this.selectSales[2][i] = this.sales.data[i].reference;
+          } else {
+            for (let z = 0; z <= i; z++) {
+              if (
+                this.selectSales[2][z] == this.sales.data[i].reference ||
+                counterSelect == true
+              ) {
+                counterSelect = true;
 
-  override ngOnInit(): void {
-    // Si estas logueado devolvera true
-    this.logged = this.storageService.isLoggedIn();
+              }
+              console.log(counterSelect);
+              if (counterSelect == false && z == i) {
 
-    // Cuando se carga la traduccion el valor cambia a true
-    this.languageManager.configObservable.subscribe(() => {
-      this.translationLoaded = true;
-    });
-
-    // Si esta logueado se carga la pagina con los registros
-    if (this.logged==true) {
-      
-      this.salesService.showSales(this.url).subscribe(registrosVentas=>{
-        this.sales=registrosVentas;
-        this.nRecords = this.sales.Data.length;
-        this.translationLoaded = true;
-        // Ordenar registros por fecha más reciente
-        this.sales.Data.sort((a, b) => {
-        const dateA = new Date(a.FinishedAt);
-        const dateB = new Date(b.FinishedAt);
-        return dateB.getTime() - dateA.getTime();
-        });
-        this.loadCompleted=true;
-      });
-  
-    } else {
-
-      // this.loadCompleted = true;
-      // this.modal = "block";
-      this.router.navigate(['/login']);
-    }
-
-  }
-
-/* --------Funciones--------- */
-
-  // Filtro de búsqueda
-  formData(){
-    this.referenceSelect = this.formSearch.get("referenceSelect")?.value;
-    this.reference = this.formSearch.get("reference")?.value;
-    this.terminal = this.formSearch.get("terminal")?.value;
-    this.nRecordsForm = this.formSearch.get("nRecordsForm")?.value;
-    this.since = this.formSearch.get("since")?.value;
-    this.until = this.formSearch.get("until")?.value;
-    this.type = this.formSearch.get("type")?.value;
-  
-    let qs = [];
-  
-    // Agregar campos no vacíos al objeto qs
-    if (this.reference) {
-      let op = '=*.*';
-      if (this.referenceSelect === 'contiene') {
-        op = '=*.*';
-      } else if (this.referenceSelect === 'empieza por') {
-        op = '=.*';
-      } else if (this.referenceSelect === 'termina por') {
-        op = '=*.';
+                this.selectSales[2][i] = this.sales.data[i].reference;
+              }
+            }
+            counterSelect = false;
+          }
+        }
+        //Eliminación espacios en blanco de arrays
+          //Terminal
+        for (let i = this.sales.data.length - 1; i >= 0; i--) {
+          if (this.selectSales[0][i] == null) {
+            this.selectSales[0].splice(i, 1);
+          }
+        }
+          //Tipo de operación
+        for (let i = this.sales.data.length - 1; i >= 0; i--) {
+          if (this.selectSales[1][i] == null) {
+            this.selectSales[1].splice(i, 1);
+          }
+        }
+          //Nº de documento
+        for (let i = this.sales.data.length - 1; i >= 0; i--) {
+          if (this.selectSales[2][i] == null) {
+            this.selectSales[2].splice(i, 1);
+          }
+        }
       }
-      qs.push({ field: 'Reference', op: op, value: this.reference });
-    }
-  
-    if (this.terminal) {
-      qs.push({ field: 'terminalnumber', op: '=', value: this.terminal });
-    }
-  
-    if (this.since) {
-      let sinceDate = new Date(this.since);
-      let sinceUnixTimestamp = sinceDate.getTime();
-      qs.push({ field: 'FinishedAt', op: '>', value: sinceUnixTimestamp.toString() });
-    }
-  
-    if (this.until) {
-      let untilDate = new Date(this.until);
-      let untilUnixTimestamp = untilDate.getTime();
-      qs.push({ field: 'FinishedAt', op: '<', value: untilUnixTimestamp.toString() });
-    }
-  
-    if (this.type) {
-      qs.push({ field: 'Type', op: '=', value: this.type });
-    }
-  
-    //Convertir objeto qs en una petición remplazando los caracteres especiales con JSON.stringify()
-    let qsString = JSON.stringify({ and: qs })
-    .replace(/"/g, '\'')
-    .replace(/\//g, '\\\\/')
-    .replace(/:/g, ': ')
-    .replace(/,/g, ', ');
-  
-    let baseUrl = 'https://quickshopv4.diusframi.tech:39443/api/orders';
-    this.url = `${baseUrl}?from=0&size=${this.nRecordsForm}&qs=${qsString}`;
-  
-    this.salesService.showSales(this.url).subscribe(registrosVentas=>{
-      this.sales=registrosVentas;
-      this.nRecords = this.sales.Data.length;
-    });
-  
+    );
   }
 
-  // Seleccionar todos los checkboxes
-  toggleSelectAll() {
-    if (this.selectAll) {
-      // Deseleccionar todos los registros
-      this.selectedCheckboxes = [];
-      this.selectAll = false;
-      this.linkSelectAll = '@@BASE_SelectAll';
-      this.downloadDisabled = true;
-    } else {
-      // Seleccionar todos los registros
-      this.selectedCheckboxes = this.sales.Data.slice();
-      this.selectAll = true;
-      this.linkSelectAll = '@@BASE_SelectNone';
-      this.selectTen = false; // Desactivar la selección de la página actual
-      this.downloadDisabled = false;
-    }
-  
-    this.selectedRecords = this.selectedCheckboxes.length;
-  }
 
-  // Seleccionar checkboxes de la página actual
-  toggleSelectTen() {
-    if (this.selectTen) {
-      // Deseleccionar los registros de la página actual
-      let currentPageCheckboxes = this.sales.Data.slice((this.nPage - 1) * 10, this.nPage * 10);
-      this.selectedCheckboxes = this.selectedCheckboxes.filter(item => !currentPageCheckboxes.includes(item));
-      this.selectTen = false;
-      this.linkSelectAll = '@@BASE_SelectAll';
-      this.downloadDisabled = true;
-    } else {
-      if (this.selectAll) {
-        // Deseleccionar todos los registros
-        this.selectedCheckboxes = [];
-        this.selectAll = false;
+
+  //Método de búsqueda
+
+  searchSales() {
+    //Obtención variables fechas
+    this.sinceDate = (<HTMLInputElement>(
+      document.getElementById('sinceDate')
+    )).value;
+    this.sinceDateMilli = Date.parse(this.sinceDate);
+    this.tilDate = (<HTMLInputElement>document.getElementById('tilDate')).value;
+    this.tilDateMilli = Date.parse(this.tilDate);
+
+    //Comienzo query búsqueda
+    this.varSearch = "&qs={'and':[";
+
+    //Parámetros de búsqueda activos
+    //Terminal
+    if (this.terminalVarSearch.length > 0) {
+      console.log(0);
+      if (this.searchCounter == false) {
+        this.searchCounter = true;
       }
-  
-      // Seleccionar los registros de la página actual
-      let currentPageCheckboxes = this.sales.Data.slice((this.nPage - 1) * 10, this.nPage * 10);
-      this.selectedCheckboxes = [...new Set([...this.selectedCheckboxes, ...currentPageCheckboxes])];
-  
-      this.selectTen = true;
-      this.linkSelectAll = '@@BASE_SelectAll';
-      this.downloadDisabled = false;
+      this.emptySearch = false;
+      this.varSearch =
+        this.varSearch +
+        "{'field':'terminal_number','op':'=','value':'" +
+        this.terminalVarSearch +
+        "'}";
     }
-  
-    this.selectedRecords = this.selectedCheckboxes.length;
+    //Desde fecha
+    if (this.sinceDateMilli > 0) {
+      console.log(1);
+      console.log(this.searchCounter);
+      if (this.searchCounter == false) {
+        this.searchCounter = true;
+      } else {
+        this.varSearch = this.varSearch + ',';
+      }
+      console.log(this.searchCounter);
+      this.emptySearch = false;
+      this.varSearch =
+        this.varSearch +
+        "{'field':'CreatedAt','op':'>','value':'" +
+        this.sinceDateMilli +
+        "'}";
+    }
+    //Hasta fecha
+    if (this.tilDateMilli > 0) {
+      console.log(2);
+      console.log(this.searchCounter);
+      if (this.searchCounter == false) {
+        this.searchCounter = true;
+      } else {
+        this.varSearch = this.varSearch + ',';
+      }
+      console.log(this.searchCounter);
+      this.emptySearch = false;
+      this.varSearch =
+        this.varSearch +
+        "{'field':'CreatedAt','op':'<','value':'" +
+        this.tilDateMilli +
+        "'}";
+    }
+    //Tipo de operación
+    if (this.typeVarSearch.length > 0) {
+      console.log(3);
+      if (this.searchCounter == false) {
+        this.searchCounter = true;
+      } else {
+        this.varSearch = this.varSearch + ',';
+      }
+      this.emptySearch = false;
+      this.varSearch =
+        this.varSearch +
+        "{'field':'Type','op':'=','value':'" +
+        this.typeVarSearch +
+        "'}";
+    }
+    //Nº de Documento
+    if (this.documentVarSearch.length > 0) {
+      console.log(4);
+      if (this.searchCounter == false) {
+        this.searchCounter = true;
+      } else {
+        this.varSearch = this.varSearch + ',';
+      }
+      this.emptySearch = false;
+      this.varSearch =
+        this.varSearch +
+        "{'field':'Reference','op':'=','value':'" +
+        this.documentVarSearch +
+        "'}";
+    }
+
+    //Búsqueda vacia
+    if (this.terminalVarSearch.length == 0 && this.sinceDateMilli == 0 && this.tilDateMilli == 0 && this.typeVarSearch.length == 0 && this.documentVarSearch.length==0) {
+      this.SalesinfoService.GetSalesInfo(this.size, this.searchParams0).subscribe(
+        (sale) => {
+          this.sales = sale;
+          this.operationN = this.sales.data.length;
+          for (let i = 0; i < this.sales.data.length; i++) {
+            this.totalSales = this.totalSales + Number(this.sales.data[i].total);
+          }
+          this.totalSalesString = this.totalSales.toString() + ' €';})
+    }
+
+
+    //Cierre y reseteo de parámetros
+    this.varSearch = this.varSearch + ']}';
+    this.searchCounter = false;
+
+    console.log(this.varSearch);
+
+    //Llamada API
+    this.SalesinfoService.GetSalesInfo(this.size, this.varSearch).subscribe(
+      (sale) => {
+        this.sales = sale;
+        console.log(sale);
+        console.log(this.emptySearch);
+        if (sale.data.length <= 0) {
+          this.emptySearch = true;
+        }
+        console.log(this.emptySearch);
+        this.operationN = this.sales.data.length;
+        this.totalSales = 0;
+        for (let i = 0; i < this.sales.data.length; i++) {
+          this.totalSales = this.totalSales + Number(this.sales.data[i].total);
+        }
+        this.totalSalesString = this.totalSales.toString() + ' €';
+      }
+    );
   }
 
-  // Seleccionar checkbox
-  isSelected(item: any): boolean {
-    return this.selectedCheckboxes.includes(item);
-  }
-
-  toggleCheckbox(item: any) {
-    const index = this.selectedCheckboxes.indexOf(item);
-  
-    if (index !== -1) {
-      this.selectedCheckboxes.splice(index, 1);
+  CheckAll(event: any) {
+    if (event.target.checked) {
+      this.selectedIndices = [];
+      for (let i = 0; i < this.sales.data.length; i++) {
+        let globalIndex = i;
+        this.selectedIndices.push(globalIndex);
+      }
+      this.counter = this.selectedIndices.length;
+      this.isAllSelected = true;
     } else {
-      this.selectedCheckboxes.push(item);
+      this.selectedIndices = [];
+      this.counter = 0;
+      this.isAllSelected = false;
     }
-  
-    this.selectedRecords = this.selectedCheckboxes.length;
-    this.downloadDisabled = this.selectedCheckboxes.length === 0;
   }
-
-  // Mostrar busqueda avanzada
-  showAdvanced(){
-    this.advancedSearch = !this.advancedSearch;
-    this.standarSearch = !this.standarSearch;
-  }
-
-  // Limpiar busqueda
-  clean(){
-    window.location.reload();
-  }
-
-  //Cerrar modal
-  closeModal(){
-    this.modal = "none";
-    this.router.navigate(['/login']);
-  }
-
 }
