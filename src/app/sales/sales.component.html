@@ -177,9 +177,13 @@
                       {{ sale.total }}
                     </td>
                     <td>
-                      <a [routerLink]="">
-                        <i class="fa-solid fa-eye" style="color: #74c0fc"></i
-                      ></a>
+                      <span id="detailsticket" class="align-center">
+                        <a
+                        [routerLink]="code"
+
+                          (click)="sendSalesDetails(sale.orderId)"
+                          ><i class="fa-solid fa-eye" style="color: #74c0fc"></i></a
+                        ></span>
                     </td>
                   </tr>
                 </ng-container>

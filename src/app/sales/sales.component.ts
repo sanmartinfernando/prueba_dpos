@@ -1,3 +1,4 @@
+import { EncryptionService } from './../_services/encryption.service';
 import { SalesinfoService } from './../_services/salesinfo.service';
 import { Component, OnInit } from '@angular/core';
 import { BaseComponent } from '../common/base/base.component';
@@ -15,10 +16,9 @@ import { count } from '@swimlane/ngx-charts';
 @Component({
   selector: 'QSC-sales',
   templateUrl: './sales.component.html',
-  styleUrls: ['./sales.component.css'],
 })
 export class SalesComponent implements OnInit {
-  constructor(private SalesinfoService: SalesinfoService) {}
+  constructor(private SalesinfoService: SalesinfoService, private EncryptionService:EncryptionService) {}
 
   size: number = 2147483647;
   sales: SalesInfo;
@@ -28,6 +28,7 @@ export class SalesComponent implements OnInit {
   totalSalesString: string;
   page: number = 0;
   searchParams0: string = '';
+  code: string;
 
   //Parámetros de búsqueda
   terminalVarSearch: string = '';
@@ -282,6 +283,8 @@ export class SalesComponent implements OnInit {
     );
   }
 
+  //Checkboxes
+
   CheckAll(event: any) {
     if (event.target.checked) {
       this.selectedIndices = [];
@@ -297,4 +300,15 @@ export class SalesComponent implements OnInit {
       this.isAllSelected = false;
     }
   }
+
+  //Encriptación
+
+  sendSalesDetails(id:string) {
+
+    this.code = this.EncryptionService.encryptData(id)
+    this.code = '/details/' + this.EncryptionService.encode(this.code);
+    console.log(this.code);
+  }
+
+
 }

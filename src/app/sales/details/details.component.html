@@ -1,130 +1,240 @@
-<h5 class="m-4">{{ '@@QuickShop.Products_Sales' | translate }}</h5>
-<div class="col-3 ms-4">
-  <a [routerLink]="['/sales']" type="button" class="btn btn-info rounded-circle"><i class='fas fa-arrow-left fa-lg'></i></a>
-  <span class="ms-3">{{ticket.Reference}}</span>
-</div>
-<!-- Load -->
+<div class="container-fluid header-main">
+  <h5 class="m-4">Detalle de operación</h5>
+  <div class="col-3 ms-4">
+    <a
+      [routerLink]="['/sales']"
+      type="button"
+      class="btn btn-info rounded-circle"
+      ><i class="fas fa-arrow-left fa-lg"></i
+    ></a>
+    <span class="ms-3">{{ ticket.reference }}</span>
+  </div>
+  <!-- Load -->
 <div *ngIf="!loadCompleted" class="d-flex justify-content-center">
-    <div class="spinner-border text-danger"></div>
+  <div class="spinner-border text-danger"></div>
 </div>
-<!-- Detalles -->
-<div *ngIf="loadCompleted" class="col-12 col-sm-8 offset-sm-2 col-lg-4 offset-lg-4">
+  <!-- Detalles -->
+  <div class="col-12 col-sm-8 offset-sm-2 col-lg-4 offset-lg-4">
     <div class="card card-customer">
-        <div class="card-header d-flex">
-            <div class="flex-fill">
-                <h4 class="card-title mt-3">{{ticket.OrderCommerce.Name}}</h4>
-            </div>
-            <div class="flex-fill text-right">
-                <label id="lblcomercial_cif" class="text-white"><small>{{ticket.OrderCommerce.NIF}}</small></label><br/>
-                <label id="lblcomercial_address" class="text-white"><small>{{ticket.OrderCommerce.Address}}</small></label><br/>
-                <label id="lbldate" type="date" class="mt-2"><small>{{ticket.FinishedAt | date:'yyyy-MM-dd HH:mm'}}</small></label>
-            </div>
+      <div class="card-header d-flex">
+        <div class="flex-fill">
+          <h4 class="card-title mt-3">{{ ticket.orderCommerce.name }}</h4>
         </div>
-        <div class="card-body">
-            <div class="d-flex">    
-                <div class="flex-fill"><label id="lblterminal_number"><small>{{ '@@QuickShop.Clients_Terminal' | translate }}: {{ticket.TerminalNumber}}</small></label></div>
-                <div [ngSwitch]="ticket.Type" class="flex-fill text-right">
-                    <h6 *ngSwitchCase="0" id="lbltype" class="text-blue"><small>{{ '@@QuickShop.Products_Sales' | translate }}</small></h6>
-                    <h6 *ngSwitchCase="1" id="lbltype" class="text-blue"><small>{{ '@@QuickShop.Orders_Bill' | translate }}</small></h6>
-                    <h6 *ngSwitchCase="2" id="lbltype" class="text-blue"><small>{{ '@@BASE_Return2' | translate }}</small></h6>
-                </div>
-              </div>
+        <div class="flex-fill text-right">
+          <label id="lblcomercial_cif" class="text-white"
+            ><small>{{ ticket.orderCommerce.nif }}</small></label
+          ><br />
+          <label id="lblcomercial_address" class="text-white"
+            ><small>{{ ticket.orderCommerce.address }}</small></label
+          ><br />
+          <label id="lbldate" type="date" class="mt-2"
+            ><small>{{
+              ticket.finishedAt | date : "yyyy-MM-dd HH:mm"
+            }}</small></label
+          >
         </div>
-        <div class="card-footer pb-5">
-            <div class="col">
-                <div *ngIf="ticket.Type==1 && ticket.OrderCustomer!=null;" class="row">
-                    <p class="col-6 ps-5"><span class="text-bold">Cliente: </span>{{ticket.OrderCustomer.Name}}&nbsp;{{ticket.OrderCustomer.Lastname}}</p>
-                    <p class="col-6 ps-5"><span class="text-bold">NIF/DNI: </span>{{ticket.OrderCustomer.NIF}}</p>
-                    <p class="col-6 ps-5"><span class="text-bold">Email: </span>{{ticket.OrderCustomer.Email}}</p>
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>{{ '@@QuickShop.Products_Product' | translate }}</th>
-                                <th class="text-right">{{ '@@BASE_Units2' | translate }}</th>
-                                <th class="text-right">{{ '@@BASE_Price' | translate }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let orders of ticket.OrderLines">
-                              <td class="text-bold">{{orders.ProductName}}</td>
-                              <td class="text-right">{{orders.Quantity}}</td>
-                              <td *ngIf="ticket.Type==2;else unitPrice" class="text-right text-nowrap text-red">{{(orders.UnitPrice/100).toFixed(2)}}&nbsp;€</td>
-                              <ng-template #unitPrice><td class="text-right text-nowrap">{{(orders.UnitPrice/100).toFixed(2)}}&nbsp;€</td></ng-template>
-                          </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="row px-2 pb-4">
-                <div class="col-7 col-md-9">
-                    <label id="lblarticlenumber_title"><small>{{ '@@QuickShop.Orders_NumProducts' | translate }}</small></label>
-                </div>
-                <div class="col-5 col-md-3 text-right pe-4">
-                    <label id="lblarticlenumber"><small>{{ticket.ItemsCount}}</small></label>
-                </div> 
-            </div>
-            <div class="row px-2 pb-2">
-                <div class="col-7 col-md-9 text-right">
-                    <label id="lblsubtotal_title" class="text-bold">{{ '@@QuickShop.Orders_Subtotal' | translate }}</label>
-                </div>
-                <div class="col-5 col-md-3 text-right">
-                    <label *ngIf="ticket.Type==2;else subtotal" class="text-red" id="lblsubtotal">{{calculateTotal(ticket.OrderLines,'SubTotal') | number:'1.2-2'}}&nbsp;€</label>
-                    <ng-template #subtotal><label id="lblsubtotal">{{calculateTotal(ticket.OrderLines,'SubTotal') | number:'1.2-2'}}&nbsp;€</label></ng-template>
-                </div> 
-            </div>
-            <div class="row px-2 pb-2">
-                <div class="col-7 col-md-9 text-right">
-                    <label id="lbldiscount_title" class="text-bold">{{ '@@BASE_Discount' | translate }}</label>
-                </div>
-                <div class="col-5 col-md-3 text-right">
-                    <label *ngIf="ticket.Type==2;else totalDiscount" class="text-red" id="lbldiscount">{{(ticket.TotalDiscount/100).toFixed(2)}}&nbsp;€</label>
-                    <ng-template #totalDiscount><label id="lbldiscount">{{(ticket.TotalDiscount/100).toFixed(2)}}&nbsp;€</label></ng-template>
-                </div> 
-            </div>   
-            <div class="row px-2 pb-2">
-                <div class="col-7 col-md-9 text-right">
-                    <label id="lbltaxbase_title" class="text-bold">{{ '@@QuickShop.Orders_Base' | translate }}</label>
-                </div>
-                <div class="col-5 col-md-3 text-right">
-                    <label *ngIf="ticket.Type==2;else base" class="text-red" id="lbltaxbase">{{calculateTotal(ticket.OrderTaxes,'Base') | number:'1.2-2'}}&nbsp;€</label>
-                    <ng-template #base><label id="lbltaxbase">{{calculateTotal(ticket.OrderTaxes,'Base') | number:'1.2-2'}}&nbsp;€</label></ng-template>
-                </div> 
-            </div> 
-            <div class="row px-2 pb-2" *ngFor="let orders of ticket.OrderTaxes">
-                <div class="col-7 col-md-9 text-right">
-                    <label id="lblIVA_title" class="text-bold">{{orders.Name}}</label>
-                </div>
-                <div class="col-5 col-md-3 text-right">
-                    <label *ngIf="ticket.Type==2;else totalIVA" class="text-red" id="lblIVA">{{(orders.Total/100).toFixed(2)}}&nbsp;€</label>
-                    <ng-template #totalIVA><label id="lblIVA">{{(orders.Total/100).toFixed(2)}}&nbsp;€</label></ng-template>
-                </div> 
-            </div>    
-            <div class="row px-2 pb-2">
-                <div class="col-7 col-md-9 text-right">
-                    <label id="lbltotal_title" class="text-bold text-lg">{{ '@@BASE_Total' | translate }}</label>
-                </div>
-                <div class="col-5 col-md-3 text-right">
-                    <label *ngIf="ticket.Type==2;else total" id="lbltotal" class="text-red text-bold text-lg">{{(ticket.Total/100).toFixed(2)}}&nbsp;€</label>
-                    <ng-template #total><label id="lbltotal" class="text-success text-bold text-lg">{{(ticket.Total/100).toFixed(2)}}&nbsp;€</label></ng-template>
-                </div> 
-            </div>
-            <div class="row px-2 pb-2">
-                <div class="col-7 col-md-9 text-right">
-                    <label id="lblcash_title" class="text-bold">{{ticket.OrderPayments[0].Name}}</label>
-                </div>
-                <div class="col-5 col-md-3 text-right">
-                    <label *ngIf="ticket.Type==2;else amount" class="text-red" id="lblcash">{{(ticket.OrderPayments[0].Amount/100).toFixed(2)}}&nbsp;€</label>
-                    <ng-template #amount><label id="lblcash">{{(ticket.OrderPayments[0].Amount/100).toFixed(2)}}&nbsp;€</label></ng-template>
-                </div> 
-            </div>
-            <div class="row px-2 pb-2 mt-3">
-                <div *ngIf="ticket.IsGeneratedTicketBai==true;" class="col-12">
-                    <div><p><span class="text-bold">{{ '@@QuickShop.Orders_TicketBaiId' | translate }}: </span>{{ticket.OrderTicketBai.TicketBaiId}}</p></div>
-                    <div id="qrCode" style="height:100px">{{ticket.OrderTicketBai.Url}}</div>
-                </div>   
-            </div>                       
+      </div>
+      <div class="card-body">
+        <div class="d-flex">
+          <div class="flex-fill">
+            <label id="lblterminal_number"
+              ><small
+                >{{ "@@QuickShop.Clients_Terminal" | translate }}:
+                {{ ticket.terminalNumber }}</small
+              ></label
+            >
+          </div>
+          <div [ngSwitch]="ticket.type" class="flex-fill text-right">
+            <h6 *ngSwitchCase="0" id="lbltype" class="text-blue">
+              <small>{{ "@@QuickShop.Products_Sales" | translate }}</small>
+            </h6>
+            <h6 *ngSwitchCase="1" id="lbltype" class="text-blue">
+              <small>{{ "@@QuickShop.Orders_Bill" | translate }}</small>
+            </h6>
+            <h6 *ngSwitchCase="2" id="lbltype" class="text-blue">
+              <small>{{ "@@BASE_Return2" | translate }}</small>
+            </h6>
+          </div>
         </div>
+      </div>
+      <div class="card-footer pb-5">
+        <div class="col">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>{{ "@@QuickShop.Products_Product" | translate }}</th>
+                  <th class="text-right">{{ "@@BASE_Units2" | translate }}</th>
+                  <th class="text-right">{{ "@@BASE_Price" | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let orders of ticket.orderLines">
+                  <td class="text-bold">{{ orders.productName }}</td>
+                  q<td class="text-right">{{ orders.quantity }}</td>
+                  <td
+                    *ngIf="ticket.type == 2; else unitPrice"
+                    class="text-right text-nowrap text-red"
+                  >
+                    {{ (orders.unitPrice / 100).toFixed(2) }}&nbsp;€
+                  </td>
+                  <ng-template #unitPrice
+                    ><td class="text-right text-nowrap">
+                      {{ (orders.unitPrice / 100).toFixed(2) }}&nbsp;€
+                    </td></ng-template
+                  >
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="row px-2 pb-4">
+          <div class="col-7 col-md-9">
+            <label id="lblarticlenumber_title"
+              ><small>{{
+                "@@QuickShop.Orders_NumProducts" | translate
+              }}</small></label
+            >
+          </div>
+          <div class="col-5 col-md-3 text-right pe-4">
+            <label id="lblarticlenumber"
+              ><small>{{ ticket.itemsCount }}</small></label
+            >
+          </div>
+        </div>
+        <div class="row px-2 pb-2">
+          <div class="col-7 col-md-9 text-right">
+            <label id="lblsubtotal_title" class="text-bold">{{
+              "@@QuickShop.Orders_Subtotal" | translate
+            }}</label>
+          </div>
+          <div class="col-5 col-md-3 text-right">
+            <label
+              *ngIf="ticket.type == 2; else subtotal"
+              class="text-red"
+              id="lblsubtotal"
+              >{{
+                calculateTotal(ticket.orderLines, "SubTotal")
+                  | number : "1.2-2"
+              }}&nbsp;€</label
+            >
+            <ng-template #subtotal
+              ><label id="lblsubtotal"
+                >{{
+                  calculateTotal(ticket.orderLines, "SubTotal")
+                    | number : "1.2-2"
+                }}&nbsp;€</label
+              ></ng-template
+            >
+          </div>
+        </div>
+        <div class="row px-2 pb-2">
+          <div class="col-7 col-md-9 text-right">
+            <label id="lbldiscount_title" class="text-bold">{{
+              "@@BASE_Discount" | translate
+            }}</label>
+          </div>
+          <div class="col-5 col-md-3 text-right">
+            <label
+              *ngIf="ticket.type == 2; else totalDiscount"
+              class="text-red"
+              id="lbldiscount"
+              >{{ (ticket.totalDiscount / 100).toFixed(2) }}&nbsp;€</label
+            >
+            <ng-template #totalDiscount
+              ><label id="lbldiscount"
+                >{{ (ticket.totalDiscount / 100).toFixed(2) }}&nbsp;€</label
+              ></ng-template
+            >
+          </div>
+        </div>
+        <div class="row px-2 pb-2">
+          <div class="col-7 col-md-9 text-right">
+            <label id="lbltaxbase_title" class="text-bold">{{
+              "@@QuickShop.Orders_Base" | translate
+            }}</label>
+          </div>
+          <div class="col-5 col-md-3 text-right">
+            <label
+              *ngIf="ticket.type == 2; else base"
+              class="text-red"
+              id="lbltaxbase"
+              >{{
+                calculateTotal(ticket.orderTaxes, "Base") | number : "1.2-2"
+              }}&nbsp;€</label
+            >
+            <ng-template #base
+              ><label id="lbltaxbase"
+                >{{
+                  calculateTotal(ticket.orderTaxes, "Base") | number : "1.2-2"
+                }}&nbsp;€</label
+              ></ng-template
+            >
+          </div>
+        </div>
+        <div class="row px-2 pb-2" *ngFor="let orders of ticket.orderTaxes">
+          <div class="col-7 col-md-9 text-right">
+            <label id="lblIVA_title" class="text-bold">{{ orders.name }}</label>
+          </div>
+          <div class="col-5 col-md-3 text-right">
+            <label
+              *ngIf="ticket.type == 2; else totalIVA"
+              class="text-red"
+              id="lblIVA"
+              >{{ (orders.total / 100).toFixed(2) }}&nbsp;€</label
+            >
+            <ng-template #totalIVA
+              ><label id="lblIVA"
+                >{{ (orders.total / 100).toFixed(2) }}&nbsp;€</label
+              ></ng-template
+            >
+          </div>
+        </div>
+        <div class="row px-2 pb-2">
+          <div class="col-7 col-md-9 text-right">
+            <label id="lbltotal_title" class="text-bold text-lg">{{
+              "@@BASE_Total" | translate
+            }}</label>
+          </div>
+          <div class="col-5 col-md-3 text-right">
+            <label
+              *ngIf="ticket.type == 2; else total"
+              id="lbltotal"
+              class="text-red text-bold text-lg"
+              >{{ (ticket.total / 100).toFixed(2) }}&nbsp;€</label
+            >
+            <ng-template #total
+              ><label id="lbltotal" class="text-success text-bold text-lg"
+                >{{ (ticket.total / 100).toFixed(2) }}&nbsp;€</label
+              ></ng-template
+            >
+          </div>
+        </div>
+        <div class="row px-2 pb-2">
+          <div class="col-7 col-md-9 text-right">
+            <label id="lblcash_title" class="text-bold">{{
+              ticket.orderPayments[0].name
+            }}</label>
+          </div>
+          <div class="col-5 col-md-3 text-right">
+            <label
+              *ngIf="ticket.type == 2; else amount"
+              class="text-red"
+              id="lblcash"
+              >{{
+                (ticket.orderPayments[0].amount / 100).toFixed(2)
+              }}&nbsp;€</label
+            >
+            <ng-template #amount
+              ><label id="lblcash"
+                >{{
+                  (ticket.orderPayments[0].amount / 100).toFixed(2)
+                }}&nbsp;€</label
+              ></ng-template
+            >
+          </div>
+        </div>
+             </div>
     </div>
+  </div>
 </div>
