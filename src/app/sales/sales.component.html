@@ -11,6 +11,7 @@
           [(ngModel)]="terminalVarSearch"
         >
           <option></option>
+          <option>Todos</option>
           <option *ngFor="let terminal of selectSales[0]; index as i">
             {{ terminal }}
           </option>
@@ -32,6 +33,7 @@
           [(ngModel)]="typeVarSearch"
         >
           <option></option>
+          <option>Todos</option>
           <option *ngFor="let type of selectSales[1]; index as i">
             {{ type }}
           </option>
@@ -39,21 +41,22 @@
       </div>
       <div class="mx-3">
         <label class="form-label">Nº de documento/Serie</label>
-        <select
+        <input
+          type="text"
           class="form-select"
           name="documentN"
           [(ngModel)]="documentVarSearch"
         >
-          <option></option>
+          <!-- <option></option>
           <option *ngFor="let document of selectSales[2]; index as i">
             {{ document }}
           </option>
-        </select>
+        </input>-->
       </div>
       <div id="searchButtonsDiv" class="ms-5 d-flex overflow-auto">
-        <a type="button" class="btn btn-danger align-self-end"
+       <button type="reset" class="btn btn-danger align-self-end"> <a type="button"
           ><i class="fas fa-eraser"></i>
-        </a>
+        </a></button>
         <a
           type="button"
           class="btn btn-info align-self-end"
@@ -95,6 +98,10 @@
           </button>
         </div>
       </div>
+        <!-- Load -->
+        <div *ngIf="!loadCompleted" class="d-flex justify-content-center">
+          <div class="spinner-border  text-danger" ></div>
+        </div>
       <!-- Tabla -->
       <div class="row">
         <div class="col">

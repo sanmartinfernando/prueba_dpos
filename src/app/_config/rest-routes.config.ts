@@ -27,5 +27,7 @@ export const RestRoutes = {
   SALES_INFO:`api/Orders?size=`,
   SALES_INFO2:`&offset=0`,
   SALES_INFO3:`&qs={"and":`,
-  SALES_DETAILS:`api/Orders/`
+  SALES_DETAILS:`api/Orders/`,
+  BALANCES_INFO:`api/Balances?size=`,
+  BALANCES_DETAILS:`api/Balances/`,
 }

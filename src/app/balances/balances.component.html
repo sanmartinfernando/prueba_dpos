@@ -1,227 +1,155 @@
-<div class="container-fluid pt-4">
-  <h5>Cierres de caja</h5>
-  <hr>
-  <section id="search-helper mb-3">
-    <div class="p-3 bg-light border rounded">
-      <!-- Buscador  -->
-      <div *ngIf="element == true">
-        <form class="formGroup" [formGroup]="balancesFormGroup">
-          <div class="row">
-            <div class="col-12 col-md-6 col-lg-5 mb-3">
-              <label class="form-label">Referencia</label>
-              <div class="input-group">
-                <select class="form-select w-25" formControlName="referenceSelect">
-                  <option selected value={{contains}} >contiene</option>
-                  <option value={{startsWith}}>empieza por</option>
-                  <option value={{endsWith}}>termina en</option>
-                </select>
-                <input type="text" class="form-control w-75" name="filterPost" formControlName="reference"/>
-              </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-5 mb-3">
-              <label class="form-label">Nª Terminal</label>
-              <div class="input-group">
-                <select class="form-select w-25" name="igual">
-                  <option selected="select">igual</option>
-                </select>
-                <select class="form-select w-75" name="filterPost" formControlName="TerminalNumber" >
-                  <option value={{empty}}>Todos</option>
-                  <option>20201029-001</option>
-                  <option>00000002</option>
-                  <option>20201029-002</option>
-                  <option>20201029-010</option>
-                  <option>20201029-011</option>
-                  <option>20201029-012</option>
-                  <option>20201029-087</option>
-                </select>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col col-lg-4 d-flex mb-3">
-              <div class="me-2">
-                <a type="button"><i class="fas fa-toggle-off fa-2x" (click)="hideAdvancedSearch()"></i></a>
-              </div>
-              <div class="mt-1">
-                <label class="form-label">Busqueda Avanzada</label>
-              </div>
-            </div>
-            <div class="col col-lg-8">
-              <div class="d-flex justify-content-end">
-                <div class="mt-2 mx-1">
-                  <label class="form-label">Nº Max Registros</label>
-                </div>
-                <div class="mb-3 mt-1 mx-1">
-                  <select class="form-select" formControlName='maxRecords'>
-                    <option selected>100</option>
-                    <option>200</option>
-                    <option>500</option>
-                    <option>1000</option>
-                    <option>10000</option>
-                  </select>
-                </div>
-                <div class="mb-3 mx-1">
-                  <a type="button" class="btn btn-danger rounded-pill" (click)="clearSearch()"><i class="fas fa-eraser" ></i>&nbsp;&nbsp;Limpiar</a>
-                  <a type="button" class="btn btn-info rounded-pill" (click)="search()"><i class="fas fa-search"  ></i>&nbsp;&nbsp;Buscar</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </form>
+<br />
+<div class="container-fluid header-main">
+  <div>
+    <!-- Formulario de búsqueda -->
+    <form class="d-flex flex-wrap mx-1">
+      <div class="me-3">
+        <label class="form-label">Terminal</label>
+        <select
+          class="form-select"
+          name="terminal"
+          [(ngModel)]="terminalVarSearch"
+        >
+          <option></option>
+          <option *ngFor="let terminal of selectSales[0]; index as i">
+            {{ terminal }}
+          </option>
+        </select>
       </div>
-      <!-- Buscador avanzado -->
-      <div *ngIf="element == false" >
-        <form [formGroup]="balancesFormGroup" (ngSubmit)="search()">
-          <div class="row">
-            <div class="col-12 col-md-4 col-lg-3 mb-3">
-              <label class="form-label">Referencia</label>
-              <div class="input-group">
-                <select class="form-select w-25" formControlName="referenceSelect">
-                  <option value={{startsWith}}>empieza por</option>
-                  <option value={{endsWith}}>termina en</option>
-                  <option selected value={{contains}}>contiene</option>
-                </select>
-                <input type="text" class="form-control w-75" name="filterPost" formControlName="reference"/>
-              </div>
-            </div>
-            <div class="col-12 col-md-4 col-lg-3 mb-3">
-              <label class="form-label">Nª Terminal</label>
-              <div class="input-group">
-                <select class="form-select w-25" name="igual">
-                  <option selected="select">igual</option>
-                </select>
-                <select class="form-select w-75" name="filterPost" formControlName="TerminalNumber">
-                  <option selected value={{empty}}></option>
-                  <option>20201029-001</option>
-                  <option>00000002</option>
-                  <option>20201029-010</option>
-                  <option>20201029-011</option>
-                  <option>20201029-012</option>
-                  <option>20201029-087</option>
-                </select>
-              </div>
-            </div>
-            <div class="col-12 col-md-4 col-lg-3 mb-3">
-              <label class="form-label">Fecha (desde)</label>
-              <div class="input-group">
-                <select class="form-select w-25" name="mayor1" formControlName="greater"value={{empty}}>
-                  <option selected="select" value={{greaterThan}}>mayor que</option >
-                </select>
-                <input type="date" class="form-control w-75" formControlName="greaterDate" />
-              </div>
-            </div>
-            <div class="col-12 col-md-4 col-lg-3 mb-3">
-              <label class="form-label">Fecha (hasta)</label>
-              <div class="input-group">
-                <select class="form-select w-25" name="mayor1" formControlName="lesser" >
-                  <option selected="select" value={{lessThan}}>menor que</option>
-                </select>
-                <input type="date" class="form-control w-75" formControlName="lesserDate"  />
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col col-lg-4 d-flex mb-3">
-              <div class="me-2">
-                <a type="button"><i class="fas fa-toggle-on fa-2x" style="color: #000000" (click)="showAdvancedSearch()"></i></a>
-              </div>
-              <div class="mt-1">
-                <label class="form-label">Busqueda Avanzada</label>
-              </div>
-            </div>
-            <div class="col col-lg-8">
-              <div class="d-flex justify-content-end">
-                <div class="mt-2 mx-1">
-                  <label class="form-label">Nº Max Registros</label>
-                </div>
-                <div class="mb-3 mt-1 mx-1">
-                  <select class="form-select" formControlName="maxRecords">
-                    <option selected >100</option>
-                    <option>200</option>
-                    <option >500</option>
-                    <option >1000</option>
-                    <option >10000</option>
-                  </select>
-                </div>
-                <div class="mb-3 ">
-                  <a type="button" class="btn btn-danger rounded-pill" (click)="clearSearch()"><i class="fas fa-eraser"  ></i>&nbsp;&nbsp;Limpiar</a>
-                  <a type="button" class="btn btn-info rounded-pill" (click)="search()"><i class="fas fa-search"></i>&nbsp;&nbsp;Buscar</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </form>
+      <div class="mx-3">
+        <label class="form-label">Desde</label>
+        <input type="date" class="form-select" id="sinceDate" />
       </div>
-    </div>
-  </section>
-  <!-- load -->
-  <div class="container me-4 mt-4 text-right">
-    <button type="button" class="btn btn-info rounded-pill" [disabled]="downloadDisabled" ><i class="fas fa-file-excel "></i>&nbsp;&nbsp;Descargar</button>
+      <div class="mx-3">
+        <label class="form-label">Hasta</label>
+        <input type="date" class="form-select" id="tilDate" />
+      </div>
+      <div id="searchButtonsDiv" class="ms-5 d-flex overflow-auto">
+        <a type="button" class="btn btn-danger align-self-end"
+          ><i class="fas fa-eraser"></i>
+        </a>
+        <a
+          type="button"
+          class="btn btn-info align-self-end"
+          (click)="searchSales()"
+          ><i class="fas fa-search"></i>&nbsp;&nbsp;Buscar</a
+        >
+      </div>
+    </form>
   </div>
-
-  <div class="ms-4">
-        <p>
-          <label><small><span class="text-danger">{{nRecords}}</span>&nbsp;registros >></small></label>&nbsp;
-          <label><small><em> {{selectedRecords}} registros están seleccionados</em></small></label>&nbsp;
-          <a type="button" class="btn btn-link" (click)="selectAllRecords()"><small>{{SelectAll}}</small></a>
-        </p>
-  </div>
-  <!-- ------------------------ Inicio de la tabla -------------------- -->
-  <div *ngIf="!loadCompleted" class="d-flex justify-content-center">
-    <div class="spinner-border  text-danger" ></div>
-  </div>
-    <div class="table-responsive ">
-      <div *ngIf="loadCompleted" class="row mb-5">
-        <div class="col-12">
+  <br />
+<!-- Tabla e indicadores -->
+  <br />
+  <div class="card">
+    <div class="card-body">
+      <div class="row mb-4">
+        <div class="col">
+          <h5><b>Cierres de caja</b></h5>
+        </div>
+        <!-- Botón descarga -->
+          <button class="btn btn-sm btn-secondary-customer">
+            <i class="fa-solid fa-file-csv fa-xl" style="color: #008000"></i>
+          </button>
+      </div>
+      <!-- Tabla -->
+      <div class="row">
+        <div class="col">
           <div class="table-responsive">
-            <table class="table table-hover">
-              <thead>
+            <table
+              class="table table-hover order-table"
+              data-pagination="true"
+              data-page-size="10"
+            >
+              <thead class="text-customer">
                 <tr>
-                  <th>
-                    <div class="form-check form-check-customer ms-1">
-                      <input class="form-check-input" type="checkbox"  id="ch_all" (click)="selectTenRecords()" [checked]="selectTen"  />
-                    </div>
+                  <th class="text-center">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      [checked]="isAllSelected"
+                      (change)="CheckAll($event)"
+                    />
                   </th>
-                  <th>Referencia</th>
-                  <th>Nº de terminal</th>
-                  <th>Fecha</th>
-                  <th>Nº TOTAL OPERACIONES</th>
-                  <th>TOTAL VENTAS</th>
-                  <th class="text-right">DEVOLUCIONES</th>
-                  <th class="text-right">DESCUADRE</th>
+                  <th class="text-center">Documento</th>
+                  <th class="text-center">Terminal</th>
+                  <th class="text-center">Desde</th>
+                  <th class="text-center">Hasta</th>
+                  <th class="text-center">Operaciones</th>
+                  <th class="text-center">Descuadre efecivo (€)</th>
+                  <th class="text-center">Base imponible</th>
+                  <th class="text-center">Cuota de IVA</th>
+                  <th class="text-center">Total</th>
                   <th></th>
                 </tr>
               </thead>
+              <ng-template #empty
+                ><td colspan="5">
+                  <b>No existen registros que mostrar</b>
+                </td></ng-template
+              >
               <tbody>
-                <tr *ngFor=" let balances of balances.Data | paginate:{itemsPerPage:10, currentPage: nPage} ">
-                  <td class="text-center">
-                    <div class="form-check form-check-customer">
-                      <input class="form-check-input" id="checkbox" type="checkbox" [ngModel]="isSelected(balances)" (ngModelChange)="checkedCheckbox(balances)" />
-                    </div>
-                  </td>
-                  <td>{{balances.Reference}}</td>
-                  <td>{{balances.TerminalNumber}}</td>
-                  <td>{{balances.FinishedAt | date:'dd/MM/yyyy HH:mm:ss'}}</td>
-                  <td>{{balances.SalesCount}}</td>
-                  <td>{{getDecimal(balances.Sales)}}€ </td>
-                  <td class="text-right">
-                    {{getDecimal(balances.Refunds)}}€
-                  </td>
-                  <td class="text-right">
-                    {{getDecimal(balances.OutCount)}}€
-                  </td>
-                  <td>
-                    <a [routerLink]="['/balances-details',balances.BalanceId]" type="button"class="btn btn-info rounded-circle"><i class="fas fa-eye fa-lg"></i></a>
-                  </td>
-                </tr>
+                <ng-container *ngIf="emptySearch == false; else empty">
+                  <tr
+                    *ngFor="
+                      let balance of balances.data
+                        | paginate : { itemsPerPage: 10, currentPage: page };
+                      index as i
+                    "
+                  >
+                    <td class="text-center align-middle">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        [checked]="isAllSelected"
+                      />
+                    </td>
+                    <td class="text-center align-middle" id="massivetransfer">
+                      {{ balance.reference }}
+                    </td>
+                    <td class="text-center align-middle">
+                      {{ balance.terminalNumber }}
+                    </td>
+                    <td class="text-center align-middle">
+                      {{ balance.startedAt | date : "dd/MM/yyyy hh:mm" }}
+                    </td>
+                    <td class="text-center align-middle">
+                      {{ balance.finishedAt | date : "dd/MM/yyyy hh:mm" }}
+                    </td>
+                    <td class="text-center align-middle">
+                      {{ balance.salesCount}}
+                    </td>
+                    <td class="text-center align-middle">
+                      {{ balance.outCount }}
+                    </td>
+                    <td class="text-center align-middle">
+                      Base
+                    </td>
+                    <td class="text-center align-middle">
+                      IVA
+                    </td>
+                    <td class="text-center align-middle">
+                      Total
+                    </td>
+                    <td>
+                      <span id="detailsticket" class="align-center">
+                        <a
+                        [routerLink]="code"
+                          (click)="sendSalesDetails(balance.balanceId)"
+                          ><i class="fa-solid fa-eye" style="color: #74c0fc"></i></a
+                        ></span>
+                    </td>
+                  </tr>
+                </ng-container>
               </tbody>
             </table>
-            <div class="col-12">
-                <pagination-controls (pageChange)="nPage = $event"></pagination-controls>
+            <div class="has-text-centered">
+              <pagination-controls
+                (pageChange)="page = $event"
+              ></pagination-controls>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-
+</div>
