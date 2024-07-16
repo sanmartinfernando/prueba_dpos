@@ -1,4 +1,4 @@
-<nav class="sidenav d-flex flex-column vh-100" style="background-color: #313131;">
+<nav class="sidenav d-flex flex-column vh-100" style="background-color: #111;">
   <div class="flex-shrink-0 p-2 text-white">
     <a class="d-flex align-items-center justify-content-center mb-0 text-white text-decoration-none"
       (click)="titleHeader(title0)" routerLink="/">
@@ -22,7 +22,7 @@
 </nav>
 <header class="bg-customer" style="border-bottom:2px solid #ededed;">
   <div class="clearfix header-main">
-    <h2 class="float-start text-white pt-3 pb-2">{{ title }}</h2>
+    <h2 class="float-start pt-3 pb-2">{{ title }}</h2>
     <ul class="navbar-nav float-end">
       <li class="mx-3 nav-item pt-2 pb-2">
         <a class="nav-link" *ngIf="username; else loginLink" (click)="logOut()" style="cursor: pointer"><i class="fa-solid fa-circle-user"></i>&nbsp;&nbsp;{{

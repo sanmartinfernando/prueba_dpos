@@ -1,219 +1,90 @@
-<div class="container-fluid pt-4">
-    <h5>Clientes</h5>
-    <hr>
-    <section id="search-helper mb-3">
-        <div class="p-3 bg-light border rounded">
-          <!-- Buscador  -->
-          <div >
-            <form class="formGroup" [formGroup]="clientsFormGroup" *ngIf="element == true">
-              <div class="row">
-                <div class="col-12 col-md-6 col-lg-5 mb-3">
-                  <label class="form-label">NIF</label>
-                  <div class="input-group">
-                    <select class="form-select w-25" formControlName="nifSelect">
-                      <option selected value={{contains}} >contiene</option>
-                      <option value={{startsWith}}>empieza por</option>
-                      <option value={{endsWith}}>termina en</option>
-                    </select>
-                    <input type="text" class="form-control w-75" name="filterPost" formControlName="nif"/>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col col-lg-4 d-flex mb-3">
-                  <div class="me-2">
-                    <a type="button"><i class="fas fa-toggle-off fa-2x" (click)="hideAdvancedSearch()"></i></a>
-                  </div>
-                  <div class="mt-1">
-                    <label class="form-label">Busqueda Avanzada</label>
-                  </div>
-                </div>
-                <div class="col col-lg-8">
-                  <div class="d-flex justify-content-end">
-                    <div class="mt-2 mx-1">
-                      <label class="form-label">Nº Max Registros</label>
-                    </div>
-                    <div class="mb-3 mt-1 mx-1">
-                      <select class="form-select" >
-                        <option selected>100</option>
-                        <option>200</option>
-                        <option>500</option>
-                        <option>1000</option>
-                        <option>10000</option>
-                      </select>
-                    </div>
-                    <div class="mb-3 mx-1">
-                      <a type="button" class="btn btn-danger rounded-pill" (click)="clearSearch()"><i class="fas fa-eraser" ></i>&nbsp;&nbsp;Limpiar</a>
-                      <a type="button" class="btn btn-info rounded-pill" (click)="search()"><i class="fas fa-search"  ></i>&nbsp;&nbsp;Buscar</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </form>
-          </div>
-          <!-- Buscador avanzado -->
-          <div  >
-            <form [formGroup]="clientsFormGroup"  *ngIf="element == false">
-              <div class="row">
-                <div class="col-12 col-md-4 col-lg-3 mb-3">
-                  <label class="form-label">NIF</label>
-                  <div class="input-group">
-                    <select class="form-select w-25" formControlName="nifSelect">
-                      <option selected value={{contains}} >contiene</option>
-                      <option value={{startsWith}}>empieza por</option>
-                      <option value={{endsWith}}>termina en</option>
-                    </select>
-                    <input type="text" class="form-control w-75" formControlName="nif" />
-                  </div>
-                </div>
-                <div class="col-12 col-md-4 col-lg-3 mb-3">
-                  <label class="form-label">Nombre</label>
-                  <div class="input-group">
-                    <select class="form-select w-25" formControlName="nameSelect">
-                      <option selected value={{contains}} >contiene</option>
-                      <option value={{startsWith}}>empieza por</option>
-                      <option value={{endsWith}}>termina en</option>
-                      </select>
-                    <input type="text" class="form-control w-75" name="filterPost" formControlName="name" />
-                  </div>
-                </div>
-                <div class="col-12 col-md-4 col-lg-3 mb-3">
-                  <label class="form-label">Apellidos</label>
-                  <div class="input-group">
-                    <select class="form-select w-25" formControlName="surnameSelect">
-                      <option selected value={{contains}} >contiene</option>
-                      <option value={{startsWith}}>empieza por</option>
-                      <option value={{endsWith}}>termina en</option>
-                      </select>
-                    <input type="text" class="form-control w-75" name="filterPost" formControlName="surname"/>
-                  </div>
-                </div>
-                <div class="col-12 col-md-4 col-lg-3 mb-3">
-                  <label class="form-label">Teléfono</label>
-                  <div class="input-group">
-                    <select class="form-select w-25" formControlName="phoneNumberSelect">
-                      <option selected value={{contains}} >contiene</option>
-                      <option value={{startsWith}}>empieza por</option>
-                      <option value={{endsWith}}>termina en</option>
-                      </select>
-                    <input type="text" class="form-control w-75" name="filterPost" formControlName="phoneNumber"/>
-                  </div>
-                </div>
-                <div class="col-12 col-md-4 col-lg-3 mb-3">
-                    <label class="form-label">Email</label>
-                    <div class="input-group">
-                        <select class="form-select w-25" formControlName="emailSelect">
-                          <option selected value={{contains}} >contiene</option>
-                          <option value={{startsWith}}>empieza por</option>
-                          <option value={{endsWith}}>termina en</option>
-                          </select>
-                      <input type="text" class="form-control w-75" name="filterPost" formControlName="email"/>
-                    </div>
-                  </div>
-              </div>
-              <div class="row">
-                <div class="col col-lg-4 d-flex mb-3">
-                  <div class="me-2">
-                    <a type="button"><i class="fas fa-toggle-on fa-2x" style="color: #000000" (click)="showAdvancedSearch()"></i></a>
-                  </div>
-                  <div class="mt-1">
-                    <label class="form-label">Busqueda Avanzada</label>
-                  </div>
-                </div>
-                <div class="col col-lg-8">
-                  <div class="d-flex justify-content-end">
-                    <div class="mt-2 mx-1">
-                      <label class="form-label">Nº Max Registros</label>
-                    </div>
-                    <div class="mb-3 mt-1 mx-1">
-                      <select class="form-select" >
-                        <option selected >100</option>
-                        <option>200</option>
-                        <option >500</option>
-                        <option >1000</option>
-                        <option >10000</option>
-                      </select>
-                    </div>
-                    <div class="mb-3 ">
-                      <a type="button" class="btn btn-danger rounded-pill" (click)="clearSearch()"><i class="fas fa-eraser"  ></i>&nbsp;&nbsp;Limpiar</a>
-                      <a type="button" class="btn btn-info rounded-pill" (click)="search()"><i class="fas fa-search"></i>&nbsp;&nbsp;Buscar</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </form>
+<br />
+<div class="container-fluid header-main">
+  <div>
+    <!-- Formulario de búsqueda -->
+    <form class="d-flex flex-wrap mx-1">
+      <div class="me-3">
+        <label class="form-label">Tipo de informe</label>
+        <select class="form-select" name="type">
+          <option>Impuestos</option>
+          <option>Productos</option>
+          <option>Métodos de pago</option>
+        </select>
+      </div>
+      <div class="me-3">
+        <label class="form-label">Terminal</label>
+        <select class="form-select" name="terminal">
+          <option>Todos</option>
+          <option>Terminal 0000001</option>
+        </select>
+      </div>
+      <div class="mx-3">
+        <label class="form-label">Desde</label>
+        <input type="date" class="form-select" id="sinceDate" />
+      </div>
+      <div class="mx-3">
+        <label class="form-label">Hasta</label>
+        <input type="date" class="form-select" id="tilDate" />
+      </div>
+      <div id="searchButtonsDiv" class="ms-5 d-flex overflow-auto">
+        <a type="button" class="btn btn-danger align-self-end"><i class="fas fa-eraser"></i>
+        </a>
+        <a type="button" class="btn btn-info align-self-end"><i class="fas fa-search"></i>&nbsp;&nbsp;Buscar</a>
+      </div>
+    </form>
+  </div>
+  <br />
+  <!-- Tabla e indicadores -->
+  <br />
+  <div class="card">
+    <div class="card-body">
+      <div class="row mb-4">
+        <div class="col">
+          <h5><b>Resultados de búsqueda</b></h5>
+        </div>
+        <!-- Indicadores -->
+        <div class="col-3 justify-content-end">
+          <label for="operationN" class="me-2">Nº operaciones</label>
+          <button class="btn btn-sm btn-secondary-customer">
+            <i class="fa-solid fa-file-csv fa-xl" style="color: #008000"></i>
+          </button>
+        </div>
+      </div>
+      <!-- Tabla -->
+      <div class="row">
+        <div class="col">
+          <div class="table-responsive">
+            <table class="table table-hover order-table" data-pagination="true" data-page-size="10">
+              <thead class="text-customer">
+                <tr>
+                  <th class="text-center">Impuesto</th>
+                  <th class="text-center">Valor</th>
+                  <th class="text-center">Base</th>
+                  <th class="text-center">Cuota</th>
+                </tr>
+              </thead>
+              <ng-template #empty>
+                <td colspan="5">
+                  <b>No existen registros que mostrar</b>
+                </td>
+              </ng-template>
+              <tbody>
+                <ng-container>
+                  <tr>
+                    <td class="text-center align-middle"></td>
+                    <td class="text-center align-middle"></td>
+                    <td class="text-center align-middle"></td>
+                    <td class="text-center align-middle"></td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+            <div class="has-text-centered">
+              <pagination-controls></pagination-controls>
+            </div>
           </div>
         </div>
-      </section>
-    <section id="saleslist">
-        <!-- Contenedor botones antes de la tabla de productos -->
-        <div class="row mt-4 mb-1">
-            <div class="col-12 col-md-4">
-                    <label><small><span class="text-danger">{{nRecords}}</span>&nbsp;registros >></small></label>&nbsp;
-                    <label><small><em>{{selectedRecords}} registros están seleccionados</em></small></label>&nbsp;
-                    <a type="button" class="btn btn-link" (click)="selectAllRecords()"><small>{{SelectAll}}</small></a>
-            </div>
-            <div class="col-12 col-md-8 text-right">
-                <button class="btn btn-info rounded-pill" [disabled]="downloadDisabled"><i class='fas fa-file-excel' ></i>&nbsp;&nbsp;Descargar</button>
-                <a type="button" class="btn btn-customer rounded-pill">Importar Clientes</a>
-                <a  type="button" class="btn btn-customer rounded-pill">Añadir Clientes</a>
-                <button class="btn btn-danger rounded-pill" ><i class='fas fa-trash-alt'></i>&nbsp;&nbsp;Eliminar</button>
-            </div>
-        </div>
-        <!-- Load -->
-        <div *ngIf="!loadCompleted" class="d-flex justify-content-center">
-          <div class="spinner-border  text-danger" ></div>
-        </div>
-        <!-- Listado de clientes -->
-        <div>
-            <div class="col-12">
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>
-                                    <div class="form-check form-check-customer ms-1">
-                                        <input class="form-check-input" type="checkbox" id="ch_all" (click)="selectTenRecords()" [checked]="selectTen">
-                                    </div>
-                                </th>
-                                <th>NIF</th>
-                                <th>NOMBRE *</th>
-                                <th>APELLIDOS *</th>
-                                <th>TELÉFONO</th>
-                                <th>EMAIL</th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor=" let clients of clients.Data | paginate:{itemsPerPage:10, currentPage: nPage} ">
-                                <td>
-                                    <div class="form-check form-check-customer ms-1">
-                                        <input class="form-check-input checks" type="checkbox" [ngModel]="isSelected(clients)" (ngModelChange)="checkedCheckbox(clients)">
-                                    </div>
-                                </td>
-                                <td>{{clients.NIF}}</td>
-                                <td>{{clients.Name}}</td>
-                                <td>{{clients.Lastname}}</td>
-                                <td>{{clients.Phone}}</td>
-                                <td>{{clients.Email}}</td>
-                                <td></td>
-                                <td></td>
-                                <td class="text-right">
-                                    <a type="button" class="btn btn-info rounded-circle" [routerLink]="['/edit-client',clients.CustomerID]"><i class='fas fa-pen fa-lg'></i></a>
-                                    <a type="button" class="btn btn-danger rounded-circle" ><i class='fas fa-trash-alt fa-lg'></i></a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div class="col-11">
-                        <pagination-controls (pageChange)="nPage = $event"></pagination-controls>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12">
-            </div>
-        </div>
-    </section>
+      </div>
+    </div>
+  </div>
 </div>

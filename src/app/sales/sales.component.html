@@ -5,11 +5,7 @@
     <form class="d-flex flex-wrap mx-1">
       <div class="me-3">
         <label class="form-label">Terminal</label>
-        <select
-          class="form-select"
-          name="terminal"
-          [(ngModel)]="terminalVarSearch"
-        >
+        <select class="form-select" name="terminal" [(ngModel)]="terminalVarSearch">
           <option></option>
           <option *ngFor="let terminal of selectSales[0]; index as i">
             {{ terminal }}
@@ -26,11 +22,7 @@
       </div>
       <div class="mx-3">
         <label class="form-label">Tipo de operación</label>
-        <select
-          class="form-select"
-          name="operation"
-          [(ngModel)]="typeVarSearch"
-        >
+        <select class="form-select" name="operation" [(ngModel)]="typeVarSearch">
           <option></option>
           <option *ngFor="let type of selectSales[1]; index as i">
             {{ type }}
@@ -39,11 +31,7 @@
       </div>
       <div class="mx-3">
         <label class="form-label">Nº de documento/Serie</label>
-        <select
-          class="form-select"
-          name="documentN"
-          [(ngModel)]="documentVarSearch"
-        >
+        <select class="form-select" name="documentN" [(ngModel)]="documentVarSearch">
           <option></option>
           <option *ngFor="let document of selectSales[2]; index as i">
             {{ document }}
@@ -51,20 +39,15 @@
         </select>
       </div>
       <div id="searchButtonsDiv" class="ms-5 d-flex overflow-auto">
-        <a type="button" class="btn btn-danger align-self-end"
-          ><i class="fas fa-eraser"></i>
+        <a type="button" class="btn btn-danger align-self-end"><i class="fas fa-eraser"></i>
         </a>
-        <a
-          type="button"
-          class="btn btn-info align-self-end"
-          (click)="searchSales()"
-          ><i class="fas fa-search"></i>&nbsp;&nbsp;Buscar</a
-        >
+        <a type="button" class="btn btn-info align-self-end" (click)="searchSales()"><i
+            class="fas fa-search"></i>&nbsp;&nbsp;Buscar</a>
       </div>
     </form>
   </div>
   <br />
-<!-- Tabla e indicadores -->
+  <!-- Tabla e indicadores -->
   <br />
   <div class="card">
     <div class="card-body">
@@ -75,21 +58,11 @@
         <!-- Indicadores -->
         <div class="col-3 justify-content-end">
           <label for="operationN" class="me-2">Nº operaciones</label>
-          <input
-            type="text"
-            id="inputHeadSales"
-            class="border me-5 bg-customer2 text-customer2 fw-bold text-end"
-            [(ngModel)]="operationN"
-            disabled
-          />
+          <input type="text" id="inputHeadSales" class="border me-5 bg-customer2 text-customer2 fw-bold text-end"
+            [(ngModel)]="operationN" disabled />
           <label for="totalSales" class="me-2">Total</label>
-          <input
-            type="text"
-            id="inputHeadSales1"
-            class="border bg-customer2 text-customer2 fw-bold text-end mx-3"
-            [(ngModel)]="totalSalesString"
-            disabled
-          />
+          <input type="text" id="inputHeadSales1" class="border bg-customer2 text-customer2 fw-bold text-end mx-3"
+            [(ngModel)]="totalSalesString" disabled />
           <button class="btn btn-sm btn-secondary-customer">
             <i class="fa-solid fa-file-csv fa-xl" style="color: #008000"></i>
           </button>
@@ -99,20 +72,12 @@
       <div class="row">
         <div class="col">
           <div class="table-responsive">
-            <table
-              class="table table-hover order-table"
-              data-pagination="true"
-              data-page-size="10"
-            >
+            <table class="table table-hover order-table" data-pagination="true" data-page-size="10">
               <thead class="text-customer">
                 <tr>
                   <th class="text-center">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      [checked]="isAllSelected"
-                      (change)="CheckAll($event)"
-                    />
+                    <input class="form-check-input" type="checkbox" [checked]="isAllSelected"
+                      (change)="CheckAll($event)" />
                   </th>
                   <th class="text-center">Documento</th>
                   <th class="text-center">Tipo</th>
@@ -127,26 +92,20 @@
                   <th></th>
                 </tr>
               </thead>
-              <ng-template #empty
-                ><td colspan="5">
+              <ng-template #empty>
+                <td colspan="5">
                   <b>No existen registros que mostrar</b>
-                </td></ng-template
-              >
+                </td>
+              </ng-template>
               <tbody>
                 <ng-container *ngIf="emptySearch == false; else empty">
-                  <tr
-                    *ngFor="
+                  <tr *ngFor="
                       let sale of sales.data
                         | paginate : { itemsPerPage: 10, currentPage: page };
                       index as i
-                    "
-                  >
+                    ">
                     <td class="text-center align-middle">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        [checked]="isAllSelected"
-                      />
+                      <input class="form-check-input" type="checkbox" [checked]="isAllSelected" />
                     </td>
                     <td class="text-center align-middle" id="massivetransfer">
                       {{ sale.reference }}
@@ -178,17 +137,14 @@
                     </td>
                     <td>
                       <a [routerLink]="">
-                        <i class="fa-solid fa-eye" style="color: #74c0fc"></i
-                      ></a>
+                        <i class="fa-solid fa-eye" style="color: #74c0fc"></i></a>
                     </td>
                   </tr>
                 </ng-container>
               </tbody>
             </table>
             <div class="has-text-centered">
-              <pagination-controls
-                (pageChange)="page = $event"
-              ></pagination-controls>
+              <pagination-controls (pageChange)="page = $event"></pagination-controls>
             </div>
           </div>
         </div>
