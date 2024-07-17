@@ -4,7 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CurrencyPipe } from '@angular/common';
 
 @Component({
-  selector: 'QSC-root',
+  selector: 'DPOSW-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })

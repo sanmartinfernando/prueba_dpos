@@ -4,7 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { SalesInfo } from '../_models/SalesInfo.model';
 
 @Component({
-  selector: 'QSC-sales',
+  selector: 'DPOSW-sales',
   templateUrl: './sales.component.html',
 })
 export class SalesComponent implements OnInit {

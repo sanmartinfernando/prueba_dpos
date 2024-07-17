@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { BalanceDetailId } from 'src/app/_models/BalaceDetailId.model';
 
 @Component({
-  selector: 'QSC-balances-details',
+  selector: 'DPOSW-balances-details',
   templateUrl: './balances-details.component.html',
   styleUrls: []
 })

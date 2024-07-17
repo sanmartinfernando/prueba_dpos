@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { BalanceInfo } from '../_models/BalanceInfo.model';
 
 @Component({
-  selector: 'QSC-balances',
+  selector: 'DPOSW-balances',
   templateUrl: './balances.component.html',
   styleUrls: [],
 })

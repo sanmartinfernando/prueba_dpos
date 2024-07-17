@@ -4,7 +4,7 @@ import { SalesinfoService } from '../_services/salesinfo.service';
 import { SalesInfo } from '../_models/SalesInfo.model';
 
 @Component({
-  selector: 'QSC-clients',
+  selector: 'DPOSW-clients',
   templateUrl: './reports.component.html',
   styleUrls: [],
 })

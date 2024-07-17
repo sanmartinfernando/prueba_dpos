@@ -2,7 +2,7 @@ import { Component, OnInit  } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'QSC-base',
+  selector: 'DPOSW-base',
   templateUrl: './base.component.html',
   styleUrls: ['./base.component.css']
 })

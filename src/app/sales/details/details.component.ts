@@ -10,7 +10,7 @@ import { SalesInfoDetailId } from 'src/app/_models/SalesDetailId.model';
 import { Salesdetailid } from 'src/app/_services/salesdetailid.service';
 
 @Component({
-  selector: 'QSC-details',
+  selector: 'DPOSW-details',
   templateUrl: './details.component.html',
 })
 

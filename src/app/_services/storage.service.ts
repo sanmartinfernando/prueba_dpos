@@ -2,10 +2,8 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { User } from '../_models/user.model';
 import { AuthService } from './auth.service';
+import { StringConstants } from '../_config/string-constants';
 
-const USER_KEY = 'dpos-user';
-const USERNAME_KEY = 'dpos-userName';
-const VALIDATIONDATA_KEY = 'dpos-validation';
 
 @Injectable({
   providedIn: 'root'
@@ -43,11 +41,11 @@ export class StorageService {
 
   setUsername(username: string) {
     this.username = username;
-    window.localStorage.setItem(USERNAME_KEY, username);
+    window.localStorage.setItem(StringConstants.USERNAME_KEY, username);
   }
 
   getUsername() {
-    return window.localStorage.getItem(USERNAME_KEY);
+    return window.localStorage.getItem(StringConstants.USERNAME_KEY);
   }
 
   clean(): void {
@@ -58,8 +56,8 @@ export class StorageService {
   private saveUser(user: User): void {
     if (user != null) {
       this.setUsername(user.email);
-      window.localStorage.removeItem(USER_KEY);
-      window.localStorage.setItem(USER_KEY, JSON.stringify(user));//
+      window.localStorage.removeItem(StringConstants.USER_KEY);
+      window.localStorage.setItem(StringConstants.USER_KEY, JSON.stringify(user));//
     }
     this.userInfo.next(user);
   }
@@ -72,7 +70,7 @@ export class StorageService {
     }
   }
   public getUser(): any {
-    const user = window.localStorage.getItem(USER_KEY);
+    const user = window.localStorage.getItem(StringConstants.USER_KEY);
     if (user) {
       return JSON.parse(user);
     }
@@ -81,7 +79,7 @@ export class StorageService {
   }
 
   public isLoggedIn(): boolean {
-    const user = window.localStorage.getItem(USER_KEY);
+    const user = window.localStorage.getItem(StringConstants.USER_KEY);
     console.log(user);
     if (user) {
       return true;
@@ -99,11 +97,11 @@ export class StorageService {
 
 
   public getValidationValue(): any {
-    let validationdata = window.localStorage.getItem(VALIDATIONDATA_KEY);
+    let validationdata = window.localStorage.getItem(StringConstants.VALIDATIONDATA_KEY);
     if (validationdata) {
     } else {
       validationdata = this.getGuid();
-      window.localStorage.setItem(VALIDATIONDATA_KEY, validationdata);//
+      window.localStorage.setItem(StringConstants.VALIDATIONDATA_KEY, validationdata);//
     }
     return validationdata;
   }
