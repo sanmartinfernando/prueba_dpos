@@ -8,10 +8,9 @@
         <select
           class="form-select"
           name="terminal"
-          [(ngModel)]="terminalVarSearch"
+          [(ngModel)]="reportVarSearch"
         >
-          <option></option>
-          <option>Impuestos</option>
+          <option selected>Impuestos</option>
           <option>Productos</option>
           <option>Métodos de pago</option>
        <!--    <option *ngFor="let terminal of selectSales[0]; index as i">
@@ -61,17 +60,15 @@
     <div class="card-body">
       <div class="row mb-4">
         <div class="col">
-          <h5><b>Operaciones</b></h5>
+          <h5><b>Resultados de búsqueda</b></h5>
         </div>
         <!-- Descarga -->
-
           <button class="btn btn-sm btn-secondary-customer">
             <i class="fa-solid fa-file-csv fa-xl" style="color: #008000"></i>
           </button>
-
       </div>
-      <!-- Tabla -->
-      <div class="row">
+      <!-- Tabla impuestos-->
+      <div class="row" *ngIf="reportVarSearch=='Impuestos'">
         <div class="col">
           <div class="table-responsive">
             <table
@@ -81,25 +78,126 @@
             >
               <thead class="text-customer">
                 <tr>
-                  <th class="text-center">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      [checked]="isAllSelected"
-                      (change)="CheckAll($event)"
-                    />
-                  </th>
-                  <th class="text-center">Documento</th>
-                  <th class="text-center">Tipo</th>
-                  <th class="text-center">Fecha</th>
-                  <th class="text-center">Terminal</th>
-                  <th class="text-center">Factura verificada</th>
-                  <th class="text-center">Subtotal</th>
-                  <th class="text-center">Descuentos</th>
-                  <th class="text-center">Base imponible</th>
-                  <th class="text-center">Cuota de IVA</th>
+                  <th class="text-center">Impuesto</th>
+                  <th class="text-center">Valor (%)</th>
+                  <th class="text-center">Base</th>
+                  <th class="text-center">Cuota</th>
+                </tr>
+              </thead>
+              <ng-template #empty
+                ><td colspan="5">
+                  <b>No existen registros que mostrar</b>
+                </td></ng-template
+              >
+              <tbody>
+                <ng-container *ngIf="emptySearch == false; else empty">
+                  <ng-container *ngFor=" let report of sales.data; index as i">
+                  <tr
+                    *ngFor="
+                      let taxes of report.orderTaxes
+                        | paginate : { itemsPerPage: 10, currentPage: page };
+                      index as i
+                    "
+                  >
+
+                    <td class="text-center align-middle" id="massivetransfer">
+                      {{ taxes.name }}
+                    </td>
+                    <td class="text-center align-middle">
+                      {{ taxes.value/100 | currency : "Eur" : "€" }}
+                    </td>
+                    <td class="text-center align-middle">
+                      {{ taxes.base/100 | currency : "Eur" : "€" }}
+                    </td>
+                    <td class="text-center align-middle">
+                      {{ taxes.total/100 | currency : "Eur" : "€" }}
+                    </td>
+                  </tr>
+                </ng-container></ng-container>
+              </tbody>
+            </table>
+            <div class="has-text-centered">
+              <pagination-controls
+                (pageChange)="page = $event"
+              ></pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Tabla productos -->
+      <div class="row" *ngIf="reportVarSearch=='Productos'">
+        <div class="col">
+          <div class="table-responsive">
+            <table
+              class="table table-hover order-table"
+              data-pagination="true"
+              data-page-size="10"
+            >
+              <thead class="text-customer">
+                <tr>
+                  <th class="text-center">Producto</th>
+                  <th class="text-center">Categoría</th>
+                  <th class="text-center">PVP (IVA inc.)</th>
+                  <th class="text-center">Ud. vendidas</th>
                   <th class="text-center">Total</th>
-                  <th></th>
+                </tr>
+              </thead>
+              <ng-template #empty
+                ><td colspan="5">
+                  <b>No existen registros que mostrar</b>
+                </td></ng-template
+              >
+              <tbody>
+                <ng-container *ngIf="emptySearch == false; else empty">
+                  <ng-container *ngFor=" let report of sales.data; index as i">
+                  <tr
+                    *ngFor="
+                      let product of report.orderLines
+                        | paginate : { itemsPerPage: 10, currentPage: page };
+                      index as z
+                    "
+                  >
+                    <td class="text-center align-middle">
+                      {{ product.productName }}
+                    </td>
+                    <td class="text-center align-middle">
+                      {{ product.productId }}
+                    </td>
+                    <td class="text-center align-middle">
+                      {{ product.unitPrice }}
+                    </td>
+                    <td class="text-center align-middle">
+                      {{ product.quantity  }}
+                    </td>
+                    <td class="text-center align-middle">
+                      {{ product.total }}
+                    </td>
+                  </tr>
+                </ng-container></ng-container>
+              </tbody>
+            </table>
+            <div class="has-text-centered">
+              <pagination-controls
+                (pageChange)="page = $event"
+              ></pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Tabla métodos de pago -->
+      <div class="row" *ngIf="reportVarSearch=='Métodos de pago'">
+        <div class="col">
+          <div class="table-responsive">
+            <table
+              class="table table-hover order-table"
+              data-pagination="true"
+              data-page-size="10"
+            >
+              <thead class="text-customer">
+                <tr>
+                  <th class="text-center">Producto</th>
+                  <th class="text-center">% sobre importe total</th>
+                  <th class="text-center">Total</th>
                 </tr>
               </thead>
               <ng-template #empty
@@ -116,13 +214,7 @@
                       index as i
                     "
                   >
-                    <td class="text-center align-middle">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        [checked]="isAllSelected"
-                      />
-                    </td>
+
                     <td class="text-center align-middle" id="massivetransfer">
                       {{ sale.reference }}
                     </td>
@@ -132,34 +224,7 @@
                     <td class="text-center align-middle">
                       {{ sale.createdAt | date : "dd/MM/yyyy hh:mm" }}
                     </td>
-                    <td class="text-center align-middle">
-                      {{ sale.terminalNumber }}
-                    </td>
-                    <td class="text-center align-middle">Verificada</td>
-                    <td class="text-center align-middle">
-                      {{ sale.subTotal }}
-                    </td>
-                    <td class="text-center align-middle">
-                      {{ sale.totalDiscount }}
-                    </td>
-                    <td class="text-center align-middle">
-                      {{ sale.orderTaxes[0].base }}
-                    </td>
-                    <td class="text-center align-middle">
-                      {{ sale.orderTaxes[0].total }}
-                    </td>
-                    <td class="text-center align-middle">
-                      {{ sale.total }}
-                    </td>
-                    <td>
-                      <span id="detailsticket" class="align-center">
-                        <a
-                        [routerLink]="code"
 
-                          (click)="sendSalesDetails(sale.orderId)"
-                          ><i class="fa-solid fa-eye" style="color: #74c0fc"></i></a
-                        ></span>
-                    </td>
                   </tr>
                 </ng-container>
               </tbody>

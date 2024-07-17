@@ -119,7 +119,7 @@
                       {{ balance.salesCount}}
                     </td>
                     <td class="text-center align-middle">
-                      {{ balance.outCount }}
+                      {{ balance.outCount | currency : "Eur" : "€"  }}
                     </td>
                     <td class="text-center align-middle">
                       Base

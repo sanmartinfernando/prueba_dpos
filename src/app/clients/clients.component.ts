@@ -29,7 +29,7 @@ export class ClientsComponent implements OnInit{
 
   //Parámetros de búsqueda
   terminalVarSearch: string = '';
-  reportVarSearch: string = '';
+  reportVarSearch: string = 'Impuestos';
   searchCounter: boolean = false;
   sinceDate: string;
   sinceDateMilli: number;

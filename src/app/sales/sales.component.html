@@ -169,19 +169,19 @@
                     </td>
                     <td class="text-center align-middle">Verificada</td>
                     <td class="text-center align-middle">
-                      {{ sale.subTotal }}
+                      {{ sale.subTotal/100 | currency : "Eur" : "€" }}
                     </td>
                     <td class="text-center align-middle">
-                      {{ sale.totalDiscount }}
+                      {{ sale.totalDiscount/100 | currency : "Eur" : "€" }}
                     </td>
                     <td class="text-center align-middle">
-                      {{ sale.orderTaxes[0].base }}
+                      {{ sale.orderTaxes[0].base/100 | currency : "Eur" : "€" }}
                     </td>
                     <td class="text-center align-middle">
-                      {{ sale.orderTaxes[0].total }}
+                      {{ sale.orderTaxes[0].total/100 | currency : "Eur" : "€" }}
                     </td>
                     <td class="text-center align-middle">
-                      {{ sale.total }}
+                      {{ sale.total/100 | currency : "Eur" : "€" }}
                     </td>
                     <td>
                       <span id="detailsticket" class="align-center">
