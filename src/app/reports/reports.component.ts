@@ -1,16 +1,14 @@
 import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
-import { EncryptionService } from './../_services/encryption.service';
-import { SalesinfoService } from './../_services/salesinfo.service';
+import { EncryptionService } from '../_services/encryption.service';
+import { SalesinfoService } from '../_services/salesinfo.service';
 import { SalesInfo } from '../_models/SalesInfo.model';
 
 @Component({
   selector: 'QSC-clients',
-  templateUrl: './clients.component.html',
-  styleUrls: ['./clients.component.css']
+  templateUrl: './reports.component.html',
+  styleUrls: [],
 })
-
-export class ClientsComponent implements OnInit{
-
+export class ReportsComponent implements OnInit {
   constructor(
     private SalesinfoService: SalesinfoService,
     private EncryptionService: EncryptionService
@@ -26,9 +24,17 @@ export class ClientsComponent implements OnInit{
   searchParams0: string = '';
   code: string;
   loadCompleted: boolean = false;
+  paymentmethods = [];
+  paymentcheck: boolean = false;
+  totalCard: number = 0;
+  totalCash: number = 0;
+  countCard: number = 0;
+  countCash: number = 0;
+  percenCard: number = 0;
+  percenCash: number = 0;
 
   //Parámetros de búsqueda
-  terminalVarSearch: string = '';
+  terminalVarSearch: string = null;
   reportVarSearch: string = 'Impuestos';
   searchCounter: boolean = false;
   sinceDate: string;
@@ -37,13 +43,8 @@ export class ClientsComponent implements OnInit{
   tilDateMilli: number;
   today: Date = new Date();
   todayMilli = this.today.getTime();
-  varSearch: string = '';
+  varSearch: string = null;
   emptySearch: boolean = false;
-
-  // Checkboxes
-  selectedIndices: number[] = [];
-  isAllSelected: boolean = false;
-  counter = 0;
 
   ngOnInit(): void {
     this.SalesinfoService.GetSalesInfo(this.size, this.searchParams0).subscribe(
@@ -136,6 +137,43 @@ export class ClientsComponent implements OnInit{
             this.selectSales[2].splice(i, 1);
           }
         }
+
+        //Procesado datos informe métodos de pago
+
+        for (let i = 0; i < this.sales.data.length; i++) {
+          for (let z = 0; z < this.sales.data[i].orderPayments.length; z++) {
+            //Construir array tipo de metodos de pago
+            if (i==0 && z==0){
+            this.paymentmethods.push(this.sales.data[i].orderPayments[z].name);
+            } else {
+              for(let w = 0; w < this.paymentmethods.length; w++){
+                if(this.paymentmethods[w]==this.sales.data[i].orderPayments[z].name){
+                  this.paymentcheck=true;
+                }
+              }
+              if(this.paymentcheck==false){
+                this.paymentmethods.push(this.sales.data[i].orderPayments[z].name);
+              }
+            }
+            //Calcular totales y contadores de cada tipo de pago
+            if (this.sales.data[i].orderPayments[z].name == 'Efectivo') {
+              this.totalCash =
+                this.totalCash + this.sales.data[i].orderPayments[z].amount;
+              this.countCash = this.countCash+1;
+            }
+            if (this.sales.data[i].orderPayments[z].name == 'Tarjeta') {
+              this.totalCard =
+                this.totalCard + this.sales.data[i].orderPayments[z].amount;
+                this.countCard = this.countCard+1;
+            }
+          }
+        }
+
+        //Calcular % de cada tipo de pago
+
+        this.percenCard = (this.countCard*100)/(this.countCard+this.countCash)
+        this.percenCash = (this.countCash*100)/(this.countCard+this.countCash)
+
       }
     );
     this.loadCompleted = true;
@@ -144,6 +182,10 @@ export class ClientsComponent implements OnInit{
   //Método de búsqueda
 
   searchSales() {
+    if( this.terminalVarSearch == ""){
+      this.terminalVarSearch=null;
+    }
+    this.loadCompleted=false;
     //Obtención variables fechas
     this.sinceDate = (<HTMLInputElement>(
       document.getElementById('sinceDate')
@@ -157,7 +199,7 @@ export class ClientsComponent implements OnInit{
 
     //Parámetros de búsqueda activos
     //Terminal
-    if (this.terminalVarSearch.length > 0) {
+    if (this.terminalVarSearch != null) {
       if (this.searchCounter == false) {
         this.searchCounter = true;
       }
@@ -221,7 +263,6 @@ export class ClientsComponent implements OnInit{
     this.varSearch = this.varSearch + ']}';
     this.searchCounter = false;
 
-
     //Llamada API
     this.SalesinfoService.GetSalesInfo(this.size, this.varSearch).subscribe(
       (sale) => {
@@ -235,26 +276,9 @@ export class ClientsComponent implements OnInit{
           this.totalSales = this.totalSales + Number(this.sales.data[i].total);
         }
         this.totalSalesString = this.totalSales.toString() + ' €';
+        this.loadCompleted=true;
       }
     );
-  }
-
-  //Checkboxes
-
-  CheckAll(event: any) {
-    if (event.target.checked) {
-      this.selectedIndices = [];
-      for (let i = 0; i < this.sales.data.length; i++) {
-        let globalIndex = i;
-        this.selectedIndices.push(globalIndex);
-      }
-      this.counter = this.selectedIndices.length;
-      this.isAllSelected = true;
-    } else {
-      this.selectedIndices = [];
-      this.counter = 0;
-      this.isAllSelected = false;
-    }
   }
 
   //Encriptación

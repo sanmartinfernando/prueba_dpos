@@ -47,11 +47,6 @@
           name="documentN"
           [(ngModel)]="documentVarSearch"
         >
-          <!-- <option></option>
-          <option *ngFor="let document of selectSales[2]; index as i">
-            {{ document }}
-          </option>
-        </input>-->
       </div>
       <div id="searchButtonsDiv" class="ms-5 d-flex overflow-auto">
        <button type="reset" class="btn btn-danger align-self-end"> <a type="button"
@@ -99,11 +94,11 @@
         </div>
       </div>
         <!-- Load -->
-        <div *ngIf="!loadCompleted" class="d-flex justify-content-center">
+        <div *ngIf="loadCompleted==false" class="d-flex justify-content-center">
           <div class="spinner-border  text-danger" ></div>
         </div>
       <!-- Tabla -->
-      <div class="row">
+      <div *ngIf="loadCompleted==true" class="row">
         <div class="col">
           <div class="table-responsive">
             <table

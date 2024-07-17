@@ -2,14 +2,13 @@ import { Balancedetailid } from './../../_services/balancedetailid.service';
 import { EncryptionService } from './../../_services/encryption.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Data, Router, Routes } from '@angular/router';
-import { DataServices } from '../data.services';
 import { HttpClient } from '@angular/common/http';
 import { BalanceDetailId } from 'src/app/_models/BalaceDetailId.model';
 
 @Component({
   selector: 'QSC-balances-details',
   templateUrl: './balances-details.component.html',
-  styleUrls: ['./balances-details.component.css']
+  styleUrls: []
 })
 export class BalancesDetailsComponent implements OnInit{
 
@@ -28,7 +27,7 @@ export class BalancesDetailsComponent implements OnInit{
   index:any;
 
 
-  constructor(private route:ActivatedRoute ,private qsacess: DataServices, private httpClient: HttpClient, private EncryptionService: EncryptionService, private paramsUrl: ActivatedRoute, private BalancedetailidService: Balancedetailid) {
+  constructor(private route:ActivatedRoute , private httpClient: HttpClient, private EncryptionService: EncryptionService, private paramsUrl: ActivatedRoute, private BalancedetailidService: Balancedetailid) {
   }
 
   ngOnInit(): void {

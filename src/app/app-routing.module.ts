@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ClientsComponent } from './clients/clients.component';
+import { ReportsComponent } from './reports/reports.component';
 import { HomeComponent } from './home/home.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SalesComponent } from './sales/sales.component';
@@ -10,7 +10,6 @@ import { UnauthorizedComponent } from './common/unauthorized/unauthorized.compon
 import { BalancesComponent } from './balances/balances.component';
 import { DetailsComponent } from './sales/details/details.component';
 import { BalancesDetailsComponent } from './balances/balances-details/balances-details.component';
-import { EditClientComponent } from './clients/edit-client/edit-client.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -20,11 +19,10 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'dashboard', component: DashboardComponent},
   { path: 'sales', component: SalesComponent },
-  { path: 'clients', component: ClientsComponent },
+  { path: 'clients', component: ReportsComponent },
   { path: 'balances', component: BalancesComponent },
   { path: 'details/:id', component:DetailsComponent },
   { path: 'balances-details/:id',component: BalancesDetailsComponent},
-  { path: 'edit-client/:id', component: EditClientComponent }
 ];
 
 @NgModule({

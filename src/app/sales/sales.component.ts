@@ -3,7 +3,6 @@ import { SalesinfoService } from './../_services/salesinfo.service';
 import { Component, OnInit } from '@angular/core';
 import { SalesInfo } from '../_models/SalesInfo.model';
 
-
 @Component({
   selector: 'QSC-sales',
   templateUrl: './sales.component.html',
@@ -26,7 +25,7 @@ export class SalesComponent implements OnInit {
   loadCompleted: boolean = false;
 
   //Parámetros de búsqueda
-  terminalVarSearch: string = '';
+  terminalVarSearch: string = null;
   searchCounter: boolean = false;
   sinceDate: string;
   sinceDateMilli: number;
@@ -34,9 +33,10 @@ export class SalesComponent implements OnInit {
   tilDateMilli: number;
   today: Date = new Date();
   todayMilli = this.today.getTime();
-  typeVarSearch: string = '';
-  documentVarSearch: string = '';
-  varSearch: string = '';
+  typeVarSearch: string = null;
+  translatedTypeVarSearch= new Array (3);
+  documentVarSearch: string = null;
+  varSearch: string = null;
   emptySearch: boolean = false;
 
   // Checkboxes
@@ -90,9 +90,8 @@ export class SalesComponent implements OnInit {
               ) {
                 counterSelect = true;
               }
-
               if (counterSelect == false && z == i) {
-                this.selectSales[1][i] = this.sales.data[i].type;
+               this.selectSales[1][i] = this.sales.data[i].type;
               }
             }
             counterSelect = false;
@@ -135,6 +134,22 @@ export class SalesComponent implements OnInit {
             this.selectSales[2].splice(i, 1);
           }
         }
+        //Traducción tipo de operación
+        /* for (let i = this.selectSales[1].length; i >= 0; i--) {
+          this.translatedTypeVarSearch[i]==this.selectSales[1][i];
+          switch(this.selectSales[1][i]) {
+            case 0:
+              this.selectSales[1][i]="Venta"
+              break;
+            case 2:
+              this.selectSales[1][i]="Devolución"
+              break;
+            case 5:
+              this.selectSales[1][i]="Rectificación"
+          }
+        } */
+
+
       }
     );
     this.loadCompleted = true;
@@ -143,7 +158,13 @@ export class SalesComponent implements OnInit {
   //Método de búsqueda
 
   searchSales() {
+    this.loadCompleted=false;
+    if( this.terminalVarSearch == "" || this.typeVarSearch ==""){
+      this.terminalVarSearch=null;
+      this.typeVarSearch=null;
+    }
     //Obtención variables fechas
+    this.loadCompleted = false;
     this.sinceDate = (<HTMLInputElement>(
       document.getElementById('sinceDate')
     )).value;
@@ -156,7 +177,7 @@ export class SalesComponent implements OnInit {
 
     //Parámetros de búsqueda activos
     //Terminal
-    if (this.terminalVarSearch.length > 0) {
+    if (this.terminalVarSearch != null) {
       if (this.searchCounter == false) {
         this.searchCounter = true;
       }
@@ -216,7 +237,8 @@ export class SalesComponent implements OnInit {
         "'}";
     }
     //Tipo de operación
-    if (this.typeVarSearch.length > 0) {
+    console.log(this.typeVarSearch)
+    if (this.typeVarSearch != null) {
       if (this.searchCounter == false) {
         this.searchCounter = true;
       } else {
@@ -250,7 +272,15 @@ export class SalesComponent implements OnInit {
       }
     }
     //Nº de Documento
-    if (this.documentVarSearch.length > 0) {
+    if (this.documentVarSearch != null) {
+      if (
+        this.documentVarSearch.includes('=') ||
+        this.documentVarSearch.includes('(') ||
+        this.documentVarSearch.includes(')')
+      ) {
+        window.alert('El parámetro de búsqueda no está permitido');
+        return;
+      }
       if (this.searchCounter == false) {
         this.searchCounter = true;
       } else {
@@ -266,11 +296,12 @@ export class SalesComponent implements OnInit {
 
     //Búsqueda vacia
     if (
-      this.terminalVarSearch.length == 0 &&
-      this.sinceDateMilli == 0 &&
-      this.tilDateMilli == 0 &&
-      this.typeVarSearch.length == 0 &&
-      this.documentVarSearch.length == 0
+      this.terminalVarSearch == null &&
+      this.sinceDateMilli == null &&
+      this.tilDateMilli == null &&
+      this.typeVarSearch == null &&
+      this.documentVarSearch == null
+
     ) {
       this.SalesinfoService.GetSalesInfo(
         this.size,
@@ -289,7 +320,6 @@ export class SalesComponent implements OnInit {
     this.varSearch = this.varSearch + ']}';
     this.searchCounter = false;
 
-
     //Llamada API
     this.SalesinfoService.GetSalesInfo(this.size, this.varSearch).subscribe(
       (sale) => {
@@ -303,6 +333,8 @@ export class SalesComponent implements OnInit {
           this.totalSales = this.totalSales + Number(this.sales.data[i].total);
         }
         this.totalSalesString = this.totalSales.toString() + ' €';
+        this.loadCompleted=true;
+        console.log(this.typeVarSearch)
       }
     );
   }

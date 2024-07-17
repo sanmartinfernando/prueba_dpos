@@ -3,7 +3,6 @@ import { EncryptionService } from './../../_services/encryption.service';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SalesService } from '../sales.service';
 import { DatePipe } from '@angular/common';
 import { BalanceId } from 'src/app/_models/BalanceId.model';
 import { SalesInfo } from 'src/app/_models/SalesInfo.model';
@@ -23,7 +22,7 @@ export class DetailsComponent implements OnInit {
     orderId:string;
     loadCompleted:boolean = false;
 
-    constructor(private paramsUrl:ActivatedRoute, private router:Router, private http:HttpClient,private salesService:SalesService,
+    constructor(private paramsUrl:ActivatedRoute, private router:Router, private http:HttpClient,
                 private datePipe: DatePipe, private Salesdetailid:Salesdetailid, private EncryptionService:EncryptionService){
     }
 

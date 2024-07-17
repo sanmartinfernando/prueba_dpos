@@ -3,7 +3,6 @@ import { BalanceinfoService } from './../_services/balanceinfo.service';
 import { Component, OnInit } from '@angular/core';
 import { BaseComponent } from '../common/base/base.component';
 import { Data, Router, Routes } from '@angular/router';
-import { DataServices } from './data.services';
 import { FormControl, FormGroup } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { BalanceInfo } from '../_models/BalanceInfo.model';
@@ -11,7 +10,7 @@ import { BalanceInfo } from '../_models/BalanceInfo.model';
 @Component({
   selector: 'QSC-balances',
   templateUrl: './balances.component.html',
-  styleUrls: ['./balances.component.css'],
+  styleUrls: [],
 })
 export class BalancesComponent implements OnInit {
   // ---------------- Propiedades------------------
@@ -27,9 +26,10 @@ export class BalancesComponent implements OnInit {
   page: number = 0;
   searchParams0: string = '';
   code: string;
+  loadCompleted: boolean = false;
 
   //Parámetros de búsqueda
-  terminalVarSearch: string = '';
+  terminalVarSearch: string = null;
   searchCounter: boolean = false;
   sinceDate: string;
   sinceDateMilli: number;
@@ -37,7 +37,7 @@ export class BalancesComponent implements OnInit {
   tilDateMilli: number;
   today: Date = new Date();
   todayMilli = this.today.getTime();
-  varSearch: string = '';
+  varSearch: string = null;
   emptySearch: boolean = false;
 
   // Checkboxes
@@ -92,6 +92,7 @@ export class BalancesComponent implements OnInit {
         }
       }
     );
+    this.loadCompleted=true;
   }
 
 
@@ -99,6 +100,10 @@ export class BalancesComponent implements OnInit {
   //Método de búsqueda
 
   searchSales() {
+    this.loadCompleted=false;
+    if( this.terminalVarSearch == ""){
+      this.terminalVarSearch=null;
+    }
     //Obtención variables fechas
     this.sinceDate = (<HTMLInputElement>(
       document.getElementById('sinceDate')
@@ -112,8 +117,7 @@ export class BalancesComponent implements OnInit {
 
     //Parámetros de búsqueda activos
     //Terminal
-    if (this.terminalVarSearch.length > 0) {
-      console.log(0);
+    if (this.terminalVarSearch != null) {
       if (this.searchCounter == false) {
         this.searchCounter = true;
       }
@@ -161,7 +165,7 @@ export class BalancesComponent implements OnInit {
 
 
     //Búsqueda vacia
-    if (this.terminalVarSearch.length == 0 && this.sinceDateMilli == 0 && this.tilDateMilli == 0) {
+    if (this.terminalVarSearch!= null && this.sinceDateMilli == 0 && this.tilDateMilli == 0) {
       this.BalanceinfoService.GetBalanceInfo(this.size, this.searchParams0).subscribe(
         (balance) => {
           this.balances = balance;
@@ -193,6 +197,7 @@ export class BalancesComponent implements OnInit {
           this.totalSales = this.totalSales + Number(this.balances.data[i].total);
         }
         this.totalSalesString = this.totalSales.toString() + ' €';
+        this.loadCompleted=true;
       }
     );
   }
