@@ -12,9 +12,7 @@
       <li *ngFor="let page of pages">
         <a class="nav-link m-3 pt-4 d-flex flex-column align-items-center" (click)="titleHeader(page.text)"
           routerLink="/{{ page.code }}" routerLinkActive="active-link" (click)="component(page.code)">
-          <i class="{{ page.icon }}  fa-2xl MT-3"></i><br />{{
-          page.text | translate
-          }}
+          <i class="{{ page.icon }}  fa-2xl MT-3"></i><br />{{page.text | translate}}
         </a>
       </li>
     </ul>
@@ -25,10 +23,10 @@
     <h2 class="float-start pt-3 pb-2">{{ title }}</h2>
     <ul class="navbar-nav float-end">
       <li class="mx-3 nav-item pt-2 pb-2">
-        <a class="nav-link" *ngIf="username; else loginLink" (click)="logOut()" style="cursor: pointer"><i class="fa-solid fa-circle-user"></i>&nbsp;&nbsp;{{
+        <a class="nav-link" *ngIf="username; else loginLink" (click)="logOut()" style="cursor: pointer"><i
+            class="fi fi-rr-user"></i><!--<i class="fa-solid fa-circle-user"></i>-->&nbsp;&nbsp;{{
           username
-          }}&nbsp;&nbsp;<span
-            class="fa-solid fa-arrow-right-from-bracket"></span></a>
+          }}&nbsp;&nbsp;<span class="fa-solid fa-arrow-right-from-bracket"></span></a>
       </li>
       <ng-template #loginLink>
         <li class="mx-3 nav-item">
