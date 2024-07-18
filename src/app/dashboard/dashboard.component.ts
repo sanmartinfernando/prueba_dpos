@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { BalanceId } from '../_models/BalanceId.model';
 
 @Component({
-  selector: 'QSC-dashboard',
+  selector: 'DPOSW-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })

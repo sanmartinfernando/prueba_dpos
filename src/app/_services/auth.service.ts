@@ -6,9 +6,7 @@ import { User } from '../_models/user.model';
 import Helper from '../_helpers/helper';
 import { RestRoutes } from '../_config/rest-routes.config';
 import { LoginRequest } from '../_models/LoginRequest.model';
-
-const TOKEN_KEY = 'dmf-token';
-const USERNAME_KEY = 'dmf-username';
+import { StringConstants } from '../_config/string-constants';
 
 const httpOptions = {
   headers: new HttpHeaders(
@@ -49,11 +47,11 @@ export class AuthService {
       .then(async (result) => {
         console.log(result);
         this.saveToken(result.token);
-        this.saveUserName(result.userName);
+        this.saveUserName(loginRequest.userName);
         let validation = await this.validate();
         console.log(validation);
         var userInfo = new User();
-        userInfo.user = result.userName;
+        userInfo.user = loginRequest.userName;
         this.loginEvent(userInfo);
       });
     return this.getToken(); // llamar al obs de actualizar usuario en todos lados
@@ -87,17 +85,17 @@ export class AuthService {
 
   public saveUserName(username: any): void {
     console.log('save:'+username);
-    window.localStorage.removeItem(USERNAME_KEY);
-    window.localStorage.setItem(USERNAME_KEY, username);//
+    window.localStorage.removeItem(StringConstants.USERNAME_KEY);
+    window.localStorage.setItem(StringConstants.USERNAME_KEY, username);//
   }
 
   public saveToken(token: any): void {
-    window.localStorage.removeItem(TOKEN_KEY);
-    window.localStorage.setItem(TOKEN_KEY, token);//
+    window.localStorage.removeItem(StringConstants.TOKEN_KEY);
+    window.localStorage.setItem(StringConstants.TOKEN_KEY, token);//
   }
 
   public getToken(): string {
-    const token = window.localStorage.getItem(TOKEN_KEY);
+    const token = window.localStorage.getItem(StringConstants.TOKEN_KEY);
     if (token) {
       return token;
     }
@@ -105,7 +103,7 @@ export class AuthService {
   }
 
   public clearToken(): void {
-    window.localStorage.removeItem(TOKEN_KEY);
+    window.localStorage.removeItem(StringConstants.TOKEN_KEY);
   }
 
 }
