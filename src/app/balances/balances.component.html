@@ -38,6 +38,10 @@
     </form>
   </div>
   <br />
+    <!-- Load -->
+    <div *ngIf="loadCompleted==false" class="d-flex justify-content-center" style="position: absolute;left: 50%;">
+      <div class="spinner-border text-danger" ></div>
+    </div>
 <!-- Tabla e indicadores -->
   <br />
   <div class="card">
@@ -51,12 +55,8 @@
             <i class="fa-solid fa-file-csv fa-xl" style="color: #008000"></i>
           </button>
       </div>
-       <!-- Load -->
-       <div *ngIf="loadCompleted==false" class="d-flex justify-content-center">
-        <div class="spinner-border  text-danger" ></div>
-      </div>
       <!-- Tabla -->
-      <div class="row" *ngIf="loadCompleted==true">
+      <div class="row">
         <div class="col">
           <div class="table-responsive" >
             <table

@@ -143,49 +143,58 @@ export class ReportsComponent implements OnInit {
         for (let i = 0; i < this.sales.data.length; i++) {
           for (let z = 0; z < this.sales.data[i].orderPayments.length; z++) {
             //Construir array tipo de metodos de pago
-            if (i==0 && z==0){
-            this.paymentmethods.push(this.sales.data[i].orderPayments[z].name);
+            if (i == 0 && z == 0) {
+              this.paymentmethods.push(
+                this.sales.data[i].orderPayments[z].name
+              );
             } else {
-              for(let w = 0; w < this.paymentmethods.length; w++){
-                if(this.paymentmethods[w]==this.sales.data[i].orderPayments[z].name){
-                  this.paymentcheck=true;
+              for (let w = 0; w < this.paymentmethods.length; w++) {
+                if (
+                  this.paymentmethods[w] ==
+                  this.sales.data[i].orderPayments[z].name
+                ) {
+                  this.paymentcheck = true;
                 }
               }
-              if(this.paymentcheck==false){
-                this.paymentmethods.push(this.sales.data[i].orderPayments[z].name);
+              if (this.paymentcheck == false) {
+                this.paymentmethods.push(
+                  this.sales.data[i].orderPayments[z].name
+                );
               }
             }
             //Calcular totales y contadores de cada tipo de pago
             if (this.sales.data[i].orderPayments[z].name == 'Efectivo') {
               this.totalCash =
                 this.totalCash + this.sales.data[i].orderPayments[z].amount;
-              this.countCash = this.countCash+1;
+              this.countCash = this.countCash + 1;
             }
             if (this.sales.data[i].orderPayments[z].name == 'Tarjeta') {
               this.totalCard =
                 this.totalCard + this.sales.data[i].orderPayments[z].amount;
-                this.countCard = this.countCard+1;
+              this.countCard = this.countCard + 1;
             }
           }
         }
 
         //Calcular % de cada tipo de pago
 
-        this.percenCard = (this.countCard*100)/(this.countCard+this.countCash)
-        this.percenCash = (this.countCash*100)/(this.countCard+this.countCash)
+        this.percenCard =
+          (this.countCard * 100) / (this.countCard + this.countCash);
+        this.percenCash =
+          (this.countCash * 100) / (this.countCard + this.countCash);
 
+        this.loadCompleted = true;
       }
     );
-    this.loadCompleted = true;
   }
 
   //Método de búsqueda
 
   searchSales() {
-    if( this.terminalVarSearch == ""){
-      this.terminalVarSearch=null;
+    if (this.terminalVarSearch == '') {
+      this.terminalVarSearch = null;
     }
-    this.loadCompleted=false;
+    this.loadCompleted = false;
     //Obtención variables fechas
     this.sinceDate = (<HTMLInputElement>(
       document.getElementById('sinceDate')
@@ -276,7 +285,7 @@ export class ReportsComponent implements OnInit {
           this.totalSales = this.totalSales + Number(this.sales.data[i].total);
         }
         this.totalSalesString = this.totalSales.toString() + ' €';
-        this.loadCompleted=true;
+        this.loadCompleted = true;
       }
     );
   }

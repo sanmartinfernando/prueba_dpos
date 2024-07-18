@@ -61,7 +61,11 @@
       </div>
     </form>
   </div>
-  <br />
+ <br />
+  <!-- Load -->
+        <div *ngIf="loadCompleted==false" class="d-flex justify-content-center" style="position: absolute;left: 50%;">
+          <div class="spinner-border text-danger" ></div>
+        </div>
 <!-- Tabla e indicadores -->
   <br />
   <div class="card">
@@ -70,6 +74,7 @@
         <div class="col">
           <h5><b>Operaciones</b></h5>
         </div>
+
         <!-- Indicadores -->
         <div class="col-3 justify-content-end">
           <label for="operationN" class="me-2">Nº operaciones</label>
@@ -93,12 +98,9 @@
           </button>
         </div>
       </div>
-        <!-- Load -->
-        <div *ngIf="loadCompleted==false" class="d-flex justify-content-center">
-          <div class="spinner-border  text-danger" ></div>
-        </div>
+
       <!-- Tabla -->
-      <div *ngIf="loadCompleted==true" class="row">
+      <div  class="row">
         <div class="col">
           <div class="table-responsive">
             <table
@@ -150,11 +152,17 @@
                         [checked]="isAllSelected"
                       />
                     </td>
-                    <td class="text-center align-middle" id="massivetransfer">
+                    <td class="text-center align-middle">
                       {{ sale.reference }}
                     </td>
-                    <td class="text-center align-middle">
-                      {{ sale.type }}
+                    <td class="text-center align-middle" *ngIf="sale.type==0">
+                      Venta
+                    </td>
+                    <td class="text-center align-middle" *ngIf="sale.type==2">
+                      Devolución
+                    </td>
+                    <td class="text-center align-middle" *ngIf="sale.type==5">
+                      Rectificación
                     </td>
                     <td class="text-center align-middle">
                       {{ sale.createdAt | date : "dd/MM/yyyy hh:mm" }}

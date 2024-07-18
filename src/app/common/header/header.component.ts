@@ -9,13 +9,15 @@ import { AuthService } from 'src/app/_services/auth.service';
 @Component({
   selector: 'DPOSW-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css']
+  styleUrls: []
 })
 export class HeaderComponent implements OnInit {
 
     public pages : Page[] = [];
     username: string;
     private authService: AuthService;
+    isLoggedIn: boolean = false;
+
   constructor(private _pagesService: PagesService,private _translationService: LanguageManagerService,
     private storageService: StorageService,public router: Router, private route: ActivatedRoute, private _authService : AuthService){
 
@@ -24,11 +26,16 @@ export class HeaderComponent implements OnInit {
     this.authService = _authService;
   }
   ngOnInit(): void {
-    
+
     this.authService.configObservable.subscribe(user => {
       console.log(user);
       this.username = user.user;
     });
+
+    this.storageService.loggedin$.subscribe(loggedin => this.isLoggedIn=loggedin )
+
+
+    console.log(this.isLoggedIn)
 
   }
 
@@ -37,11 +44,13 @@ export class HeaderComponent implements OnInit {
 
   titleHeader(name){
       this.title=name;
+      this.storageService.updateloggin(this.isLoggedIn);
   }
 
   logOut(){
     this.storageService.clean();
     window.location.reload();
+    this.storageService.updateloggin(this.isLoggedIn);
   }
 
   ngDoCheck() {

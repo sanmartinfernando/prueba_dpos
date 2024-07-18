@@ -90,9 +90,10 @@ export class BalancesComponent implements OnInit {
           }
         }
         }
+        this.loadCompleted=true;
       }
     );
-    this.loadCompleted=true;
+
   }
 
 

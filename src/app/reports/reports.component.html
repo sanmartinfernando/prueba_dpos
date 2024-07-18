@@ -51,6 +51,10 @@
     </form>
   </div>
   <br />
+    <!-- Load -->
+    <div *ngIf="loadCompleted==false" class="d-flex justify-content-center" style="position: absolute;left: 50%;">
+      <div class="spinner-border text-danger" ></div>
+    </div>
 <!-- Tabla e indicadores -->
   <br />
   <div class="card">
@@ -64,16 +68,12 @@
             <i class="fa-solid fa-file-csv fa-xl" style="color: #008000"></i>
           </button>
       </div>
-         <!-- Load -->
-         <div *ngIf="loadCompleted==false" class="d-flex justify-content-center">
-          <div class="spinner-border  text-danger" ></div>
-        </div>
       <!-- Tabla vacia -->
-      <div class="row" *ngIf="reportVarSearch==null && loadCompleted==true">
+      <div class="row" *ngIf="reportVarSearch==null">
         <b>Selecciona un tipo de informe</b>
         </div>
       <!-- Tabla impuestos-->
-      <div class="row" *ngIf="reportVarSearch=='Impuestos' && loadCompleted==true">
+      <div class="row" *ngIf="reportVarSearch=='Impuestos'">
         <div class="col">
           <div class="table-responsive">
             <table
@@ -130,7 +130,7 @@
         </div>
       </div>
       <!-- Tabla productos -->
-      <div class="row" *ngIf="reportVarSearch=='Productos' && loadCompleted==true">
+      <div class="row" *ngIf="reportVarSearch=='Productos'">
         <div class="col">
           <div class="table-responsive">
             <table
@@ -190,7 +190,7 @@
         </div>
       </div>
       <!-- Tabla métodos de pago -->
-      <div class="row" *ngIf="reportVarSearch=='Métodos de pago' && loadCompleted==true">
+      <div class="row" *ngIf="reportVarSearch=='Métodos de pago'">
         <div class="col">
           <div class="table-responsive">
             <table

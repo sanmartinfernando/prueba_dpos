@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { User } from '../_models/user.model';
 import { AuthService } from './auth.service';
 import { StringConstants } from '../_config/string-constants';
@@ -12,7 +12,8 @@ export class StorageService {
 
   private authSuscription!: Subscription;
   public userInfo = new BehaviorSubject<User>(this.getUser());
-
+  private loggedin: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
+  public loggedin$: Observable<boolean>= this.loggedin.asObservable();
 
   username: string = '';
   component: string;
@@ -111,6 +112,10 @@ export class StorageService {
         v = c == 'x' ? r : (r & 0x3 | 0x8);
       return v.toString(16);
     });
+  }
+
+  updateloggin(logginupdated){
+    this.loggedin.next(logginupdated)
   }
 
 }
