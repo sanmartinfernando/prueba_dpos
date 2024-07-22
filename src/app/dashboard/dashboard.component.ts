@@ -1,7 +1,7 @@
 import { BalanceidService } from './../_services/balanceid.service';
 import { Component, OnInit } from '@angular/core';
 import { BalanceId } from '../_models/BalanceId.model';
-import { StorageService } from '../_services/storage.service';
+
 
 @Component({
   selector: 'DPOSW-dashboard',
@@ -10,19 +10,19 @@ import { StorageService } from '../_services/storage.service';
 })
 export class DashboardComponent implements OnInit{
 
-  constructor(private BalanceidService: BalanceidService, private StorageService: StorageService) { }
+  constructor(private BalanceidService: BalanceidService) { }
 
 id: string= "abbed063-33a2-4eff-a603-aef57d856eab";
 balances: BalanceId;
 ticketAverage: number;
-isLoggedIn: boolean = false;
+isLoggedIn: boolean = true;
 
 
 
 
 ngOnInit(): void {
 
-  this.StorageService.loggedin$.subscribe(loggedin => this.isLoggedIn=loggedin )
+
 
   this.BalanceidService.GetBalanceId(this.id).subscribe((balance) => {
     this.balances = balance;
@@ -35,7 +35,12 @@ ngOnInit(): void {
 
 
 
-  });
+  }/* ,
+  (error) => {
+    if (error.status == 401) {
+      this.isLoggedIn = false;
+    };
+  } */);
 
 
 

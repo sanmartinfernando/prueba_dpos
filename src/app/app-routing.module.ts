@@ -10,19 +10,20 @@ import { UnauthorizedComponent } from './common/unauthorized/unauthorized.compon
 import { BalancesComponent } from './balances/balances.component';
 import { DetailsComponent } from './sales/details/details.component';
 import { BalancesDetailsComponent } from './balances/balances-details/balances-details.component';
+import { AuthGuard } from './_guard/auth.guard';
 
 const routes: Routes = [
-  { path: '', component: HomeComponent },
-  { path: 'home', component: HomeComponent },
+  { path: '', component: HomeComponent, title:"DPOS"    },
+  { path: 'home', component: HomeComponent, title:"DPOS"   },
   { path: 'error', component: ErrorComponent },
   { path: 'unauthorized', component: UnauthorizedComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'dashboard', component: DashboardComponent},
-  { path: 'sales', component: SalesComponent },
-  { path: 'clients', component: ReportsComponent },
-  { path: 'balances', component: BalancesComponent },
-  { path: 'details/:id', component:DetailsComponent },
-  { path: 'balances-details/:id',component: BalancesDetailsComponent},
+  { path: 'login', component: LoginComponent, title:"DPOS - Login"    },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard], title:"DPOS - Dashboard"},
+  { path: 'sales', component: SalesComponent, canActivate: [AuthGuard], title:"DPOS - Ventas"},
+  { path: 'reports', component: ReportsComponent, canActivate: [AuthGuard], title:"DPOS - Informes"  },
+  { path: 'balances', component: BalancesComponent, canActivate: [AuthGuard], title:"DPOS - Cierres"  },
+  { path: 'details/:id', component:DetailsComponent, canActivate: [AuthGuard], title:"DPOS - Ventas"  },
+  { path: 'balances-details/:id',component: BalancesDetailsComponent, canActivate: [AuthGuard], title:"DPOS - Cierres" },
 ];
 
 @NgModule({

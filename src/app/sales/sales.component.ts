@@ -25,7 +25,7 @@ export class SalesComponent implements OnInit {
   searchParams0: string = '';
   code: string;
   loadCompleted: boolean = false;
-  isLoggedIn: boolean = false;
+  isLoggedIn: boolean = true;
 
   //Parámetros de búsqueda
   terminalVarSearch: string = null;
@@ -49,7 +49,6 @@ export class SalesComponent implements OnInit {
   counter = 0;
 
   ngOnInit(): void {
-    this.StorageService.loggedin$.subscribe(loggedin => this.isLoggedIn=loggedin )
     this.SalesinfoService.GetSalesInfo(this.size, this.searchParams0).subscribe(
       (sale) => {
         this.sales = sale;
@@ -57,7 +56,7 @@ export class SalesComponent implements OnInit {
         for (let i = 0; i < this.sales.data.length; i++) {
           this.totalSales = this.totalSales + Number(this.sales.data[i].total);
         }
-        this.totalSales =  this.totalSales/100;
+        this.totalSales = this.totalSales / 100;
         this.totalSalesString = this.totalSales.toString() + ' €';
 
         for (let i = 0; i < 3; i++) {
@@ -142,21 +141,26 @@ export class SalesComponent implements OnInit {
         }
         //Traducción tipo de operación
         for (let i = this.selectSales[1].length; i >= 0; i--) {
-          this.translatedTypeVarSearch[i]=this.selectSales[1][i];
-          switch(this.selectSales[1][i]) {
+          this.translatedTypeVarSearch[i] = this.selectSales[1][i];
+          switch (this.selectSales[1][i]) {
             case 0:
-              this.selectSales[1][i]="Venta"
+              this.selectSales[1][i] = 'Venta';
               break;
             case 2:
-              this.selectSales[1][i]="Devolución"
+              this.selectSales[1][i] = 'Devolución';
               break;
             case 5:
-              this.selectSales[1][i]="Rectificación"
+              this.selectSales[1][i] = 'Rectificación';
           }
-        };
+        }
 
         this.loadCompleted = true;
-      }
+      }/* ,
+      (error) => {
+        if (error.status == 401) {
+          this.isLoggedIn = false;
+        };
+      } */
     );
   }
 
@@ -268,15 +272,15 @@ export class SalesComponent implements OnInit {
         }
         this.varSearch = this.varSearch + ']}';
       } else {
-        switch(this.typeVarSearch) {
-          case "Venta":
-            this.selTransTypeVarSearch=0;
+        switch (this.typeVarSearch) {
+          case 'Venta':
+            this.selTransTypeVarSearch = 0;
             break;
-          case "Devolución":
-            this.selTransTypeVarSearch=2;
+          case 'Devolución':
+            this.selTransTypeVarSearch = 2;
             break;
-          case "Rectificación":
-            this.selTransTypeVarSearch=5;
+          case 'Rectificación':
+            this.selTransTypeVarSearch = 5;
         }
         this.emptySearch = false;
         this.varSearch =
@@ -346,7 +350,7 @@ export class SalesComponent implements OnInit {
         for (let i = 0; i < this.sales.data.length; i++) {
           this.totalSales = this.totalSales + Number(this.sales.data[i].total);
         }
-        this.totalSales =  this.totalSales/100;
+        this.totalSales = this.totalSales / 100;
         this.totalSalesString = this.totalSales.toString() + ' €';
         this.loadCompleted = true;
         console.log(this.typeVarSearch);

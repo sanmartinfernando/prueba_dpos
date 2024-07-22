@@ -1,10 +1,6 @@
 import { EncryptionService } from './../_services/encryption.service';
 import { BalanceinfoService } from './../_services/balanceinfo.service';
 import { Component, OnInit } from '@angular/core';
-import { BaseComponent } from '../common/base/base.component';
-import { Data, Router, Routes } from '@angular/router';
-import { FormControl, FormGroup } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { BalanceInfo } from '../_models/BalanceInfo.model';
 
 @Component({
@@ -27,6 +23,7 @@ export class BalancesComponent implements OnInit {
   searchParams0: string = '';
   code: string;
   loadCompleted: boolean = false;
+  isLoggedIn:boolean = true;
 
   //Parámetros de búsqueda
   terminalVarSearch: string = null;
@@ -91,7 +88,12 @@ export class BalancesComponent implements OnInit {
         }
         }
         this.loadCompleted=true;
-      }
+      }/* ,
+      (error) => {
+        if (error.status == 401) {
+          this.isLoggedIn = false;
+        };
+      } */
     );
 
   }

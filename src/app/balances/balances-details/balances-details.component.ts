@@ -13,6 +13,7 @@ import { BalanceDetailId } from 'src/app/_models/BalaceDetailId.model';
 export class BalancesDetailsComponent implements OnInit{
 
   balances : BalanceDetailId;
+  isLoggedIn:boolean = true;
 
   nPage:number=1;
   nRecords:number;
@@ -33,13 +34,16 @@ export class BalancesDetailsComponent implements OnInit{
   ngOnInit(): void {
     let iddecode = this.EncryptionService.decode(this.paramsUrl.snapshot.params['id']);
     this.balancesId = this.EncryptionService.decrypt(iddecode);
-    console.log(this.balancesId)
     this.BalancedetailidService.GetBalanceDetail(this.balancesId).subscribe(ticketBalances=>{
-      console.log(ticketBalances);
       this.balances=ticketBalances;
-      console.log(this.balances);
       this.loadCompleted = true;
-  });
+  }/* ,
+  (error) => {
+    if (error.status == 401) {
+      this.isLoggedIn = false;
+    };
+  } */
+);
 }
 
 

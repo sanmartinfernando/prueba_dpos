@@ -26,6 +26,7 @@ import { DatePipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { NgxChartsModule }from '@swimlane/ngx-charts';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AuthGuard } from './_guard/auth.guard';
 
 
 @NgModule({ declarations: [
@@ -61,7 +62,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         DatePipe,
         provideHttpClient(withInterceptorsFromDi()),
         NgxChartsModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        AuthGuard
 
     ] })
 export class AppModule { }

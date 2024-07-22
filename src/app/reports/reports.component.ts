@@ -32,6 +32,7 @@ export class ReportsComponent implements OnInit {
   countCash: number = 0;
   percenCard: number = 0;
   percenCash: number = 0;
+  isLoggedIn: boolean = true;
 
   //Parámetros de búsqueda
   terminalVarSearch: string = null;
@@ -184,7 +185,12 @@ export class ReportsComponent implements OnInit {
           (this.countCash * 100) / (this.countCard + this.countCash);
 
         this.loadCompleted = true;
-      }
+      }/* ,
+      (error) => {
+        if (error.status == 401) {
+          this.isLoggedIn = false;
+        };
+      } */
     );
   }
 

@@ -1,4 +1,3 @@
-import { StorageService } from 'src/app/_services/storage.service';
 import { EncryptionService } from './../../_services/encryption.service';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
@@ -19,25 +18,24 @@ export class DetailsComponent implements OnInit {
     ticket:SalesInfoDetailId;
     orderId:string;
     loadCompleted:boolean = false;
-    isLoggedIn: boolean = false;
+    isLoggedIn: boolean = true;
 
     constructor(private paramsUrl:ActivatedRoute, private router:Router, private http:HttpClient,
-                private datePipe: DatePipe, private Salesdetailid:Salesdetailid, private EncryptionService:EncryptionService,
-                private StorageService: StorageService){
+                private datePipe: DatePipe, private Salesdetailid:Salesdetailid, private EncryptionService:EncryptionService){
     }
 
     ngOnInit(): void {
-        this.StorageService.loggedin$.subscribe(loggedin => this.isLoggedIn=loggedin );
-        console.log(this.isLoggedIn)
         let iddecode = this.EncryptionService.decode(this.paramsUrl.snapshot.params['id']);
         this.orderId = this.EncryptionService.decrypt(iddecode);
-        console.log(this.orderId)
         this.Salesdetailid.GetSalesDetail(this.orderId).subscribe(ticketVentas=>{
-          console.log(ticketVentas);
           this.ticket=ticketVentas;
-          console.log(this.ticket);
           this.loadCompleted = true;
-      });
+      }/* ,
+      (error) => {
+        if (error.status == 401) {
+          this.isLoggedIn = false;
+        };
+      } */);
     }
 
 /*----------Funciones---------*/
