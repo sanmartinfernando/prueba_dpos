@@ -1,7 +1,9 @@
+import { ArqueoXService } from './../_services/arqueo-x.service';
 import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { EncryptionService } from '../_services/encryption.service';
-import { SalesinfoService } from '../_services/salesinfo.service';
-import { SalesInfo } from '../_models/SalesInfo.model';
+import { ArqueoX } from '../_models/ArqueoX.model';
+import { SalesReport } from '../_models/SalesReport.model';
+import { SalesReportService } from '../_services/sales-report.service';
 
 @Component({
   selector: 'DPOSW-clients',
@@ -10,12 +12,16 @@ import { SalesInfo } from '../_models/SalesInfo.model';
 })
 export class ReportsComponent implements OnInit {
   constructor(
-    private SalesinfoService: SalesinfoService,
-    private EncryptionService: EncryptionService
+    private EncryptionService: EncryptionService,
+    private ArqueoXService: ArqueoXService,
+    private SalesReportService: SalesReportService
   ) {}
 
   size: number = 2147483647;
-  sales: SalesInfo;
+  sales: ArqueoX;
+  salesReports: SalesReport;
+  indexProduct;
+  arraySalesRports;
   selectSales = new Array(3);
   operationN: number;
   totalSales: number = 0;
@@ -39,32 +45,25 @@ export class ReportsComponent implements OnInit {
   reportVarSearch: string = 'Impuestos';
   searchCounter: boolean = false;
   sinceDate: string;
-  sinceDateMilli: number;
+  sinceDateMilli: number = 0;
   tilDate: string;
-  tilDateMilli: number;
+  tilDateMilli: number = 1721599200000;
   today: Date = new Date();
   todayMilli = this.today.getTime();
   varSearch: string = null;
   emptySearch: boolean = false;
 
   ngOnInit(): void {
-    this.SalesinfoService.GetSalesInfo(this.size, this.searchParams0).subscribe(
-      (sale) => {
-        this.sales = sale;
-        this.operationN = this.sales.data.length;
-        for (let i = 0; i < this.sales.data.length; i++) {
-          this.totalSales = this.totalSales + Number(this.sales.data[i].total);
-        }
-        this.totalSalesString = this.totalSales.toString() + ' €';
-
-        for (let i = 0; i < 3; i++) {
-          this.selectSales[i] = new Array(this.sales.data.length);
-        }
-
+    this.ArqueoXService.GetArqueoX(
+      this.sinceDateMilli,
+      this.tilDateMilli
+    ).subscribe(
+      (arqueo) => {
+        this.sales = arqueo;
         //Creación de arrays del select del formulario de búsqueda
         //Terminal
 
-        for (let i = 0; i < this.sales.data.length; i++) {
+        /* for (let i = 0; i < this.sales.data.length; i++) {
           let counterSelect: boolean = false;
           if (i == 0) {
             this.selectSales[0][i] = this.sales.data[i].terminalNumber;
@@ -81,70 +80,22 @@ export class ReportsComponent implements OnInit {
               }
             }
             counterSelect = false;
-          }
-          //Tipo de operación
-          if (i == 0) {
-            this.selectSales[1][i] = this.sales.data[i].type;
-          } else {
-            for (let z = 0; z <= i; z++) {
-              if (
-                this.selectSales[1][z] == this.sales.data[i].type ||
-                counterSelect == true
-              ) {
-                counterSelect = true;
-              }
+          } */
 
-              if (counterSelect == false && z == i) {
-                this.selectSales[1][i] = this.sales.data[i].type;
-              }
-            }
-            counterSelect = false;
-          }
-          //Nº de documento
-          if (i == 0) {
-            this.selectSales[2][i] = this.sales.data[i].reference;
-          } else {
-            for (let z = 0; z <= i; z++) {
-              if (
-                this.selectSales[2][z] == this.sales.data[i].reference ||
-                counterSelect == true
-              ) {
-                counterSelect = true;
-              }
-
-              if (counterSelect == false && z == i) {
-                this.selectSales[2][i] = this.sales.data[i].reference;
-              }
-            }
-            counterSelect = false;
-          }
-        }
         //Eliminación espacios en blanco de arrays
         //Terminal
-        for (let i = this.sales.data.length - 1; i >= 0; i--) {
+        /* for (let i = this.sales.data.length - 1; i >= 0; i--) {
           if (this.selectSales[0][i] == null) {
             this.selectSales[0].splice(i, 1);
           }
-        }
-        //Tipo de operación
-        for (let i = this.sales.data.length - 1; i >= 0; i--) {
-          if (this.selectSales[1][i] == null) {
-            this.selectSales[1].splice(i, 1);
-          }
-        }
-        //Nº de documento
-        for (let i = this.sales.data.length - 1; i >= 0; i--) {
-          if (this.selectSales[2][i] == null) {
-            this.selectSales[2].splice(i, 1);
-          }
-        }
+        } */
 
         //Procesado datos informe métodos de pago
-
+        /*
         for (let i = 0; i < this.sales.data.length; i++) {
-          for (let z = 0; z < this.sales.data[i].orderPayments.length; z++) {
-            //Construir array tipo de metodos de pago
-            if (i == 0 && z == 0) {
+          for (let z = 0; z < this.sales.data[i].orderPayments.length; z++) { */
+        //Construir array tipo de metodos de pago
+        /* if (i == 0 && z == 0) {
               this.paymentmethods.push(
                 this.sales.data[i].orderPayments[z].name
               );
@@ -162,9 +113,9 @@ export class ReportsComponent implements OnInit {
                   this.sales.data[i].orderPayments[z].name
                 );
               }
-            }
-            //Calcular totales y contadores de cada tipo de pago
-            if (this.sales.data[i].orderPayments[z].name == 'Efectivo') {
+            } */
+        //Calcular totales y contadores de cada tipo de pago
+        /*  if (this.sales.data[i].orderPayments[z].name == 'Efectivo') {
               this.totalCash =
                 this.totalCash + this.sales.data[i].orderPayments[z].amount;
               this.countCash = this.countCash + 1;
@@ -175,23 +126,30 @@ export class ReportsComponent implements OnInit {
               this.countCard = this.countCard + 1;
             }
           }
-        }
+        } */
 
         //Calcular % de cada tipo de pago
 
-        this.percenCard =
+        /*  this.percenCard =
           (this.countCard * 100) / (this.countCard + this.countCash);
         this.percenCash =
-          (this.countCash * 100) / (this.countCard + this.countCash);
+          (this.countCash * 100) / (this.countCard + this.countCash); */
 
         this.loadCompleted = true;
-      }/* ,
+      } /* ,
       (error) => {
         if (error.status == 401) {
           this.isLoggedIn = false;
         };
       } */
     );
+    this.SalesReportService.GetSalesReport(
+      this.sinceDateMilli,
+      this.tilDateMilli
+    ).subscribe((salesReport) => {
+      this.indexProduct = Object.values(salesReport.aggregations);
+      this.loadCompleted = true;
+    });
   }
 
   //Método de búsqueda
@@ -279,21 +237,43 @@ export class ReportsComponent implements OnInit {
     this.searchCounter = false;
 
     //Llamada API
-    this.SalesinfoService.GetSalesInfo(this.size, this.varSearch).subscribe(
-      (sale) => {
-        this.sales = sale;
-        if (sale.data.length <= 0) {
-          this.emptySearch = true;
+    if (
+      this.reportVarSearch == 'Impuestos' ||
+      this.reportVarSearch == 'Métodos de pago'
+    ) {
+      this.ArqueoXService.GetArqueoX(
+        this.sinceDateMilli,
+        this.tilDateMilli
+      ).subscribe(
+        (sale) => {
+          this.sales = sale;
+          if (sale.balanceLines.length <= 0) {
+            this.emptySearch = true;
+          }
+          this.loadCompleted = true;
+        },
+        (error) => {
+          if (error.status == 404) {
+            this.emptySearch = true;
+            this.loadCompleted = true;
+          }
         }
-        this.operationN = this.sales.data.length;
-        this.totalSales = 0;
-        for (let i = 0; i < this.sales.data.length; i++) {
-          this.totalSales = this.totalSales + Number(this.sales.data[i].total);
-        }
-        this.totalSalesString = this.totalSales.toString() + ' €';
+      );
+    } else {
+      this.SalesReportService.GetSalesReport(
+        this.sinceDateMilli,
+        this.tilDateMilli
+      ).subscribe((salesReport) => {
+        this.indexProduct = Object.values(salesReport.aggregations);
         this.loadCompleted = true;
-      }
-    );
+      },
+      (error) => {
+        if (error.status == 404) {
+          this.emptySearch = true;
+          this.loadCompleted = true;
+        }
+      });
+    }
   }
 
   //Encriptación

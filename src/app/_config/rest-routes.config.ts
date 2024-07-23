@@ -30,4 +30,8 @@ export const RestRoutes = {
   SALES_DETAILS:`api/Orders/`,
   BALANCES_INFO:`api/Balances?size=`,
   BALANCES_DETAILS:`api/Balances/`,
+  ARQUEO_X:`api/Balances/generate/arqueo-x?fromDate=`,
+  ARQUEO_X2:`&toDate=`,
+  SALES_REPORT:`api/Orders/generate/sales-report?fromDate=`,
+  SALES_REPORT2:`&toDate=`,
 }
