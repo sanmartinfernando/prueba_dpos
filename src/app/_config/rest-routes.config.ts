@@ -34,4 +34,5 @@ export const RestRoutes = {
   ARQUEO_X2:`&toDate=`,
   SALES_REPORT:`api/Orders/generate/sales-report?fromDate=`,
   SALES_REPORT2:`&toDate=`,
+  TERMINAL_LIST:`api/commerces/1125/Terminals`,
 }

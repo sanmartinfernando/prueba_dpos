@@ -1,8 +1,10 @@
+import { TerminalListService } from './../_services/terminal-list.service';
 import { StorageService } from './../_services/storage.service';
 import { EncryptionService } from './../_services/encryption.service';
 import { SalesinfoService } from './../_services/salesinfo.service';
 import { Component, OnInit } from '@angular/core';
 import { SalesInfo } from '../_models/SalesInfo.model';
+import { TerminalList } from '../_models/TerminalList.model';
 
 @Component({
   selector: 'DPOSW-sales',
@@ -12,11 +14,12 @@ export class SalesComponent implements OnInit {
   constructor(
     private SalesinfoService: SalesinfoService,
     private EncryptionService: EncryptionService,
-    private StorageService: StorageService
+    private TerminalListService: TerminalListService
   ) {}
 
   size: number = 2147483647;
   sales: SalesInfo;
+  terminals: TerminalList;
   selectSales = new Array(3);
   operationN: number;
   totalSales: number = 0;
@@ -155,13 +158,19 @@ export class SalesComponent implements OnInit {
         }
 
         this.loadCompleted = true;
-      }/* ,
+      } /* ,
       (error) => {
         if (error.status == 401) {
           this.isLoggedIn = false;
         };
       } */
     );
+    //Conexión con Wsenrollment
+    /* this.TerminalListService.GetTerminalList().subscribe(
+      (terminal) => {(this.terminals = terminal)
+        console.log(terminal)
+      }
+    ); */
   }
 
   //Método de búsqueda
