@@ -21,6 +21,7 @@ export class SalesComponent implements OnInit {
   sales: SalesInfo;
   terminals: TerminalList;
   selectSales = new Array(3);
+  salesTicketBai = new Array;
   operationN: number;
   totalSales: number = 0;
   totalSalesString: string;
@@ -29,6 +30,7 @@ export class SalesComponent implements OnInit {
   code: string;
   loadCompleted: boolean = false;
   isLoggedIn: boolean = true;
+  Math = Math;
 
   //Parámetros de búsqueda
   terminalVarSearch: string = null;
@@ -158,12 +160,36 @@ export class SalesComponent implements OnInit {
         }
 
         this.loadCompleted = true;
+
+        this.salesTicketBai = []
+
+        for( let i=0; i<= this.sales.data.length; i++){
+          if(this.sales.data[i].orderTicketBai != null){
+            if (this.sales.data[i].orderTicketBai.status == '00' && this.sales.data[i].orderTicketBai.warns.length <= 0) {
+            this.salesTicketBai[i]=0
+          }
+          }
+          if(this.sales.data[i].orderTicketBai != null){
+            if (this.sales.data[i].orderTicketBai.status == '00' && this.sales.data[i].orderTicketBai.warns.length > 0) {
+            this.salesTicketBai[i]=0
+          }
+          }
+          if(this.sales.data[i].orderTicketBai != null){
+            if (this.sales.data[i].orderTicketBai.status == '01') {
+            this.salesTicketBai[i]=0
+          }
+        }
+        }
+
+
       } /* ,
       (error) => {
         if (error.status == 401) {
           this.isLoggedIn = false;
         };
       } */
+
+
     );
     //Conexión con Wsenrollment
     /* this.TerminalListService.GetTerminalList().subscribe(
@@ -171,6 +197,11 @@ export class SalesComponent implements OnInit {
         console.log(terminal)
       }
     ); */
+
+    //Estados ticketBai
+
+
+
   }
 
   //Método de búsqueda
@@ -362,7 +393,29 @@ export class SalesComponent implements OnInit {
         this.totalSales = this.totalSales / 100;
         this.totalSalesString = this.totalSales.toString() + ' €';
         this.loadCompleted = true;
-        console.log(this.typeVarSearch);
+
+        //Estado TicketBai
+
+        this.salesTicketBai = []
+
+        for( let i=0; i<= this.sales.data.length; i++){
+          if(this.sales.data[i].orderTicketBai != null){
+            if (this.sales.data[i].orderTicketBai.status == '00' && this.sales.data[i].orderTicketBai.warns.length <= 0) {
+            this.salesTicketBai[i]=0
+          }
+          }
+          if(this.sales.data[i].orderTicketBai != null){
+            if (this.sales.data[i].orderTicketBai.status == '00' && this.sales.data[i].orderTicketBai.warns.length > 0) {
+            this.salesTicketBai[i]=0
+          }
+          }
+          if(this.sales.data[i].orderTicketBai != null){
+            if (this.sales.data[i].orderTicketBai.status == '01') {
+            this.salesTicketBai[i]=0
+          }
+        }
+        }
+
       }
     );
   }
@@ -391,4 +444,7 @@ export class SalesComponent implements OnInit {
     this.code = this.EncryptionService.encryptData(id);
     this.code = '/details/' + this.EncryptionService.encode(this.code);
   }
+
+
+
 }

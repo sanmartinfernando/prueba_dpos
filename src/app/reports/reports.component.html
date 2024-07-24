@@ -110,13 +110,13 @@
                       {{ taxes.itemName }}
                     </td>
                     <td class="text-center align-middle">
-                      {{ taxes.itemValue/100}}
+                      {{ taxes.itemValue/(Math.pow(10, taxes.decimals))}}
                     </td>
                     <td class="text-center align-middle">
-                      {{ taxes.base/100 | currency : "Eur" : "€" }}
+                      {{ taxes.base/(Math.pow(10, taxes.decimals)) | currency : "Eur" : "€" }}
                     </td>
                     <td class="text-center align-middle">
-                      {{ taxes.total/100 | currency : "Eur" : "€" }}
+                      {{ taxes.total/(Math.pow(10, taxes.decimals)) | currency : "Eur" : "€" }}
                     </td>
                   </ng-container>
                   </tr>
@@ -222,7 +222,7 @@
                       {{ paymentmethod.percentage + " %"}}
                     </td>
                     <td class="text-center align-middle">
-                      {{ paymentmethod.total/100 | currency : "Eur" : "€" }}
+                      {{ paymentmethod.total/ (Math.pow(10, paymentmethod.decimals)) | currency : "Eur" : "€" }}
                     </td>
                   </ng-container>
                   </tr>

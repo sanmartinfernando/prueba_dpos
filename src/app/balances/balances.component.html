@@ -121,7 +121,7 @@
                       {{ balance.finishedAt | date : "dd/MM/yyyy hh:mm" }}
                     </td>
                     <td class="text-center align-middle">
-                      {{ balance.salesCount}}
+                      {{ balance.salesCount + balance.refundsCount + balance.rectifyCount}}
                     </td>
                     <td class="text-center align-middle">
                       {{ balance.outCount | currency : "Eur" : "€"  }}

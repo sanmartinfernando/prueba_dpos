@@ -39,6 +39,7 @@ export class ReportsComponent implements OnInit {
   percenCard: number = 0;
   percenCash: number = 0;
   isLoggedIn: boolean = true;
+  Math = Math;
 
   //Parámetros de búsqueda
   terminalVarSearch: string = null;

@@ -47,12 +47,12 @@
           class="form-select"
           name="documentN"
           [(ngModel)]="documentVarSearch"
-        >
+        />
       </div>
       <div id="searchButtonsDiv" class="ms-5 d-flex overflow-auto">
-       <button type="reset" class="btn btn-danger align-self-end"> <a type="button"
-          ><i class="fas fa-eraser"></i>
-        </a></button>
+        <button type="reset" class="btn btn-danger align-self-end">
+          <a type="button"><i class="fas fa-eraser"></i> </a>
+        </button>
         <a
           type="button"
           class="btn btn-info align-self-end"
@@ -62,12 +62,16 @@
       </div>
     </form>
   </div>
- <br />
+  <br />
   <!-- Load -->
-        <div *ngIf="loadCompleted==false" class="d-flex justify-content-center" style="position: absolute;left: 50%;">
-          <div class="spinner-border text-danger" ></div>
-        </div>
-<!-- Tabla e indicadores -->
+  <div
+    *ngIf="loadCompleted == false"
+    class="d-flex justify-content-center"
+    style="position: absolute; left: 50%"
+  >
+    <div class="spinner-border text-danger"></div>
+  </div>
+  <!-- Tabla e indicadores -->
   <br />
   <div class="card">
     <div class="card-body">
@@ -101,7 +105,7 @@
       </div>
 
       <!-- Tabla -->
-      <div  class="row">
+      <div class="row">
         <div class="col">
           <div class="table-responsive">
             <table
@@ -156,13 +160,13 @@
                     <td class="text-center align-middle">
                       {{ sale.reference }}
                     </td>
-                    <td class="text-center align-middle" *ngIf="sale.type==0">
+                    <td class="text-center align-middle" *ngIf="sale.type == 0">
                       Venta
                     </td>
-                    <td class="text-center align-middle" *ngIf="sale.type==2">
+                    <td class="text-center align-middle" *ngIf="sale.type == 2">
                       Devolución
                     </td>
-                    <td class="text-center align-middle" *ngIf="sale.type==5">
+                    <td class="text-center align-middle" *ngIf="sale.type == 5">
                       Rectificación
                     </td>
                     <td class="text-center align-middle">
@@ -171,30 +175,48 @@
                     <td class="text-center align-middle">
                       {{ sale.terminalNumber }}
                     </td>
-                    <td class="text-center align-middle">Verificada</td>
+                    <td
+                      class="text-center align-middle"
+                      *ngIf="sale.orderTicketBai == null"
+                    >
+                      <i class="fa-solid fa-qrcode"></i> Pendiente de enviar
+                    </td>
+                    <td
+                      class="text-center align-middle"
+                      *ngIf="salesTicketBai[i] == 0"
+                    >
+                      <i class="fa-solid fa-qrcode"></i> Enviado y aceptado
+                    </td>
+
                     <td class="text-center align-middle">
-                      {{ sale.subTotal/100 | currency : "Eur" : "€" }}
+                      {{ sale.subTotal / (Math.pow(10, sale.decimals)) | currency : "Eur" : "€" }}
                     </td>
                     <td class="text-center align-middle">
-                      {{ sale.totalDiscount/100 | currency : "Eur" : "€" }}
+                      {{ sale.totalDiscount / (Math.pow(10, sale.decimals)) | currency : "Eur" : "€" }}
                     </td>
                     <td class="text-center align-middle">
-                      {{ sale.orderTaxes[0].base/100 | currency : "Eur" : "€" }}
+                      {{
+                        sale.orderTaxes[0].base / (Math.pow(10, sale.orderTaxes[0].decimals)) | currency : "Eur" : "€"
+                      }}
                     </td>
                     <td class="text-center align-middle">
-                      {{ sale.orderTaxes[0].total/100 | currency : "Eur" : "€" }}
+                      {{
+                        sale.orderTaxes[0].total / (Math.pow(10, sale.orderTaxes[0].decimals)) | currency : "Eur" : "€"
+                      }}
                     </td>
                     <td class="text-center align-middle">
-                      {{ sale.total/100 | currency : "Eur" : "€" }}
+                      {{ sale.total / (Math.pow(10, sale.decimals)) | currency : "Eur" : "€" }}
                     </td>
                     <td>
                       <span id="detailsticket" class="align-center">
                         <a
-                        [routerLink]="code"
-
+                          [routerLink]="code"
                           (click)="sendSalesDetails(sale.orderId)"
-                          ><i class="fa-solid fa-eye" style="color: #74c0fc"></i></a
-                        ></span>
+                          ><i
+                            class="fa-solid fa-eye"
+                            style="color: #74c0fc"
+                          ></i></a
+                      ></span>
                     </td>
                   </tr>
                 </ng-container>
