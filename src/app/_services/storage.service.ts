@@ -11,7 +11,7 @@ import { StringConstants } from '../_config/string-constants';
 export class StorageService {
 
   private authSuscription!: Subscription;
-  public userInfo = new BehaviorSubject<User>(this.getUser());
+  public userInfo = new BehaviorSubject(this.getUser());
   private loggedin: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
   public loggedin$: Observable<boolean>= this.loggedin.asObservable();
 
@@ -20,10 +20,11 @@ export class StorageService {
 
   constructor(private authService: AuthService) {
     this.authSuscription = this.authService.configObservable.subscribe(user => {
+      console.log('xxxxxxxxxxxxxxxxxxxxxxxx');
+      console.log(user);
       this.saveUser(user);
     });
   }
-
   set(key: string, item: object) {
     localStorage.setItem(key, JSON.stringify(item));
   }
@@ -72,9 +73,13 @@ export class StorageService {
   }
   public getUser(): any {
     const user = window.localStorage.getItem(StringConstants.USER_KEY);
+    console.log(StringConstants.USER_KEY);
+    console.log(user);
+
     if (user) {
       return JSON.parse(user);
     }
+    console.log('bbb');
 
     return null;
   }

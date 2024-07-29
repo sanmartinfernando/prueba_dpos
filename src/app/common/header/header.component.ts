@@ -22,17 +22,24 @@ export class HeaderComponent implements OnInit {
     private storageService: StorageService,public router: Router, private route: ActivatedRoute, private _authService : AuthService){
 
     this.pages=_pagesService.pages;
-    this.username = this.storageService.getUsername();
+    //this.username = this.storageService.getUsername();
     this.authService = _authService;
   }
   ngOnInit(): void {
 
-    this.authService.configObservable.subscribe(user => {
-      console.log(user);
-      this.username = user.user;
-    });
 
-    this.storageService.loggedin$.subscribe(loggedin => this.isLoggedIn=loggedin )
+    this.storageService.userInfo.subscribe(user =>{
+      console.log('this.storageService.userInfo.subscribe');
+      console.log(user);
+      if(user !== undefined && user != null){
+        this.isLoggedIn = true;
+        this.username = user.user;
+      }else{
+        this.isLoggedIn = false;
+      }
+
+    });
+   // this.storageService.loggedin$.subscribe(loggedin => this.isLoggedIn=loggedin )
 
 
     console.log(this.isLoggedIn)
@@ -44,7 +51,7 @@ export class HeaderComponent implements OnInit {
 
   titleHeader(name){
       this.title=name;
-      this.storageService.updateloggin(this.isLoggedIn);
+      //this.storageService.updateloggin(this.isLoggedIn);
   }
 
   logOut(){

@@ -124,7 +124,7 @@
                       {{ balance.salesCount + balance.refundsCount + balance.rectifyCount}}
                     </td>
                     <td class="text-center align-middle">
-                      {{ balance.outCount | currency : "Eur" : "€"  }}
+                      {{ mismatch[i]| currency : "Eur" : "€"  }}
                     </td>
                     <td class="text-center align-middle">
                       Base

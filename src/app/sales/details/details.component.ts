@@ -10,47 +10,62 @@ import { Salesdetailid } from 'src/app/_services/salesdetailid.service';
   selector: 'DPOSW-details',
   templateUrl: './details.component.html',
 })
-
 export class DetailsComponent implements OnInit {
+  /*---------Propiedades--------*/
 
-    /*---------Propiedades--------*/
+  ticket: SalesInfoDetailId;
+  orderId: string;
+  loadCompleted: boolean = false;
+  isLoggedIn: boolean = true;
+  Math = Math;
+  salesTicketBai;
 
-    ticket:SalesInfoDetailId;
-    orderId:string;
-    loadCompleted:boolean = false;
-    isLoggedIn: boolean = true;
+  constructor(
+    private paramsUrl: ActivatedRoute,
+    private router: Router,
+    private http: HttpClient,
+    private datePipe: DatePipe,
+    private Salesdetailid: Salesdetailid,
+    private EncryptionService: EncryptionService
+  ) {}
 
-    constructor(private paramsUrl:ActivatedRoute, private router:Router, private http:HttpClient,
-                private datePipe: DatePipe, private Salesdetailid:Salesdetailid, private EncryptionService:EncryptionService){
-    }
-
-    ngOnInit(): void {
-        let iddecode = this.EncryptionService.decode(this.paramsUrl.snapshot.params['id']);
-        this.orderId = this.EncryptionService.decrypt(iddecode);
-        this.Salesdetailid.GetSalesDetail(this.orderId).subscribe(ticketVentas=>{
-          this.ticket=ticketVentas;
-          this.loadCompleted = true;
-      }/* ,
+  ngOnInit(): void {
+    let iddecode = this.EncryptionService.decode(
+      this.paramsUrl.snapshot.params['id']
+    );
+    this.orderId = this.EncryptionService.decrypt(iddecode);
+    this.Salesdetailid.GetSalesDetail(this.orderId).subscribe(
+      (ticketVentas) => {
+        this.ticket = ticketVentas;
+        this.salesTicketBai = [];
+        if (this.ticket.orderTicketBai != null) {
+          if (
+            this.ticket.orderTicketBai.status == '00' &&
+            this.ticket.orderTicketBai.warns.length <= 0
+          ) {
+            this.salesTicketBai = this.ticket.orderTicketBai.ticketBaiId;
+          }
+        }
+        this.loadCompleted = true;
+      } /* ,
       (error) => {
         if (error.status == 401) {
           this.isLoggedIn = false;
         };
-      } */);
+      } */
+    );
+  }
+
+  /*----------Funciones---------*/
+
+  //Calcular valores totales de Orderlines.Subtotal y OrderTaxes.Base
+  calculateTotal(orders: any[], propertyName: string): number {
+    let total = 0;
+
+    for (let calculate of orders) {
+      total += calculate[propertyName] / 100;
     }
 
-/*----------Funciones---------*/
-
-    //Calcular valores totales de Orderlines.Subtotal y OrderTaxes.Base
-    calculateTotal(orders: any[], propertyName:string): number{
-        let total = 0;
-
-        for (let calculate of orders) {
-        total += calculate[propertyName] / 100;
-        }
-
-        return total;
-    }
-
-
+    return total;
+  }
 }
-

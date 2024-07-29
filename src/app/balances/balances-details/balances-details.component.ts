@@ -14,12 +14,12 @@ export class BalancesDetailsComponent implements OnInit{
 
   balances : BalanceDetailId;
   isLoggedIn:boolean = true;
-
   nPage:number=1;
   nRecords:number;
   itemTypeTax = 1;
   itemTypeTax2 = 2;
   itemTypeTax3 = 3;
+  Math = Math;
 
   loadCompleted: boolean = false;
   element = true;
