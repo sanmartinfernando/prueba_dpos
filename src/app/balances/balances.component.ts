@@ -1,3 +1,4 @@
+import { StorageService } from 'src/app/_services/storage.service';
 import { EncryptionService } from './../_services/encryption.service';
 import { BalanceinfoService } from './../_services/balanceinfo.service';
 import { Component, OnInit } from '@angular/core';
@@ -11,7 +12,7 @@ import { BalanceInfo } from '../_models/BalanceInfo.model';
 export class BalancesComponent implements OnInit {
   // ---------------- Propiedades------------------
 
-  constructor(private BalanceinfoService: BalanceinfoService, private EncryptionService: EncryptionService) {}
+  constructor(private BalanceinfoService: BalanceinfoService, private EncryptionService: EncryptionService, private StorageService: StorageService) {}
 
   size: number = 2147483647;
   balances: BalanceInfo;
@@ -82,12 +83,13 @@ export class BalancesComponent implements OnInit {
         }
         }
         this.loadCompleted=true;
-      }/* ,
+      },
       (error) => {
         if (error.status == 401) {
           this.isLoggedIn = false;
+          this.StorageService.clean();
         };
-      } */
+      }
     );
 
   }
@@ -184,6 +186,12 @@ export class BalancesComponent implements OnInit {
         }
         console.log(this.emptySearch);
         this.loadCompleted=true;
+      },
+      (error) => {
+        if (error.status == 401) {
+          this.isLoggedIn = false;
+          this.StorageService.clean();
+        };
       }
     );
   }

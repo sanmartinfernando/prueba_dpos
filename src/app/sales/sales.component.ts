@@ -1,5 +1,5 @@
+import { StorageService } from 'src/app/_services/storage.service';
 import { TerminalListService } from './../_services/terminal-list.service';
-import { StorageService } from './../_services/storage.service';
 import { EncryptionService } from './../_services/encryption.service';
 import { SalesinfoService } from './../_services/salesinfo.service';
 import { Component, OnInit } from '@angular/core';
@@ -14,7 +14,8 @@ export class SalesComponent implements OnInit {
   constructor(
     private SalesinfoService: SalesinfoService,
     private EncryptionService: EncryptionService,
-    private TerminalListService: TerminalListService
+    private TerminalListService: TerminalListService,
+    private StorageService: StorageService
   ) {}
 
   size: number = 2147483647;
@@ -183,12 +184,13 @@ export class SalesComponent implements OnInit {
         }
 
 
-      } /* ,
+      },
       (error) => {
         if (error.status == 401) {
           this.isLoggedIn = false;
+          this.StorageService.clean();
         };
-      } */
+      }
 
 
     );
@@ -376,7 +378,13 @@ export class SalesComponent implements OnInit {
           this.totalSales = this.totalSales + Number(this.sales.data[i].total);
         }
         this.totalSalesString = this.totalSales.toString() + ' €';
-      });
+      },
+      (error) => {
+        if (error.status == 401) {
+          this.isLoggedIn = false;
+          this.StorageService.clean();
+        };
+      } );
     }
 
     //Cierre y reseteo de parámetros
@@ -421,6 +429,12 @@ export class SalesComponent implements OnInit {
         }
         }
 
+      },
+      (error) => {
+        if (error.status == 401) {
+          this.isLoggedIn = false;
+          this.StorageService.clean();
+        };
       }
     );
   }

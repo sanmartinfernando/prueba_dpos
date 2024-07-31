@@ -1,3 +1,4 @@
+import { StorageService } from 'src/app/_services/storage.service';
 import { ArqueoXService } from './../_services/arqueo-x.service';
 import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { EncryptionService } from '../_services/encryption.service';
@@ -14,7 +15,8 @@ export class ReportsComponent implements OnInit {
   constructor(
     private EncryptionService: EncryptionService,
     private ArqueoXService: ArqueoXService,
-    private SalesReportService: SalesReportService
+    private SalesReportService: SalesReportService,
+    private StorageService: StorageService
   ) {}
 
   size: number = 2147483647;
@@ -35,12 +37,11 @@ export class ReportsComponent implements OnInit {
   isLoggedIn: boolean = true;
   Math = Math;
   totalUnits: number = 0;
-  totalUnitsValor: number= 0;
-  totalBase: number= 0;
-  totalCuote: number= 0;
-  totalPercentage: number= 0;
-  totalValuePercentage: number= 0;
-
+  totalUnitsValor: number = 0;
+  totalBase: number = 0;
+  totalCuote: number = 0;
+  totalPercentage: number = 0;
+  totalValuePercentage: number = 0;
 
   //Parámetros de búsqueda
   terminalVarSearch: string = null;
@@ -64,16 +65,33 @@ export class ReportsComponent implements OnInit {
         this.sales = arqueo;
         //Calculo de indicadores totales informes
 
-        for (let i=0; i<= this.sales.balanceLines.length; i++ ) {
-          if (this.sales.balanceLines[i].itemName.substring(0,3) == 'IVA'){
-            this.totalBase = this.totalBase+(this.sales.balanceLines[i].base/(Math.pow(10, this.sales.balanceLines[i].decimals)))
-            this.totalCuote = this.totalCuote+(this.sales.balanceLines[i].total/(Math.pow(10, this.sales.balanceLines[i].decimals)))
+        for (let i = 0; i <= this.sales.balanceLines.length; i++) {
+          if (this.sales.balanceLines[i].itemName.substring(0, 3) == 'IVA') {
+            this.totalBase =
+              this.totalBase +
+              this.sales.balanceLines[i].base /
+                Math.pow(10, this.sales.balanceLines[i].decimals);
+            this.totalCuote =
+              this.totalCuote +
+              this.sales.balanceLines[i].total /
+                Math.pow(10, this.sales.balanceLines[i].decimals);
           }
-          if (this.sales.balanceLines[i].itemName.substring(0,3) == 'Efe' || this.sales.balanceLines[i].itemName.substring(0,3) == 'Tar' || this.sales.balanceLines[i].itemName.substring(0,3) == 'Val' || this.sales.balanceLines[i].itemName.substring(0,3) == 'Vir' || this.sales.balanceLines[i].itemName.substring(0,3) == 'Otr' || this.sales.balanceLines[i].itemName.substring(0,3) == 'Bon' || this.sales.balanceLines[i].itemName.substring(0,3) == 'Rec'){
-            this.totalPercentage = this.totalPercentage+(this.sales.balanceLines[i].percentage)
-            this.totalValuePercentage = this.totalValuePercentage+(this.sales.balanceLines[i].total/(Math.pow(10, this.sales.balanceLines[i].decimals)))
+          if (
+            this.sales.balanceLines[i].itemName.substring(0, 3) == 'Efe' ||
+            this.sales.balanceLines[i].itemName.substring(0, 3) == 'Tar' ||
+            this.sales.balanceLines[i].itemName.substring(0, 3) == 'Val' ||
+            this.sales.balanceLines[i].itemName.substring(0, 3) == 'Vir' ||
+            this.sales.balanceLines[i].itemName.substring(0, 3) == 'Otr' ||
+            this.sales.balanceLines[i].itemName.substring(0, 3) == 'Bon' ||
+            this.sales.balanceLines[i].itemName.substring(0, 3) == 'Rec'
+          ) {
+            this.totalPercentage =
+              this.totalPercentage + this.sales.balanceLines[i].percentage;
+            this.totalValuePercentage =
+              this.totalValuePercentage +
+              this.sales.balanceLines[i].total /
+                Math.pow(10, this.sales.balanceLines[i].decimals);
           }
-
         }
 
         //Creación de arrays del select del formulario de búsqueda
@@ -152,12 +170,13 @@ export class ReportsComponent implements OnInit {
           (this.countCash * 100) / (this.countCard + this.countCash); */
 
         this.loadCompleted = true;
-      } /* ,
+      },
       (error) => {
         if (error.status == 401) {
           this.isLoggedIn = false;
-        };
-      } */
+          this.StorageService.clean();
+        }
+      }
     );
     this.SalesReportService.GetSalesReport(
       this.sinceDateMilli,
@@ -168,9 +187,11 @@ export class ReportsComponent implements OnInit {
 
       //Calculo indices totales productos
 
-      for (let i=0; i<= this.indexProduct.length; i++ ) {
-          this.totalUnits = this.totalUnits+(this.indexProduct[i].units/(Math.pow(10, 3)))
-          this.totalUnitsValor = this.totalUnitsValor+(this.indexProduct[i].total/(Math.pow(10, 8)))
+      for (let i = 0; i <= this.indexProduct.length; i++) {
+        this.totalUnits =
+          this.totalUnits + this.indexProduct[i].units / Math.pow(10, 3);
+        this.totalUnitsValor =
+          this.totalUnitsValor + this.indexProduct[i].total / Math.pow(10, 8);
       }
     });
   }
@@ -286,16 +307,24 @@ export class ReportsComponent implements OnInit {
       this.SalesReportService.GetSalesReport(
         this.sinceDateMilli,
         this.tilDateMilli
-      ).subscribe((salesReport) => {
-        this.indexProduct = Object.values(salesReport.aggregations);
-        this.loadCompleted = true;
-      },
-      (error) => {
-        if (error.status == 404) {
-          this.emptySearch = true;
+      ).subscribe(
+        (salesReport) => {
+          this.indexProduct = Object.values(salesReport.aggregations);
           this.loadCompleted = true;
+        },
+        (error) => {
+          if (error.status == 404) {
+            this.emptySearch = true;
+            this.loadCompleted = true;
+          }
+          if (error.status == 401){
+          this.isLoggedIn = false;
+          this.StorageService.clean();
         }
-      });
+      }
+
+
+      );
     }
   }
 

@@ -5,6 +5,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Data, Router, Routes } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { BalanceDetailId } from 'src/app/_models/BalaceDetailId.model';
+import { StorageService } from 'src/app/_services/storage.service';
 
 @Component({
   selector: 'DPOSW-balances-details',
@@ -34,7 +35,8 @@ export class BalancesDetailsComponent implements OnInit{
     private EncryptionService: EncryptionService,
     private paramsUrl: ActivatedRoute,
     private BalancedetailidService: Balancedetailid,
-    private DownloadPDFService: DownloadPDFService) {
+    private DownloadPDFService: DownloadPDFService,
+    private StorageService: StorageService) {
   }
 
   ngOnInit(): void {
@@ -43,12 +45,13 @@ export class BalancesDetailsComponent implements OnInit{
     this.BalancedetailidService.GetBalanceDetail(this.balancesId).subscribe(ticketBalances=>{
       this.balances=ticketBalances;
       this.loadCompleted = true;
-  }/* ,
+  },
   (error) => {
     if (error.status == 401) {
       this.isLoggedIn = false;
+      this.StorageService.clean();
     };
-  } */
+  }
 );
 }
 

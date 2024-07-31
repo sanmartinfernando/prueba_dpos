@@ -231,17 +231,14 @@
           </div>
         </div>
         <div class="row px-2 pb-2 pt-3" *ngIf="salesTicketBai.length > 0">
-          <div class="col text-start">
+          <div class="text-start">
             <label id="ticket_bai" class="text-bold"
-              ><b>TicketBAI:</b> {{ salesTicketBai }}</label
+              ><b>TicketBAI:</b> {{ salesTicketBai[0] }}</label
             >
           </div>
-          <div class="col text-start">
-            <label id="ticket_bai" class="text-bold"
-              > {{ salesTicketBai }}</label
-            >
+          <div class="text-start">
+          <qrcode [qrdata]="salesTicketBai[1]" [width]="200" [errorCorrectionLevel]="'M'"></qrcode>
           </div>
-
         </div>
       </div>
     </div>

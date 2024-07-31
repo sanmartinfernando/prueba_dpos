@@ -27,7 +27,7 @@ import { RouterModule } from '@angular/router';
 import { NgxChartsModule }from '@swimlane/ngx-charts';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AuthGuard } from './_guard/auth.guard';
-import { NgxQRCodeModule } from '@techiediaries/ngx-qrcode';
+import { QRCodeModule } from 'angularx-qrcode';
 
 
 @NgModule({ declarations: [
@@ -57,7 +57,7 @@ import { NgxQRCodeModule } from '@techiediaries/ngx-qrcode';
         RouterModule,
         NgxChartsModule,
         BrowserAnimationsModule,
-
+        QRCodeModule
       ],
         providers: [
         httpInterceptorProviders,

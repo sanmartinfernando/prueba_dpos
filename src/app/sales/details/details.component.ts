@@ -1,3 +1,4 @@
+import { StorageService } from 'src/app/_services/storage.service';
 import { EncryptionService } from './../../_services/encryption.service';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
@@ -31,7 +32,8 @@ export class DetailsComponent implements OnInit {
     private http: HttpClient,
     private datePipe: DatePipe,
     private Salesdetailid: Salesdetailid,
-    private EncryptionService: EncryptionService
+    private EncryptionService: EncryptionService,
+    private StorageService: StorageService
   ) {}
 
   ngOnInit(): void {
@@ -53,12 +55,13 @@ export class DetailsComponent implements OnInit {
           }
         }
         this.loadCompleted = true;
-      } /* ,
+      } ,
       (error) => {
         if (error.status == 401) {
           this.isLoggedIn = false;
+          this.StorageService.clean();
         };
-      } */
+      }
     );
   }
 
