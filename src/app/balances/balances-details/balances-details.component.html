@@ -1,25 +1,27 @@
 <!-- <app-login class="container-fluid header-main" *ngIf="isLoggedIn == false"> </app-login> -->
 <div class="container-fluid header-main">
   <h5 class="m-4">Detalle de cierre de caja</h5>
-  <div class="col-3 ms-4" *ngIf="loadCompleted">
+  <div class="col-10 ms-4" *ngIf="loadCompleted">
     <a [routerLink]="['/balances']" type="button" class=""
       ><i class="fa-solid fa-chevron-left fa-2xl" style="color: #2d6bd7"></i
     ></a>
     <span class="ms-3">Referencia:{{ balances.reference }}</span>
+    <div class="d-flex justify-content-end">
     <button class="btn btn-sm btn-secondary-customer" (click)="donwloadPDF()">
-      <i class="fa-solid fa-file-csv fa-xl" style="color: #864305"></i>
+      <i class="fa-solid fa-file-pdf fa-2xl" style="color: #da3006"></i>
     </button>
+    </div>
   </div>
 
   <div class="col-12 col-sm-8 offset-sm-2 col-lg-4 offset-lg-4">
     <div class="card card-customer">
       <div class="card-header d-flex bg-secondary">
         <div class="flex-fill">
-          <h4 class="card-title mt-3">Comercio TalparaCual</h4>
+          <h4 class="card-title mt-3"> {{balances.balanceCommerce?.name}}</h4>
         </div>
         <div class="flex-fill text-end">
           <label id="lblcomercial_cif" class="text-white"
-            ><span>{{ balances.balanceCommerce?.nif }}</span></label
+            ><span> {{balances.balanceCommerce?.nif}}</span></label
           ><br />
           <label id="lblcomercial_address" class="text-white"
             ><span>{{ balances.balanceCommerce?.address }}</span></label

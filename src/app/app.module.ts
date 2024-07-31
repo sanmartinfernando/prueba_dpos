@@ -27,6 +27,7 @@ import { RouterModule } from '@angular/router';
 import { NgxChartsModule }from '@swimlane/ngx-charts';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AuthGuard } from './_guard/auth.guard';
+import { NgxQRCodeModule } from '@techiediaries/ngx-qrcode';
 
 
 @NgModule({ declarations: [
@@ -44,7 +45,8 @@ import { AuthGuard } from './_guard/auth.guard';
         BalancesComponent,
         DetailsComponent,
         BalancesDetailsComponent,
-        ReportsComponent
+        ReportsComponent,
+
     ],
     bootstrap: [AppComponent],
     imports: [BrowserModule,
@@ -54,7 +56,8 @@ import { AuthGuard } from './_guard/auth.guard';
         ReactiveFormsModule,
         RouterModule,
         NgxChartsModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+
       ],
         providers: [
         httpInterceptorProviders,
@@ -64,6 +67,7 @@ import { AuthGuard } from './_guard/auth.guard';
         NgxChartsModule,
         BrowserAnimationsModule,
         AuthGuard
+
 
     ] })
 export class AppModule { }

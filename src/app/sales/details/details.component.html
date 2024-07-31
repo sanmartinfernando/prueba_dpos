@@ -230,10 +230,18 @@
             >
           </div>
         </div>
-        <div class="row px-2 pb-2 pt-3" *ngIf="salesTicketBai.length>0">
+        <div class="row px-2 pb-2 pt-3" *ngIf="salesTicketBai.length > 0">
           <div class="col text-start">
-            <label id="ticket_bai" class="text-bold"><b>TicketBAI:</b> {{salesTicketBai}}</label>
+            <label id="ticket_bai" class="text-bold"
+              ><b>TicketBAI:</b> {{ salesTicketBai }}</label
+            >
           </div>
+          <div class="col text-start">
+            <label id="ticket_bai" class="text-bold"
+              > {{ salesTicketBai }}</label
+            >
+          </div>
+
         </div>
       </div>
     </div>

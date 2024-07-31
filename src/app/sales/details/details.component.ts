@@ -6,6 +6,8 @@ import { DatePipe } from '@angular/common';
 import { SalesInfoDetailId } from 'src/app/_models/SalesDetailId.model';
 import { Salesdetailid } from 'src/app/_services/salesdetailid.service';
 
+
+
 @Component({
   selector: 'DPOSW-details',
   templateUrl: './details.component.html',
@@ -19,6 +21,9 @@ export class DetailsComponent implements OnInit {
   isLoggedIn: boolean = true;
   Math = Math;
   salesTicketBai;
+
+  //QR parametros
+
 
   constructor(
     private paramsUrl: ActivatedRoute,
@@ -43,7 +48,8 @@ export class DetailsComponent implements OnInit {
             this.ticket.orderTicketBai.status == '00' &&
             this.ticket.orderTicketBai.warns.length <= 0
           ) {
-            this.salesTicketBai = this.ticket.orderTicketBai.ticketBaiId;
+            this.salesTicketBai[0] = this.ticket.orderTicketBai.ticketBaiId;
+            this.salesTicketBai[1] = this.ticket.orderTicketBai.url;
           }
         }
         this.loadCompleted = true;
