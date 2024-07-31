@@ -63,6 +63,14 @@
     </form>
   </div>
   <br />
+    <!-- Validation -->
+  <div
+  *ngIf="validationVariable == true"
+  class="d-flex justify-content-center"
+  style="position: absolute; left: 50%"
+>
+  <div class="text-danger"><b>El parámetro de búsqueda no es válido</b></div>
+</div>
   <!-- Load -->
   <div
     *ngIf="loadCompleted == false"
@@ -187,7 +195,18 @@
                     >
                       <i class="fa-solid fa-qrcode"></i> Enviado y aceptado
                     </td>
-
+                    <td
+                      class="text-center align-middle"
+                      *ngIf="salesTicketBai[i] == 1"
+                    >
+                      <i class="fa-solid fa-qrcode"></i> Enviado y aceptado, con avisos
+                    </td>
+                    <td
+                      class="text-center align-middle"
+                      *ngIf="salesTicketBai[i] == 2"
+                    >
+                      <i class="fa-solid fa-qrcode"></i> Enviado y rechazado
+                    </td>
                     <td class="text-center align-middle">
                       {{ sale.subTotal / (Math.pow(10, sale.decimals)) | currency : "Eur" : "€" }}
                     </td>

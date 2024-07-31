@@ -1,3 +1,4 @@
+import { DownloadPDFService } from './../../_services/downloadpdf.service';
 import { Balancedetailid } from './../../_services/balancedetailid.service';
 import { EncryptionService } from './../../_services/encryption.service';
 import { Component, OnInit } from '@angular/core';
@@ -28,7 +29,12 @@ export class BalancesDetailsComponent implements OnInit{
   index:any;
 
 
-  constructor(private route:ActivatedRoute , private httpClient: HttpClient, private EncryptionService: EncryptionService, private paramsUrl: ActivatedRoute, private BalancedetailidService: Balancedetailid) {
+  constructor(private route:ActivatedRoute ,
+    private httpClient: HttpClient,
+    private EncryptionService: EncryptionService,
+    private paramsUrl: ActivatedRoute,
+    private BalancedetailidService: Balancedetailid,
+    private DownloadPDFService: DownloadPDFService) {
   }
 
   ngOnInit(): void {
@@ -45,6 +51,11 @@ export class BalancesDetailsComponent implements OnInit{
   } */
 );
 }
+
+
+  donwloadPDF(){
+    this.DownloadPDFService.downloadFile(this.balancesId)
+  }
 
 
 

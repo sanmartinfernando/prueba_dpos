@@ -31,6 +31,7 @@ export class SalesComponent implements OnInit {
   loadCompleted: boolean = false;
   isLoggedIn: boolean = true;
   Math = Math;
+  validationVariable: boolean = false;
 
   //Parámetros de búsqueda
   terminalVarSearch: string = null;
@@ -171,12 +172,12 @@ export class SalesComponent implements OnInit {
           }
           if(this.sales.data[i].orderTicketBai != null){
             if (this.sales.data[i].orderTicketBai.status == '00' && this.sales.data[i].orderTicketBai.warns.length > 0) {
-            this.salesTicketBai[i]=0
+            this.salesTicketBai[i]=1
           }
           }
           if(this.sales.data[i].orderTicketBai != null){
             if (this.sales.data[i].orderTicketBai.status == '01') {
-            this.salesTicketBai[i]=0
+            this.salesTicketBai[i]=2
           }
         }
         }
@@ -207,6 +208,7 @@ export class SalesComponent implements OnInit {
   //Método de búsqueda
 
   searchSales() {
+    this.validationVariable = false;
     this.loadCompleted = false;
     if (this.terminalVarSearch == '' || this.typeVarSearch == '') {
       this.terminalVarSearch = null;
@@ -337,7 +339,8 @@ export class SalesComponent implements OnInit {
         this.documentVarSearch.includes('(') ||
         this.documentVarSearch.includes(')')
       ) {
-        window.alert('El parámetro de búsqueda no está permitido');
+        this.validationVariable = true;
+        this.loadCompleted = true
         return;
       }
       if (this.searchCounter == false) {
@@ -351,6 +354,8 @@ export class SalesComponent implements OnInit {
         "{'field':'Reference','op':'=*.*','value':'" +
         this.documentVarSearch +
         "'}";
+
+
     }
 
     //Búsqueda vacia
