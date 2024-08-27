@@ -2,15 +2,11 @@
 <div class="container-fluid header-main">
   <div>
     <!-- Formulario de búsqueda -->
-    <form class="d-flex flex-wrap mx-1">
+    <form class="d-flex justify-content-between flex-wrap mx-1">
+      <div class="d-flex">
       <div class="me-3">
         <label class="form-label">Terminal</label>
-        <select
-          class="form-select"
-          name="terminal"
-          [(ngModel)]="terminalVarSearch"
-        >
-          <option></option>
+        <select class="form-select" name="terminal" [(ngModel)]="terminalVarSearch">
           <option *ngFor="let terminal of selectSales[0]; index as i">
             {{ terminal }}
           </option>
@@ -18,138 +14,111 @@
       </div>
       <div class="mx-3">
         <label class="form-label">Desde</label>
-        <input type="date" class="form-select" id="sinceDate" />
+        <input type="date" class="form-control" id="sinceDate" />
       </div>
       <div class="mx-3">
         <label class="form-label">Hasta</label>
-        <input type="date" class="form-select" id="tilDate" />
+        <input type="date" class="form-control" id="tilDate" />
       </div>
+    </div>
       <div id="searchButtonsDiv" class="ms-5 d-flex overflow-auto">
-        <button type="reset" class="btn btn-danger align-self-end"> <a type="button"
-          ><i class="fas fa-eraser"></i>
-        </a></button>
-        <a
-          type="button"
-          class="btn btn-info align-self-end"
-          (click)="searchSales()"
-          ><i class="fas fa-search"></i>&nbsp;&nbsp;Buscar</a
-        >
+        <button type="reset" class="btn btn-outline-danger align-self-end"> <a type="button"><i class="fas fa-eraser"></i>
+          </a></button>
+        <a type="button" class="btn btn-primary align-self-end" (click)="searchSales()"><i
+            class="fas fa-search"></i>&nbsp;&nbsp;Buscar</a>
       </div>
     </form>
   </div>
   <br />
-<!-- Tabla e indicadores -->
-  <br />
+  <!-- Tabla e indicadores -->
   <div class="card">
     <div class="card-body">
-      <div class="row mb-4">
-        <div class="col">
-          <h5><b>Cierres de caja</b></h5>
-        </div>
+      <div class="d-flex justify-content-between mb-4">
+          <h5>Cierres de caja</h5>
         <!-- Botón descarga -->
-          <button class="btn btn-sm btn-secondary-customer">
-            <i class="fa-solid fa-file-csv fa-xl" style="color: #008000"></i>
-          </button>
+        <button class="btn btn-sm btn-secondary-customer">
+          <i class="fa-solid fa-file-csv fa-xl"></i>
+        </button>
       </div>
-       <!-- Load -->
-       <div *ngIf="loadCompleted==false" class="d-flex justify-content-center">
-        <div class="spinner-border  text-danger" ></div>
+      <!-- Load -->
+      <div *ngIf="loadCompleted==false" class="d-flex justify-content-center">
+        <div class="spinner-border  text-danger"></div>
       </div>
       <!-- Tabla -->
       <div class="row" *ngIf="loadCompleted==true">
         <div class="col">
-          <div class="table-responsive" >
-            <table
-              class="table table-hover order-table"
-              data-pagination="true"
-              data-page-size="10"
-            >
+          <div class="table-responsive">
+            <table class="table table-hover order-table" data-pagination="true" data-page-size="10">
               <thead class="text-customer">
                 <tr>
                   <th class="text-center">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      [checked]="isAllSelected"
-                      (change)="CheckAll($event)"
-                    />
+                    <input class="form-check-input" type="checkbox" [checked]="isAllSelected"
+                      (change)="CheckAll($event)" />
                   </th>
-                  <th class="text-center">Documento</th>
+                  <th>Documento</th>
                   <th class="text-center">Terminal</th>
-                  <th class="text-center">Desde</th>
-                  <th class="text-center">Hasta</th>
+                  <th>Desde</th>
+                  <th>Hasta</th>
                   <th class="text-center">Operaciones</th>
-                  <th class="text-center">Descuadre efecivo (€)</th>
-                  <th class="text-center">Base imponible</th>
-                  <th class="text-center">Cuota de IVA</th>
-                  <th class="text-center">Total</th>
+                  <th class="text-end">Descuadre (€)</th>
+                  <th class="text-end">Base imponible</th>
+                  <th class="text-end">IVA</th>
+                  <th class="text-end">Total</th>
                   <th></th>
                 </tr>
               </thead>
-              <ng-template #empty
-                ><td colspan="5">
+              <ng-template #empty>
+                <td colspan="5">
                   <b>No existen registros que mostrar</b>
-                </td></ng-template
-              >
+                </td>
+              </ng-template>
               <tbody>
                 <ng-container *ngIf="emptySearch == false; else empty">
-                  <tr
-                    *ngFor="
+                  <tr *ngFor="
                       let balance of balances.data
                         | paginate : { itemsPerPage: 10, currentPage: page };
                       index as i
-                    "
-                  >
+                    ">
                     <td class="text-center align-middle">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        [checked]="isAllSelected"
-                      />
+                      <input class="form-check-input" type="checkbox" [checked]="isAllSelected" />
                     </td>
-                    <td class="text-center align-middle" id="massivetransfer">
+                    <td class=" align-middle text-bold" id="massivetransfer"><i class="fa-solid fa-receipt fa-xl me-1 text-amber"></i>
                       {{ balance.reference }}
                     </td>
                     <td class="text-center align-middle">
                       {{ balance.terminalNumber }}
                     </td>
-                    <td class="text-center align-middle">
+                    <td class="align-middle">
                       {{ balance.startedAt | date : "dd/MM/yyyy hh:mm" }}
                     </td>
-                    <td class="text-center align-middle">
+                    <td class="align-middle">
                       {{ balance.finishedAt | date : "dd/MM/yyyy hh:mm" }}
                     </td>
                     <td class="text-center align-middle">
                       {{ balance.salesCount}}
                     </td>
-                    <td class="text-center align-middle">
-                      {{ balance.outCount | currency : "Eur" : "€"  }}
+                    <td class="text-end align-middle roboto-mono">
+                      {{ balance.outCount | currency : "Eur" : "€" }}
                     </td>
-                    <td class="text-center align-middle">
-                      Base
+                    <td class="text-end align-middle roboto-mono">
+                      0.00
                     </td>
-                    <td class="text-center align-middle">
-                      IVA
+                    <td class="text-end align-middle roboto-mono">
+                      0.00
                     </td>
-                    <td class="text-center align-middle">
-                      Total
+                    <td class="text-end align-middle roboto-mono">
+                      0.00
                     </td>
-                    <td>
-                      <span id="detailsticket" class="align-center">
-                        <a
-                        [routerLink]="code"
-                          (click)="sendSalesDetails(balance.balanceId)"
-                          ><i class="fa-solid fa-eye" style="color: #74c0fc"></i></a
-                        ></span>
+                    <td class="text-end">
+                      <span id="detailsticket" class="align-middle" style="cursor: pointer;">
+                        <a [routerLink]="code" (click)="sendSalesDetails(balance.balanceId)"><i class="fa-solid fa-arrow-right" style="color: #74c0fc;"></i></a></span>
                     </td>
                   </tr>
                 </ng-container>
               </tbody>
             </table>
             <div class="has-text-centered">
-              <pagination-controls
-                (pageChange)="page = $event"
-              ></pagination-controls>
+              <pagination-controls (pageChange)="page = $event"></pagination-controls>
             </div>
           </div>
         </div>

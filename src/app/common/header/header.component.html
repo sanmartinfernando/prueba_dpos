@@ -4,15 +4,16 @@
       (click)="titleHeader(title0)" routerLink="/">
       <!--{{'webTitle' | translate}}-->
       <!--<i class="fa-solid fa-cash-register py-2" style="color: #ffffff; font-size: 40px"></i>-->
-      <h2 style="font-family:Roboto">DPOS</h2>
+      <i class="fa-solid fa-box py-2 logo"></i>
+      <!--<h2 class="p-4" style="font-family:Roboto">DPOS</h2>-->
     </a>
   </div>
   <div id="navBar1" class="flex-shrink-0">
     <ul id="navBarMain" class="navbar-nav flex-column align-items-stretch">
       <li *ngFor="let page of pages">
-        <a class="nav-link m-3 pt-4 d-flex flex-column align-items-center" (click)="titleHeader(page.text)"
+        <a class="nav-link m-3 d-flex flex-column align-items-center" (click)="titleHeader(page.text)"
           routerLink="/{{ page.code }}" routerLinkActive="active-link" (click)="component(page.code)">
-          <i class="{{ page.icon }}  fa-2xl MT-3"></i><br />{{page.text | translate}}
+          <i class="{{ page.icon }}  fa-2xl MT-3"></i>{{page.text | translate}}
         </a>
       </li>
     </ul>
@@ -20,17 +21,17 @@
 </nav>
 <header class="bg-customer" style="border-bottom:2px solid #ededed;">
   <div class="clearfix header-main">
-    <h2 class="float-start pt-3 pb-2">{{ title }}</h2>
+    <h3 class="float-start p-3 pb-2"><b>{{ title }}</b></h3>
     <ul class="navbar-nav float-end">
       <li class="mx-3 nav-item pt-2 pb-2">
-        <a class="nav-link" *ngIf="username; else loginLink" (click)="logOut()" style="cursor: pointer"><i
-            class="fi fi-rr-user"></i><!--<i class="fa-solid fa-circle-user"></i>-->&nbsp;&nbsp;{{
+        <!--<a class="btn btn-light"><i class="fa-solid fa-gears fa-lg" style="color: #B197FC;"></i></a>&nbsp;&nbsp;-->
+        <a class="btn btn-light" *ngIf="username; else loginLink" (click)="logOut()" style="cursor: pointer"><i class="fa-solid fa-circle-user fa-lg" style="color: #ffbb00;"></i>&nbsp;&nbsp;{{
           username
-          }}&nbsp;&nbsp;<span class="fa-solid fa-arrow-right-from-bracket"></span></a>
+          }}&nbsp;&nbsp;&nbsp;<span class="fa-solid fa-arrow-right-from-bracket"></span></a>
       </li>
       <ng-template #loginLink>
         <li class="mx-3 nav-item">
-          <a class="nav-link" routerLink="/login"><span class="fas fa-lg fa-sign-in-alt"></span>&nbsp;Login</a>
+          <a class="btn" routerLink="/login">Sign in</a>
         </li>
       </ng-template>
     </ul>

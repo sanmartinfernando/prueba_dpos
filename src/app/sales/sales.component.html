@@ -2,199 +2,151 @@
 <div class="container-fluid header-main">
   <div>
     <!-- Formulario de búsqueda -->
-    <form class="d-flex flex-wrap mx-1">
-      <div class="me-3">
-        <label class="form-label">Terminal</label>
-        <select
-          class="form-select"
-          name="terminal"
-          [(ngModel)]="terminalVarSearch"
-        >
-          <option></option>
-          <option>Todos</option>
-          <option *ngFor="let terminal of selectSales[0]; index as i">
-            {{ terminal }}
-          </option>
-        </select>
-      </div>
-      <div class="mx-3">
-        <label class="form-label">Desde</label>
-        <input type="date" class="form-select" id="sinceDate" />
-      </div>
-      <div class="mx-3">
-        <label class="form-label">Hasta</label>
-        <input type="date" class="form-select" id="tilDate" />
-      </div>
-      <div class="mx-3">
-        <label class="form-label">Tipo de operación</label>
-        <select
-          class="form-select"
-          name="operation"
-          [(ngModel)]="typeVarSearch"
-        >
-          <option></option>
-          <option>Todos</option>
-          <option *ngFor="let type of selectSales[1]; index as i">
-            {{ type }}
-          </option>
-        </select>
-      </div>
-      <div class="mx-3">
-        <label class="form-label">Nº de documento/Serie</label>
-        <input
-          type="text"
-          class="form-select"
-          name="documentN"
-          [(ngModel)]="documentVarSearch"
-        >
+    <form class="d-flex justify-content-between flex-wrap mx-1">
+      <div class="d-flex">
+        <div class="me-3">
+          <label class="form-label">Terminal</label>
+          <select class="form-select" name="terminal" [(ngModel)]="terminalVarSearch">
+            <option>Todos</option>
+            <option *ngFor="let terminal of selectSales[0]; index as i">
+              {{ terminal }}
+            </option>
+          </select>
+        </div>
+        <div class="mx-3">
+          <label class="form-label">Desde</label>
+          <input type="date" class="form-control" id="sinceDate" />
+        </div>
+        <div class="mx-3">
+          <label class="form-label">Hasta</label>
+          <input type="date" class="form-control" id="tilDate" />
+        </div>
+        <div class="mx-3">
+          <label class="form-label">Tipo de operación</label>
+          <select class="form-select" name="operation" [(ngModel)]="typeVarSearch">
+            <option>Todos</option>
+            <option *ngFor="let type of selectSales[1]; index as i">
+              {{ type }}
+            </option>
+          </select>
+        </div>
+        <div class="mx-3">
+          <label class="form-label">Nº de documento/serie</label>
+          <input type="text" class="form-control" name="documentN" [(ngModel)]="documentVarSearch">
+        </div>
       </div>
       <div id="searchButtonsDiv" class="ms-5 d-flex overflow-auto">
-       <button type="reset" class="btn btn-danger align-self-end"> <a type="button"
-          ><i class="fas fa-eraser"></i>
-        </a></button>
-        <a
-          type="button"
-          class="btn btn-info align-self-end"
-          (click)="searchSales()"
-          ><i class="fas fa-search"></i>&nbsp;&nbsp;Buscar</a
-        >
+        <button type="reset" class="btn btn-outline-danger align-self-end"> <i class="fas fa-eraser"></i>
+        </button>
+        <button type="button" class="btn btn-primary align-self-end" (click)="searchSales()"><i
+            class="fas fa-search"></i>&nbsp;&nbsp;<span>Buscar</span></button>
       </div>
     </form>
   </div>
   <br />
-<!-- Tabla e indicadores -->
-  <br />
+  <!-- Tabla e indicadores -->
   <div class="card">
     <div class="card-body">
-      <div class="row mb-4">
-        <div class="col">
-          <h5><b>Operaciones</b></h5>
-        </div>
+      <div class="d-flex justify-content-between mb-4">
+        <h5>Operaciones</h5>
         <!-- Indicadores -->
-        <div class="col-3 justify-content-end">
-          <label for="operationN" class="me-2">Nº operaciones</label>
-          <input
-            type="text"
-            id="inputHeadSales"
-            class="border me-5 bg-customer2 text-customer2 fw-bold text-end"
-            [(ngModel)]="operationN"
-            disabled
-          />
-          <label for="totalSales" class="me-2">Total</label>
-          <input
-            type="text"
-            id="inputHeadSales1"
-            class="border bg-customer2 text-customer2 fw-bold text-end mx-3"
-            [(ngModel)]="totalSalesString"
-            disabled
-          />
-          <button class="btn btn-sm btn-secondary-customer">
-            <i class="fa-solid fa-file-csv fa-xl" style="color: #008000"></i>
+        <div class="col-5 text-end">
+          <label for="inputHeadSales" class="me-2">Nº operaciones</label>
+          <input type="text" id="inputHeadSales" class="text-center me-5 roboto-mono" [(ngModel)]="operationN"
+            disabled />
+          <label for="inputHeadSales1" class="me-2">Total</label>
+          <input type="text" id="inputHeadSales1" class="text-center me-5 roboto-mono" [(ngModel)]="totalSalesString"
+            disabled />
+          <button class="btn btn-outline-info justify-content-center">
+            <i class="fa-solid fa-file-csv fa-xl"></i>
           </button>
         </div>
       </div>
-        <!-- Load -->
-        <div *ngIf="loadCompleted==false" class="d-flex justify-content-center">
-          <div class="spinner-border  text-danger" ></div>
-        </div>
+      <!-- Load -->
+      <div *ngIf="loadCompleted==false" class="d-flex justify-content-center">
+        <div class="spinner-border  text-danger"></div>
+      </div>
       <!-- Tabla -->
       <div *ngIf="loadCompleted==true" class="row">
         <div class="col">
           <div class="table-responsive">
-            <table
-              class="table table-hover order-table"
-              data-pagination="true"
-              data-page-size="10"
-            >
+            <table class="table table-hover order-table table-borderless" data-pagination="true" data-page-size="10">
               <thead class="text-customer">
                 <tr>
                   <th class="text-center">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      [checked]="isAllSelected"
-                      (change)="CheckAll($event)"
-                    />
+                    <input class="form-check-input" type="checkbox" [checked]="isAllSelected"
+                      (change)="CheckAll($event)" />
                   </th>
-                  <th class="text-center">Documento</th>
+                  <th>Documento</th>
                   <th class="text-center">Tipo</th>
-                  <th class="text-center">Fecha</th>
+                  <th>Fecha</th>
                   <th class="text-center">Terminal</th>
-                  <th class="text-center">Factura verificada</th>
-                  <th class="text-center">Subtotal</th>
-                  <th class="text-center">Descuentos</th>
-                  <th class="text-center">Base imponible</th>
-                  <th class="text-center">Cuota de IVA</th>
-                  <th class="text-center">Total</th>
+                  <th>Factura verificada</th>
+                  <th class="text-end">Subtotal</th>
+                  <th class="text-end">Descuento</th>
+                  <th class="text-end">Base imponible</th>
+                  <th class="text-end">IVA</th>
+                  <th class="text-end">Total</th>
                   <th></th>
                 </tr>
               </thead>
-              <ng-template #empty
-                ><td colspan="5">
+              <ng-template #empty>
+                <td colspan="5">
                   <b>No existen registros que mostrar</b>
-                </td></ng-template
-              >
+                </td>
+              </ng-template>
               <tbody>
                 <ng-container *ngIf="emptySearch == false; else empty">
-                  <tr
-                    *ngFor="
+                  <tr *ngFor="
                       let sale of sales.data
                         | paginate : { itemsPerPage: 10, currentPage: page };
                       index as i
-                    "
-                  >
+                    ">
                     <td class="text-center align-middle">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        [checked]="isAllSelected"
-                      />
+                      <input class="form-check-input" type="checkbox" [checked]="isAllSelected" />
                     </td>
-                    <td class="text-center align-middle" id="massivetransfer">
+                    <td class="align-middle text-bold" id="massivetransfer"><i
+                        class="fa-solid fa-receipt fa-xl me-1 text-amber"></i>
                       {{ sale.reference }}
                     </td>
                     <td class="text-center align-middle">
                       {{ sale.type }}
                     </td>
-                    <td class="text-center align-middle">
+                    <td class="align-middle">
                       {{ sale.createdAt | date : "dd/MM/yyyy hh:mm" }}
                     </td>
                     <td class="text-center align-middle">
                       {{ sale.terminalNumber }}
                     </td>
-                    <td class="text-center align-middle">Verificada</td>
-                    <td class="text-center align-middle">
+                    <td class="align-middle"><span class="badge rounded-pill bg-accept"><i
+                          class="fa-solid fa-qrcode me-2"></i>TBAI - Aceptada</span></td>
+                    <td class="text-end align-middle roboto-mono">
                       {{ sale.subTotal/100 | currency : "Eur" : "€" }}
                     </td>
-                    <td class="text-center align-middle">
+                    <td class="text-end align-middle roboto-mono">
                       {{ sale.totalDiscount/100 | currency : "Eur" : "€" }}
                     </td>
-                    <td class="text-center align-middle">
+                    <td class="text-end align-middle roboto-mono">
                       {{ sale.orderTaxes[0].base/100 | currency : "Eur" : "€" }}
                     </td>
-                    <td class="text-center align-middle">
+                    <td class="text-end align-middle roboto-mono">
                       {{ sale.orderTaxes[0].total/100 | currency : "Eur" : "€" }}
                     </td>
-                    <td class="text-center align-middle">
+                    <td class="text-end align-middle roboto-mono">
                       {{ sale.total/100 | currency : "Eur" : "€" }}
                     </td>
-                    <td>
-                      <span id="detailsticket" class="align-center">
-                        <a
-                        [routerLink]="code"
-
-                          (click)="sendSalesDetails(sale.orderId)"
-                          ><i class="fa-solid fa-eye" style="color: #74c0fc"></i></a
-                        ></span>
+                    <td class="text-end">
+                      <span id="detailsticket" class="align-middle" style="cursor: pointer;">
+                        <a [routerLink]="code" (click)="sendSalesDetails(sale.orderId)"><span
+                            style="font-size: 0.75rem;color: #74c0fc;"></span><i class="fa-solid fa-arrow-right"
+                            style="color: #74c0fc;"></i></a></span>
                     </td>
                   </tr>
                 </ng-container>
               </tbody>
             </table>
             <div class="has-text-centered">
-              <pagination-controls
-                (pageChange)="page = $event"
-              ></pagination-controls>
+              <pagination-controls (pageChange)="page = $event"></pagination-controls>
             </div>
           </div>
         </div>
