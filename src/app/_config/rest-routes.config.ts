@@ -35,4 +35,6 @@ export const RestRoutes = {
   SALES_REPORT:`api/Orders/generate/sales-report?fromDate=`,
   SALES_REPORT2:`&toDate=`,
   TERMINAL_LIST:`api/commerces/1125/Terminals`,
+  ORDER_AGGREGATION:`api/Orders/aggregate`,
+  CASH_AGGREGATION:`api/CashMovements/aggregate`
 }
