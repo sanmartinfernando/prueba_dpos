@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment.dev-inte';
 import { RestRoutes } from '../_config/rest-routes.config';
 import { OrderAggregation } from '../_models/Orderaggregation.model';
 import { OrderAggregationCash } from '../_models/OrderAggregationCash.model';
+import { OrderAggregationTop3 } from '../_models/top3sales.model';
 
 @Injectable({
   providedIn: 'root'
@@ -29,5 +30,10 @@ export class OrdersAggregateService {
   GetAggregationOrderEvo(searchParams): Observable<OrderAggregationCash[]> {
     let urlCommerces: string = `${environment.urlWS}${RestRoutes.ORDER_AGGREGATION}`;
     return this.http.post<OrderAggregationCash[]>(urlCommerces, searchParams, this.httpOptions);
+  }
+
+  GetAggregationOrderTop3(searchParams): Observable<OrderAggregationTop3[]> {
+    let urlCommerces: string = `${environment.urlWS}${RestRoutes.ORDER_AGGREGATION}`;
+    return this.http.post<OrderAggregationTop3[]>(urlCommerces, searchParams, this.httpOptions);
   }
 }

@@ -3,6 +3,7 @@ import { OrdersAggregateService } from './../_services/orders-aggregate.service'
 import { Component, OnInit } from '@angular/core';
 import { OrderAggregation } from '../_models/Orderaggregation.model';
 import { OrderAggregationCash } from '../_models/OrderAggregationCash.model';
+import { OrderAggregationTop3 } from '../_models/top3sales.model';
 
 @Component({
   selector: 'DPOSW-dashboard',
@@ -20,6 +21,7 @@ export class DashboardComponent implements OnInit {
   loadedGraphics = true;
   loaded = false;
   loadedPM = false;
+  loadedTP = false;
   loadedOninit = false;
   terminalVarSearch: any = 'Todos';
   yearVarSearch = '';
@@ -71,6 +73,17 @@ export class DashboardComponent implements OnInit {
     { name: 'Bono Denda', value: 0 },
     { name: 'Rectificación', value: 0 },
   ];
+
+  datasetTop3 = [
+    { name: '', value: 0 },
+    { name: '', value: 0 },
+    { name: '', value: 0 },
+    { name: '', value: 0 },
+  ];
+
+  formatDataLabel(value) {
+    return value + '%';
+  }
 
   //Variables de búsqueda de aggregation
   //Variable aggregation orders
@@ -271,6 +284,59 @@ export class DashboardComponent implements OnInit {
       },
     },
   ];
+  //Variable top 3 productos vendidos
+  idT3 = [
+    {
+      $match: {
+        terminal_number: { $in: ['1', '2'] },
+        created_at: { $gt: 1704063600000, $lt: 1735686000000 },
+        type: 0,
+      },
+    },
+    {
+      $unwind: '$order_lines',
+    },
+    {
+      $group: {
+        _id: '$order_lines.product_name',
+        quantity: {
+          $sum: '$order_lines.quantity',
+        },
+        product: {
+          $first: '$order_lines.product_name',
+        },
+      },
+    },
+    {
+      $sort: {
+        quantity: -1,
+      },
+    },
+    {
+      $limit: 3,
+    },
+  ];
+  //Variable de búsqueda para total de productos vendidos
+  idTP = [
+    {
+      $match: {
+        terminal_number: { $in: ['1', '2'] },
+        created_at: { $gt: 1704063600000, $lt: 1735686000000 },
+        type: 0,
+      },
+    },
+    {
+      $unwind: '$order_lines',
+    },
+    {
+      $group: {
+        _id: null,
+        quantity: {
+          $sum: '$order_lines.quantity',
+        },
+      },
+    },
+  ];
 
   //Variables consulta API
 
@@ -281,11 +347,12 @@ export class DashboardComponent implements OnInit {
   aggregationsEvo: OrderAggregation[];
   aggregationsEvoOrder: OrderAggregationCash[];
   aggregationsEvoIn: OrderAggregationCash[];
+  aggregationsTop3: OrderAggregationTop3[];
+  aggregationsTP: OrderAggregationTop3[];
   Math = Math;
 
   ngOnInit(): void {
     //Comunicación con API para obtener los datos agregados que se muestran como base al iniciar la página en la sección de KPIs
-
     this.OrdersAggregateService.GetAggregationOrder(this.id).subscribe(
       (aggregation) => {
         this.aggregations = aggregation;
@@ -333,9 +400,7 @@ export class DashboardComponent implements OnInit {
     };
   } */
     );
-
     //Comunicación con API para obtener los datos agregados que se muestran como base al iniciar la página en el gráfico de métodos de pago
-
     this.OrdersAggregateService.GetAggregationOrder(this.idPM).subscribe(
       (aggregation) => {
         this.loadedPM = false;
@@ -409,9 +474,7 @@ export class DashboardComponent implements OnInit {
     };
   } */
     );
-
     //Comunicación con API para obtener los datos agregados que se muestran como base al iniciar la página en la sección de KPIs, apartado de movimientos de caja
-
     this.CashmovementsAggregateService.GetAggregationCashMovements(
       this.idCM
     ).subscribe(
@@ -423,6 +486,60 @@ export class DashboardComponent implements OnInit {
       this.isLoggedIn = false;
     };
   } */
+    );
+    //Comunicación con API para obtener el total de productos vendidos
+    this.OrdersAggregateService.GetAggregationOrderTop3(this.idTP).subscribe(
+      (aggregation) => {
+        this.aggregationsTP = aggregation;
+        console.log(this.aggregationsTP);
+        //Comunicación con API para obtener los datos del gráfico de top 3 productos vendidos al cargar la página
+        this.OrdersAggregateService.GetAggregationOrderTop3(
+          this.idT3
+        ).subscribe(
+          (aggregation) => {
+            this.aggregationsTop3 = aggregation;
+            console.log(this.aggregationsTop3);
+            //Se asocian los datos del objeto respuesta con los campos correspondientes del array de valores del gráfico
+            let sumaTP = 0;
+            for (let i = 0; i < this.aggregationsTop3.length; i++) {
+              sumaTP = sumaTP + this.aggregationsTop3[i].quantity;
+              this.datasetTop3[i].name =
+                this.aggregationsTop3[i].product +
+                ' (' +
+                this.aggregationsTop3[i].quantity +
+                ' uds)';
+              this.datasetTop3[i].value = Math.round(
+                (this.aggregationsTop3[i].quantity /
+                  this.aggregationsTP[0].quantity) *
+                  100
+              );
+            }
+            //Se asocia el 4º puesto del array del gráfico correspondiente al apartado "resto de productos"
+            //El dato se obtiene restando el valor total de la consulta de aggregationsTP a la sumaTP
+            this.datasetTop3[3].name =
+              'Resto' +
+              ' (' +
+              (this.aggregationsTP[0].quantity - sumaTP) +
+              ' uds)';
+            this.datasetTop3[3].value = Math.round(
+              ((this.aggregationsTP[0].quantity - sumaTP) /
+                this.aggregationsTP[0].quantity) *
+                100
+            );
+            this.loadedTP = true;
+          } /* ,
+  (error) => {
+    if (error.status == 401) {
+      this.isLoggedIn = false;
+    };
+  } */
+        );
+      } /* ,
+    (error) => {
+      if (error.status == 401) {
+        this.isLoggedIn = false;
+      };
+    } */
     );
     //Variable de carga de datos base marcada como true
     this.loadedOninit = true;
@@ -457,6 +574,15 @@ export class DashboardComponent implements OnInit {
         $gt: this.yearMilli,
         $lt: this.yearMaxMilli,
       };
+      this.idT3[0].$match.created_at = {
+        $gt: this.yearMilli,
+        $lt: this.yearMaxMilli,
+      };
+      this.idTP[0].$match.created_at = {
+        $gt: this.yearMilli,
+        $lt: this.yearMaxMilli,
+      };
+
       //En el else se contempla el caso de que la búsqueda se realice con año+mes
     } else {
       //Se obtienen las variables de fechas (inicial (dateMilli) y max (dateMaxMilli)) teniendo en cuenta la variable de búsqueda de año y mes, se pasan a unicode
@@ -483,6 +609,14 @@ export class DashboardComponent implements OnInit {
         $gt: this.dateMilli,
         $lt: this.dateMaxMilli,
       };
+      this.idT3[0].$match.created_at = {
+        $gt: this.dateMilli,
+        $lt: this.dateMaxMilli,
+      };
+      this.idTP[0].$match.created_at = {
+        $gt: this.dateMilli,
+        $lt: this.dateMaxMilli,
+      };
     }
     /*Variable de búsqueda "Terminal". En el if se establece el caso en el que se selecciona el valor "Todos" por lo que la variable
      de búsqueda se establece con todos los números de terminal*/
@@ -491,11 +625,15 @@ export class DashboardComponent implements OnInit {
       this.id[1].$match.terminal_number = { $in: ['1', '2'] };
       this.idCM[0].$match.terminal_number = { $in: ['1', '2'] };
       this.idPM[1].$match.terminal_number = { $in: ['1', '2'] };
+      this.idT3[0].$match.terminal_number = { $in: ['1', '2'] };
+      this.idTP[0].$match.terminal_number = { $in: ['1', '2'] };
     } else {
       //En el else se establece el caso en el que se busca solo por una única terminal y se modifica las variables de consulta acorde
       this.id[1].$match.terminal_number = this.terminalVarSearch;
       this.idCM[0].$match.terminal_number = this.terminalVarSearch;
       this.idPM[1].$match.terminal_number = this.terminalVarSearch;
+      this.idT3[0].$match.terminal_number = this.terminalVarSearch;
+      this.idTP[0].$match.terminal_number = this.terminalVarSearch;
     }
 
     //Llamada al método de comunicación con la API para obtener el objeto correspondiente a los campos de ventas, ticket medio, devoluciones y resultado
@@ -623,15 +761,87 @@ export class DashboardComponent implements OnInit {
         }
         //Para que se actualice el gráfico con los datos nuevos hay que reiniciar el array de datos
         this.datasetPM = [...this.datasetPM];
+
         //Variable de carga del gráfico se cambia a true
         this.loadedPM = true;
       }
+    );
+    //Comunicación con API para obtener el total de productos vendidos
+    this.OrdersAggregateService.GetAggregationOrderTop3(this.idTP).subscribe(
+      (aggregation) => {
+        this.aggregationsTP = aggregation;
+        //Comunicación con API para obtener los datos del gráfico de top 3 productos vendidos al cargar la página
+        this.OrdersAggregateService.GetAggregationOrderTop3(
+          this.idT3
+        ).subscribe(
+          (aggregation) => {
+            this.aggregationsTop3 = aggregation;
+            console.log(this.aggregationsTop3);
+            //Se reinicia el array de datos del gráfico
+            for (let i = 0; i < this.datasetTop3.length; i++) {
+              this.datasetTop3[i].name = '';
+              this.datasetTop3[i].value = 0;
+            }
+            //Se asocian los datos del objeto respuesta con los campos correspondientes del array de valores del gráfico
+            let sumaTP = 0;
+            for (let i = 0; i < this.aggregationsTop3.length; i++) {
+              sumaTP = sumaTP + this.aggregationsTop3[i].quantity;
+              this.datasetTop3[i].name =
+                this.aggregationsTop3[i].product +
+                ' (' +
+                this.aggregationsTop3[i].quantity +
+                ' uds)';
+              this.datasetTop3[i].value = Math.round(
+                (this.aggregationsTop3[i].quantity /
+                  this.aggregationsTP[0].quantity) *
+                  100
+              );
+            }
+            //Se recorre el array de resultados para sustituir elementos nulos o vacios por 0
+            for (let i = 0; i < this.datasetTop3.length; i++) {
+              if (this.datasetTop3[i].value == 0) {
+                this.datasetTop3[i].name = 'No hay producto';
+              }
+            }
+            //Se asocia el 4º puesto del array del gráfico correspondiente al apartado "resto de productos"
+            //El dato se obtiene restando el valor total de la consulta de aggregationsTP a la sumaTP
+            if (
+              this.aggregationsTP !== undefined &&
+              this.aggregationsTP.length
+            ) {
+              this.datasetTop3[3].name =
+                'Resto' +
+                ' (' +
+                (this.aggregationsTP[0].quantity - sumaTP) +
+                ' uds)';
+              this.datasetTop3[3].value = Math.round(
+                ((this.aggregationsTP[0].quantity - sumaTP) /
+                  this.aggregationsTP[0].quantity) *
+                  100
+              );
+            }
+            //Para que se actualice el gráfico con los datos nuevos hay que reiniciar el array de datos
+            this.datasetTop3 = [...this.datasetTop3];
+            this.loadedTP = true;
+          } /* ,
+      (error) => {
+        if (error.status == 401) {
+        this.isLoggedIn = false;
+          };
+      } */
+        );
+      } /* ,
+      (error) => {
+    if (error.status == 401) {
+      this.isLoggedIn = false;
+    };
+    } */
     );
   }
 
   //Método de cambio de título en sección de "Evolución de KPI"
 
-  showSales(event: MouseEvent) {
+  showSales(event) {
     //Se captura el nombre del KPI en el que se clicka para mostrar el gráfico
     let target = event.target as HTMLElement;
     let idElement: string = target.id.slice(0, 5);
@@ -682,7 +892,7 @@ export class DashboardComponent implements OnInit {
 
   //Método de dibujado de gráfico de evolución de KPI
 
-  createSalesGraphic(event: MouseEvent) {
+  createSalesGraphic(event) {
     this.loadedGraphics = false;
     this.loaded = false;
     //Reset del array del gráfico
@@ -719,8 +929,6 @@ export class DashboardComponent implements OnInit {
     //Llamada a la API para obtener la agregación
     //Se captura el nombre del KPI en el que se clicka para mostrar el gráfico
     this.target = event.target as HTMLElement;
-    console.log(this.target.id);
-    console.log(this.idElement);
     /*Se hace distinción si el click viene del apartado de KPIs (se actualiza el id para el switch) o si viene del filtro de búsqueda
     (se reutiliza el id anterior para actualizar los datos del gráfico en tiempo real)*/
     if (

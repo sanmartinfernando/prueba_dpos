@@ -9,8 +9,8 @@
           class="form-select"
           name="terminal"
           [(ngModel)]="terminalVarSearch"
-          (click)="searchTerminal()"
-          (click)="createSalesGraphic($event)"
+          (change)="searchTerminal()"
+          (change)="createSalesGraphic($event)"
           id="searchTer"
         >
           <option selected>Todos</option>
@@ -28,7 +28,8 @@
           [value]="year"
           class="form-select"
           id="yearDate"
-          (click)="searchTerminal()"
+          (change)="searchTerminal()"
+          (change)="createSalesGraphic($event)"
         />
       </div>
       <div class="mx-3">
@@ -39,7 +40,7 @@
           class="form-select"
           class="form-select"
           id="monthDate"
-          (click)="searchTerminal()"
+          (change)="searchTerminal()"
         >
           <option selected>Todos</option>
           <option>1</option>
@@ -79,7 +80,7 @@
             >
               <p class="mt-2" id="salesp">VENTAS</p>
               <div
-                *ngIf="aggregations.length > 0; else noresults"
+                *ngIf="aggregations!== undefined && aggregations.length > 0; else noresults"
                 id="salesdiv"
               >
                 {{
@@ -87,7 +88,7 @@
                     | currency : "Eur" : "€"
                 }}
               </div>
-              <div *ngIf="aggregations.length > 0" id="salesdiv1">
+              <div *ngIf="aggregations!== undefined && aggregations.length > 0" id="salesdiv1">
                 <small id="salessmall"
                   >{{ aggregations[0].count }}
                   <ng-container
@@ -107,7 +108,7 @@
               <p id="averageTicketP" class="mt-2">T. MEDIO</p>
               <p
                 id="averageTicketP2"
-                *ngIf="aggregations.length > 0; else noresults"
+                *ngIf="aggregations!== undefined && aggregations.length; else noresults"
               >
                 {{
                   aggregations[0].avg / Math.pow(10, aggregations[0].decimals)
@@ -124,14 +125,14 @@
               <p id="refundsP" class="mt-2">DEVOLUCIONES</p>
               <div
                 id="refundsDiv"
-                *ngIf="aggregations.length > 0 && resultsVarArray[1] != 0; else noresults"
+                *ngIf="aggregations!== undefined && aggregations.length && resultsVarArray[1] != 0; else noresults"
               >
                 {{
                   resultsVarArray[1]
                     | currency : "Eur" : "€"
                 }}
               </div>
-              <div id="refundsDiv2" *ngIf="aggregations.length > 0 && resultsVarArray[4] != 0">
+              <div id="refundsDiv2" *ngIf="aggregations!== undefined && aggregations.length && resultsVarArray[4] != 0">
                 <small id="refundsSmall"
                   >{{ resultsVarArray[4] }}
                   <ng-container
@@ -151,7 +152,7 @@
               <p id="casmovP" class="mt-2">MOV. CAJA</p>
               <div
                 id="casmovDiv"
-                *ngIf="aggregationsCM.length > 0; else noresults"
+                *ngIf="aggregationsCM!== undefined && aggregationsCM.length; else noresults"
               >
                 {{
                   aggregationsCM[0].total /
@@ -161,7 +162,7 @@
                     | currency : "Eur" : "€"
                 }}
               </div>
-              <div id="casmovDiv2" *ngIf="aggregationsCM.length > 0">
+              <div id="casmovDiv2" *ngIf="aggregationsCM!== undefined && aggregationsCM.length">
                 <small id="casmovSmall"
                   >{{ aggregationsCM[0].count + aggregationsCM[1].count }}
                   <ng-container
@@ -181,7 +182,7 @@
               (click)="createSalesGraphic($event)"
             >
               <p id="balanceP" class="mt-2">RESULTADO</p>
-              <p id="balanceP2" *ngIf="aggregations.length > 0; else noresults">
+              <p id="balanceP2" *ngIf="aggregations!== undefined && aggregations.length; else noresults">
                 {{
                   resultsVarArray[0] - (resultsVarArray[1] + resultsVarArray[2])
                     | currency : "Eur" : "€"
@@ -223,7 +224,7 @@
             >
             <br>
             <ngx-charts-bar-vertical
-              [view]="[800, 400]"
+              [view]="[800, 425]"
               [results]="dataset"
               [xAxisLabel]="'x-axis'"
               [legendTitle]="'legend'"
@@ -244,6 +245,27 @@
         <div class="card-body">
           <div class="">
             <h6><b>TOP 3 más vendidos</b></h6>
+            <ng-container *ngIf="aggregationsTop3!== undefined && aggregationsTop3.length; else nochart1">
+              <ngx-charts-bar-horizontal
+                [view]="[600, 250]"
+                [results]="datasetTop3"
+                [animations]="true"
+                [showDataLabel] = "true"
+                [xAxis]="false"
+                [yAxis]="true"
+                [legend]="false"
+                [roundEdges] = "true"
+                [showXAxisLabel]="true"
+                [showYAxisLabel]="true"
+                [trimYAxisTicks] = "false"
+                [barPadding] = "40"
+                [tooltipDisabled] = "true"
+                [dataLabelFormatting] = "formatDataLabel"
+                [noBarWhenZero] = "true"
+
+                *ngIf="loadedTP == true; else spinner"
+              >
+              </ngx-charts-bar-horizontal></ng-container>
           </div>
         </div>
       </div>
@@ -264,9 +286,9 @@
         <div class="card-body">
           <div class="">
             <h6><b>Métodos de pago</b></h6>
-            <ng-container *ngIf="aggregationsPM.length>0; else nochart1">
+            <ng-container *ngIf="aggregationsPM!== undefined && aggregationsPM.length; else nochart1">
             <ngx-charts-pie-chart
-              [view]="[600, 300]"
+              [view]="[600, 250]"
               [results]="datasetPM"
               [doughnut]="true"
               [animations]="true"
