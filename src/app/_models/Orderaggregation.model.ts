@@ -1,5 +1,5 @@
 export class OrderAggregation {
-    _id: number;
+    _id;
     count: number;
     avg: number;
     total: number;
