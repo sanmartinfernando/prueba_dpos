@@ -14,9 +14,16 @@ export class DashboardComponent implements OnInit {
   constructor(
     private OrdersAggregateService: OrdersAggregateService,
     private CashmovementsAggregateService: CashmovementsAggregateService
-  ) {}
+  ) {
+    this.boundFormatDataLabel1 = this.formatDataLabel1.bind(this);
+    this.boundBarCustomColors = this.barCustomColors.bind(this);
+  }
 
+  boundFormatDataLabel1: any;
+  boundBarCustomColors: any;
   target;
+  formatLabelCounter: number = 0;
+  formatLabelCounter1: number = 0;
   idElement;
   loadedGraphics = true;
   loaded = false;
@@ -81,10 +88,55 @@ export class DashboardComponent implements OnInit {
     { name: '', value: 0 },
   ];
 
+  //Función que añade % al final del value label de los gráficos
+
   formatDataLabel(value) {
     return value + '%';
   }
 
+  //Función que solo muestra el value label en el gráfico de barras del mes que se ha seleccionado en el filtro
+
+  formatDataLabel1 = (value) => {
+    this.monthVarSearch = (<HTMLInputElement>(
+      document.getElementById('monthDate')
+    )).value;
+    if (this.monthVarSearch != 'Todos') {
+      if (this.dataset[+this.monthVarSearch - 1].value == value && value !=0) {
+        value = value.toFixed(2) + '€';
+      } else {
+        value = null;
+      }
+    } else {
+      if (value == 0) {
+        value = null;
+      } else {
+        value = value + '€';
+      }
+    }
+    this.monthVarSearch = null;
+    return value;
+  };
+
+  //Función que varía el color de las barras del gráfico dependiendo del mes seleccionado (realza el mes seleccionado y diluye el del resto)
+
+  result: any[] = [];
+
+  barCustomColors() {
+    this.result = [];
+    this.monthVarSearch = (<HTMLInputElement>(
+      document.getElementById('monthDate')
+    )).value;
+    if (this.monthVarSearch != 'Todos') {
+      for (let i = 0; i < this.dataset.length; i++) {
+        if (i == +this.monthVarSearch - 1) {
+          this.result.push({ name: this.dataset[i].name, value: '#0080ff' });
+        } else
+          this.result.push({ name: this.dataset[i].name, value: '#e5f2fe' });
+      }
+    }
+    this.monthVarSearch = null;
+    return this.result;
+  }
   //Variables de búsqueda de aggregation
   //Variable aggregation orders
   id = [
@@ -541,6 +593,31 @@ export class DashboardComponent implements OnInit {
       };
     } */
     );
+    //Gráfico de ventas base al cargar la página
+    //Se establece el filtro de búsqueda de type en la variable a 0 para filtrar por operaciones de venta
+    this.IdEvo[1].$match.type = 0;
+    //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
+    this.OrdersAggregateService.GetAggregationOrder(this.IdEvo).subscribe(
+      (aggregation) => {
+        this.aggregationsEvo = aggregation;
+        //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
+        for (let i = 0; i < this.aggregationsEvo.length; i++) {
+          this.dataset[this.aggregationsEvo[i]._id - 1].value =
+            this.aggregationsEvo[i].total / 100;
+        }
+        //Se rellenan aquellos campos sin datos en el array de valores del gráfico con 0
+        for (let i = 0; i < this.dataset.length; i++) {
+          if (this.dataset[i].value == null) {
+            this.dataset[i].value = 0;
+          }
+        }
+        //Se actualiza el array de datos del gráfico para que se dibujen los nuevos datos introducidos
+        this.dataset = [...this.dataset];
+        //Variables de carga de gráficos se ponen en true
+        this.loaded = true;
+        this.loadedGraphics = true;
+      }
+    );
     //Variable de carga de datos base marcada como true
     this.loadedOninit = true;
   }
@@ -555,9 +632,11 @@ export class DashboardComponent implements OnInit {
     this.monthVarSearch = (<HTMLInputElement>(
       document.getElementById('monthDate')
     )).value;
+    console.log(this.monthVarSearch);
     //Se comprueba si es necesario filtrar por solo año o por año+mes, el if es el caso de solo año
     if (this.monthVarSearch.length == 0 || this.monthVarSearch == 'Todos') {
       //Se obtiene el año inicial (yearMilli) y el año máximo (yearMaxMilli) y se transforma a unicode
+      console.log('entra');
       this.yearDate = new Date(parseInt(this.yearVarSearch), 0);
       this.yearMilli = this.yearDate.getTime();
       this.yearMaxMilli = this.yearMilli + 31536000000;
@@ -586,6 +665,7 @@ export class DashboardComponent implements OnInit {
       //En el else se contempla el caso de que la búsqueda se realice con año+mes
     } else {
       //Se obtienen las variables de fechas (inicial (dateMilli) y max (dateMaxMilli)) teniendo en cuenta la variable de búsqueda de año y mes, se pasan a unicode
+      console.log('entra');
       this.yearDate = new Date(
         parseInt(this.yearVarSearch),
         parseInt(this.monthVarSearch) - 1
@@ -596,6 +676,7 @@ export class DashboardComponent implements OnInit {
         parseInt(this.monthVarSearch)
       );
       this.dateMaxMilli = this.yearMaxDate.getTime();
+      console.log(this.dateMilli);
       //Se actualizan las variables de búsqueda en el apartado de intervalo de fecha para enviar la consulta a la API
       this.id[1].$match.created_at = {
         $gt: this.dateMilli,
@@ -912,6 +993,14 @@ export class DashboardComponent implements OnInit {
       this.IdEvoResults[1].$match.terminal_number = this.terminalVarSearch;
     }
     //Se actualiza la variable de búsqueda de intervalo de tiempo, en este caso solo se usa la de año ya que no se permite filtrar por mes
+    console.log(this.yearMilli);
+    this.yearVarSearch = (<HTMLInputElement>(
+      document.getElementById('yearDate')
+    )).value;
+    this.yearDate = new Date(parseInt(this.yearVarSearch), 0);
+    this.yearMilli = this.yearDate.getTime();
+    this.yearMaxMilli = this.yearMilli + 31536000000;
+
     if (this.yearMilli && this.yearMaxMilli != 0) {
       this.IdEvo[1].$match.created_at = {
         $gt: this.yearMilli,
@@ -926,6 +1015,7 @@ export class DashboardComponent implements OnInit {
         $lt: this.yearMaxMilli,
       };
     }
+
     //Llamada a la API para obtener la agregación
     //Se captura el nombre del KPI en el que se clicka para mostrar el gráfico
     this.target = event.target as HTMLElement;
@@ -950,7 +1040,9 @@ export class DashboardComponent implements OnInit {
       }
     }
     //Según el KPI seleccionado se dibuja el gráfico con los datos correspondientes
+    console.log(this.idElement);
     switch (this.idElement) {
+      case undefined:
       case 'sales':
         //Se establece el filtro de búsqueda de type en la variable a 0 para filtrar por operaciones de venta
         this.IdEvo[1].$match.type = 0;
@@ -1127,5 +1219,7 @@ export class DashboardComponent implements OnInit {
           this.loadedGraphics = true;
         });
     }
+    console.log(this.IdEvo);
+    console.log(this.dataset);
   }
 }

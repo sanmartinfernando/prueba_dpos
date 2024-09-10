@@ -166,17 +166,17 @@ export class SalesComponent implements OnInit {
         this.salesTicketBai = []
 
         for( let i=0; i<= this.sales.data.length; i++){
-          if(this.sales.data[i].orderTicketBai != null){
+          if(this.sales.data[i].orderTicketBai !== null){
             if (this.sales.data[i].orderTicketBai.status == '00' && this.sales.data[i].orderTicketBai.warns.length <= 0) {
             this.salesTicketBai[i]=0
           }
           }
-          if(this.sales.data[i].orderTicketBai != null){
+          if(this.sales.data[i].orderTicketBai !== null){
             if (this.sales.data[i].orderTicketBai.status == '00' && this.sales.data[i].orderTicketBai.warns.length > 0) {
             this.salesTicketBai[i]=1
           }
           }
-          if(this.sales.data[i].orderTicketBai != null){
+          if(this.sales.data[i].orderTicketBai !== null){
             if (this.sales.data[i].orderTicketBai.status == '01') {
             this.salesTicketBai[i]=2
           }
