@@ -1,137 +1,312 @@
-<!-- <app-login class="container-fluid header-main" *ngIf="isLoggedIn == false"> </app-login> -->
-<div class="container-fluid header-main">
-  <h5 class="m-4">Detalle de cierre de caja</h5>
-  <div class="col-10 ms-4" *ngIf="loadCompleted">
-    <a [routerLink]="['/balances']" type="button" class=""
-      ><i class="fa-solid fa-chevron-left fa-2xl" style="color: #2d6bd7"></i
-    ></a>
-    <span class="ms-3">Referencia:{{ balances.reference }}</span>
-    <div class="d-flex justify-content-end">
-    <button class="btn btn-sm btn-secondary-customer" (click)="donwloadPDF()">
-      <i class="fa-solid fa-file-pdf fa-2xl" style="color: #da3006"></i>
-    </button>
+<div class="container-fluid header-main mt-4">
+<div class="d-flex justify-content-between mb-2" *ngIf="loadCompleted">
+  <a [routerLink]="['/balances']" type="button" class="" style="text-decoration: none;"><i class="fa-solid fa-angle-left"></i> Listado de cierres de caja</a>
+  <!--<span class="ms-3">Referencia:{{balances.reference}}</span>-->
+  <button class="btn btn-sm btn-danger" (click)="donwloadPDF()">
+    <i class="fa-solid fa-file-pdf fa-xl"></i>
+  </button>
+</div>
+<div class="col-12 col-sm-8 offset-sm-2 col-lg-4 offset-lg-4">
+  <div class="card card-customer">
+    <div class="card-header d-flex bg-secondary">
+      <div class="flex-fill">
+        <h4 class="card-title mt-3"> {{balances.balanceCommerce?.name}}</h4>
+      </div>
+      <div class="flex-fill text-end">
+        <label id="lblcomercial_cif" class="text-white"
+          ><span> {{balances.balanceCommerce?.nif}}</span></label
+        ><br />
+        <label id="lblcomercial_address" class="text-white"
+          ><span>{{ balances.balanceCommerce?.address }}</span></label
+        ><br />
+        <label id="lblcomercial_email" class="text-white"
+          ><span>{{ balances.balanceCommerce?.email }}</span></label
+        ><br />
+        <label id="lbldate" type="date" class="mt-2"
+          ><span>{{
+            balances.finishedAt | date : "dd/MM/yyyy HH:mm:ss"
+          }}</span></label
+        >
+      </div>
     </div>
-  </div>
-
-  <div class="col-12 col-sm-8 offset-sm-2 col-lg-4 offset-lg-4">
-    <div class="card card-customer">
-      <div class="card-header d-flex bg-secondary">
+    <div class="card-body">
+      <div class="d-flex">
         <div class="flex-fill">
-          <h4 class="card-title mt-3"> {{balances.balanceCommerce?.name}}</h4>
-        </div>
-        <div class="flex-fill text-end">
-          <label id="lblcomercial_cif" class="text-white"
-            ><span> {{balances.balanceCommerce?.nif}}</span></label
-          ><br />
-          <label id="lblcomercial_address" class="text-white"
-            ><span>{{ balances.balanceCommerce?.address }}</span></label
-          ><br />
-          <label id="lblcomercial_email" class="text-white"
-            ><span>{{ balances.balanceCommerce?.email }}</span></label
-          ><br />
-          <label id="lbldate" type="date" class="mt-2"
-            ><span>{{
-              balances.finishedAt | date : "dd/MM/yyyy HH:mm:ss"
-            }}</span></label
+          <label
+            ><span class="text-danger"
+              ><b>Nª ARQUEO:{{ " " + balances.reference }}</b></span
+            ></label
           >
         </div>
       </div>
-      <div class="card-body">
-        <div class="d-flex">
-          <div class="flex-fill">
+      <div class="row px-2 pt-2 pb-1">
+        <div class="col text-start">
+          <label class=""
+            >Desde {{ balances.startedAt | date : "dd/MM/yyyy hh:mm" }}</label
+          >
+        </div>
+        <div class="col text-end">
+          <label class=""
+            >Hasta
+            {{ balances.finishedAt | date : "dd/MM/yyyy hh:mm" }}</label
+          >
+        </div>
+      </div>
+      <div class="row px-2 pb-1">
+        <div class="col text-start">
+          <label class="">{{ balances.balanceCommerce?.name }}</label>
+        </div>
+      </div>
+      <div class="row px-2 pb-1">
+        <div class="col text-start">
+          <label class="">Nª total de operaciones</label>
+        </div>
+        <div class="col text-end">
+          <label class="">{{
+            balances.salesCount +
+              balances.refundsCount +
+              balances.rectifyCount
+          }}</label>
+        </div>
+      </div>
+      <div class="row px-2 pb-1">
+        <div class="col text-start">
+          <label class="">Ventas</label>
+        </div>
+        <div class="col text-end">
+          <label class="">{{
+            balances.sales / Math.pow(10, balances.decimals)
+              | currency : "Eur" : "€"
+          }}</label>
+        </div>
+      </div>
+      <div class="row px-2 pb-1">
+        <div class="col text-start">
+          <label class="">Movimientos de caja</label>
+        </div>
+        <div class="col text-end">
+          <label class="">{{
+            (balances.in - balances.out) / Math.pow(10, balances.decimals)
+              | currency : "Eur" : "€"
+          }}</label>
+        </div>
+      </div>
+      <div class="row px-2 pb-1">
+        <div class="col text-start">
+          <label class="">Devoluciones</label>
+        </div>
+        <div class="col text-end">
+          <label class="">{{
+            balances.refunds / Math.pow(10, balances.decimals)
+              | currency : "Eur" : "€"
+          }}</label>
+        </div>
+      </div>
+      <div class="row px-2 pb-1">
+        <hr />
+        <div class="col text-start">
+          <label class=""><b>TOTAL CALCULADO (€)</b></label>
+        </div>
+        <div class="col text-end">
+          <label class=""
+            ><b>{{
+              balances.total / Math.pow(10, balances.decimals)
+                | currency : "Eur" : "€"
+            }}</b></label
+          >
+        </div>
+      </div>
+      <div class="row px-2 pb-1 pt-2">
+        <div class="col text-start">
+          <label class="">Op. Rectificadas</label>
+        </div>
+        <div class="col text-end">
+          <label class="">{{ balances.rectifyCount }}</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <div class="d-flex">
+        <div class="row flex-fill">
+          <div class="col text-start">
             <label
               ><span class="text-danger"
-                ><b>Nª ARQUEO:{{ " " + balances.reference }}</b></span
+                ><b>CUADRE DE CAJA (EFECTIVO)</b></span
+              ></label
+            >
+          </div>
+          <div class="col text-end">
+            <label class="text-danger"><b>Importe</b> </label>
+          </div>
+        </div>
+      </div>
+      <div class="row px-2 pt-2 pb-1">
+        <div class="col text-start">
+          <label>Saldo inicial</label>
+        </div>
+        <div class="col text-end">
+          <label class="">{{
+            balances.opening / Math.pow(10, balances.decimals)
+              | currency : "Eur" : "€"
+          }}</label>
+        </div>
+      </div>
+      <div class="row px-2 pb-1">
+        <div class="col text-start">
+          <label class="">Ventas</label>
+        </div>
+        <div class="col text-end">
+          <label class="">{{
+            balances.sales / Math.pow(10, balances.decimals)
+              | currency : "Eur" : "€"
+          }}</label>
+        </div>
+      </div>
+      <div class="row px-2 pb-1">
+        <div class="col text-start">
+          <label class="">Entradas</label>
+        </div>
+        <div class="col text-end">
+          <label class="">{{
+            balances.in / Math.pow(10, balances.decimals)
+              | currency : "Eur" : "€"
+          }}</label>
+        </div>
+      </div>
+      <div class="row px-2 pb-1">
+        <div class="col text-start">
+          <label class="">Salidas</label>
+        </div>
+        <div class="col text-end">
+          <label class="">{{
+            balances.out / Math.pow(10, balances.decimals)
+              | currency : "Eur" : "€"
+          }}</label>
+        </div>
+      </div>
+      <div class="row px-2 pb-1">
+        <div class="col text-start">
+          <label class="">Devoluciones</label>
+        </div>
+        <div class="col text-end">
+          <label class="">{{
+            balances.refunds / Math.pow(10, balances.decimals)
+              | currency : "Eur" : "€"
+          }}</label>
+        </div>
+      </div>
+      <div class="row px-2 pb-1">
+        <div class="col text-start">
+          <label class="">CALCULADO EFECTIVO</label>
+        </div>
+        <div class="col text-end">
+          <label class="">{{
+            balances.autoCashRecount / Math.pow(10, balances.decimals)
+              | currency : "Eur" : "€"
+          }}</label>
+        </div>
+      </div>
+      <div class="row px-2 pb-1">
+        <div class="col text-start">
+          <label class="">RECUENTO EFECTIVO</label>
+        </div>
+        <div class="col text-end">
+          <label class="">{{
+            balances.manualCashRecount / Math.pow(10, balances.decimals)
+              | currency : "Eur" : "€"
+          }}</label>
+        </div>
+      </div>
+      <div class="row px-2 pb-1">
+        <div class="col text-start">
+          <label class="">Descuadre</label>
+        </div>
+        <div class="col text-end">
+          <label class="text-danger">{{
+            (balances.autoCashRecount - balances.manualCashRecount) /
+              Math.pow(10, balances.decimals) | currency : "Eur" : "€"
+          }}</label>
+        </div>
+      </div>
+      <div class="row px-2 pb-1">
+        <div class="col text-start">
+          <label class="">Retirada efectivo al cierre</label>
+        </div>
+        <div class="col text-end">
+          <label>{{
+            0 / Math.pow(10, balances.decimals) | currency : "Eur" : "€"
+          }}</label>
+        </div>
+      </div>
+      <div class="row px-2 pb-1">
+        <div class="col text-start">
+          <label>FIANZA (Nuevo saldo inicial)</label>
+        </div>
+        <div class="col text-end">
+          <label>{{
+            balances.nextOpening / Math.pow(10, balances.decimals)
+              | currency : "Eur" : "€"
+          }}</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <div class="d-flex">
+        <div class="row flex-fill">
+          <div class="col text-start">
+            <label
+              ><span class="text-danger"
+                ><b>RESUMEN POR TIPO IMPUESTO</b></span
               ></label
             >
           </div>
         </div>
-        <div class="row px-2 pt-2 pb-1">
-          <div class="col text-start">
-            <label class=""
-              >Desde {{ balances.startedAt | date : "dd/MM/yyyy hh:mm" }}</label
-            >
-          </div>
-          <div class="col text-end">
-            <label class=""
-              >Hasta
-              {{ balances.finishedAt | date : "dd/MM/yyyy hh:mm" }}</label
-            >
-          </div>
-        </div>
-        <div class="row px-2 pb-1">
-          <div class="col text-start">
-            <label class="">{{ balances.balanceCommerce?.name }}</label>
-          </div>
-        </div>
-        <div class="row px-2 pb-1">
-          <div class="col text-start">
-            <label class="">Nª total de operaciones</label>
-          </div>
-          <div class="col text-end">
-            <label class="">{{
-              balances.salesCount +
-                balances.refundsCount +
-                balances.rectifyCount
-            }}</label>
-          </div>
-        </div>
-        <div class="row px-2 pb-1">
-          <div class="col text-start">
-            <label class="">Ventas</label>
-          </div>
-          <div class="col text-end">
-            <label class="">{{
-              balances.sales / Math.pow(10, balances.decimals)
-                | currency : "Eur" : "€"
-            }}</label>
-          </div>
-        </div>
-        <div class="row px-2 pb-1">
-          <div class="col text-start">
-            <label class="">Movimientos de caja</label>
-          </div>
-          <div class="col text-end">
-            <label class="">{{
-              (balances.in - balances.out) / Math.pow(10, balances.decimals)
-                | currency : "Eur" : "€"
-            }}</label>
-          </div>
-        </div>
-        <div class="row px-2 pb-1">
-          <div class="col text-start">
-            <label class="">Devoluciones</label>
-          </div>
-          <div class="col text-end">
-            <label class="">{{
-              balances.refunds / Math.pow(10, balances.decimals)
-                | currency : "Eur" : "€"
-            }}</label>
-          </div>
-        </div>
-        <div class="row px-2 pb-1">
-          <hr />
-          <div class="col text-start">
-            <label class=""><b>TOTAL CALCULADO (€)</b></label>
-          </div>
-          <div class="col text-end">
-            <label class=""
-              ><b>{{
-                balances.total / Math.pow(10, balances.decimals)
-                  | currency : "Eur" : "€"
-              }}</b></label
-            >
-          </div>
-        </div>
-        <div class="row px-2 pb-1 pt-2">
-          <div class="col text-start">
-            <label class="">Op. Rectificadas</label>
-          </div>
-          <div class="col text-end">
-            <label class="">{{ balances.rectifyCount }}</label>
-          </div>
+      </div>
+      <div class="row ">
+        <div class="table-responsive">
+          <table
+            class="table table-borderless"
+            data-pagination="true"
+            data-page-size="10"
+          >
+            <thead class="text-customer">
+              <tr>
+                <th></th>
+                <th></th>
+                <th class="text-end fs-6">Base</th>
+                <th class="text-end">Cuota</th>
+                <th class="text-end">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let taxes of balances.balanceLines; index as i">
+                <ng-container
+                    *ngIf="taxes.itemName.substring(0, 3) == 'IVA'"
+                  >
+                <td>{{taxes.itemName}}</td>
+                <td></td>
+                <td class="text-end">{{taxes.base /
+                  Math.pow(10, taxes.decimals)*(-1) | currency : "Eur" : "€"}}</td>
+                <td class="text-end">{{taxes.tax /
+                  Math.pow(10, taxes.decimals)*(-1) | currency : "Eur" : "€"}}</td>
+                <td class="text-end">{{taxes.total /
+                  Math.pow(10, taxes.decimals)*(-1) | currency : "Eur" : "€"}}</td></ng-container>
+              </tr>
+              <tr>
+                <td>Total</td>
+                <td></td>
+                <td class="text-end">Pendiente suma</td>
+                <td class="text-end">Pendiente suma</td>
+                <td class="text-end">Pendiente suma</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
+    </div>
+
 
       <div class="card-body">
         <div class="d-flex">
@@ -139,235 +314,53 @@
             <div class="col text-start">
               <label
                 ><span class="text-danger"
-                  ><b>CUADRE DE CAJA (EFECTIVO)</b></span
-                ></label
-              >
-            </div>
-            <div class="col text-end">
-              <label class="text-danger"><b>Importe</b> </label>
-            </div>
-          </div>
-        </div>
-        <div class="row px-2 pt-2 pb-1">
-          <div class="col text-start">
-            <label>Saldo inicial</label>
-          </div>
-          <div class="col text-end">
-            <label class="">{{
-              balances.opening / Math.pow(10, balances.decimals)
-                | currency : "Eur" : "€"
-            }}</label>
-          </div>
-        </div>
-        <div class="row px-2 pb-1">
-          <div class="col text-start">
-            <label class="">Ventas</label>
-          </div>
-          <div class="col text-end">
-            <label class="">{{
-              balances.sales / Math.pow(10, balances.decimals)
-                | currency : "Eur" : "€"
-            }}</label>
-          </div>
-        </div>
-        <div class="row px-2 pb-1">
-          <div class="col text-start">
-            <label class="">Entradas</label>
-          </div>
-          <div class="col text-end">
-            <label class="">{{
-              balances.in / Math.pow(10, balances.decimals)
-                | currency : "Eur" : "€"
-            }}</label>
-          </div>
-        </div>
-        <div class="row px-2 pb-1">
-          <div class="col text-start">
-            <label class="">Salidas</label>
-          </div>
-          <div class="col text-end">
-            <label class="">{{
-              balances.out / Math.pow(10, balances.decimals)
-                | currency : "Eur" : "€"
-            }}</label>
-          </div>
-        </div>
-        <div class="row px-2 pb-1">
-          <div class="col text-start">
-            <label class="">Devoluciones</label>
-          </div>
-          <div class="col text-end">
-            <label class="">{{
-              balances.refunds / Math.pow(10, balances.decimals)
-                | currency : "Eur" : "€"
-            }}</label>
-          </div>
-        </div>
-        <div class="row px-2 pb-1">
-          <div class="col text-start">
-            <label class="">CALCULADO EFECTIVO</label>
-          </div>
-          <div class="col text-end">
-            <label class="">{{
-              balances.autoCashRecount / Math.pow(10, balances.decimals)
-                | currency : "Eur" : "€"
-            }}</label>
-          </div>
-        </div>
-        <div class="row px-2 pb-1">
-          <div class="col text-start">
-            <label class="">RECUENTO EFECTIVO</label>
-          </div>
-          <div class="col text-end">
-            <label class="">{{
-              balances.manualCashRecount / Math.pow(10, balances.decimals)
-                | currency : "Eur" : "€"
-            }}</label>
-          </div>
-        </div>
-        <div class="row px-2 pb-1">
-          <div class="col text-start">
-            <label class="">Descuadre</label>
-          </div>
-          <div class="col text-end">
-            <label class="text-danger">{{
-              (balances.autoCashRecount - balances.manualCashRecount) /
-                Math.pow(10, balances.decimals) | currency : "Eur" : "€"
-            }}</label>
-          </div>
-        </div>
-        <div class="row px-2 pb-1">
-          <div class="col text-start">
-            <label class="">Retirada efectivo al cierre</label>
-          </div>
-          <div class="col text-end">
-            <label>{{
-              0 / Math.pow(10, balances.decimals) | currency : "Eur" : "€"
-            }}</label>
-          </div>
-        </div>
-        <div class="row px-2 pb-1">
-          <div class="col text-start">
-            <label>FIANZA (Nuevo saldo inicial)</label>
-          </div>
-          <div class="col text-end">
-            <label>{{
-              balances.nextOpening / Math.pow(10, balances.decimals)
-                | currency : "Eur" : "€"
-            }}</label>
-          </div>
-        </div>
-      </div>
-
-      <div class="card-body">
-        <div class="d-flex">
-          <div class="row flex-fill">
-            <div class="col text-start">
-              <label
-                ><span class="text-danger"
-                  ><b>RESUMEN POR TIPO IMPUESTO</b></span
+                  ><b>RESUMEN POR METODO DE PAGO</b></span
                 ></label
               >
             </div>
           </div>
         </div>
-        <div class="row ">
-          <div class="table-responsive">
-            <table
-              class="table table-borderless"
-              data-pagination="true"
-              data-page-size="10"
-            >
-              <thead class="text-customer">
-                <tr>
-                  <th></th>
-                  <th></th>
-                  <th class="text-end fs-6">Base</th>
-                  <th class="text-end">Cuota</th>
-                  <th class="text-end">Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let taxes of balances.balanceLines; index as i">
-                  <ng-container
-                      *ngIf="taxes.itemName.substring(0, 3) == 'IVA'"
-                    >
-                  <td>{{taxes.itemName}}</td>
-                  <td></td>
-                  <td class="text-end">{{taxes.base /
-                    Math.pow(10, taxes.decimals)*(-1) | currency : "Eur" : "€"}}</td>
-                  <td class="text-end">{{taxes.tax /
-                    Math.pow(10, taxes.decimals)*(-1) | currency : "Eur" : "€"}}</td>
-                  <td class="text-end">{{taxes.total /
-                    Math.pow(10, taxes.decimals)*(-1) | currency : "Eur" : "€"}}</td></ng-container>
-                </tr>
-                <tr>
-                  <td>Total</td>
-                  <td></td>
-                  <td class="text-end">Pendiente suma</td>
-                  <td class="text-end">Pendiente suma</td>
-                  <td class="text-end">Pendiente suma</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+      <div class="row ">
+        <div class="table-responsive">
+          <table
+            class="table table-borderless"
+            data-pagination="true"
+            data-page-size="10"
+          >
+            <thead class="text-customer">
+              <tr>
+                <th></th>
+                <th></th>
+                <th ></th>
+                <th ></th>
+                <th class="text-end">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let paymentmethod of balances.balanceLines; index as i">
+                <ng-container
+                    *ngIf="paymentmethod.itemName.substring(0,3) == 'Efe' || paymentmethod.itemName.substring(0,3) == 'Tar' || paymentmethod.itemName.substring(0,3) == 'Val' || paymentmethod.itemName.substring(0,3) == 'Vir' || paymentmethod.itemName.substring(0,3) == 'Otr' || paymentmethod.itemName.substring(0,3) == 'Bon' || paymentmethod.itemName.substring(0,3) == 'Rec'"
+                  >
+                <td>{{paymentmethod.itemName}}</td>
 
-
-        <div class="card-body">
-          <div class="d-flex">
-            <div class="row flex-fill">
-              <div class="col text-start">
-                <label
-                  ><span class="text-danger"
-                    ><b>RESUMEN POR METODO DE PAGO</b></span
-                  ></label
-                >
-              </div>
-            </div>
-          </div>
-        <div class="row ">
-          <div class="table-responsive">
-            <table
-              class="table table-borderless"
-              data-pagination="true"
-              data-page-size="10"
-            >
-              <thead class="text-customer">
-                <tr>
-                  <th></th>
-                  <th></th>
-                  <th ></th>
-                  <th ></th>
-                  <th class="text-end">Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let paymentmethod of balances.balanceLines; index as i">
-                  <ng-container
-                      *ngIf="paymentmethod.itemName.substring(0,3) == 'Efe' || paymentmethod.itemName.substring(0,3) == 'Tar' || paymentmethod.itemName.substring(0,3) == 'Val' || paymentmethod.itemName.substring(0,3) == 'Vir' || paymentmethod.itemName.substring(0,3) == 'Otr' || paymentmethod.itemName.substring(0,3) == 'Bon' || paymentmethod.itemName.substring(0,3) == 'Rec'"
-                    >
-                  <td>{{paymentmethod.itemName}}</td>
-
-                  <td></td>
-                  <td ></td>
-                  <td ></td>
-                  <td class="text-end">{{paymentmethod.total /
-                    Math.pow(10, paymentmethod.decimals)*(-1) | currency : "Eur" : "€"}}</td></ng-container>
-                </tr>
-                <tr>
-                  <td>Total</td>
-                  <td></td>
-                  <td class="text-end">Pendiente suma</td>
-                  <td class="text-end">Pendiente suma</td>
-                  <td class="text-end">Pendiente suma</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+                <td></td>
+                <td ></td>
+                <td ></td>
+                <td class="text-end">{{paymentmethod.total /
+                  Math.pow(10, paymentmethod.decimals)*(-1) | currency : "Eur" : "€"}}</td></ng-container>
+              </tr>
+              <tr>
+                <td>Total</td>
+                <td></td>
+                <td class="text-end">Pendiente suma</td>
+                <td class="text-end">Pendiente suma</td>
+                <td class="text-end">Pendiente suma</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
   </div>
+</div>
 </div>

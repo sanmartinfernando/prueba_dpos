@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { SalesInfoDetailId } from 'src/app/_models/SalesDetailId.model';
 import { Salesdetailid } from 'src/app/_services/salesdetailid.service';
+import { DownloadPDFService } from 'src/app/_services/downloadpdf.service';
 
 
 
@@ -28,9 +29,7 @@ export class DetailsComponent implements OnInit {
 
   constructor(
     private paramsUrl: ActivatedRoute,
-    private router: Router,
-    private http: HttpClient,
-    private datePipe: DatePipe,
+    private DownloadPDFService: DownloadPDFService,
     private Salesdetailid: Salesdetailid,
     private EncryptionService: EncryptionService,
     private StorageService: StorageService
@@ -77,4 +76,10 @@ export class DetailsComponent implements OnInit {
 
     return total;
   }
+
+  donwloadPDF(){
+    this.DownloadPDFService.downloadFileOrders(this.orderId)
+  }
+
+
 }

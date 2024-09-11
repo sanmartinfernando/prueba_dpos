@@ -3,7 +3,7 @@ import { OrdersAggregateService } from './../_services/orders-aggregate.service'
 import { Component, OnInit } from '@angular/core';
 import { OrderAggregation } from '../_models/Orderaggregation.model';
 import { OrderAggregationCash } from '../_models/OrderAggregationCash.model';
-import { OrderAggregationTop3 } from '../_models/top3sales.model';
+import { OrderAggregationTop3 } from '../_models/Top3Sales.model';
 
 @Component({
   selector: 'DPOSW-dashboard',
@@ -110,7 +110,7 @@ export class DashboardComponent implements OnInit {
       if (value == 0) {
         value = null;
       } else {
-        value = value + '€';
+        value = value.toFixed(2) + '€';
       }
     }
     this.monthVarSearch = null;

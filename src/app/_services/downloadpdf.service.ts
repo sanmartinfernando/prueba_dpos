@@ -8,7 +8,14 @@ export class DownloadPDFService {
   constructor(private http: HttpClient) {}
 
   downloadFile(id:string): void {
-    const apiUrl = 'https://dpos.diusframi.tech:39443/wstickets/api/Balances/'+id+'/download'; // Cambia la URL según tu API
+    const apiUrl = 'https://dpos.diusframi.tech:39443/wstickets/api/Balances/'+id+'/download';
+    this.http.get(apiUrl, { responseType: 'blob' }).subscribe((response) => {
+      this.saveFile(response, id);
+    });
+  }
+
+  downloadFileOrders(id:string): void {
+    const apiUrl = 'https://dpos.diusframi.tech:39443/wstickets/api/Orders/'+id+'/download';
     this.http.get(apiUrl, { responseType: 'blob' }).subscribe((response) => {
       this.saveFile(response, id);
     });

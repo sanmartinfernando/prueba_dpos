@@ -1,11 +1,11 @@
-<!-- <app-login class="container-fluid header-main" *ngIf="isLoggedIn == false"> </app-login> -->
-<div class="container-fluid header-main">
-  <h5 class="m-4">Detalle de operación</h5>
-  <div class="col-3 ms-4">
-    <a [routerLink]="['/sales']" type="button"
-      ><i class="fa-solid fa-chevron-left fa-2xl" style="color: #2d6bd7"></i
-    ></a>
-    <span class="ms-3">Referencia {{ ticket.reference }}</span>
+<div class="container-fluid header-main mt-4">
+  <div class="d-flex justify-content-between mb-2">
+    <a [routerLink]="['/sales']" type="button" class="" style="text-decoration: none;">
+      <i class="fa-solid fa-angle-left"></i> Listado de operaciones</a>
+    <!--<span class="ms-3 card-title">Detalle {{ ticket.reference }}</span>-->
+    <button class="btn btn-sm btn-danger" (click)="donwloadPDF()">
+      <i class="fa-solid fa-file-pdf fa-xl"></i>
+    </button>
   </div>
   <!-- Load -->
   <div *ngIf="!loadCompleted" class="d-flex justify-content-center">
@@ -90,7 +90,7 @@
         <div class="row px-2 pb-4">
           <div class="col-7 col-md-9">
             <label id="lblarticlenumber_title"
-              ><span class="fs-6">Nº total de artículos</span></label
+              ><span class="">Nº total de artículos</span></label
             >
           </div>
           <div class="col-5 col-md-3 text-end pe-4">

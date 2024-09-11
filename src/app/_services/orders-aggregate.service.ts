@@ -5,7 +5,8 @@ import { environment } from 'src/environments/environment.dev-inte';
 import { RestRoutes } from '../_config/rest-routes.config';
 import { OrderAggregation } from '../_models/Orderaggregation.model';
 import { OrderAggregationCash } from '../_models/OrderAggregationCash.model';
-import { OrderAggregationTop3 } from '../_models/top3sales.model';
+import { OrderAggregationTop3 } from '../_models/Top3Sales.model';
+
 
 @Injectable({
   providedIn: 'root'

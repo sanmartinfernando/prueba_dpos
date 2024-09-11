@@ -207,9 +207,11 @@ export class ReportsComponent implements OnInit {
     this.sinceDate = (<HTMLInputElement>(
       document.getElementById('sinceDate')
     )).value;
-    this.sinceDateMilli = Date.parse(this.sinceDate);
+    if(this.sinceDate.length>0){
+    this.sinceDateMilli = Date.parse(this.sinceDate);}
     this.tilDate = (<HTMLInputElement>document.getElementById('tilDate')).value;
-    this.tilDateMilli = Date.parse(this.tilDate);
+    if(this.tilDate.length>0){
+    this.tilDateMilli = Date.parse(this.tilDate);}
 
     //Comienzo query búsqueda
     this.varSearch = "&qs={'and':[";
@@ -248,7 +250,7 @@ export class ReportsComponent implements OnInit {
       }
     }
     //Desde fecha
-    if (this.sinceDateMilli > 0) {
+    if (this.sinceDateMilli != undefined) {
       if (this.searchCounter == false) {
         this.searchCounter = true;
       } else {

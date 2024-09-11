@@ -79,4 +79,3 @@ export class BalancesDetailsComponent implements OnInit{
 
 
 
-
