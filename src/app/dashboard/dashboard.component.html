@@ -283,7 +283,7 @@
               "
             >
               <ngx-charts-bar-vertical
-                [view]="[800, 350]"
+                [view]="[1000, 350]"
                 [results]="dataset"
                 [xAxis]="true"
                 [yAxis]="true"
@@ -292,6 +292,7 @@
                 [customColors]="result"
                 [animations]="true"
                 *ngIf="loaded == true; else nochart"
+
               >
               </ngx-charts-bar-vertical
             ></ng-container>

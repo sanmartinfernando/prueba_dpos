@@ -102,7 +102,7 @@ export class DashboardComponent implements OnInit {
     )).value;
     if (this.monthVarSearch != 'Todos') {
       if (this.dataset[+this.monthVarSearch - 1].value == value && value !=0) {
-        value = value.toFixed(2) + '€';
+        value = value.toFixed(1) + '€';
       } else {
         value = null;
       }
@@ -110,7 +110,7 @@ export class DashboardComponent implements OnInit {
       if (value == 0) {
         value = null;
       } else {
-        value = value.toFixed(2) + '€';
+        value = value.toFixed(1) + '€';
       }
     }
     this.monthVarSearch = null;

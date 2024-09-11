@@ -38,20 +38,20 @@
       </div>
     </form>
   </div>
+  <!-- Load -->
+      <div *ngIf="loadCompleted==false" class="d-flex justify-content-center" style="position: absolute; left: 50%">
+        <div class="spinner-border  text-danger"></div>
+      </div>
   <br />
   <!-- Tabla e indicadores -->
   <div class="card">
     <div class="card-body">
-      <div class="d-flex justify-content-between mb-4">
-          <h5>Cierres de caja</h5>
+      <div class="d-flex justify-content-between mb-4" >
+          <h5><b>Cierres de caja</b></h5>
         <!-- Botón descarga -->
         <button class="btn btn-sm btn-secondary-customer">
           <i class="fa-solid fa-file-csv fa-xl"></i>
         </button>
-      </div>
-      <!-- Load -->
-      <div *ngIf="loadCompleted==false" class="d-flex justify-content-center">
-        <div class="spinner-border  text-danger"></div>
       </div>
       <!-- Tabla -->
       <div class="row">

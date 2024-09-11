@@ -1,5 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
+ngx-charts-bar-vertical ngx-charts-chart .ngx-charts-outer .ngx-charts .bar-chart.chart .ng-star-inserted .ng-star-inserted .ng-star-inserted .textDataLabel{
+  transform: rotate(0deg)!important;
+  transform: translate(-13px,-3px)!important;
+  font-weight: bold!important;
+}
+
+.gridline-path-vertical {
+  display: none !important;
+}
+
 @font-face {
   font-family: 'Roboto Cond Light';
   src: url('Fonts/RobotoCondensed-Light.eot');
@@ -1256,7 +1266,7 @@ ul.list-icons li svg {
   --bs-btn-disabled-border-color: #5492ee;
   --bs-btn-padding-y: 0.538rem;
   margin:.25rem .125rem;
-  
+
 }
 
 /*.btn.focus,
@@ -1744,7 +1754,7 @@ ul.list-icons li svg {
   background-color: #e0ebff;
 }
 
-/* Charts */ 
+/* Charts */
 .donut-chart {
   position: relative;
 	width: 200px;
@@ -1765,8 +1775,8 @@ font-size: 28px;
   line-height: 35px;
   padding: 15% 0 0;
 }
-	
-	
+
+
 .portion-block {
     border-radius: 50%;
     clip: rect(0px, 200px, 200px, 100px);
@@ -1783,8 +1793,8 @@ font-size: 28px;
     font-family: monospace;
     font-size: 1.5rem;
   }
-	
-	
+
+
 #part1 {
     transform: rotate(0deg);
   }
@@ -1794,8 +1804,8 @@ font-size: 28px;
 		/*transform: rotate(76deg);*/
 		animation: first 1s 1 forwards;
 	  }
-	
-	
+
+
 #part2 {
     transform: rotate(100deg);
   }
@@ -1810,19 +1820,19 @@ font-size: 28px;
 		background-color: #4FC4F6;
 		animation: third 0.5s 1 forwards 2s;
 	}
-	
-	
+
+
 /* Animation */
 @keyframes first {
     from {transform: rotate(0deg);}
     to {transform: rotate(100deg);}
 }
-	
+
 @keyframes second {
     from {transform: rotate(0deg);}
     to {transform: rotate(150deg);}
 }
-	
+
 @keyframes third {
     from {transform: rotate(0deg);}
     to {transform: rotate(111deg);}
