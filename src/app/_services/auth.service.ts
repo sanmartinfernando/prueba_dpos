@@ -27,6 +27,7 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   async login(UserName: string, Password: string): Promise<string> {
+    //let urlLogin: string = `${environment.urlAuth}${RestRoutes.AUTHPU}/login`;
     let urlLogin: string = `${environment.urlAuth}${RestRoutes.AUTH}/login`;
     console.log(urlLogin);
     var loginRequest = new LoginRequest();

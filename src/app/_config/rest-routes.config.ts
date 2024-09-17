@@ -6,6 +6,7 @@ export const RestRoutes = {
   LANGUAGES: `${API}/Languages`,
   USER: `${API}/user`,
   AUTH: `${API}/auth`, // WS controller para peticiones auth
+  AUTHPU:`${API}/auth/portalusers`,
   ALERTS: `${API}/Alerts`,
   ALERTS_SUMMARY: `${API}/Alerts/summaries`,
   ALERTS_SUMMARY_SEARCH: `${API}/Alerts/search/summary/page`,
