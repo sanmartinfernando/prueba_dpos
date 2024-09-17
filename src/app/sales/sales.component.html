@@ -112,16 +112,16 @@
                     <input class="form-check-input" type="checkbox" [checked]="isAllSelected"
                       (change)="CheckAll($event)" />
                   </th>
-                  <th class="text-center">Documento</th>
+                  <th class="text-start">Documento</th>
                   <th class="text-center">Tipo</th>
-                  <th class="text-center">Fecha</th>
+                  <th class="text-start">Fecha</th>
                   <th class="text-center">Terminal</th>
                   <th class="text-center">Factura verificada</th>
-                  <th class="text-center">Subtotal</th>
-                  <th class="text-center">Descuentos</th>
-                  <th class="text-center">Base imponible</th>
-                  <th class="text-center">Cuota de IVA</th>
-                  <th class="text-center">Total</th>
+                  <th class="text-end">Subtotal</th>
+                  <th class="text-end">Descuentos</th>
+                  <th class="text-end">Base imponible</th>
+                  <th class="text-end">IVA</th>
+                  <th class="text-end">Total</th>
                   <th></th>
                 </tr>
               </thead>
@@ -146,19 +146,19 @@
                         [checked]="isAllSelected"
                       />
                     </td>
-                    <td class="text-center align-middle"><i class="fa-solid fa-receipt fa-xl me-1 text-amber"></i>
-                      {{ sale.reference }}
+                    <td class="text-start align-middle"><!--<i class="fa-solid fa-receipt fa-xl me-1 text-amber"></i>--><span style="font-weight: 500;color:grey;">
+                      {{ sale.reference }}</span>
                     </td>
                     <td class="text-center align-middle" *ngIf="sale.type == 0">
-                      Venta
+                      <div class="badge rounded-pill bg-sale">Venta</div>
                     </td>
                     <td class="text-center align-middle" *ngIf="sale.type == 2">
-                      Devolución
+                      <div class="badge rounded-pill bg-refund">Devolución</div>
                     </td>
                     <td class="text-center align-middle" *ngIf="sale.type == 5">
-                      Rectificación
+                      <div class="badge rounded-pill bg-edits">Rectificación</div>
                     </td>
-                    <td class="text-center align-middle">
+                    <td class="text-start align-middle">
                       {{ sale.createdAt | date : "dd/MM/yyyy hh:mm" }}
                     </td>
                     <td class="text-center align-middle">
@@ -168,46 +168,46 @@
                       class="text-center align-middle"
                       *ngIf="sale.orderTicketBai == null"
                     >
-                      <i class="fa-solid fa-qrcode"></i> Pendiente de enviar
+                    <div class="badge rounded-pill bg-pending"><i class="fa-solid fa-qrcode"></i> Pendiente de enviar</div>
                     </td>
                     <td
                       class="text-center align-middle"
                       *ngIf="salesTicketBai[i] == 0"
                     >
-                      <i class="fa-solid fa-qrcode"></i> Enviado y aceptado
+                      <div class="badge rounded-pill bg-accept"><i class="fa-solid fa-qrcode"></i> Enviado y aceptado</div>
                     </td>
                     <td
                       class="text-center align-middle"
                       *ngIf="salesTicketBai[i] == 1"
                     >
-                      <i class="fa-solid fa-qrcode"></i> Enviado y aceptado, con avisos
+                    <div class="badge rounded-pill bg-warning"><i class="fa-solid fa-qrcode"></i> Enviado y aceptado, con avisos</div>
                     </td>
                     <td
                       class="text-center align-middle"
                       *ngIf="salesTicketBai[i] == 2"
                     >
-                      <i class="fa-solid fa-qrcode"></i> Enviado y rechazado
+                    <div class="badge rounded-pill bg-rejected"><i class="fa-solid fa-qrcode"></i> Enviado y rechazado</div>
                     </td>
-                    <td class="text-center align-middle">
+                    <td class="text-end align-middle">
                       {{ sale.subTotal / (Math.pow(10, sale.decimals)) | currency : "Eur" : "€" }}
                     </td>
-                    <td class="text-center align-middle">
+                    <td class="text-end align-middle">
                       {{ sale.totalDiscount / (Math.pow(10, sale.decimals)) | currency : "Eur" : "€" }}
                     </td>
-                    <td class="text-center align-middle">
+                    <td class="text-end align-middle">
                       {{
                         sale.orderTaxes[0].base / (Math.pow(10, sale.orderTaxes[0].decimals)) | currency : "Eur" : "€"
                       }}
                     </td>
-                    <td class="text-center align-middle">
+                    <td class="text-end align-middle">
                       {{
                         sale.orderTaxes[0].total / (Math.pow(10, sale.orderTaxes[0].decimals)) | currency : "Eur" : "€"
                       }}
                     </td>
-                    <td class="text-center align-middle">
+                    <td class="text-end align-middle">
                       {{ sale.total / (Math.pow(10, sale.decimals)) | currency : "Eur" : "€" }}
                     </td>
-                    <td>
+                    <td class="text-end align-middle">
                       <span id="detailsticket" class="align-center">
                         <a
                           [routerLink]="code"

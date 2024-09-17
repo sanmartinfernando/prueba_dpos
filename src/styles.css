@@ -28,11 +28,11 @@ ngx-charts-bar-vertical ngx-charts-chart .ngx-charts-outer .ngx-charts .bar-char
     url('Fonts/RobotoCondensed-Regular.svg#RobotoCondensed-Regular') format('svg');
 }
 
-.roboto-mono {
+/*.roboto-mono {
   font-family: "Roboto Mono", monospace;
   font-optical-sizing: auto;
   font-style: normal;
-}
+}*/
 
 @font-face {
   font-family: 'Carnas';
@@ -1740,8 +1740,44 @@ ul.list-icons li svg {
 }
 
 .bg-accept {
-  background: #59b3b730;
-  color: #108085;
+  background: #e0f1f1;
+  color: #007b81;
+}
+
+.bg-pending {
+  background: #edf1f5;
+  color: #444e59;
+}
+
+.bg-warnings {
+  background: #fff2cc;
+  color: #444e59;
+}
+
+.bg-rejected{
+  background: #ffd6d6;
+  color: #DA1D1D;
+}
+
+.bg-sale{
+  background: #cbeefa;
+  color: #0094c9;
+  border: 1px solid #73d7fb;
+  padding: 6px 10px;
+}
+
+.bg-refund{
+  background: #fff8f0;
+  color: #f58300;
+  border: 1px solid #ffb157;
+  padding: 6px 10px;
+}
+
+.bg-edits{
+  background: rgb(252 242 255);
+  color: rgb(175, 75, 206);
+  border: 1px solid rgb(238 184 255);
+  padding: 6px 10px;
 }
 
 /*Progress*/
