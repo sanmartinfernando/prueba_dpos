@@ -1,0 +1,28 @@
+<div class="container mt-5 col-md-6 offset-md-3">
+  <div class="card">
+    <div id="cardheader" class="card-header card-header-customer">
+      <h4 class="card-title">Recuperación de contraseña</h4>
+    </div>
+    <form *ngIf="!isLoggedIn">
+      <div class="form-group my-4 ms-5 me-5">
+        <label class="mb-3" for="username"
+          >Introduzca su nombre de usuario</label
+        >
+        <input
+          type="username"
+          class="form-control"
+          [(ngModel)]="userLocal"
+          name="user"
+        />
+        <div class="mt-3">
+          <button type="submit" class="btn button" (click)="sendUSerPwRec()">
+            Aceptar
+          </button>
+        </div>
+        <div class="mt-3 text-success" *ngIf="text.length>0">
+          <span>{{text}}</span>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

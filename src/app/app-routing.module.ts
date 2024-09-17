@@ -11,6 +11,8 @@ import { BalancesComponent } from './balances/balances.component';
 import { DetailsComponent } from './sales/details/details.component';
 import { BalancesDetailsComponent } from './balances/balances-details/balances-details.component';
 import { AuthGuard } from './_guard/auth.guard';
+import { PwrecoveryComponent } from './common/login/pwrecovery/pwrecovery.component';
+import { PwresetComponent } from './common/login/pwreset/pwreset.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, title:"DPOS"    },
@@ -24,6 +26,8 @@ const routes: Routes = [
   { path: 'balances', component: BalancesComponent, canActivate: [AuthGuard], title:"DPOS - Cierres"  },
   { path: 'details/:id', component:DetailsComponent, canActivate: [AuthGuard], title:"DPOS - Ventas"  },
   { path: 'balances-details/:id',component: BalancesDetailsComponent, canActivate: [AuthGuard], title:"DPOS - Cierres" },
+  { path: 'login/password-recovery', component: PwrecoveryComponent, title:"DPOS - Recuperación de contraseña" },
+  { path: 'password-reset', component: PwresetComponent, title:"DPOS - Recuperación de contraseña"  }
 ];
 
 @NgModule({

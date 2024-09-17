@@ -23,6 +23,9 @@
         <div class="my-3">
           <label for="password" class="form-label">Contraseña</label>
           <input type="password" matInput class="form-control" placeholder="" formControlName="pw" minlength="4" />
+          <div style="padding: 5px;">
+            <a [routerLink]="code"><small>¿Has olvidado la contraseña?</small></a>
+          </div>
           <div *ngIf="loginForm.value.pw.errors && loginForm.submitted" class="invalid-feedback">
             <div *ngIf="loginForm.value.pw.errors['required']">
               Password is required

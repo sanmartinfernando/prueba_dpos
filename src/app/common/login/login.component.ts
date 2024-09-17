@@ -15,7 +15,7 @@ export class LoginComponent implements OnInit {
 
   private userSuscription!: Subscription;
   loginForm;
-
+  code:string = "password-recovery";
   isLoggedIn = false;
   isLoginFailed = false;
   errorMessage = '';

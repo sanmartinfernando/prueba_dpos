@@ -271,7 +271,7 @@
                   </tr>
                 </ng-container>
               </tbody>
-              <tr>
+              <tr *ngIf="emptyA == false">
                 <td></td>
                 <td class="text-end align-middle"> <b>TOTAL</b> </td>
                 <td class="text-center align-middle"><b>{{ totalPercentage + ' %'}}</b></td>

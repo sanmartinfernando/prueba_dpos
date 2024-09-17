@@ -19,6 +19,7 @@ export class ReportsComponent implements OnInit {
     private StorageService: StorageService
   ) {}
 
+  emptyA: boolean = false;
   size: number = 2147483647;
   sales: ArqueoX;
   salesReports: SalesReport;
@@ -57,6 +58,7 @@ export class ReportsComponent implements OnInit {
   emptySearch: boolean = false;
 
   ngOnInit(): void {
+    this.emptyA = false;
     this.ArqueoXService.GetArqueoX(
       this.sinceDateMilli,
       this.tilDateMilli
@@ -175,6 +177,11 @@ export class ReportsComponent implements OnInit {
         if (error.status == 401) {
           this.isLoggedIn = false;
           this.StorageService.clean();
+        }
+        if (error.status == 404) {
+          console.log(this.emptyA)
+          this.emptyA = true;
+          console.log(this.emptyA)
         }
       }
     );
