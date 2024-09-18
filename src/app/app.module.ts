@@ -30,6 +30,7 @@ import { AuthGuard } from './_guard/auth.guard';
 import { QRCodeModule } from 'angularx-qrcode';
 import { PwrecoveryComponent } from './common/login/pwrecovery/pwrecovery.component';
 import { PwresetComponent } from './common/login/pwreset/pwreset.component';
+import { CountdownComponent } from 'ngx-countdown';
 
 
 @NgModule({ declarations: [
@@ -61,7 +62,8 @@ import { PwresetComponent } from './common/login/pwreset/pwreset.component';
         RouterModule,
         NgxChartsModule,
         BrowserAnimationsModule,
-        QRCodeModule
+        QRCodeModule,
+        CountdownComponent
       ],
         providers: [
         httpInterceptorProviders,

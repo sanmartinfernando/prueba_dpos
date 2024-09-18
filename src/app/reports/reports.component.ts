@@ -174,10 +174,10 @@ export class ReportsComponent implements OnInit {
         this.loadCompleted = true;
       },
       (error) => {
-        if (error.status == 401) {
+       /*  if (error.status == 401) {
           this.isLoggedIn = false;
           this.StorageService.clean();
-        }
+        } */
         if (error.status == 404) {
           console.log(this.emptyA)
           this.emptyA = true;

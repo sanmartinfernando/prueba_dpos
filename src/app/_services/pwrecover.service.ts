@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { RestRoutes } from '../_config/rest-routes.config';
+import { environment } from 'src/environments/environment.dev-inte';
 
 const TOKEN_KEY = 'dmf-token';
 const USERNAME_KEY = 'dmf-username';
@@ -23,7 +24,7 @@ export class PwRecoverService {
   constructor(private http: HttpClient) { }
 
   async PwRecovermethod(user: any): Promise<string> {
-    let urlLogin: string = `${RestRoutes.PW_RECOVER}`;
+    let urlLogin: string = `${environment.urlAuth}${RestRoutes.PW_RECOVER}`;
     await fetch(urlLogin, {
       method: 'POST',
       headers: {
