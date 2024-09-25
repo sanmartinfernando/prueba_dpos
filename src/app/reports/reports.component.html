@@ -139,7 +139,7 @@
                   </tr>
                 </ng-container>
               </tbody>
-              <tr>
+              <tr *ngIf="emptyA == false">
                 <td class="text-center align-middle"></td>
                 <td class="text-end align-middle"><b>TOTAL</b></td>
                 <td class="text-center align-middle"><b>{{ totalBase | currency : "Eur" : "€"}}</b></td>
@@ -207,7 +207,7 @@
                   </tr>
                 </ng-container>
               </tbody>
-              <tr>
+              <tr *ngIf="emptyA == false">
                 <td class="text-center align-middle"></td>
                 <td clas="text-center align-middle"></td>
                 <td class="text-end align-middle"><b>TOTAL</b></td>

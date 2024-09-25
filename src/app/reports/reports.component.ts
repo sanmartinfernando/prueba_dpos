@@ -206,6 +206,7 @@ export class ReportsComponent implements OnInit {
   //Método de búsqueda
 
   searchSales() {
+    this.emptyA = false;
     if (this.terminalVarSearch == '') {
       this.terminalVarSearch = null;
     }
@@ -309,6 +310,7 @@ export class ReportsComponent implements OnInit {
           if (error.status == 404) {
             this.emptySearch = true;
             this.loadCompleted = true;
+            this.emptyA = true;
           }
         }
       );
@@ -325,6 +327,7 @@ export class ReportsComponent implements OnInit {
           if (error.status == 404) {
             this.emptySearch = true;
             this.loadCompleted = true;
+            this.emptyA = true;
           }
           if (error.status == 401){
           this.isLoggedIn = false;
