@@ -11,7 +11,7 @@
           name="terminal"
           [(ngModel)]="terminalVarSearch"
         >
-          <option></option>
+          <option>Todos</option>
           <option *ngFor="let terminal of selectSales[0]; index as i">
             {{ terminal }}
           </option>
@@ -19,11 +19,11 @@
       </div>
       <div class="mx-3">
         <label class="form-label">Desde</label>
-        <input type="date" class="form-select" id="sinceDate" />
+        <input type="date" class="form-control" id="sinceDate" />
       </div>
       <div class="mx-3">
         <label class="form-label">Hasta</label>
-        <input type="date" class="form-select" id="tilDate" />
+        <input type="date" class="form-control" id="tilDate" />
       </div>
       <div id="searchButtonsDiv" class="ms-5 d-flex overflow-auto">
         <button type="reset" class="btn btn-outline-danger align-self-end"> <a type="button"
@@ -38,20 +38,24 @@
       </div>
     </form>
   </div>
+    <br />
   <!-- Load -->
-      <div *ngIf="loadCompleted==false" class="d-flex justify-content-center" style="position: absolute; left: 50%">
+      <div *ngIf="loadCompleted==false" class="ms-5 d-flex justify-content-center" style="position: absolute; left: 50%">
         <div class="spinner-border  text-danger"></div>
       </div>
-  <br />
   <!-- Tabla e indicadores -->
   <div class="card">
     <div class="card-body">
-      <div class="d-flex justify-content-between mb-4" >
+      <div class="row mb-4" >
+        <div class="col">
           <h5><b>Cierres de caja</b></h5>
+        </div>
         <!-- Botón descarga -->
-        <button class="btn btn-sm btn-secondary-customer">
+        <div class="col-3 text-end">
+        <button class="btn btn-outline-info justify-content-center">
           <i class="fa-solid fa-file-csv fa-xl"></i>
         </button>
+      </div>
       </div>
       <!-- Tabla -->
       <div class="row">
@@ -64,15 +68,15 @@
                     <input class="form-check-input" type="checkbox" [checked]="isAllSelected"
                       (change)="CheckAll($event)" />
                   </th>
-                  <th class="text-center">Documento</th>
+                  <th class="text-start">Documento</th>
                   <th class="text-center">Terminal</th>
-                  <th class="text-center">Desde</th>
-                  <th class="text-center">Hasta</th>
+                  <th class="text-start">Desde</th>
+                  <th class="text-start">Hasta</th>
                   <th class="text-center">Operaciones</th>
-                  <th class="text-center">Descuadre efecivo (€)</th>
-                  <th class="text-center">Base imponible</th>
-                  <th class="text-center">Cuota de IVA</th>
-                  <th class="text-center">Total</th>
+                  <th class="text-end">Descuadre(€)</th>
+                  <th class="text-end">Base imponible</th>
+                  <th class="text-end">IVA</th>
+                  <th class="text-end">Total</th>
                   <th></th>
                 </tr>
               </thead>
@@ -91,36 +95,36 @@
                     <td class="text-center align-middle">
                       <input class="form-check-input" type="checkbox" [checked]="isAllSelected" />
                     </td>
-                    <td class="text-center align-middle" id="massivetransfer"><i class="fa-solid fa-receipt fa-xl me-1 text-amber"></i>
-                      {{ balance.reference }}
+                    <td class="text-start align-middle" id="massivetransfer"><span style="font-weight: 500;color:grey;">
+                      {{ balance.reference }}</span>
                     </td>
                     <td class="text-center align-middle">
                       {{ balance.terminalNumber }}
                     </td>
-                    <td class="text-center align-middle">
+                    <td class="text-start align-middle">
                       {{ balance.startedAt | date : "dd/MM/yyyy hh:mm" }}
                     </td>
-                    <td class="text-center align-middle">
+                    <td class="text-start align-middle">
                       {{ balance.finishedAt | date : "dd/MM/yyyy hh:mm" }}
                     </td>
                     <td class="text-center align-middle">
                       {{ balance.salesCount + balance.refundsCount + balance.rectifyCount}}
                     </td>
-                    <td class="text-center align-middle">
+                    <td class="text-end align-middle">
                       {{ mismatch[i]| currency : "Eur" : "€"  }}
                     </td>
-                    <td class="text-center align-middle">
+                    <td class="text-end align-middle">
                       Base
                     </td>
-                    <td class="text-center align-middle">
+                    <td class="text-end align-middle">
                       IVA
                     </td>
-                    <td class="text-center align-middle">
+                    <td class="text-end align-middle">
                       Total
                     </td>
                     <td class="text-end">
                       <span id="detailsticket" class="align-middle" style="cursor: pointer;">
-                        <a [routerLink]="code" (click)="sendSalesDetails(balance.balanceId)"><i class="fa-solid fa-eye" style="color: #74c0fc;"></i></a></span>
+                        <a [routerLink]="code" (click)="sendSalesDetails(balance.balanceId)"><i class="fa-solid fa-arrow-right" style="color: #74c0fc;"></i></a></span>
                     </td>
                   </tr>
                 </ng-container>

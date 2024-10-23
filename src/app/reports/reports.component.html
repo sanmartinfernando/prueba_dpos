@@ -14,13 +14,8 @@
       </div>
       <div class="me-3">
         <label class="form-label">Terminal</label>
-        <select
-          class="form-select"
-          name="terminal"
-          [(ngModel)]="terminalVarSearch"
-        >
-          <option></option>
-          <option>Todos</option>
+        <select class="form-select" name="terminal" [(ngModel)]="terminalVarSearch">
+          <option selected>Todos</option>
           <option>1</option>
           <option *ngFor="let terminal of selectSales[0]; index as i">
             {{ terminal }}
@@ -29,55 +24,42 @@
       </div>
       <div class="mx-3">
         <label class="form-label">Desde</label>
-        <input type="date" class="form-select" id="sinceDate" />
+        <input type="date" class="form-control" id="sinceDate" />
       </div>
       <div class="mx-3">
         <label class="form-label">Hasta</label>
-        <input type="date" class="form-select" id="tilDate" />
+        <input type="date" class="form-control" id="tilDate" />
       </div>
       <div id="searchButtonsDiv" class="ms-5 d-flex overflow-auto">
         <button type="reset" class="btn btn-outline-danger align-self-end">
           <a type="button"><i class="fas fa-eraser"></i> </a>
         </button>
-        <a
-          type="button"
-          class="btn btn-primary align-self-end"
-          (click)="searchSales()"
-          ><i class="fas fa-search"></i>&nbsp;&nbsp;Buscar</a
-        >
+        <a type="button" class="btn btn-primary align-self-end" (click)="searchSales()"><i
+            class="fas fa-search"></i>&nbsp;&nbsp;Buscar</a>
       </div>
     </form>
   </div>
   <br />
   <!-- Load -->
-  <div
-    *ngIf="loadCompleted == false"
-    class="d-flex justify-content-center"
-    style="position: absolute; left: 50%"
-  >
+  <div *ngIf="loadCompleted == false" class="d-flex justify-content-center" style="position: absolute; left: 50%">
     <div class="spinner-border text-danger"></div>
   </div>
   <!-- Tabla e indicadores -->
   <br />
   <div class="card">
     <div class="card-body">
-      <div class="row mb-4">
-        <div class="col">
+      <div class="row mb-2">
+        <div class="col d-flex align-items-center">
           <h5>
-            <b
-              >Resultados de búsqueda
-              <i
-                class="fa-solid fa-chevron-left fa-xs"
-                style="color: #2d6bd7"
-              ></i>
-              {{ reportVarSearch }}</b
-            >
+            <b>{{ reportVarSearch }}</b>
           </h5>
         </div>
         <!-- Descarga -->
-        <button class="btn btn-sm btn-secondary-customer">
-          <i class="fa-solid fa-file-csv fa-xl" style="color: #008000"></i>
-        </button>
+         <div class="col-3 text-end">
+          <button class="btn btn-outline-info justify-content-center">
+            <i class="fa-solid fa-file-csv fa-xl"></i>
+          </button>
+         </div>
       </div>
       <!-- Tabla vacia -->
       <div class="row" *ngIf="reportVarSearch == null">
@@ -87,69 +69,60 @@
       <div class="row" *ngIf="reportVarSearch == 'Impuestos'">
         <div class="col">
           <div class="table-responsive">
-            <table
-              class="table table-hover order-table"
-              data-pagination="true"
-              data-page-size="10"
-            >
+            <table class="table table-hover order-table" data-pagination="true" data-page-size="10">
               <thead class="text-customer">
                 <tr>
-                  <th class="text-center">Impuesto</th>
-                  <th class="text-center">Valor (%)</th>
-                  <th class="text-center">Base</th>
-                  <th class="text-center">Cuota</th>
+                  <th class="text-start">Impuesto</th>
+                  <th class="text-end">Valor (%)</th>
+                  <th class="text-end">Base</th>
+                  <th class="text-end">Cuota</th>
                 </tr>
               </thead>
-              <ng-template #empty
-                ><td colspan="5">
+              <ng-template #empty>
+                <td colspan="5">
                   <b>No existen registros que mostrar</b>
-                </td></ng-template
-              >
+                </td>
+              </ng-template>
               <tbody>
                 <ng-container *ngIf="emptySearch == false; else empty">
-                  <tr
-                    *ngFor="
+                  <tr *ngFor="
                       let taxes of sales.balanceLines
                         | paginate : { itemsPerPage: 10, currentPage: page };
                       index as i
-                    "
-                  >
-                    <ng-container
-                      *ngIf="taxes.itemName.substring(0, 3) == 'IVA'"
-                    >
-                      <td class="text-center align-middle">
+                    ">
+                    <ng-container *ngIf="taxes.itemName.substring(0, 3) == 'IVA'">
+                      <td class="text-start align-middle">
                         {{ taxes.itemName }}
                       </td>
-                      <td class="text-center align-middle">
+                      <td class="text-end align-middle">
                         {{ taxes.itemValue / Math.pow(10, taxes.decimals) }}
                       </td>
-                      <td class="text-center align-middle">
+                      <td class="text-end align-middle">
                         {{
-                          taxes.base / Math.pow(10, taxes.decimals)
-                            | currency : "Eur" : "€"
+                        taxes.base / Math.pow(10, taxes.decimals)
+                        | currency : "Eur" : "€"
                         }}
                       </td>
-                      <td class="text-center align-middle">
+                      <td class="text-end align-middle">
                         {{
-                          taxes.total / Math.pow(10, taxes.decimals)
-                            | currency : "Eur" : "€"
+                        taxes.total / Math.pow(10, taxes.decimals)
+                        | currency : "Eur" : "€"
                         }}
                       </td>
                     </ng-container>
                   </tr>
                 </ng-container>
+                <tr>
+                  <td class="text-start align-middle"></td>
+                  <td class="text-end align-middle"><b>TOTAL</b></td>
+                  <td class="text-end align-middle"><b>{{ totalBase | currency : "Eur" : "€"}}</b></td>
+                  <td class="text-end align-middle"><b>{{ totalCuote | currency : "Eur" : "€"}}</b></td>
+                </tr>
               </tbody>
-              <tr>
-                <td class="text-center align-middle"></td>
-                <td class="text-end align-middle"><b>TOTAL</b></td>
-                <td class="text-center align-middle"><b>{{ totalBase | currency : "Eur" : "€"}}</b></td>
-                <td class="text-center align-middle"><b>{{ totalCuote | currency : "Eur" : "€"}}</b></td>
-              </tr>
+              
             </table>
             <div class="has-text-centered">
-              <pagination-controls
-                (pageChange)="page = $event"
-              ></pagination-controls>
+              <pagination-controls (pageChange)="page = $event"></pagination-controls>
             </div>
           </div>
         </div>
@@ -158,67 +131,60 @@
       <div class="row" *ngIf="reportVarSearch == 'Productos'">
         <div class="col">
           <div class="table-responsive">
-            <table
-              class="table table-hover order-table"
-              data-pagination="true"
-              data-page-size="10"
-            >
+            <table class="table table-hover order-table" data-pagination="true" data-page-size="10">
               <thead class="text-customer">
                 <tr>
-                  <th class="text-center">Producto</th>
-                  <th class="text-center">Categoría</th>
-                  <th class="text-center">PVP (IVA inc.)</th>
-                  <th class="text-center">Ud. vendidas</th>
-                  <th class="text-center">Total</th>
+                  <th class="text-start">Producto</th>
+                  <th class="text-start">Categoría</th>
+                  <th class="text-end">PVP (IVA inc.)</th>
+                  <th class="text-end">Ud. vendidas</th>
+                  <th class="text-end">Total</th>
                 </tr>
               </thead>
-              <ng-template #empty
-                ><td colspan="5">
+              <ng-template #empty>
+                <td colspan="5">
                   <b>No existen registros que mostrar</b>
-                </td></ng-template
-              >
+                </td>
+              </ng-template>
               <tbody>
                 <ng-container *ngIf="emptySearch == false; else empty">
-                  <tr
-                    *ngFor="
+                  <tr *ngFor="
                       let product of indexProduct
                         | paginate : { itemsPerPage: 10, currentPage: page };
                       index as z
-                    "
-                  >
-                    <td class="text-center align-middle">
+                    ">
+                    <td class="text-start align-middle">
                       {{ product.product }}
                     </td>
-                    <td class="text-center align-middle">
+                    <td class="text-start align-middle">
                       Columna provisional
                     </td>
-                    <td class="text-center align-middle">
+                    <td class="text-end align-middle">
                       {{
-                        product.total / 100000000 / (product.units / 1000)
-                          | currency : "Eur" : "€"
+                      product.total / 100000000 / (product.units / 1000)
+                      | currency : "Eur" : "€"
                       }}
                     </td>
-                    <td class="text-center align-middle">
+                    <td class="text-end align-middle">
                       {{ product.units / 1000 }}
                     </td>
-                    <td class="text-center align-middle">
+                    <td class="text-end align-middle">
                       {{ product.total / 100000000 | currency : "Eur" : "€" }}
                     </td>
                   </tr>
                 </ng-container>
+                <tr>
+                  <td class="text-start align-middle"></td>
+                  <td clas="text-start align-middle"></td>
+                  <td class="text-end align-middle"><b>TOTAL</b></td>
+                  <td class="text-end align-middle"><b>{{ totalUnits}}</b></td>
+                  <td class="text-end align-middle"><b>{{ totalUnitsValor | currency : "Eur" : "€"}}</b></td>
+                </tr>
               </tbody>
-              <tr>
-                <td class="text-center align-middle"></td>
-                <td clas="text-center align-middle"></td>
-                <td class="text-end align-middle"><b>TOTAL</b></td>
-                <td class="text-center align-middle"><b>{{ totalUnits}}</b></td>
-                <td class="text-center align-middle"><b>{{ totalUnitsValor | currency : "Eur" : "€"}}</b></td>
-              </tr>
+             
             </table>
             <div class="has-text-centered">
-              <pagination-controls
-                (pageChange)="page = $event"
-              ></pagination-controls>
+              <pagination-controls (pageChange)="page = $event"></pagination-controls>
             </div>
           </div>
         </div>
@@ -227,61 +193,52 @@
       <div class="row" *ngIf="reportVarSearch == 'Métodos de pago'">
         <div class="col">
           <div class="table-responsive">
-            <table
-              class="table table-hover order-table"
-              data-pagination="true"
-              data-page-size="10"
-            >
+            <table class="table table-hover order-table" data-pagination="true" data-page-size="10">
               <thead class="text-customer">
                 <tr>
-                  <th class="text-center">Producto</th>
+                  <th class="text-start">Producto</th>
                   <th></th>
-                  <th class="text-center">% sobre importe total</th>
-                  <th class="text-center">Total</th>
+                  <th class="text-end">% sobre importe total</th>
+                  <th class="text-end">Total</th>
                 </tr>
               </thead>
-              <ng-template #empty
-                ><td colspan="5">
+              <ng-template #empty>
+                <td colspan="5">
                   <b>No existen registros que mostrar</b>
-                </td></ng-template
-              >
+                </td>
+              </ng-template>
               <tbody>
                 <ng-container *ngIf="emptySearch == false; else empty">
-                  <tr
-                    *ngFor="let paymentmethod of sales.balanceLines; index as i"
-                  >
-                    <ng-container
-                      *ngIf="paymentmethod.itemName.substring(0, 3) == 'Efe'"
-                    >
-                      <td class="text-center align-middle">
+                  <tr *ngFor="let paymentmethod of sales.balanceLines; index as i">
+                    <ng-container *ngIf="paymentmethod.itemName.substring(0, 3) == 'Efe'">
+                      <td class="text-start align-middle">
                         {{ paymentmethod.itemName }}
                       </td>
                       <td></td>
-                      <td class="text-center align-middle">
+                      <td class="text-end align-middle">
                         {{ paymentmethod.percentage + " %" }}
                       </td>
-                      <td class="text-center align-middle">
+                      <td class="text-end align-middle">
                         {{
-                          paymentmethod.total /
-                            Math.pow(10, paymentmethod.decimals)
-                            | currency : "Eur" : "€"
+                        paymentmethod.total /
+                        Math.pow(10, paymentmethod.decimals)
+                        | currency : "Eur" : "€"
                         }}
                       </td>
                     </ng-container>
                   </tr>
                 </ng-container>
+                <tr *ngIf="emptyA == false">
+                  <td class="text-start align-middle"> <b>TOTAL</b> </td>
+                  <td></td>
+                  <td class="text-end align-middle"><b>{{ totalPercentage + ' %'}}</b></td>
+                  <td class="text-end align-middle"><b>{{ totalValuePercentage | currency : "Eur" : "€"}}</b></td>
+                </tr>
               </tbody>
-              <tr *ngIf="emptyA == false">
-                <td></td>
-                <td class="text-end align-middle"> <b>TOTAL</b> </td>
-                <td class="text-center align-middle"><b>{{ totalPercentage + ' %'}}</b></td>
-                <td class="text-center align-middle"><b>{{ totalValuePercentage | currency : "Eur" : "€"}}</b></td>
-              </tr>
+              
             </table>
             <div class="has-text-centered">
-              <pagination-controls
-                (pageChange)="page = $event"
-              ></pagination-controls>
+              <pagination-controls (pageChange)="page = $event"></pagination-controls>
             </div>
           </div>
         </div>

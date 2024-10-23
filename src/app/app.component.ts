@@ -13,9 +13,6 @@ export class AppComponent {
 
 
 
-
-
-
   title = 'DIU.Web.Angular.QuickShop.Client';
 
   dataset0 =[
@@ -46,8 +43,8 @@ export class AppComponent {
   {
     return value + ' €';
   }
-
-  customCorlors = [
+  
+  customColors = [
     { name: "Ene", value: '#000080'},
     { name: "Feb", value: '#000080'},
     { name: "Mar", value: '#000080'},
@@ -61,8 +58,6 @@ export class AppComponent {
     { name: "Nov", value: '#000080'},
     { name: "Dic", value: '#000080'}
   ];
-
-
 
 
 }
