@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'DPOSW-base',
   templateUrl: './base.component.html',
-  styleUrls: ['./base.component.css']
+  styleUrls: []
 })
 export class BaseComponent  implements OnInit{
 

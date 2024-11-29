@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.dev-inte';
 import { RestRoutes } from '../_config/rest-routes.config';
-import { SalesInfo } from '../_models/SalesInfo.model';
 import { BalanceInfo } from '../_models/BalanceInfo.model';
 
 @Injectable({

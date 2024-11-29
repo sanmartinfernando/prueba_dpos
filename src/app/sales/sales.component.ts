@@ -1,7 +1,10 @@
+import { StorageService } from 'src/app/_services/storage.service';
+import { TerminalListService } from './../_services/terminal-list.service';
 import { EncryptionService } from './../_services/encryption.service';
 import { SalesinfoService } from './../_services/salesinfo.service';
 import { Component, OnInit } from '@angular/core';
 import { SalesInfo } from '../_models/SalesInfo.model';
+import { TerminalList } from '../_models/TerminalList.model';
 
 @Component({
   selector: 'DPOSW-sales',
@@ -10,12 +13,16 @@ import { SalesInfo } from '../_models/SalesInfo.model';
 export class SalesComponent implements OnInit {
   constructor(
     private SalesinfoService: SalesinfoService,
-    private EncryptionService: EncryptionService
+    private EncryptionService: EncryptionService,
+    private TerminalListService: TerminalListService,
+    private StorageService: StorageService
   ) {}
 
   size: number = 2147483647;
   sales: SalesInfo;
+  terminals: TerminalList;
   selectSales = new Array(3);
+  salesTicketBai = new Array;
   operationN: number;
   totalSales: number = 0;
   totalSalesString: string;
@@ -23,6 +30,9 @@ export class SalesComponent implements OnInit {
   searchParams0: string = '';
   code: string;
   loadCompleted: boolean = false;
+  isLoggedIn: boolean = true;
+  Math = Math;
+  validationVariable: boolean = false;
 
   //Parámetros de búsqueda
   terminalVarSearch: string = null;
@@ -34,7 +44,8 @@ export class SalesComponent implements OnInit {
   today: Date = new Date();
   todayMilli = this.today.getTime();
   typeVarSearch: string = null;
-  translatedTypeVarSearch= new Array (3);
+  translatedTypeVarSearch = new Array(3);
+  selTransTypeVarSearch: number = null;
   documentVarSearch: string = null;
   varSearch: string = null;
   emptySearch: boolean = false;
@@ -52,6 +63,7 @@ export class SalesComponent implements OnInit {
         for (let i = 0; i < this.sales.data.length; i++) {
           this.totalSales = this.totalSales + Number(this.sales.data[i].total);
         }
+        this.totalSales = this.totalSales / 100;
         this.totalSalesString = this.totalSales.toString() + ' €';
 
         for (let i = 0; i < 3; i++) {
@@ -91,7 +103,7 @@ export class SalesComponent implements OnInit {
                 counterSelect = true;
               }
               if (counterSelect == false && z == i) {
-               this.selectSales[1][i] = this.sales.data[i].type;
+                this.selectSales[1][i] = this.sales.data[i].type;
               }
             }
             counterSelect = false;
@@ -135,33 +147,74 @@ export class SalesComponent implements OnInit {
           }
         }
         //Traducción tipo de operación
-        /* for (let i = this.selectSales[1].length; i >= 0; i--) {
-          this.translatedTypeVarSearch[i]==this.selectSales[1][i];
-          switch(this.selectSales[1][i]) {
+        for (let i = this.selectSales[1].length; i >= 0; i--) {
+          this.translatedTypeVarSearch[i] = this.selectSales[1][i];
+          switch (this.selectSales[1][i]) {
             case 0:
-              this.selectSales[1][i]="Venta"
+              this.selectSales[1][i] = 'Venta';
               break;
             case 2:
-              this.selectSales[1][i]="Devolución"
+              this.selectSales[1][i] = 'Devolución';
               break;
             case 5:
-              this.selectSales[1][i]="Rectificación"
+              this.selectSales[1][i] = 'Rectificación';
           }
-        } */
+        }
+
+        this.loadCompleted = true;
+
+        this.salesTicketBai = []
+
+        for( let i=0; i<= this.sales.data.length; i++){
+          if(this.sales.data[i].orderTicketBai !== null){
+            if (this.sales.data[i].orderTicketBai.status == '00' && this.sales.data[i].orderTicketBai.warns.length <= 0) {
+            this.salesTicketBai[i]=0
+          }
+          }
+          if(this.sales.data[i].orderTicketBai !== null){
+            if (this.sales.data[i].orderTicketBai.status == '00' && this.sales.data[i].orderTicketBai.warns.length > 0) {
+            this.salesTicketBai[i]=1
+          }
+          }
+          if(this.sales.data[i].orderTicketBai !== null){
+            if (this.sales.data[i].orderTicketBai.status == '01') {
+            this.salesTicketBai[i]=2
+          }
+        }
+        }
 
 
+      },
+      (error) => {
+        if (error.status == 401) {
+          this.isLoggedIn = false;
+          this.StorageService.clean();
+        };
       }
+
+
     );
-    this.loadCompleted = true;
+    //Conexión con Wsenrollment
+    /* this.TerminalListService.GetTerminalList().subscribe(
+      (terminal) => {(this.terminals = terminal)
+        console.log(terminal)
+      }
+    ); */
+
+    //Estados ticketBai
+
+
+
   }
 
   //Método de búsqueda
 
   searchSales() {
-    this.loadCompleted=false;
-    if( this.terminalVarSearch == "" || this.typeVarSearch ==""){
-      this.terminalVarSearch=null;
-      this.typeVarSearch=null;
+    this.validationVariable = false;
+    this.loadCompleted = false;
+    if (this.terminalVarSearch == '' || this.typeVarSearch == '') {
+      this.terminalVarSearch = null;
+      this.typeVarSearch = null;
     }
     //Obtención variables fechas
     this.loadCompleted = false;
@@ -237,7 +290,7 @@ export class SalesComponent implements OnInit {
         "'}";
     }
     //Tipo de operación
-    console.log(this.typeVarSearch)
+    console.log(this.typeVarSearch);
     if (this.typeVarSearch != null) {
       if (this.searchCounter == false) {
         this.searchCounter = true;
@@ -251,23 +304,33 @@ export class SalesComponent implements OnInit {
             this.varSearch =
               this.varSearch +
               "{'field':'Type','op':'=','value':'" +
-              this.selectSales[1][i] +
+              this.translatedTypeVarSearch[i] +
               "'}";
           } else {
             this.varSearch =
               this.varSearch +
               ",{'field':'Type','op':'=','value':'" +
-              this.selectSales[1][i] +
+              this.translatedTypeVarSearch[i] +
               "'}";
           }
         }
         this.varSearch = this.varSearch + ']}';
       } else {
+        switch (this.typeVarSearch) {
+          case 'Venta':
+            this.selTransTypeVarSearch = 0;
+            break;
+          case 'Devolución':
+            this.selTransTypeVarSearch = 2;
+            break;
+          case 'Rectificación':
+            this.selTransTypeVarSearch = 5;
+        }
         this.emptySearch = false;
         this.varSearch =
           this.varSearch +
           "{'field':'Type','op':'=','value':'" +
-          this.typeVarSearch +
+          this.selTransTypeVarSearch +
           "'}";
       }
     }
@@ -278,7 +341,8 @@ export class SalesComponent implements OnInit {
         this.documentVarSearch.includes('(') ||
         this.documentVarSearch.includes(')')
       ) {
-        window.alert('El parámetro de búsqueda no está permitido');
+        this.validationVariable = true;
+        this.loadCompleted = true
         return;
       }
       if (this.searchCounter == false) {
@@ -292,6 +356,8 @@ export class SalesComponent implements OnInit {
         "{'field':'Reference','op':'=*.*','value':'" +
         this.documentVarSearch +
         "'}";
+
+
     }
 
     //Búsqueda vacia
@@ -301,7 +367,6 @@ export class SalesComponent implements OnInit {
       this.tilDateMilli == null &&
       this.typeVarSearch == null &&
       this.documentVarSearch == null
-
     ) {
       this.SalesinfoService.GetSalesInfo(
         this.size,
@@ -313,7 +378,13 @@ export class SalesComponent implements OnInit {
           this.totalSales = this.totalSales + Number(this.sales.data[i].total);
         }
         this.totalSalesString = this.totalSales.toString() + ' €';
-      });
+      },
+      (error) => {
+        if (error.status == 401) {
+          this.isLoggedIn = false;
+          this.StorageService.clean();
+        };
+      } );
     }
 
     //Cierre y reseteo de parámetros
@@ -332,9 +403,38 @@ export class SalesComponent implements OnInit {
         for (let i = 0; i < this.sales.data.length; i++) {
           this.totalSales = this.totalSales + Number(this.sales.data[i].total);
         }
+        this.totalSales = this.totalSales / 100;
         this.totalSalesString = this.totalSales.toString() + ' €';
-        this.loadCompleted=true;
-        console.log(this.typeVarSearch)
+        this.loadCompleted = true;
+
+        //Estado TicketBai
+
+        this.salesTicketBai = []
+
+        for( let i=0; i<= this.sales.data.length; i++){
+          if(this.sales.data[i].orderTicketBai != null){
+            if (this.sales.data[i].orderTicketBai.status == '00' && this.sales.data[i].orderTicketBai.warns.length <= 0) {
+            this.salesTicketBai[i]=0
+          }
+          }
+          if(this.sales.data[i].orderTicketBai != null){
+            if (this.sales.data[i].orderTicketBai.status == '00' && this.sales.data[i].orderTicketBai.warns.length > 0) {
+            this.salesTicketBai[i]=0
+          }
+          }
+          if(this.sales.data[i].orderTicketBai != null){
+            if (this.sales.data[i].orderTicketBai.status == '01') {
+            this.salesTicketBai[i]=0
+          }
+        }
+        }
+
+      },
+      (error) => {
+        if (error.status == 401) {
+          this.isLoggedIn = false;
+          this.StorageService.clean();
+        };
       }
     );
   }
@@ -363,4 +463,7 @@ export class SalesComponent implements OnInit {
     this.code = this.EncryptionService.encryptData(id);
     this.code = '/details/' + this.EncryptionService.encode(this.code);
   }
+
+
+
 }

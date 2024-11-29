@@ -1,4 +1,5 @@
 <br />
+<!-- <app-login class="container-fluid header-main" *ngIf="isLoggedIn == false"> </app-login> -->
 <div class="container-fluid header-main">
   <div>
     <!-- Formulario de búsqueda -->
@@ -49,12 +50,12 @@
         >
       </div>
       <div id="searchButtonsDiv" class="ms-5 d-flex overflow-auto">
-       <button type="reset" class="btn btn-danger align-self-end"> <a type="button"
+       <button type="reset" class="btn btn-outline-danger align-self-end"> <a type="button"
           ><i class="fas fa-eraser"></i>
         </a></button>
         <a
           type="button"
-          class="btn btn-info align-self-end"
+          class="btn btn-primary align-self-end"
           (click)="searchSales()"
           ><i class="fas fa-search"></i>&nbsp;&nbsp;Buscar</a
         >
@@ -62,6 +63,22 @@
     </form>
   </div>
   <br />
+      <!-- Validation -->
+      <div
+      *ngIf="validationVariable == true"
+      class="d-flex justify-content-center"
+      style="position: absolute; left: 50%"
+    >
+      <div class="text-danger"><b>El parámetro de búsqueda no es válido</b></div>
+    </div>
+      <!-- Load -->
+      <div
+        *ngIf="loadCompleted == false"
+        class="d-flex justify-content-center"
+        style="position: absolute; left: 50%"
+      >
+        <div class="spinner-border text-danger"></div>
+      </div>
 <!-- Tabla e indicadores -->
   <br />
   <div class="card">
@@ -70,70 +87,49 @@
         <div class="col">
           <h5><b>Operaciones</b></h5>
         </div>
+
         <!-- Indicadores -->
-        <div class="col-3 justify-content-end">
-          <label for="operationN" class="me-2">Nº operaciones</label>
-          <input
-            type="text"
-            id="inputHeadSales"
-            class="border me-5 bg-customer2 text-customer2 fw-bold text-end"
-            [(ngModel)]="operationN"
-            disabled
-          />
-          <label for="totalSales" class="me-2">Total</label>
-          <input
-            type="text"
-            id="inputHeadSales1"
-            class="border bg-customer2 text-customer2 fw-bold text-end mx-3"
-            [(ngModel)]="totalSalesString"
-            disabled
-          />
-          <button class="btn btn-sm btn-secondary-customer">
-            <i class="fa-solid fa-file-csv fa-xl" style="color: #008000"></i>
+        <div class="col-5 text-end">
+          <label for="inputHeadSales" class="me-2">Nº operaciones</label>
+          <input type="text" id="inputHeadSales" class="text-center me-5 roboto-mono" [(ngModel)]="operationN"
+            disabled />
+          <label for="inputHeadSales1" class="me-2">Total</label>
+          <input type="text" id="inputHeadSales1" class="text-center me-5 roboto-mono" [(ngModel)]="totalSalesString"
+            disabled />
+          <button class="btn btn-outline-info justify-content-center">
+            <i class="fa-solid fa-file-csv fa-xl"></i>
           </button>
         </div>
       </div>
-        <!-- Load -->
-        <div *ngIf="loadCompleted==false" class="d-flex justify-content-center">
-          <div class="spinner-border  text-danger" ></div>
-        </div>
       <!-- Tabla -->
-      <div *ngIf="loadCompleted==true" class="row">
+      <div class="row">
         <div class="col">
           <div class="table-responsive">
-            <table
-              class="table table-hover order-table"
-              data-pagination="true"
-              data-page-size="10"
-            >
+            <table class="table table-hover order-table table-borderless" data-pagination="true" data-page-size="10">
               <thead class="text-customer">
                 <tr>
                   <th class="text-center">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      [checked]="isAllSelected"
-                      (change)="CheckAll($event)"
-                    />
+                    <input class="form-check-input" type="checkbox" [checked]="isAllSelected"
+                      (change)="CheckAll($event)" />
                   </th>
-                  <th class="text-center">Documento</th>
+                  <th class="text-start">Documento</th>
                   <th class="text-center">Tipo</th>
-                  <th class="text-center">Fecha</th>
+                  <th class="text-start">Fecha</th>
                   <th class="text-center">Terminal</th>
                   <th class="text-center">Factura verificada</th>
-                  <th class="text-center">Subtotal</th>
-                  <th class="text-center">Descuentos</th>
-                  <th class="text-center">Base imponible</th>
-                  <th class="text-center">Cuota de IVA</th>
-                  <th class="text-center">Total</th>
+                  <th class="text-end">Subtotal</th>
+                  <th class="text-end">Descuentos</th>
+                  <th class="text-end">Base imponible</th>
+                  <th class="text-end">IVA</th>
+                  <th class="text-end">Total</th>
                   <th></th>
                 </tr>
               </thead>
-              <ng-template #empty
-                ><td colspan="5">
+              <ng-template #empty>
+                <td colspan="5">
                   <b>No existen registros que mostrar</b>
-                </td></ng-template
-              >
+                </td>
+              </ng-template>
               <tbody>
                 <ng-container *ngIf="emptySearch == false; else empty">
                   <tr
@@ -150,51 +146,84 @@
                         [checked]="isAllSelected"
                       />
                     </td>
-                    <td class="text-center align-middle" id="massivetransfer">
-                      {{ sale.reference }}
+                    <td class="text-start align-middle"><!--<i class="fa-solid fa-receipt fa-xl me-1 text-amber"></i>--><span style="font-weight: 500;color:grey;">
+                      {{ sale.reference }}</span>
                     </td>
-                    <td class="text-center align-middle">
-                      {{ sale.type }}
+                    <td class="text-center align-middle" *ngIf="sale.type == 0">
+                      <div class="badge rounded-pill bg-sale">Venta</div>
                     </td>
-                    <td class="text-center align-middle">
+                    <td class="text-center align-middle" *ngIf="sale.type == 2">
+                      <div class="badge rounded-pill bg-refund">Devolución</div>
+                    </td>
+                    <td class="text-center align-middle" *ngIf="sale.type == 5">
+                      <div class="badge rounded-pill bg-edits">Rectificación</div>
+                    </td>
+                    <td class="text-start align-middle">
                       {{ sale.createdAt | date : "dd/MM/yyyy hh:mm" }}
                     </td>
                     <td class="text-center align-middle">
                       {{ sale.terminalNumber }}
                     </td>
-                    <td class="text-center align-middle">Verificada</td>
-                    <td class="text-center align-middle">
-                      {{ sale.subTotal/100 | currency : "Eur" : "€" }}
+                    <td
+                      class="text-center align-middle"
+                      *ngIf="sale.orderTicketBai == null"
+                    >
+                    <div class="badge rounded-pill bg-pending"><i class="fa-solid fa-qrcode"></i> Pendiente de enviar</div>
                     </td>
-                    <td class="text-center align-middle">
-                      {{ sale.totalDiscount/100 | currency : "Eur" : "€" }}
+                    <td
+                      class="text-center align-middle"
+                      *ngIf="salesTicketBai[i] == 0"
+                    >
+                      <div class="badge rounded-pill bg-accept"><i class="fa-solid fa-qrcode"></i> Enviado y aceptado</div>
                     </td>
-                    <td class="text-center align-middle">
-                      {{ sale.orderTaxes[0].base/100 | currency : "Eur" : "€" }}
+                    <td
+                      class="text-center align-middle"
+                      *ngIf="salesTicketBai[i] == 1"
+                    >
+                    <div class="badge rounded-pill bg-warning"><i class="fa-solid fa-qrcode"></i> Enviado y aceptado, con avisos</div>
                     </td>
-                    <td class="text-center align-middle">
-                      {{ sale.orderTaxes[0].total/100 | currency : "Eur" : "€" }}
+                    <td
+                      class="text-center align-middle"
+                      *ngIf="salesTicketBai[i] == 2"
+                    >
+                    <div class="badge rounded-pill bg-rejected"><i class="fa-solid fa-qrcode"></i> Enviado y rechazado</div>
                     </td>
-                    <td class="text-center align-middle">
-                      {{ sale.total/100 | currency : "Eur" : "€" }}
+                    <td class="text-end align-middle">
+                      {{ sale.subTotal / (Math.pow(10, sale.decimals)) | currency : "Eur" : "€" }}
                     </td>
-                    <td>
+                    <td class="text-end align-middle">
+                      {{ sale.totalDiscount / (Math.pow(10, sale.decimals)) | currency : "Eur" : "€" }}
+                    </td>
+                    <td class="text-end align-middle">
+                      {{
+                        sale.orderTaxes[0].base / (Math.pow(10, sale.orderTaxes[0].decimals)) | currency : "Eur" : "€"
+                      }}
+                    </td>
+                    <td class="text-end align-middle">
+                      {{
+                        sale.orderTaxes[0].total / (Math.pow(10, sale.orderTaxes[0].decimals)) | currency : "Eur" : "€"
+                      }}
+                    </td>
+                    <td class="text-end align-middle">
+                      {{ sale.total / (Math.pow(10, sale.decimals)) | currency : "Eur" : "€" }}
+                    </td>
+                    <td class="text-end align-middle">
                       <span id="detailsticket" class="align-center">
                         <a
-                        [routerLink]="code"
-
+                          [routerLink]="code"
                           (click)="sendSalesDetails(sale.orderId)"
-                          ><i class="fa-solid fa-eye" style="color: #74c0fc"></i></a
-                        ></span>
+                          ><i
+                            class="fa-solid fa-eye"
+                            style="color: #74c0fc"
+                          ></i></a
+                      ></span>
                     </td>
                   </tr>
                 </ng-container>
               </tbody>
             </table>
             <div class="has-text-centered">
-              <pagination-controls
-                (pageChange)="page = $event"
-              ></pagination-controls>
+              <pagination-controls (pageChange)="page = $event"></pagination-controls>
             </div>
           </div>
         </div>

@@ -15,7 +15,7 @@ export class LoginComponent implements OnInit {
 
   private userSuscription!: Subscription;
   loginForm;
-
+  code:string = "password-recovery";
   isLoggedIn = false;
   isLoginFailed = false;
   errorMessage = '';
@@ -39,8 +39,11 @@ export class LoginComponent implements OnInit {
       pw: ['', [Validators.required]]
     });
 
+
+
   }
-  
+
+
   onSubmit(): void {
     console.log(this.loginForm.value);
     const { username, pw } = this.loginForm.value;
@@ -51,6 +54,7 @@ export class LoginComponent implements OnInit {
         //this.storageService.saveUser(email);
         this.isLoginFailed = false;
         this.isLoggedIn = true;
+        this.storageService.updateloggin(this.isLoggedIn)
         this.navigateLoggedIn();
         return;
         // if (this.componentSelected) {

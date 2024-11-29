@@ -6,6 +6,7 @@ export const RestRoutes = {
   LANGUAGES: `${API}/Languages`,
   USER: `${API}/user`,
   AUTH: `${API}/auth`, // WS controller para peticiones auth
+  AUTHPU:`${API}/auth/portalusers`,
   ALERTS: `${API}/Alerts`,
   ALERTS_SUMMARY: `${API}/Alerts/summaries`,
   ALERTS_SUMMARY_SEARCH: `${API}/Alerts/search/summary/page`,
@@ -24,10 +25,20 @@ export const RestRoutes = {
   ALERT_CONFIGURATIONS_UPDATE_FALSE_POSITIVE: `${API}/AlertConfigurations/update/alert/state/false-positive`,
   ALERT_CONFIGURATIONS_UPDATE_OK: `${API}/AlertConfigurations/update/alert/state/ok`,
   BALANCE_ID:`api/Balances/`,
+  PW_RECOVER: 'api/auth/portalusers/password/recover',
+  PW_RESET: 'api/auth/portalusers/password/reset',
+  PW_CONDITIONS: `api/auth/portalusers/password/properties`,
   SALES_INFO:`api/Orders?size=`,
   SALES_INFO2:`&offset=0`,
   SALES_INFO3:`&qs={"and":`,
   SALES_DETAILS:`api/Orders/`,
   BALANCES_INFO:`api/Balances?size=`,
   BALANCES_DETAILS:`api/Balances/`,
+  ARQUEO_X:`api/Balances/generate/arqueo-x?fromDate=`,
+  ARQUEO_X2:`&toDate=`,
+  SALES_REPORT:`api/Orders/generate/sales-report?fromDate=`,
+  SALES_REPORT2:`&toDate=`,
+  TERMINAL_LIST:`api/commerces/1125/Terminals`,
+  ORDER_AGGREGATION:`api/Orders/aggregate`,
+  CASH_AGGREGATION:`api/CashMovements/aggregate`
 }

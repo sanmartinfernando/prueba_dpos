@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { User } from '../_models/user.model';
 import { AuthService } from './auth.service';
 import { StringConstants } from '../_config/string-constants';
@@ -11,18 +11,20 @@ import { StringConstants } from '../_config/string-constants';
 export class StorageService {
 
   private authSuscription!: Subscription;
-  public userInfo = new BehaviorSubject<User>(this.getUser());
-
+  public userInfo = new BehaviorSubject(this.getUser());
+  private loggedin: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
+  public loggedin$: Observable<boolean>= this.loggedin.asObservable();
 
   username: string = '';
   component: string;
 
   constructor(private authService: AuthService) {
     this.authSuscription = this.authService.configObservable.subscribe(user => {
+      console.log('xxxxxxxxxxxxxxxxxxxxxxxx');
+      console.log(user);
       this.saveUser(user);
     });
   }
-
   set(key: string, item: object) {
     localStorage.setItem(key, JSON.stringify(item));
   }
@@ -71,9 +73,13 @@ export class StorageService {
   }
   public getUser(): any {
     const user = window.localStorage.getItem(StringConstants.USER_KEY);
+    console.log(StringConstants.USER_KEY);
+    console.log(user);
+
     if (user) {
       return JSON.parse(user);
     }
+    console.log('bbb');
 
     return null;
   }
@@ -111,6 +117,10 @@ export class StorageService {
         v = c == 'x' ? r : (r & 0x3 | 0x8);
       return v.toString(16);
     });
+  }
+
+  updateloggin(logginupdated){
+    this.loggedin.next(logginupdated)
   }
 
 }

@@ -3,7 +3,7 @@ import {    CanActivate,
             CanActivateChild,
             ActivatedRouteSnapshot,
             RouterStateSnapshot,
-            Router 
+            Router
         } from '@angular/router';
 import { Observable } from 'rxjs';
 
@@ -24,10 +24,10 @@ export class AuthGuard implements CanActivate {
     canActivate(next: ActivatedRouteSnapshot,
                 state: RouterStateSnapshot):
             Promise<boolean> | Observable<boolean> | boolean {
-        if (this.user) {
+         if (this.user) {
             return true;
         }
-        this.router.navigate(['home']);
+        this.router.navigate(['/login']);
         return false;
     }
 

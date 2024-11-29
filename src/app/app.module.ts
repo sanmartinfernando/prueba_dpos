@@ -26,6 +26,11 @@ import { DatePipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { NgxChartsModule }from '@swimlane/ngx-charts';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AuthGuard } from './_guard/auth.guard';
+import { QRCodeModule } from 'angularx-qrcode';
+import { PwrecoveryComponent } from './common/login/pwrecovery/pwrecovery.component';
+import { PwresetComponent } from './common/login/pwreset/pwreset.component';
+import { CountdownComponent } from 'ngx-countdown';
 
 
 @NgModule({ declarations: [
@@ -43,7 +48,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         BalancesComponent,
         DetailsComponent,
         BalancesDetailsComponent,
-        ReportsComponent
+        ReportsComponent,
+        PwrecoveryComponent,
+        PwresetComponent
+
     ],
     bootstrap: [AppComponent],
     imports: [BrowserModule,
@@ -53,7 +61,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         ReactiveFormsModule,
         RouterModule,
         NgxChartsModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        QRCodeModule,
+        CountdownComponent
       ],
         providers: [
         httpInterceptorProviders,
@@ -61,7 +71,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         DatePipe,
         provideHttpClient(withInterceptorsFromDi()),
         NgxChartsModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        AuthGuard
+
 
     ] })
 export class AppModule { }

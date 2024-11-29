@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { StorageService } from './_services/storage.service';
+import { Component, OnInit } from '@angular/core';
 import { NgxChartsModule }from '@swimlane/ngx-charts';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CurrencyPipe } from '@angular/common';
@@ -9,6 +10,12 @@ import { CurrencyPipe } from '@angular/common';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+
+
+
+
+
+
   title = 'DIU.Web.Angular.QuickShop.Client';
 
   dataset0 =[

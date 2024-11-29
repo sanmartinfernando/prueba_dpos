@@ -1,10 +1,7 @@
+import { StorageService } from 'src/app/_services/storage.service';
 import { EncryptionService } from './../_services/encryption.service';
 import { BalanceinfoService } from './../_services/balanceinfo.service';
 import { Component, OnInit } from '@angular/core';
-import { BaseComponent } from '../common/base/base.component';
-import { Data, Router, Routes } from '@angular/router';
-import { FormControl, FormGroup } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { BalanceInfo } from '../_models/BalanceInfo.model';
 
 @Component({
@@ -15,18 +12,17 @@ import { BalanceInfo } from '../_models/BalanceInfo.model';
 export class BalancesComponent implements OnInit {
   // ---------------- Propiedades------------------
 
-  constructor(private BalanceinfoService: BalanceinfoService, private EncryptionService: EncryptionService) {}
+  constructor(private BalanceinfoService: BalanceinfoService, private EncryptionService: EncryptionService, private StorageService: StorageService) {}
 
   size: number = 2147483647;
   balances: BalanceInfo;
   selectSales = new Array(3);
-  operationN: number;
-  totalSales: number = 0;
-  totalSalesString: string;
   page: number = 0;
   searchParams0: string = '';
   code: string;
   loadCompleted: boolean = false;
+  isLoggedIn:boolean = true;
+  mismatch = new Array;
 
   //Parámetros de búsqueda
   terminalVarSearch: string = null;
@@ -49,11 +45,6 @@ export class BalancesComponent implements OnInit {
     this.BalanceinfoService.GetBalanceInfo(this.size, this.searchParams0).subscribe(
       (balance) => {
         this.balances = balance;
-        this.operationN = this.balances.data.length;
-        for (let i = 0; i < this.balances.data.length; i++) {
-          this.totalSales = this.totalSales + Number(this.balances.data[i].total);
-        }
-        this.totalSalesString = this.totalSales.toString() + ' €';
 
         for (let i = 0; i < 3; i++) {
           this.selectSales[i] = new Array(this.balances.data.length);
@@ -63,6 +54,7 @@ export class BalancesComponent implements OnInit {
         //Terminal
 
         for (let i = 0; i < this.balances.data.length; i++) {
+          this.mismatch[i] = Math.abs(this.balances.data[i].manualCashRecount)-Math.abs(this.balances.data[i].autoCashRecount);
           let counterSelect: boolean = false;
           if (i == 0) {
             this.selectSales[0][i] = this.balances.data[i].terminalNumber;
@@ -90,9 +82,16 @@ export class BalancesComponent implements OnInit {
           }
         }
         }
+        this.loadCompleted=true;
+      },
+      (error) => {
+        if (error.status == 401) {
+          this.isLoggedIn = false;
+          this.StorageService.clean();
+        };
       }
     );
-    this.loadCompleted=true;
+
   }
 
 
@@ -168,12 +167,7 @@ export class BalancesComponent implements OnInit {
     if (this.terminalVarSearch!= null && this.sinceDateMilli == 0 && this.tilDateMilli == 0) {
       this.BalanceinfoService.GetBalanceInfo(this.size, this.searchParams0).subscribe(
         (balance) => {
-          this.balances = balance;
-          this.operationN = this.balances.data.length;
-          for (let i = 0; i < this.balances.data.length; i++) {
-            this.totalSales = this.totalSales + Number(this.balances.data[i].total);
-          }
-          this.totalSalesString = this.totalSales.toString() + ' €';})
+          this.balances = balance;})
     }
 
 
@@ -191,13 +185,13 @@ export class BalancesComponent implements OnInit {
           this.emptySearch = true;
         }
         console.log(this.emptySearch);
-        this.operationN = this.balances.data.length;
-        this.totalSales = 0;
-        for (let i = 0; i < this.balances.data.length; i++) {
-          this.totalSales = this.totalSales + Number(this.balances.data[i].total);
-        }
-        this.totalSalesString = this.totalSales.toString() + ' €';
         this.loadCompleted=true;
+      },
+      (error) => {
+        if (error.status == 401) {
+          this.isLoggedIn = false;
+          this.StorageService.clean();
+        };
       }
     );
   }
