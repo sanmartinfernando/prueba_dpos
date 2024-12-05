@@ -57,7 +57,7 @@
         <!-- Descarga -->
          <div class="col-3 text-end">
           <button class="btn btn-outline-info justify-content-center">
-            <i class="fa-solid fa-file-csv fa-xl"></i>
+            <i class="fa-solid fa-file-csv fa-xl" (click)="downloadReports()"></i>
           </button>
          </div>
       </div>
@@ -135,7 +135,6 @@
               <thead class="text-customer">
                 <tr>
                   <th class="text-start">Producto</th>
-                  <th class="text-start">Categoría</th>
                   <th class="text-end">PVP (IVA inc.)</th>
                   <th class="text-end">Ud. vendidas</th>
                   <th class="text-end">Total</th>
@@ -156,9 +155,6 @@
                     <td class="text-start align-middle">
                       {{ product.product }}
                     </td>
-                    <td class="text-start align-middle">
-                      Columna provisional
-                    </td>
                     <td class="text-end align-middle">
                       {{
                       product.total / 100000000 / (product.units / 1000)
@@ -175,7 +171,6 @@
                 </ng-container>
                 <tr>
                   <td class="text-start align-middle"></td>
-                  <td clas="text-start align-middle"></td>
                   <td class="text-end align-middle"><b>TOTAL</b></td>
                   <td class="text-end align-middle"><b>{{ totalUnits}}</b></td>
                   <td class="text-end align-middle"><b>{{ totalUnitsValor | currency : "Eur" : "€"}}</b></td>
@@ -196,7 +191,7 @@
             <table class="table table-hover order-table" data-pagination="true" data-page-size="10">
               <thead class="text-customer">
                 <tr>
-                  <th class="text-start">Producto</th>
+                  <th class="text-start">Método de pago</th>
                   <th></th>
                   <th class="text-end">% sobre importe total</th>
                   <th class="text-end">Total</th>

@@ -1,6 +1,7 @@
 import { StorageService } from 'src/app/_services/storage.service';
 import { EncryptionService } from './../_services/encryption.service';
 import { BalanceinfoService } from './../_services/balanceinfo.service';
+import { CsvdownloadService } from '../_services/csvdownload.service';
 import { Component, OnInit } from '@angular/core';
 import { BalanceInfo } from '../_models/BalanceInfo.model';
 
@@ -15,7 +16,7 @@ export class BalancesComponent implements OnInit {
   
   // ---------------- Propiedades------------------
 
-  constructor(private BalanceinfoService: BalanceinfoService, private EncryptionService: EncryptionService, private StorageService: StorageService) {}
+  constructor(private BalanceinfoService: BalanceinfoService, private EncryptionService: EncryptionService, private StorageService: StorageService, private CsvdownloadService: CsvdownloadService) {}
 
   size: number = 2147483647;
   balances: BalanceInfo;
@@ -225,5 +226,9 @@ export class BalancesComponent implements OnInit {
     this.code = '/balances-details/' + this.EncryptionService.encode(this.code);
     }
 
+  //Boton Descargar CSV
+  downloadCSV(){
+    this.CsvdownloadService.downloadBalancesFile(this.balances, 'Balances', "es-ES");
+  }
 
 }

@@ -2,6 +2,7 @@ import { StorageService } from 'src/app/_services/storage.service';
 import { TerminalListService } from './../_services/terminal-list.service';
 import { EncryptionService } from './../_services/encryption.service';
 import { SalesinfoService } from './../_services/salesinfo.service';
+import { CsvdownloadService } from '../_services/csvdownload.service';
 import { Component, OnInit } from '@angular/core';
 import { SalesInfo } from '../_models/SalesInfo.model';
 import { TerminalList } from '../_models/TerminalList.model';
@@ -11,9 +12,13 @@ import { TerminalList } from '../_models/TerminalList.model';
   templateUrl: './sales.component.html',
 })
 export class SalesComponent implements OnInit {
+
+  currentFormats: any;
+  
   constructor(
     private SalesinfoService: SalesinfoService,
     private EncryptionService: EncryptionService,
+    private CsvdownloadService: CsvdownloadService,
     private TerminalListService: TerminalListService,
     private StorageService: StorageService
   ) {}
@@ -166,7 +171,7 @@ export class SalesComponent implements OnInit {
         this.salesTicketBai = []
 
         for( let i=0; i<= this.sales.data.length; i++){
-          if(this.sales.data[i].orderTicketBai !== null){
+          if(this.sales.data[i].orderTicketBai != null){
             if (this.sales.data[i].orderTicketBai.status == '00' && this.sales.data[i].orderTicketBai.warns.length <= 0) {
             this.salesTicketBai[i]=0
           }
@@ -465,5 +470,9 @@ export class SalesComponent implements OnInit {
   }
 
 
+  //Boton Descargar
+  downloadCSV(){
+    this.CsvdownloadService.downloadSalesFile(this.sales, 'Sales', "es-ES");
+  }
 
 }

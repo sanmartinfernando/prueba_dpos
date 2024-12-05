@@ -2,6 +2,7 @@ import { StorageService } from 'src/app/_services/storage.service';
 import { ArqueoXService } from './../_services/arqueo-x.service';
 import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { EncryptionService } from '../_services/encryption.service';
+import { CsvdownloadService } from '../_services/csvdownload.service';
 import { ArqueoX } from '../_models/ArqueoX.model';
 import { SalesReport } from '../_models/SalesReport.model';
 import { SalesReportService } from '../_services/sales-report.service';
@@ -16,7 +17,8 @@ export class ReportsComponent implements OnInit {
     private EncryptionService: EncryptionService,
     private ArqueoXService: ArqueoXService,
     private SalesReportService: SalesReportService,
-    private StorageService: StorageService
+    private StorageService: StorageService,
+    private CsvdownloadService: CsvdownloadService
   ) {}
 
   emptyA: boolean = false;
@@ -345,5 +347,16 @@ export class ReportsComponent implements OnInit {
   sendSalesDetails(id: string) {
     this.code = this.EncryptionService.encryptData(id);
     this.code = '/details/' + this.EncryptionService.encode(this.code);
+  }
+
+  //Boton Descargar
+  downloadReports(){
+    if(this.reportVarSearch == 'Impuestos') {
+      this.CsvdownloadService.downloadArqueoXFile(this.sales, 'ArqueoX', "es-ES");
+    } else if(this.reportVarSearch == 'Productos') {
+      this.CsvdownloadService.downloadSalesReportFile(this.salesReports, 'SalesReport', "es-ES");
+    } else if(this.reportVarSearch == 'Métodos de pago') {
+      this.CsvdownloadService.downloadPaymentMethodsFile(this.sales, 'PaymentMethods', "es-ES");
+    }
   }
 }
