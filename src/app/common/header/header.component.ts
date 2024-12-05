@@ -17,6 +17,7 @@ export class HeaderComponent implements OnInit {
     username: string;
     private authService: AuthService;
     isLoggedIn: boolean = false;
+    commerceSearch: any = 'Comercio';
 
   constructor(private _pagesService: PagesService,private _translationService: LanguageManagerService,
     private storageService: StorageService,public router: Router, private route: ActivatedRoute, private _authService : AuthService){

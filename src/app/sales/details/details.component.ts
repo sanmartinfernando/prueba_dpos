@@ -77,7 +77,7 @@ export class DetailsComponent implements OnInit {
     return total;
   }
 
-  donwloadPDF(){
+  downloadPDF(){
     this.DownloadPDFService.downloadFileOrders(this.orderId)
   }
 

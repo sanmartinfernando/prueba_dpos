@@ -140,8 +140,8 @@
                 </ng-container>
               </tbody>
               <tr *ngIf="emptyA == false">
-                <td class="text-center align-middle"></td>
-                <td class="text-end align-middle"><b>TOTAL</b></td>
+                <td class="text-center align-middle"><b>TOTAL</b></td>
+                <td class="text-end align-middle"></td>
                 <td class="text-center align-middle"><b>{{ totalBase | currency : "Eur" : "€"}}</b></td>
                 <td class="text-center align-middle"><b>{{ totalCuote | currency : "Eur" : "€"}}</b></td>
               </tr>
@@ -166,7 +166,6 @@
               <thead class="text-customer">
                 <tr>
                   <th class="text-center">Producto</th>
-                  <th class="text-center">Categoría</th>
                   <th class="text-center">PVP (IVA inc.)</th>
                   <th class="text-center">Ud. vendidas</th>
                   <th class="text-center">Total</th>
@@ -190,9 +189,6 @@
                       {{ product.product }}
                     </td>
                     <td class="text-center align-middle">
-                      Columna provisional
-                    </td>
-                    <td class="text-center align-middle">
                       {{
                         product.total / 100000000 / (product.units / 1000)
                           | currency : "Eur" : "€"
@@ -208,9 +204,8 @@
                 </ng-container>
               </tbody>
               <tr *ngIf="emptyA == false">
-                <td class="text-center align-middle"></td>
-                <td clas="text-center align-middle"></td>
-                <td class="text-end align-middle"><b>TOTAL</b></td>
+                <td class="text-center align-middle"><b>TOTAL</b></td>
+                <td class="text-end align-middle"></td>
                 <td class="text-center align-middle"><b>{{ totalUnits}}</b></td>
                 <td class="text-center align-middle"><b>{{ totalUnitsValor | currency : "Eur" : "€"}}</b></td>
               </tr>
@@ -272,8 +267,8 @@
                 </ng-container>
               </tbody>
               <tr *ngIf="emptyA == false">
+                <td class="text-center align-middle"> <b>TOTAL</b> </td>
                 <td></td>
-                <td class="text-end align-middle"> <b>TOTAL</b> </td>
                 <td class="text-center align-middle"><b>{{ totalPercentage + ' %'}}</b></td>
                 <td class="text-center align-middle"><b>{{ totalValuePercentage | currency : "Eur" : "€"}}</b></td>
               </tr>

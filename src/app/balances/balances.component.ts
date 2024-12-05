@@ -10,6 +10,9 @@ import { BalanceInfo } from '../_models/BalanceInfo.model';
   styleUrls: [],
 })
 export class BalancesComponent implements OnInit {
+
+  Math = Math;
+  
   // ---------------- Propiedades------------------
 
   constructor(private BalanceinfoService: BalanceinfoService, private EncryptionService: EncryptionService, private StorageService: StorageService) {}

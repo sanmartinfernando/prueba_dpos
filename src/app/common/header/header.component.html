@@ -26,10 +26,25 @@
     <h3 class="float-start p-3 pb-2"><b>{{ title }}</b></h3>
     <ul class="navbar-nav float-end">
       <li class="mx-3 nav-item pt-2 pb-2">
+
+        <select
+            class="form-select-commerce"
+            *ngIf="username; else loginLink"
+            name="commerce"
+            [(ngModel)]="commerceSearch"
+            id="searchCommerce"
+          >
+          <option selected>Comercio</option>
+          <option>Comercio 1</option>
+          <option>Comercio 2</option>
+        </select>
+      </li>
+      <li class="mx-3 nav-item pt-2 pb-2">
         <!--<a class="btn btn-light"><i class="fa-solid fa-gears fa-lg" style="color: #B197FC;"></i></a>&nbsp;&nbsp;-->
-        <a class="btn btn-light" *ngIf="username; else loginLink" (click)="logOut()" style="cursor: pointer"><i class="fa-solid fa-circle-user fa-lg" style="color: #ffbb00;"></i>&nbsp;&nbsp;{{
-          username
-          }}&nbsp;&nbsp;&nbsp;<span class="fa-solid fa-arrow-right-from-bracket"></span></a>
+        <a class="btn btn-light" *ngIf="username" (click)="logOut()" style="cursor: pointer">
+          <i class="fa-solid fa-circle-user fa-lg" style="color: #ffbb00;"></i>&nbsp;&nbsp;{{
+          username }}&nbsp;&nbsp;&nbsp;<span class="fa-solid fa-arrow-right-from-bracket"></span>
+        </a>
       </li>
       <ng-template #loginLink>
         <li class="mx-3 nav-item">

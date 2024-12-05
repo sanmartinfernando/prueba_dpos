@@ -70,8 +70,6 @@
                   <th class="text-center">Hasta</th>
                   <th class="text-center">Operaciones</th>
                   <th class="text-center">Descuadre efecivo (€)</th>
-                  <th class="text-center">Base imponible</th>
-                  <th class="text-center">Cuota de IVA</th>
                   <th class="text-center">Total</th>
                   <th></th>
                 </tr>
@@ -110,13 +108,7 @@
                       {{ mismatch[i]| currency : "Eur" : "€"  }}
                     </td>
                     <td class="text-center align-middle">
-                      Base
-                    </td>
-                    <td class="text-center align-middle">
-                      IVA
-                    </td>
-                    <td class="text-center align-middle">
-                      Total
+                      {{ balance.total / Math.pow(10, balance.decimals) | currency : "EUR" : "€" }}
                     </td>
                     <td class="text-end">
                       <span id="detailsticket" class="align-middle" style="cursor: pointer;">
