@@ -47,7 +47,7 @@ export class ReportsComponent implements OnInit {
   totalValuePercentage: number = 0;
 
   //Parámetros de búsqueda
-  terminalVarSearch: string = null;
+  terminalVarSearch: string = 'Todos';
   reportVarSearch: string = 'Impuestos';
   searchCounter: boolean = false;
   sinceDate: string;
@@ -209,7 +209,7 @@ export class ReportsComponent implements OnInit {
 
   searchSales() {
     this.emptyA = false;
-    if (this.terminalVarSearch == '') {
+    if (this.terminalVarSearch == 'Todos') {
       this.terminalVarSearch = null;
     }
     this.loadCompleted = false;

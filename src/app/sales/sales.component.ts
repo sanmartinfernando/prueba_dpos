@@ -14,15 +14,6 @@ import { TerminalList } from '../_models/TerminalList.model';
 export class SalesComponent implements OnInit {
 
   currentFormats: any;
-  
-  constructor(
-    private SalesinfoService: SalesinfoService,
-    private EncryptionService: EncryptionService,
-    private CsvdownloadService: CsvdownloadService,
-    private TerminalListService: TerminalListService,
-    private StorageService: StorageService
-  ) {}
-
   size: number = 2147483647;
   sales: SalesInfo;
   terminals: TerminalList;
@@ -59,6 +50,14 @@ export class SalesComponent implements OnInit {
   selectedIndices: number[] = [];
   isAllSelected: boolean = false;
   counter = 0;
+
+  constructor(
+    private SalesinfoService: SalesinfoService,
+    private EncryptionService: EncryptionService,
+    private CsvdownloadService: CsvdownloadService,
+    private TerminalListService: TerminalListService,
+    private StorageService: StorageService
+  ) {  }
 
   ngOnInit(): void {
     this.SalesinfoService.GetSalesInfo(this.size, this.searchParams0).subscribe(
@@ -171,24 +170,18 @@ export class SalesComponent implements OnInit {
         this.salesTicketBai = []
 
         for( let i=0; i<= this.sales.data.length; i++){
-          if(this.sales.data[i].orderTicketBai != null){
+          if(this.sales.data[i] != null && this.sales.data[i].orderTicketBai != null ){
             if (this.sales.data[i].orderTicketBai.status == '00' && this.sales.data[i].orderTicketBai.warns.length <= 0) {
-            this.salesTicketBai[i]=0
-          }
-          }
-          if(this.sales.data[i].orderTicketBai !== null){
+              this.salesTicketBai[i]=0
+            }
             if (this.sales.data[i].orderTicketBai.status == '00' && this.sales.data[i].orderTicketBai.warns.length > 0) {
-            this.salesTicketBai[i]=1
-          }
-          }
-          if(this.sales.data[i].orderTicketBai !== null){
+              this.salesTicketBai[i]=1
+            }
             if (this.sales.data[i].orderTicketBai.status == '01') {
-            this.salesTicketBai[i]=2
+              this.salesTicketBai[i]=2
+            }
           }
         }
-        }
-
-
       },
       (error) => {
         if (error.status == 401) {

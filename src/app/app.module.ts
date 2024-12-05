@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -31,7 +31,9 @@ import { QRCodeModule } from 'angularx-qrcode';
 import { PwrecoveryComponent } from './common/login/pwrecovery/pwrecovery.component';
 import { PwresetComponent } from './common/login/pwreset/pwreset.component';
 import { CountdownComponent } from 'ngx-countdown';
-
+import { registerLocaleData } from '@angular/common';
+import localeEs from '@angular/common/locales/es';
+registerLocaleData(localeEs);
 
 @NgModule({ declarations: [
         AppComponent,
@@ -72,8 +74,11 @@ import { CountdownComponent } from 'ngx-countdown';
         provideHttpClient(withInterceptorsFromDi()),
         NgxChartsModule,
         BrowserAnimationsModule,
-        AuthGuard
-
+        AuthGuard,
+        {
+          provide: LOCALE_ID,
+          useValue: 'es-ES',
+        }
 
     ] })
 export class AppModule { }

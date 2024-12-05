@@ -9,9 +9,8 @@
         <select
           class="form-select"
           name="terminal"
-          [(ngModel)]="terminalVarSearch"
-        >
-          <option></option>
+          [(ngModel)]="terminalVarSearch">
+          <option selected>Todos</option>
           <option *ngFor="let terminal of selectSales[0]; index as i">
             {{ terminal }}
           </option>
