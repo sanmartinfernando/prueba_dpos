@@ -132,8 +132,9 @@ select, input[type="date" i], i{
 .kpi{
   border: none;
   background-color: #f7f7f7;
-  border-bottom: 20px solid grey;
+  border-bottom: 8px solid grey;
   padding: 1rem;
+  cursor:pointer;
 }
 
 #salesBorder {
@@ -156,6 +157,12 @@ select, input[type="date" i], i{
   border-bottom-color: #EE9A3A !important;
 }
 
+.inputHeadSales{
+  border-radius: 5px;
+  border: none;
+  background: #edf1f5;
+  height: 28px;
+}
 #inputHeadSales {
   width: 40px;
 }
@@ -973,10 +980,10 @@ footer{
 }
 
 .card-header {
-  padding: 0.75rem 1.25rem;
-  margin-bottom: 0;
-  background-color: #fff;
-  border-bottom: 1px solid #eee;
+  color: #333;
+  width: 100%;
+  box-shadow: none;
+  padding: 20px;
 }
 
 .card-header:first-child {
@@ -1125,14 +1132,19 @@ footer{
 
 .card-customer .card-header {
   color: #333;
-  border-bottom: 15px solid #edf1f5;
-  width: 100%;
-  box-shadow: none;
-  padding: 10px;
+    box-shadow: none;
+    padding: 20px 20px 15px 20px;
+    /* border-bottom: 1px solid #e3e3e3; */
+    background: #f8f8f8;
+    border-radius: 20px 20px 0 0;
+}
+
+.card-customer .card-footer {
+  border: none;
 }
 
 .card-customer .card-header .card-title{
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   font-weight: 700;
 }
 

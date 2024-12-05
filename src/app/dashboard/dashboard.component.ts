@@ -56,6 +56,9 @@ export class DashboardComponent implements OnInit {
   valueGraphArraySales = new Array(12);
   valueGraphArrayRefunds = new Array(12);
   valueGraphArrayRect = new Array(12);
+  colorScheme = {
+    domain: ['#08DDC1', '#FFDC1B', '#FF5E3A', '#FF5E3A', '#FF5E3A', '#FF5E3A']
+  };
   dataset = [
     { name: 'Ene', value: 0 },
     { name: 'Feb', value: 0 },
@@ -86,6 +89,23 @@ export class DashboardComponent implements OnInit {
     { name: '', value: 0 },
     { name: '', value: 0 },
     { name: '', value: 0 },
+  ];
+
+  customColors2 = [
+    { name: '', value: '#6DF0D2' },
+    { name: '', value: '#6DF0D2' },
+    { name: '', value: '#6DF0D2' },
+    { name: '', value: '#6DF0D2' },
+  ];
+
+  customColors3 = [
+    { name: 'Efectivo', value: '#6DF0D2' },
+    { name: 'Tarjeta', value: '#6DF0D2' },
+    { name: 'Vales', value: '#6DF0D2' },
+    { name: 'Virtual', value: '#6DF0D2' },
+    { name: 'Otros', value: '#6DF0D2' },
+    { name: 'Bono Denda', value: '#6DF0D2' },
+    { name: 'Rectificación', value: '#6DF0D2' },
   ];
 
   //Función que añade % al final del value label de los gráficos
