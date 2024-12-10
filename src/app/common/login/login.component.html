@@ -1,7 +1,7 @@
 <div class="container mt-5 col-md-3 offset-md-5">
   <div class="card p-5">
     <h2><b>Welcome back!</b></h2>
-    <span>Enter your account details</span>
+    <span *ngIf="!isLoggedIn">Enter your account details</span>
     <div class="mt-3">
       <form *ngIf="!isLoggedIn" [formGroup]="loginForm" (ngSubmit)="loginForm.valid && onSubmit()" novalidate>
         <div class="my-3">
