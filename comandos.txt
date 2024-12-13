@@ -11,6 +11,8 @@ ng build --prod
 ng build --prod --aot --output-hashing=all
 ng build --aot --output-hashing=all
 
+npx ng build --base-href "/webclient/" <--- Se necesita utilizar el argumento "--base-href" en entornos de integracion ya que la aplicacion se despliega en una subruta.
+
 ng serve -c inte  <--- conectando contra inte
 
 -Componentes:ng generate component my-new-component
