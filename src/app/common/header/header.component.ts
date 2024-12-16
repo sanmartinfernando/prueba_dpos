@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { LanguageManagerService } from 'src/app/_services/languagemanager.service';
 import { PagesService } from 'src/app/_services/pages.service';
 import { Page } from 'src/app/_models/Page';
 import { StorageService } from 'src/app/_services/storage.service';
@@ -19,7 +18,7 @@ export class HeaderComponent implements OnInit {
     isLoggedIn: boolean = false;
     commerceSearch: any = 'Comercio';
 
-  constructor(private _pagesService: PagesService,private _translationService: LanguageManagerService,
+  constructor(private _pagesService: PagesService,
     private storageService: StorageService,public router: Router, private route: ActivatedRoute, private _authService : AuthService){
 
     this.pages=_pagesService.pages;

@@ -1,8 +1,4 @@
-import { StorageService } from './_services/storage.service';
-import { Component, OnInit } from '@angular/core';
-import { NgxChartsModule }from '@swimlane/ngx-charts';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { CurrencyPipe } from '@angular/common';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'DPOSW-root',
