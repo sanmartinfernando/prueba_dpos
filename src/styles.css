@@ -157,6 +157,15 @@ select, input[type="date" i], i{
   border-bottom-color: #FF6E6E !important;
 }
 
+.legend-labels {
+  width: 125px !important;
+  margin-top: 25px !important;
+}
+
+.ngx-charts {
+  width: 350px !important;
+}
+
 .inputHeadSales{
   border-radius: 5px;
   border: none;
