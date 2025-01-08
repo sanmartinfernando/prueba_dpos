@@ -1,5 +1,5 @@
 <div class="container-fluid pt-4">
-    <h5>Clientes</h5>
+    <h5>{{'dpos.clients.title.label' | translate}}</h5>
     <hr>
     <section id="search-helper mb-3">
         <div class="p-3 bg-light border rounded">
@@ -8,12 +8,12 @@
             <form class="formGroup" [formGroup]="clientsFormGroup" *ngIf="element == true">
               <div class="row">
                 <div class="col-12 col-md-6 col-lg-5 mb-3">
-                  <label class="form-label">NIF</label>
+                  <label class="form-label">{{'dpos.clients.nif.label' | translate}}</label>
                   <div class="input-group">
                     <select class="form-select w-25" formControlName="nifSelect">
-                      <option selected value={{contains}} >contiene</option>
-                      <option value={{startsWith}}>empieza por</option>
-                      <option value={{endsWith}}>termina en</option>
+                      <option selected value={{contains}} >{{'dpos.filter.contains' | translate}}</option>
+                      <option value={{startsWith}}>{{'dpos.filter.beginswith' | translate}}</option>
+                      <option value={{endsWith}}>{{'dpos.filter.endswith' | translate}}</option>
                     </select>
                     <input type="text" class="form-control w-75" name="filterPost" formControlName="nif"/>
                   </div>
@@ -25,13 +25,13 @@
                     <a type="button"><i class="fas fa-toggle-off fa-2x" (click)="hideAdvancedSearch()"></i></a>
                   </div>
                   <div class="mt-1">
-                    <label class="form-label">Busqueda Avanzada</label>
+                    <label class="form-label">{{'dpos.action.advancedsearch' | translate}}</label>
                   </div>
                 </div>
                 <div class="col col-lg-8">
                   <div class="d-flex justify-content-end">
                     <div class="mt-2 mx-1">
-                      <label class="form-label">Nº Max Registros</label>
+                      <label class="form-label">{{'dpos.filter.maxfields' | translate}}</label>
                     </div>
                     <div class="mb-3 mt-1 mx-1">
                       <select class="form-select" >
@@ -43,8 +43,8 @@
                       </select>
                     </div>
                     <div class="mb-3 mx-1">
-                      <a type="button" class="btn btn-danger rounded-pill" (click)="clearSearch()"><i class="fas fa-eraser" ></i>&nbsp;&nbsp;Limpiar</a>
-                      <a type="button" class="btn btn-info rounded-pill" (click)="search()"><i class="fas fa-search"  ></i>&nbsp;&nbsp;Buscar</a>
+                      <a type="button" class="btn btn-danger rounded-pill" (click)="clearSearch()"><i class="fas fa-eraser" ></i>&nbsp;&nbsp;{{'dpos.action.clean' | translate}}</a>
+                      <a type="button" class="btn btn-info rounded-pill" (click)="search()"><i class="fas fa-search"  ></i>&nbsp;&nbsp;{{'dpos.action.search' | translate}}</a>
                     </div>
                   </div>
                 </div>
@@ -56,56 +56,56 @@
             <form [formGroup]="clientsFormGroup"  *ngIf="element == false">
               <div class="row">
                 <div class="col-12 col-md-4 col-lg-3 mb-3">
-                  <label class="form-label">NIF</label>
+                  <label class="form-label">{{'dpos.clients.nif.label' | translate}}</label>
                   <div class="input-group">
                     <select class="form-select w-25" formControlName="nifSelect">
-                      <option selected value={{contains}} >contiene</option>
-                      <option value={{startsWith}}>empieza por</option>
-                      <option value={{endsWith}}>termina en</option>
+                      <option selected value={{contains}} >{{'dpos.filter.contains' | translate}}</option>
+                      <option value={{startsWith}}>{{'dpos.filter.beginswith' | translate}}</option>
+                      <option value={{endsWith}}>{{'dpos.filter.endswith' | translate}}</option>
                     </select>
                     <input type="text" class="form-control w-75" formControlName="nif" />
                   </div>
                 </div>
                 <div class="col-12 col-md-4 col-lg-3 mb-3">
-                  <label class="form-label">Nombre</label>
+                  <label class="form-label">{{'dpos.clients.name.label' | translate}}</label>
                   <div class="input-group">
                     <select class="form-select w-25" formControlName="nameSelect">
-                      <option selected value={{contains}} >contiene</option>
-                      <option value={{startsWith}}>empieza por</option>
-                      <option value={{endsWith}}>termina en</option>
+                      <option selected value={{contains}} >{{'dpos.filter.contains' | translate}}</option>
+                      <option value={{startsWith}}>{{'dpos.filter.beginswith' | translate}}</option>
+                      <option value={{endsWith}}>{{'dpos.filter.endswith' | translate}}</option>
                       </select>
                     <input type="text" class="form-control w-75" name="filterPost" formControlName="name" />
                   </div>
                 </div>
                 <div class="col-12 col-md-4 col-lg-3 mb-3">
-                  <label class="form-label">Apellidos</label>
+                  <label class="form-label">{{'dpos.clients.lastname.label' | translate}}</label>
                   <div class="input-group">
                     <select class="form-select w-25" formControlName="surnameSelect">
-                      <option selected value={{contains}} >contiene</option>
-                      <option value={{startsWith}}>empieza por</option>
-                      <option value={{endsWith}}>termina en</option>
+                      <option selected value={{contains}} >{{'dpos.filter.contains' | translate}}</option>
+                      <option value={{startsWith}}>{{'dpos.filter.beginswith' | translate}}</option>
+                      <option value={{endsWith}}>{{'dpos.filter.endswith' | translate}}</option>
                       </select>
                     <input type="text" class="form-control w-75" name="filterPost" formControlName="surname"/>
                   </div>
                 </div>
                 <div class="col-12 col-md-4 col-lg-3 mb-3">
-                  <label class="form-label">Teléfono</label>
+                  <label class="form-label">{{'dpos.clients.phone.label' | translate}}</label>
                   <div class="input-group">
                     <select class="form-select w-25" formControlName="phoneNumberSelect">
-                      <option selected value={{contains}} >contiene</option>
-                      <option value={{startsWith}}>empieza por</option>
-                      <option value={{endsWith}}>termina en</option>
+                      <option selected value={{contains}} >{{'dpos.filter.contains' | translate}}</option>
+                      <option value={{startsWith}}>{{'dpos.filter.beginswith' | translate}}</option>
+                      <option value={{endsWith}}>{{'dpos.filter.endswith' | translate}}</option>
                       </select>
                     <input type="text" class="form-control w-75" name="filterPost" formControlName="phoneNumber"/>
                   </div>
                 </div>
                 <div class="col-12 col-md-4 col-lg-3 mb-3">
-                    <label class="form-label">Email</label>
+                    <label class="form-label">{{'dpos.clients.mail.label' | translate}}</label>
                     <div class="input-group">
                         <select class="form-select w-25" formControlName="emailSelect">
-                          <option selected value={{contains}} >contiene</option>
-                          <option value={{startsWith}}>empieza por</option>
-                          <option value={{endsWith}}>termina en</option>
+                          <option selected value={{contains}} >{{'dpos.filter.contains' | translate}}</option>
+                      <option value={{startsWith}}>{{'dpos.filter.beginswith' | translate}}</option>
+                      <option value={{endsWith}}>{{'dpos.filter.endswith' | translate}}</option>
                           </select>
                       <input type="text" class="form-control w-75" name="filterPost" formControlName="email"/>
                     </div>
@@ -117,13 +117,13 @@
                     <a type="button"><i class="fas fa-toggle-on fa-2x" style="color: #000000" (click)="showAdvancedSearch()"></i></a>
                   </div>
                   <div class="mt-1">
-                    <label class="form-label">Busqueda Avanzada</label>
+                    <label class="form-label">{{'dpos.action.advancedsearch' | translate}}</label>
                   </div>
                 </div>
                 <div class="col col-lg-8">
                   <div class="d-flex justify-content-end">
                     <div class="mt-2 mx-1">
-                      <label class="form-label">Nº Max Registros</label>
+                      <label class="form-label">{{'dpos.filter.maxfields' | translate}}</label>
                     </div>
                     <div class="mb-3 mt-1 mx-1">
                       <select class="form-select" >
@@ -135,8 +135,8 @@
                       </select>
                     </div>
                     <div class="mb-3 ">
-                      <a type="button" class="btn btn-danger rounded-pill" (click)="clearSearch()"><i class="fas fa-eraser"  ></i>&nbsp;&nbsp;Limpiar</a>
-                      <a type="button" class="btn btn-info rounded-pill" (click)="search()"><i class="fas fa-search"></i>&nbsp;&nbsp;Buscar</a>
+                      <a type="button" class="btn btn-danger rounded-pill" (click)="clearSearch()"><i class="fas fa-eraser"  ></i>&nbsp;&nbsp;{{'dpos.action.clean' | translate}}</a>
+                      <a type="button" class="btn btn-info rounded-pill" (click)="search()"><i class="fas fa-search"></i>&nbsp;&nbsp;{{'dpos.action.search' | translate}}</a>
                     </div>
                   </div>
                 </div>
@@ -149,15 +149,15 @@
         <!-- Contenedor botones antes de la tabla de productos -->
         <div class="row mt-4 mb-1">
             <div class="col-12 col-md-4">
-                    <label><small><span class="text-danger">{{nRecords}}</span>&nbsp;registros >></small></label>&nbsp;
-                    <label><small><em>{{selectedRecords}} registros están seleccionados</em></small></label>&nbsp;
+                    <label><small><span class="text-danger">{{nRecords}}</span>&nbsp;{{'dpos.filter.registers' | translate}}</small></label>&nbsp;
+                    <label><small><em>{{selectedRecords}} {{'dpos.filter.registersselected' | translate}}</em></small></label>&nbsp;
                     <a type="button" class="btn btn-link" (click)="selectAllRecords()"><small>{{SelectAll}}</small></a>
             </div>
             <div class="col-12 col-md-8 text-right">
-                <button class="btn btn-info rounded-pill" [disabled]="downloadDisabled"><i class='fas fa-file-excel' ></i>&nbsp;&nbsp;Descargar</button>
-                <a type="button" class="btn btn-customer rounded-pill">Importar Clientes</a>
-                <a  type="button" class="btn btn-customer rounded-pill">Añadir Clientes</a>
-                <button class="btn btn-danger rounded-pill" ><i class='fas fa-trash-alt'></i>&nbsp;&nbsp;Eliminar</button>
+                <button class="btn btn-info rounded-pill" [disabled]="downloadDisabled"><i class='fas fa-file-excel' ></i>&nbsp;&nbsp;{{'dpos.action.download' | translate}}</button>
+                <a type="button" class="btn btn-customer rounded-pill">{{'dpos.clients.import.label' | translate}}</a>
+                <a  type="button" class="btn btn-customer rounded-pill">{{'dpos.clients.add.label' | translate}}</a>
+                <button class="btn btn-danger rounded-pill" ><i class='fas fa-trash-alt'></i>&nbsp;&nbsp;{{'dpos.action.delete' | translate}}</button>
             </div>
         </div>
         <!-- Load -->
@@ -176,11 +176,11 @@
                                         <input class="form-check-input" type="checkbox" id="ch_all" (click)="selectTenRecords()" [checked]="selectTen">
                                     </div>
                                 </th>
-                                <th>NIF</th>
-                                <th>NOMBRE *</th>
-                                <th>APELLIDOS *</th>
-                                <th>TELÉFONO</th>
-                                <th>EMAIL</th>
+                                <th>{{'dpos.clients.nif.column' | translate}}</th>
+                                <th>{{'dpos.clients.name.column' | translate}}</th>
+                                <th>{{'dpos.clients.lastname.column' | translate}}</th>
+                                <th>{{'dpos.clients.phone.column' | translate}}</th>
+                                <th>{{'dpos.clients.email.column' | translate}}</th>
                                 <th></th>
                                 <th></th>
                                 <th></th>

@@ -138,23 +138,23 @@ select, input[type="date" i], i{
 }
 
 #salesBorder {
-  border-bottom-color: #19AADE !important;
+  border-bottom-color: #6DB9FF !important;
 }
 
 #averageTicketBorder {
-  border-bottom-color: #1DE4BD !important;
+  border-bottom-color: #1FCC92 !important;
 }
 
 #refundsBorder {
-  border-bottom-color: #DB4CB2 !important;
+  border-bottom-color: #FF803C !important;
 }
 
 #casmovBorder {
-  border-bottom-color: #AF4BCE !important;
+  border-bottom-color: #F598F5 !important;
 }
 
 #balanceBorder {
-  border-bottom-color: #EE9A3A !important;
+  border-bottom-color: #FF6E6E !important;
 }
 
 .inputHeadSales{

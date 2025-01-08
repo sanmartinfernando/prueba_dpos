@@ -5,27 +5,27 @@
     <!-- Formulario de búsqueda -->
     <form class="d-flex flex-wrap mx-1">
       <div class="me-3">
-        <label class="form-label">Tipo de informe</label>
+        <label class="form-label">{{'dpos.filter.reporttype' | translate}}</label>
         <select class="form-select" name="report" [(ngModel)]="reportVarSearch">
-          <option selected>Impuestos</option>
-          <option>Productos</option>
-          <option>Métodos de pago</option>
+          <option selected>{{'dpos.reports.taxes.label' | translate}}</option>
+          <option>{{'dpos.reports.products.label' | translate}}</option>
+          <option>{{'dpos.reports.paymentmethods.label' | translate}}</option>
         </select>
       </div>
       <div class="me-3">
-        <label class="form-label">Terminal</label>
+        <label class="form-label">{{'dpos.filter.terminal' | translate}}</label>
         <select class="form-select" name="terminal" [(ngModel)]="terminalVarSearch">
-          <option selected>Todos</option>
+          <option selected>{{'dpos.filter.all' | translate}}</option>
           <option>1</option>
           <option>2</option>
         </select>
       </div>
       <div class="mx-3">
-        <label class="form-label">Desde</label>
+        <label class="form-label">{{'dpos.filter.date.from' | translate}}</label>
         <input type="date" class="form-control" id="sinceDate" />
       </div>
       <div class="mx-3">
-        <label class="form-label">Hasta</label>
+        <label class="form-label">{{'dpos.filter.date.to' | translate}}</label>
         <input type="date" class="form-control" id="tilDate" />
       </div>
       <div id="searchButtonsDiv" class="ms-5 d-flex overflow-auto">
@@ -33,7 +33,7 @@
           <a type="button"><i class="fas fa-eraser"></i> </a>
         </button>
         <a type="button" class="btn btn-primary align-self-end" (click)="searchSales()"><i
-            class="fas fa-search"></i>&nbsp;&nbsp;Buscar</a>
+            class="fas fa-search"></i>&nbsp;&nbsp;{{'dpos.action.search' | translate}}</a>
       </div>
     </form>
   </div>
@@ -61,7 +61,7 @@
       </div>
       <!-- Tabla vacia -->
       <div class="row" *ngIf="reportVarSearch == null">
-        <b>Selecciona un tipo de informe</b>
+        <b>{{'dpos.reports.selectreport.label' | translate}}</b>
       </div>
       <!-- Tabla impuestos-->
       <div class="row" *ngIf="reportVarSearch == 'Impuestos'">
@@ -70,15 +70,15 @@
             <table class="table table-hover order-table" data-pagination="true" data-page-size="10">
               <thead class="text-customer">
                 <tr>
-                  <th class="text-start">Impuesto</th>
-                  <th class="text-end">Valor (%)</th>
-                  <th class="text-end">Base</th>
-                  <th class="text-end">Cuota</th>
+                  <th class="text-start">{{'dpos.reports.taxname.label' | translate}}</th>
+                  <th class="text-end">{{'dpos.reports.taxvalue.label' | translate}}</th>
+                  <th class="text-end">{{'dpos.reports.base.label' | translate}}</th>
+                  <th class="text-end">{{'dpos.reports.amount.label' | translate}}</th>
                 </tr>
               </thead>
               <ng-template #empty>
                 <td colspan="5">
-                  <b>No existen registros que mostrar</b>
+                  <b>{{'dpos.reports.nodata.label' | translate}}</b>
                 </td>
               </ng-template>
               <tbody>
@@ -112,7 +112,7 @@
                 </ng-container>
                 <tr>
                   <td class="text-start align-middle"></td>
-                  <td class="text-end align-middle"><b>TOTAL</b></td>
+                  <td class="text-end align-middle"><b>{{'dpos.reports.total.label' | translate}}</b></td>
                   <td class="text-end align-middle"><b>{{ totalBase | currency : "Eur" : "€"}}</b></td>
                   <td class="text-end align-middle"><b>{{ totalCuote | currency : "Eur" : "€"}}</b></td>
                 </tr>
@@ -132,15 +132,15 @@
             <table class="table table-hover order-table" data-pagination="true" data-page-size="10">
               <thead class="text-customer">
                 <tr>
-                  <th class="text-start">Producto</th>
-                  <th class="text-end">PVP (IVA inc.)</th>
-                  <th class="text-end">Ud. vendidas</th>
-                  <th class="text-end">Total</th>
+                  <th class="text-start">{{'dpos.reports.product.label' | translate}}</th>
+                  <th class="text-end">{{'dpos.reports.product.price.label' | translate}}</th>
+                  <th class="text-end">{{'dpos.reports.product.units.label' | translate}}</th>
+                  <th class="text-end">{{'dpos.reports.product.total.label' | translate}}</th>
                 </tr>
               </thead>
               <ng-template #empty>
                 <td colspan="5">
-                  <b>No existen registros que mostrar</b>
+                  <b>{{'dpos.reports.nodata.label' | translate}}</b>
                 </td>
               </ng-template>
               <tbody>
@@ -169,7 +169,7 @@
                 </ng-container>
                 <tr>
                   <td class="text-start align-middle"></td>
-                  <td class="text-end align-middle"><b>TOTAL</b></td>
+                  <td class="text-end align-middle"><b>{{'dpos.reports.total.label' | translate}}</b></td>
                   <td class="text-end align-middle"><b>{{ totalUnits}}</b></td>
                   <td class="text-end align-middle"><b>{{ totalUnitsValor | currency : "Eur" : "€"}}</b></td>
                 </tr>
@@ -189,15 +189,15 @@
             <table class="table table-hover order-table" data-pagination="true" data-page-size="10">
               <thead class="text-customer">
                 <tr>
-                  <th class="text-start">Método de pago</th>
+                  <th class="text-start">{{'dpos.reports.paymentmethod.label' | translate}}</th>
                   <th></th>
-                  <th class="text-end">% sobre importe total</th>
-                  <th class="text-end">Total</th>
+                  <th class="text-end">{{'dpos.reports.paymentmethod.percentage.label' | translate}}</th>
+                  <th class="text-end">{{'dpos.reports.paymentmethod.total.label' | translate}}</th>
                 </tr>
               </thead>
               <ng-template #empty>
                 <td colspan="5">
-                  <b>No existen registros que mostrar</b>
+                  <b>{{'dpos.reports.nodata.label' | translate}}</b>
                 </td>
               </ng-template>
               <tbody>
@@ -222,7 +222,7 @@
                   </tr>
                 </ng-container>
                 <tr *ngIf="emptyA == false">
-                  <td class="text-start align-middle"> <b>TOTAL</b> </td>
+                  <td class="text-start align-middle"> <b>{{'dpos.reports.total.label' | translate}}</b> </td>
                   <td></td>
                   <td class="text-end align-middle"><b>{{ totalPercentage + ' %'}}</b></td>
                   <td class="text-end align-middle"><b>{{ totalValuePercentage | currency : "Eur" : "€"}}</b></td>

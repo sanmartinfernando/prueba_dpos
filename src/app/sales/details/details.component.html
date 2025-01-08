@@ -1,7 +1,7 @@
 <div class="container-fluid header-main mt-4">
   <div class="d-flex justify-content-between mb-2">
     <a [routerLink]="['/sales']" type="button" class="" style="text-decoration: none;">
-      <i class="fa-solid fa-angle-left"></i> Listado de operaciones</a>
+      <i class="fa-solid fa-angle-left"></i> {{'dpos.details.back.button.label' | translate}}</a>
     <!--<span class="ms-3 card-title">Detalle {{ ticket.reference }}</span>-->
     <button class="btn btn-sm btn-danger" (click)="downloadPDF()">
       <i class="fa-solid fa-file-pdf fa-xl"></i>
@@ -18,7 +18,7 @@
         <div class="d-flex flex-column justify-content-between">
           <h4 class="card-title">{{ ticket.orderCommerce.name }}</h4>
           <span id="lblterminal_number" class="text-amber">
-            Terminal {{ ticket.terminalNumber }}</span>
+            {{'dpos.filter.terminal' | translate}} {{ ticket.terminalNumber }}</span>
         </div>
         <div class="flex-fill text-end">
           <label id="lblcomercial_cif" class="small"><span>{{ ticket.orderCommerce.nif }}</span></label><br />
@@ -35,9 +35,9 @@
               <table class="table table-hover order-table">
                 <thead>
                   <tr>
-                    <th class="text-start">PRODUCTO</th>
-                    <th class="text-end">UDS.</th>
-                    <th class="text-end">PRECIO</th>
+                    <th class="text-start">{{'dpos.details.order.product.label' | translate}}</th>
+                    <th class="text-end">{{'dpos.details.order.product.uds.label' | translate}}</th>
+                    <th class="text-end">{{'dpos.details.order.product.price.label' | translate}}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -56,17 +56,9 @@
                 </tbody>
               </table>
             </div>
-            <!--<div class="row px-2 pb-4">
-            <div class="col-7 col-md-10">
-              <label id="lblarticlenumber_title"><span class="">Nº total de artículos</span></label>
-            </div>
-            <div class="col-5 col-md-2 text-end pe-4">
-              <label id="lblarticlenumber"><span class="fs-6">{{ ticket.itemsCount }}</span></label>
-            </div>
-          </div>-->
             <div [ngSwitch]="ticket.type" class="flex-fill text-end">
               <h6 *ngSwitchCase="0" id="lbltype" class="text-blue">
-                <span><b>VENTA</b></span>
+                <span><b>{{'dpos.details.order.label' | translate}}</b></span>
               </h6>
               <h6 *ngSwitchCase="1" id="lbltype" class="text-blue">
                 <span>{{
@@ -79,7 +71,7 @@
             </div>
             <div class="row px-2 pb-1">
               <div class="col-7 col-md-10 text-end">
-                <label id="lblsubtotal_title" class="small">Subtotal</label>
+                <label id="lblsubtotal_title" class="small">{{'dpos.details.order.subtotal.label' | translate}}</label>
               </div>
               <div class="col-5 col-md-2 text-end">
                 <label *ngIf="ticket.type == 2; else subtotal" class="text-red" id="lblsubtotal">{{
@@ -96,7 +88,7 @@
             </div>
             <div class="row px-2 pb-1">
               <div class="col-7 col-md-10 text-end">
-                <label id="lbldiscount_title" class="small">Descuento</label>
+                <label id="lbldiscount_title" class="small">{{'dpos.details.order.discount.label' | translate}}</label>
               </div>
               <div class="col-5 col-md-2 text-end">
                 <label *ngIf="ticket.type == 2; else totalDiscount" class="text-red" id="lbldiscount">{{
@@ -109,7 +101,7 @@
             </div>
             <div class="row px-2 pb-1">
               <div class="col-7 col-md-10 text-end">
-                <label id="lbltaxbase_title" class="small">Base imponible</label>
+                <label id="lbltaxbase_title" class="small">{{'dpos.details.order.base.label' | translate}}</label>
               </div>
               <div class="col-5 col-md-2 text-end">
                 <label *ngIf="ticket.type == 2; else base" class="text-red" id="lbltaxbase">{{
@@ -141,7 +133,7 @@
       <div class="card-footer pb-2">
         <div class="row px-2 pb-1">
           <div class="col-7 col-md-10 text-end">
-            <label id="lbltotal_title"><b>Total</b></label>
+            <label id="lbltotal_title"><b>{{'dpos.details.order.total.label' | translate}}</b></label>
           </div>
           <div class="col-5 col-md-2 text-end">
             <label *ngIf="ticket.type == 2; else total" id="lbltotal" class="text-red text-bold text-lg">{{
@@ -171,7 +163,7 @@
         </div>
         <div class="row px-2 pb-1 pt-3" *ngIf="salesTicketBai.length > 0">
           <div class="text-start">
-            <label id="ticket_bai"><b>TicketBAI:</b> {{ salesTicketBai[0] }}</label>
+            <label id="ticket_bai"><b>{{'dpos.details.order.tbai.label' | translate}}</b> {{ salesTicketBai[0] }}</label>
           </div>
           <div class="text-start">
             <qrcode [qrdata]="salesTicketBai[1]" [width]="200" [errorCorrectionLevel]="'M'"></qrcode>

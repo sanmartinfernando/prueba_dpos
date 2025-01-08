@@ -1,13 +1,11 @@
 <div class="container mt-5 col-md-6 offset-md-3">
   <div class="card p-5">
 
-      <h4 class="card-title">Recuperación de contraseña</h4>
+      <h4 class="card-title">{{'dpos.pwrecovery.password.recovery.title' | translate}}</h4>
 
     <form *ngIf="!isLoggedIn">
       <div class="form-group my-4 ms-5 me-5">
-        <label class="mb-3" for="username"
-          >Introduzca su nombre de usuario</label
-        >
+        <label class="mb-3" for="username">{{'dpos.pwrecovery.username.label' | translate}}</label>
         <input
           type="username"
           class="form-control"

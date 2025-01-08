@@ -11,6 +11,7 @@ import { OrderAggregationTop3 } from '../_models/Top3Sales.model';
   styleUrls: [],
 })
 export class DashboardComponent implements OnInit {
+
   constructor(
     private OrdersAggregateService: OrdersAggregateService,
     private CashmovementsAggregateService: CashmovementsAggregateService
@@ -56,10 +57,16 @@ export class DashboardComponent implements OnInit {
   valueGraphArraySales = new Array(12);
   valueGraphArrayRefunds = new Array(12);
   valueGraphArrayRect = new Array(12);
-  colorScheme = {
-    domain: ['#08DDC1', '#FFDC1B', '#FF5E3A', '#FF5E3A', '#FF5E3A', '#FF5E3A']
-  };
-  dataset = [
+
+  colors = ['#6DB9FF', 
+            '#1FCC92',
+            '#FF803C', 
+            '#F598F5', 
+            '#FF6E6E', 
+            '#FFCC4D',
+            '#7C77FE'];
+
+  kpiDataset = [
     { name: 'Ene', value: 0 },
     { name: 'Feb', value: 0 },
     { name: 'Mar', value: 0 },
@@ -74,6 +81,21 @@ export class DashboardComponent implements OnInit {
     { name: 'Dic', value: 0 },
   ];
 
+  colorsKPI = [
+    { name: 'Ene', value: this.colors[0] },
+    { name: 'Feb', value: this.colors[0] },
+    { name: 'Mar', value: this.colors[0] },
+    { name: 'Abr', value: this.colors[0] },
+    { name: 'May', value: this.colors[0] },
+    { name: 'Jun', value: this.colors[0] },
+    { name: 'Jul', value: this.colors[0] },
+    { name: 'Ago', value: this.colors[0] },
+    { name: 'Sep', value: this.colors[0] },
+    { name: 'Oct', value: this.colors[0] },
+    { name: 'Nov', value: this.colors[0] },
+    { name: 'Dic', value: this.colors[0] },
+  ];
+
   datasetPM = [
     { name: 'Efectivo', value: 0 },
     { name: 'Tarjeta', value: 0 },
@@ -84,6 +106,16 @@ export class DashboardComponent implements OnInit {
     { name: 'Rectificación', value: 0 },
   ];
 
+  colorsPM = [
+    { name: 'Efectivo', value: this.colors[0] },
+    { name: 'Tarjeta', value: this.colors[1] },
+    { name: 'Vales', value: this.colors[2] },
+    { name: 'Virtual', value: this.colors[3] },
+    { name: 'Otros', value: this.colors[4] },
+    { name: 'Bono Denda', value: this.colors[5] },
+    { name: 'Rectificación', value: this.colors[6] },
+  ];
+
   datasetTop3 = [
     { name: '', value: 0 },
     { name: '', value: 0 },
@@ -91,22 +123,7 @@ export class DashboardComponent implements OnInit {
     { name: '', value: 0 },
   ];
 
-  customColors2 = [
-    { name: '', value: '#6DF0D2' },
-    { name: '', value: '#6DF0D2' },
-    { name: '', value: '#6DF0D2' },
-    { name: '', value: '#6DF0D2' },
-  ];
-
-  customColors3 = [
-    { name: 'Efectivo', value: '#6DF0D2' },
-    { name: 'Tarjeta', value: '#6DF0D2' },
-    { name: 'Vales', value: '#6DF0D2' },
-    { name: 'Virtual', value: '#6DF0D2' },
-    { name: 'Otros', value: '#6DF0D2' },
-    { name: 'Bono Denda', value: '#6DF0D2' },
-    { name: 'Rectificación', value: '#6DF0D2' },
-  ];
+  colorsTop3 = [];
 
   //Función que añade % al final del value label de los gráficos
 
@@ -121,7 +138,7 @@ export class DashboardComponent implements OnInit {
       document.getElementById('monthDate')
     )).value;
     if (this.monthVarSearch != 'Todos') {
-      if (this.dataset[+this.monthVarSearch - 1].value == value && value !=0) {
+      if (this.kpiDataset[+this.monthVarSearch - 1].value == value && value !=0) {
         value = value.toFixed(1) + '€';
       } else {
         value = null;
@@ -138,24 +155,21 @@ export class DashboardComponent implements OnInit {
   };
 
   //Función que varía el color de las barras del gráfico dependiendo del mes seleccionado (realza el mes seleccionado y diluye el del resto)
-
-  result: any[] = [];
-
   barCustomColors() {
-    this.result = [];
+    this.colorsKPI = [];
     this.monthVarSearch = (<HTMLInputElement>(
       document.getElementById('monthDate')
     )).value;
     if (this.monthVarSearch != 'Todos') {
-      for (let i = 0; i < this.dataset.length; i++) {
-        if (i == +this.monthVarSearch - 1) {
-          this.result.push({ name: this.dataset[i].name, value: '#0080ff' });
-        } else
-          this.result.push({ name: this.dataset[i].name, value: '#e5f2fe' });
+      for (let i = 0; i < this.kpiDataset.length; i++) {
+       // if (i == +this.monthVarSearch - 1) {
+          this.colorsKPI.push({ name: this.kpiDataset[i].name, value: this.colors[0] });
+       // } else
+       //   this.colorsKPI.push({ name: this.kpiDataset[i].name, value: '#e5f2fe' });
       }
     }
     this.monthVarSearch = null;
-    return this.result;
+    return this.colorsKPI;
   }
   //Variables de búsqueda de aggregation
   //Variable aggregation orders
@@ -491,49 +505,49 @@ export class DashboardComponent implements OnInit {
                 (this.aggregationsPM[i].count / addPM) * 100
               );
               this.datasetPM[1].name =
-                this.datasetPM[1].name + ' ' + this.datasetPM[1].value + ' %';
+                this.datasetPM[1].name;// + ' ' + this.datasetPM[1].value + ' %';
               break;
             case 'Efectivo':
               this.datasetPM[0].value = Math.round(
                 (this.aggregationsPM[i].count / addPM) * 100
               );
               this.datasetPM[0].name =
-                this.datasetPM[0].name + ' ' + this.datasetPM[0].value + ' %';
+                this.datasetPM[0].name;// + ' ' + this.datasetPM[0].value + ' %';
               break;
             case 'Vales':
               this.datasetPM[2].value = Math.round(
                 (this.aggregationsPM[i].count / addPM) * 100
               );
               this.datasetPM[2].name =
-                this.datasetPM[2].name + ' ' + this.datasetPM[2].value + ' %';
+                this.datasetPM[2].name;// + ' ' + this.datasetPM[2].value + ' %';
               break;
             case 'Virtual':
               this.datasetPM[3].value = Math.round(
                 (this.aggregationsPM[i].count / addPM) * 100
               );
               this.datasetPM[3].name =
-                this.datasetPM[3].name + ' ' + this.datasetPM[3].value + ' %';
+                this.datasetPM[3].name;// + ' ' + this.datasetPM[3].value + ' %';
               break;
             case 'Otros':
               this.datasetPM[4].value = Math.round(
                 (this.aggregationsPM[i].count / addPM) * 100
               );
               this.datasetPM[4].name =
-                this.datasetPM[4].name + ' ' + this.datasetPM[4].value + ' %';
+                this.datasetPM[4].name;// + ' ' + this.datasetPM[4].value + ' %';
               break;
             case 'Bono Denda':
               this.datasetPM[5].value = Math.round(
                 (this.aggregationsPM[i].count / addPM) * 100
               );
               this.datasetPM[5].name =
-                this.datasetPM[5].name + ' ' + this.datasetPM[5].value + ' %';
+                this.datasetPM[5].name;// + ' ' + this.datasetPM[5].value + ' %';
               break;
             case 'Rectificación':
               this.datasetPM[6].value = Math.round(
                 (this.aggregationsPM[i].count / addPM) * 100
               );
               this.datasetPM[6].name =
-                this.datasetPM[6].name + ' ' + this.datasetPM[6].value + ' %';
+                this.datasetPM[6].name;// + ' ' + this.datasetPM[6].value + ' %';
               break;
           }
         }
@@ -573,6 +587,7 @@ export class DashboardComponent implements OnInit {
             console.log(this.aggregationsTop3);
             //Se asocian los datos del objeto respuesta con los campos correspondientes del array de valores del gráfico
             let sumaTP = 0;
+            this.colorsTop3 = [];
             for (let i = 0; i < this.aggregationsTop3.length; i++) {
               sumaTP = sumaTP + this.aggregationsTop3[i].quantity;
               this.datasetTop3[i].name =
@@ -585,6 +600,9 @@ export class DashboardComponent implements OnInit {
                   this.aggregationsTP[0].quantity) *
                   100
               );
+
+              this.colorsTop3.push({ name: this.datasetTop3[i].name, value: this.colors[i]});
+
             }
             //Se asocia el 4º puesto del array del gráfico correspondiente al apartado "resto de productos"
             //El dato se obtiene restando el valor total de la consulta de aggregationsTP a la sumaTP
@@ -622,17 +640,17 @@ export class DashboardComponent implements OnInit {
         this.aggregationsEvo = aggregation;
         //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
         for (let i = 0; i < this.aggregationsEvo.length; i++) {
-          this.dataset[this.aggregationsEvo[i]._id - 1].value =
+          this.kpiDataset[this.aggregationsEvo[i]._id - 1].value =
             this.aggregationsEvo[i].total / 100;
         }
         //Se rellenan aquellos campos sin datos en el array de valores del gráfico con 0
-        for (let i = 0; i < this.dataset.length; i++) {
-          if (this.dataset[i].value == null) {
-            this.dataset[i].value = 0;
+        for (let i = 0; i < this.kpiDataset.length; i++) {
+          if (this.kpiDataset[i].value == null) {
+            this.kpiDataset[i].value = 0;
           }
         }
         //Se actualiza el array de datos del gráfico para que se dibujen los nuevos datos introducidos
-        this.dataset = [...this.dataset];
+        this.kpiDataset = [...this.kpiDataset];
         //Variables de carga de gráficos se ponen en true
         this.loaded = true;
         this.loadedGraphics = true;
@@ -814,49 +832,49 @@ export class DashboardComponent implements OnInit {
                 (this.aggregationsPM[i].count / addPM) * 100
               );
               this.datasetPM[1].name =
-                'Tarjeta' + ' ' + this.datasetPM[1].value + ' %';
+                'Tarjeta';// + ' ' + this.datasetPM[1].value + ' %';
               break;
             case 'Efectivo':
               this.datasetPM[0].value = Math.round(
                 (this.aggregationsPM[i].count / addPM) * 100
               );
               this.datasetPM[0].name =
-                'Efectivo' + ' ' + this.datasetPM[0].value + ' %';
+                'Efectivo';// + ' ' + this.datasetPM[0].value + ' %';
               break;
             case 'Vales':
               this.datasetPM[2].value = Math.round(
                 (this.aggregationsPM[i].count / addPM) * 100
               );
               this.datasetPM[2].name =
-                'Vales' + ' ' + this.datasetPM[2].value + ' %';
+                'Vales';// + ' ' + this.datasetPM[2].value + ' %';
               break;
             case 'Virtual':
               this.datasetPM[3].value = Math.round(
                 (this.aggregationsPM[i].count / addPM) * 100
               );
               this.datasetPM[3].name =
-                'Virtual' + ' ' + this.datasetPM[3].value + ' %';
+                'Virtual';// + ' ' + this.datasetPM[3].value + ' %';
               break;
             case 'Otros':
               this.datasetPM[4].value = Math.round(
                 (this.aggregationsPM[i].count / addPM) * 100
               );
               this.datasetPM[4].name =
-                'Otros' + ' ' + this.datasetPM[4].value + ' %';
+                'Otros';// + ' ' + this.datasetPM[4].value + ' %';
               break;
             case 'Bono Denda':
               this.datasetPM[5].value = Math.round(
                 (this.aggregationsPM[i].count / addPM) * 100
               );
               this.datasetPM[5].name =
-                'Bono Denda' + ' ' + this.datasetPM[5].value + ' %';
+                'Bono Denda';// + ' ' + this.datasetPM[5].value + ' %';
               break;
             case 'Rectificación':
               this.datasetPM[6].value = Math.round(
                 (this.aggregationsPM[i].count / addPM) * 100
               );
               this.datasetPM[6].name =
-                'Rectificación' + ' ' + this.datasetPM[6].value + ' %';
+                'Rectificación';// + ' ' + this.datasetPM[6].value + ' %';
               break;
           }
         }
@@ -949,43 +967,38 @@ export class DashboardComponent implements OnInit {
     //Segun el string capturado se activa la variable de nombre escogida y se desactiva el resto
     switch (idElement) {
       case 'sales':
-        this.showSalesVar = false;
+        this.showSalesVar = true;
         this.showRefundsVar = false;
         this.showAverageTicketVar = false;
         this.showCashMovVar = false;
         this.showResultsVar = false;
-        this.showSalesVar = true;
         break;
       case 'avera':
         this.showSalesVar = false;
         this.showRefundsVar = false;
-        this.showAverageTicketVar = false;
+        this.showAverageTicketVar = true;
         this.showCashMovVar = false;
         this.showResultsVar = false;
-        this.showAverageTicketVar = true;
         break;
       case 'refun':
         this.showSalesVar = false;
-        this.showRefundsVar = false;
+        this.showRefundsVar = true;
         this.showAverageTicketVar = false;
         this.showCashMovVar = false;
         this.showResultsVar = false;
-        this.showRefundsVar = true;
         break;
       case 'casmo':
         this.showSalesVar = false;
         this.showRefundsVar = false;
         this.showAverageTicketVar = false;
-        this.showCashMovVar = false;
-        this.showResultsVar = false;
         this.showCashMovVar = true;
+        this.showResultsVar = false;
         break;
       case 'balan':
         this.showSalesVar = false;
         this.showRefundsVar = false;
         this.showAverageTicketVar = false;
         this.showCashMovVar = false;
-        this.showResultsVar = false;
         this.showResultsVar = true;
         break;
     }
@@ -997,10 +1010,10 @@ export class DashboardComponent implements OnInit {
     this.loadedGraphics = false;
     this.loaded = false;
     //Reset del array del gráfico
-    for (let i = 0; i < this.dataset.length; i++) {
-      this.dataset[i].value = 0;
+    for (let i = 0; i < this.kpiDataset.length; i++) {
+      this.kpiDataset[i].value = 0;
     }
-    this.dataset = [...this.dataset];
+    this.kpiDataset = [...this.kpiDataset];
     //Si existen parámetros de búsqueda diferentes a los base se actualizan
     //Se atualiza la variable de búsqueda de terminal (en el if se establece el caso de todas las terminales y en el else el de terminal individual)
     if (this.terminalVarSearch == 'Todos') {
@@ -1070,19 +1083,26 @@ export class DashboardComponent implements OnInit {
         this.OrdersAggregateService.GetAggregationOrder(this.IdEvo).subscribe(
           (aggregation) => {
             this.aggregationsEvo = aggregation;
+
+            //Actualzamos los colores de las barras
+            for (let i = 0; i < this.colorsKPI.length; i++) {
+              this.colorsKPI[i].value = this.colors[0];
+            }
+
             //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
             for (let i = 0; i < this.aggregationsEvo.length; i++) {
-              this.dataset[this.aggregationsEvo[i]._id - 1].value =
+              this.kpiDataset[this.aggregationsEvo[i]._id - 1].value =
                 this.aggregationsEvo[i].total / 100;
             }
             //Se rellenan aquellos campos sin datos en el array de valores del gráfico con 0
-            for (let i = 0; i < this.dataset.length; i++) {
-              if (this.dataset[i].value == null) {
-                this.dataset[i].value = 0;
+            for (let i = 0; i < this.kpiDataset.length; i++) {
+              if (this.kpiDataset[i].value == null) {
+                this.kpiDataset[i].value = 0;
               }
             }
             //Se actualiza el array de datos del gráfico para que se dibujen los nuevos datos introducidos
-            this.dataset = [...this.dataset];
+            this.kpiDataset = [...this.kpiDataset];
+
             //Variables de carga de gráficos se ponen en true
             this.loaded = true;
             this.loadedGraphics = true;
@@ -1096,19 +1116,25 @@ export class DashboardComponent implements OnInit {
         this.OrdersAggregateService.GetAggregationOrder(this.IdEvo).subscribe(
           (aggregation) => {
             this.aggregationsEvo = aggregation;
+
+            //Actualzamos los colores de las barras
+            for (let i = 0; i < this.colorsKPI.length; i++) {
+              this.colorsKPI[i].value = this.colors[1];
+            }
+
             //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
             for (let i = 0; i < this.aggregationsEvo.length; i++) {
-              this.dataset[this.aggregationsEvo[i]._id - 1].value =
+              this.kpiDataset[this.aggregationsEvo[i]._id - 1].value =
                 this.aggregationsEvo[i].avg / 100;
             }
             //Se rellenan aquellos campos sin datos en el array de valores del gráfico con 0
-            for (let i = 0; i < this.dataset.length; i++) {
-              if (this.dataset[i].value == null) {
-                this.dataset[i].value = 0;
+            for (let i = 0; i < this.kpiDataset.length; i++) {
+              if (this.kpiDataset[i].value == null) {
+                this.kpiDataset[i].value = 0;
               }
             }
             //Se actualiza el array de datos del gráfico para que se dibujen los nuevos datos introducidos
-            this.dataset = [...this.dataset];
+            this.kpiDataset = [...this.kpiDataset];
             //Variables de carga de gráficos se ponen en true
             this.loaded = true;
             this.loadedGraphics = true;
@@ -1122,19 +1148,25 @@ export class DashboardComponent implements OnInit {
         this.OrdersAggregateService.GetAggregationOrder(this.IdEvo).subscribe(
           (aggregation) => {
             this.aggregationsEvo = aggregation;
+
+            //Actualzamos los colores de las barras
+            for (let i = 0; i < this.colorsKPI.length; i++) {
+              this.colorsKPI[i].value = this.colors[2];
+            }
+
             //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
             for (let i = 0; i < this.aggregationsEvo.length; i++) {
-              this.dataset[this.aggregationsEvo[i]._id - 1].value =
+              this.kpiDataset[this.aggregationsEvo[i]._id - 1].value =
                 this.aggregationsEvo[i].total / 100;
             }
             //Se rellenan aquellos campos sin datos en el array de valores del gráfico con 0
-            for (let i = 0; i < this.dataset.length; i++) {
-              if (this.dataset[i].value == null) {
-                this.dataset[i].value = 0;
+            for (let i = 0; i < this.kpiDataset.length; i++) {
+              if (this.kpiDataset[i].value == null) {
+                this.kpiDataset[i].value = 0;
               }
             }
             //Se actualiza el array de datos del gráfico para que se dibujen los nuevos datos introducidos
-            this.dataset = [...this.dataset];
+            this.kpiDataset = [...this.kpiDataset];
             //Variables de carga de gráficos se ponen en true
             this.loaded = true;
             this.loadedGraphics = true;
@@ -1150,6 +1182,12 @@ export class DashboardComponent implements OnInit {
           this.idEvoCash
         ).subscribe((aggregation) => {
           this.aggregationsEvoIn = aggregation;
+
+          //Actualzamos los colores de las barras
+          for (let i = 0; i < this.colorsKPI.length; i++) {
+            this.colorsKPI[i].value = this.colors[3];
+          }
+
           //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
           for (let i = 0; i < this.aggregationsEvoIn.length; i++) {
             //Se separan los datos dependiendo de su id (0 movimiento in en el if y 1 movimiento out en el else)
@@ -1162,7 +1200,7 @@ export class DashboardComponent implements OnInit {
             }
           }
           //Se rellenan aquellos campos sin datos en el array de valores in y out con 0
-          for (let i = 0; i < this.dataset.length; i++) {
+          for (let i = 0; i < this.kpiDataset.length; i++) {
             if (this.valueGraphArrayIn[i] == null) {
               this.valueGraphArrayIn[i] = 0;
             }
@@ -1171,12 +1209,12 @@ export class DashboardComponent implements OnInit {
             }
           }
           //Se rellena el array de datos del gráfico en el apartado value de cada elemento con la diferencia entre movimientos in y out
-          for (let i = 0; i < this.dataset.length; i++) {
-            this.dataset[i].value =
+          for (let i = 0; i < this.kpiDataset.length; i++) {
+            this.kpiDataset[i].value =
               this.valueGraphArrayIn[i] - this.valueGraphArrayOut[i];
           }
           //Se actualiza el array de datos del gráfico para que se dibujen los nuevos datos introducidos
-          this.dataset = [...this.dataset];
+          this.kpiDataset = [...this.kpiDataset];
           //Variables de carga de gráficos se ponen en true
           this.loaded = true;
           this.loadedGraphics = true;
@@ -1188,6 +1226,12 @@ export class DashboardComponent implements OnInit {
           this.IdEvoResults
         ).subscribe((aggregation) => {
           this.aggregationsEvoOrder = aggregation;
+
+          //Actualzamos los colores de las barras
+          for (let i = 0; i < this.colorsKPI.length; i++) {
+            this.colorsKPI[i].value = this.colors[4];
+          }
+
           //Se clasifican los datos obtenidos según el tipo ( 0 ventas, 2 devoluciones y 5 rectificaciones) en el array de resultados
           for (let i = 0; i < this.aggregationsEvoOrder.length; i++) {
             switch (this.aggregationsEvoOrder[i]._id.type) {
@@ -1222,24 +1266,24 @@ export class DashboardComponent implements OnInit {
           }
           //Se actualizan los datos del array de resultados en el array de datos del gráfico para que se muestren los resultados (ventas - (devoluciones+rectificaciones))
           for (let i = 0; i < this.valueGraphArraySales.length; i++) {
-            this.dataset[i].value =
+            this.kpiDataset[i].value =
               this.valueGraphArraySales[i] -
               (this.valueGraphArrayRefunds[i] + this.valueGraphArrayRect[i]);
           }
           //Se rellenan con 0 los datos vacios del array del gráfico
-          for (let i = 0; i < this.dataset.length; i++) {
-            if (this.dataset[i].value == null) {
-              this.dataset[i].value = 0;
+          for (let i = 0; i < this.kpiDataset.length; i++) {
+            if (this.kpiDataset[i].value == null) {
+              this.kpiDataset[i].value = 0;
             }
           }
           //Se actualiza el array del gráfico para que se dibujen los datos nuevos en el gráfico
-          this.dataset = [...this.dataset];
+          this.kpiDataset = [...this.kpiDataset];
           //Las variables de carga de gráfico se ponen en true
           this.loaded = true;
           this.loadedGraphics = true;
         });
     }
     console.log(this.IdEvo);
-    console.log(this.dataset);
+    console.log(this.kpiDataset);
   }
 }

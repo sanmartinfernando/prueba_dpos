@@ -5,23 +5,23 @@
     <!-- Formulario de búsqueda -->
     <form class="d-flex flex-wrap mx-1">
       <div class="me-3">
-        <label class="form-label">Terminal</label>
+        <label class="form-label">{{'dpos.filter.terminal' | translate}}</label>
         <select
           class="form-select"
           name="terminal"
           [(ngModel)]="terminalVarSearch">
-          <option selected>Todos</option>
+          <option selected>{{'dpos.filter.all' | translate}}</option>
           <option *ngFor="let terminal of selectSales[0]; index as i">
             {{ terminal }}
           </option>
         </select>
       </div>
       <div class="mx-3">
-        <label class="form-label">Desde</label>
+        <label class="form-label">{{'dpos.filter.date.from' | translate}}</label>
         <input type="date" class="form-control" id="sinceDate" />
       </div>
       <div class="mx-3">
-        <label class="form-label">Hasta</label>
+        <label class="form-label">{{'dpos.filter.date.to' | translate}}</label>
         <input type="date" class="form-control" id="tilDate" />
       </div>
       <div id="searchButtonsDiv" class="ms-5 d-flex overflow-auto">
@@ -32,7 +32,7 @@
           type="button"
           class="btn btn-primary align-self-end"
           (click)="searchSales()"
-          ><i class="fas fa-search"></i>&nbsp;&nbsp;Buscar</a
+          ><i class="fas fa-search"></i>&nbsp;&nbsp;{{'dpos.action.search' | translate}}</a
         >
       </div>
     </form>
@@ -47,7 +47,7 @@
     <div class="card-body">
       <div class="row mb-4" >
         <div class="col">
-          <h5><b>Cierres de caja</b></h5>
+          <h5><b>{{'dpos.balances.title.label' | translate}}</b></h5>
         </div>
         <!-- Botón descarga -->
         <div class="col-3 text-end">
@@ -67,19 +67,19 @@
                     <input class="form-check-input" type="checkbox" [checked]="isAllSelected"
                       (change)="CheckAll($event)" />
                   </th>
-                  <th class="text-start">Documento</th>
-                  <th class="text-center">Terminal</th>
-                  <th class="text-start">Desde</th>
-                  <th class="text-start">Hasta</th>
-                  <th class="text-center">Operaciones</th>
-                  <th class="text-end">Descuadre(€)</th>
-                  <th class="text-end">Total</th>
+                  <th class="text-start">{{'dpos.balances.document.label' | translate}}</th>
+                  <th class="text-center">{{'dpos.balances.terminal.label' | translate}}</th>
+                  <th class="text-start">{{'dpos.balances.datefrom.label' | translate}}</th>
+                  <th class="text-start">{{'dpos.balances.dateto.label' | translate}}</th>
+                  <th class="text-center">{{'dpos.balances.operations.label' | translate}}</th>
+                  <th class="text-end">{{'dpos.balances.mismatch.label' | translate}}</th>
+                  <th class="text-end">{{'dpos.balances.total.label' | translate}}</th>
                   <th></th>
                 </tr>
               </thead>
               <ng-template #empty>
                 <td colspan="5">
-                  <b>No existen registros que mostrar</b>
+                  <b>{{'dpos.balances.noresults.label' | translate}}</b>
                 </td>
               </ng-template>
               <tbody>

@@ -2,10 +2,7 @@
   <div class="flex-shrink-0 p-2 text-white">
     <a class="d-flex align-items-center justify-content-center mb-0 text-white text-decoration-none"
       (click)="titleHeader(title0)" routerLink="/">
-      <!--{{'webTitle' | translate}}-->
-      <!--<i class="fa-solid fa-cash-register py-2" style="color: #ffffff; font-size: 40px"></i>-->
       <i class="fa-solid fa-box py-2 logo"></i>
-      <!--<h2 class="p-4" style="font-family:Roboto">DPOS</h2>-->
     </a>
   </div>
   <div id="navBar1" class="flex-shrink-0">
@@ -43,7 +40,6 @@
         </select>
       </li>
       <li class="mx-3 nav-item pt-2 pb-2">
-        <!--<a class="btn btn-light"><i class="fa-solid fa-gears fa-lg" style="color: #B197FC;"></i></a>&nbsp;&nbsp;-->
         <a class="btn btn-light" *ngIf="username" (click)="logOut()" style="cursor: pointer">
           <i class="fa-solid fa-circle-user fa-lg" style="color: #ffbb00;"></i>&nbsp;&nbsp;{{
           username }}&nbsp;&nbsp;&nbsp;<span class="fa-solid fa-arrow-right-from-bracket"></span>
@@ -51,7 +47,7 @@
       </li>
       <ng-template #loginLink>
         <li class="mx-3 nav-item">
-          <a class="btn" routerLink="/login">Sign in</a>
+          <a class="btn" routerLink="/login">{{'dpos.login.btn' | translate}}</a>
         </li>
       </ng-template>
     </ul>

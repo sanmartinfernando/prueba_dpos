@@ -5,33 +5,33 @@
     <!-- Formulario de búsqueda -->
     <form class="d-flex flex-wrap mx-1">
       <div class="me-3">
-        <label class="form-label">Terminal</label>
+        <label class="form-label">{{'dpos.filter.terminal' | translate}}</label>
         <select class="form-select" name="terminal" [(ngModel)]="terminalVarSearch">
-          <option>Todos</option>
+          <option>{{'dpos.filter.all' | translate}}</option>
           <option *ngFor="let terminal of selectSales[0]; index as i">
             {{ terminal }}
           </option>
         </select>
       </div>
       <div class="mx-3">
-        <label class="form-label">Desde</label>
+        <label class="form-label">{{'dpos.filter.data.from' | translate}}</label>
         <input type="date" class="form-control" id="sinceDate" />
       </div>
       <div class="mx-3">
-        <label class="form-label">Hasta</label>
+        <label class="form-label">{{'dpos.filter.data.to' | translate}}</label>
         <input type="date" class="form-control" id="tilDate" />
       </div>
       <div class="mx-3">
-        <label class="form-label">Tipo de operación</label>
+        <label class="form-label">{{'dpos.filter.operationtype' | translate}}</label>
         <select class="form-select" name="operation" [(ngModel)]="typeVarSearch">
-          <option>Todos</option>
+          <option>{{'dpos.filter.all' | translate}}</option>
           <option *ngFor="let type of selectSales[1]; index as i">
             {{ type }}
           </option>
         </select>
       </div>
       <div class="mx-3">
-        <label class="form-label">Nº de documento/Serie</label>
+        <label class="form-label">{{'dpos.filter.docnumber' | translate}}</label>
         <input type="text" class="form-control" name="documentN" [(ngModel)]="documentVarSearch">
       </div>
       <div id="searchButtonsDiv" class="ms-5 d-flex overflow-auto">
@@ -39,14 +39,14 @@
               class="fas fa-eraser"></i>
           </a></button>
         <a type="button" class="btn btn-primary align-self-end" (click)="searchSales()"><i
-            class="fas fa-search"></i>&nbsp;&nbsp;Buscar</a>
+            class="fas fa-search"></i>&nbsp;&nbsp;{{'dpos.action.search' | translate}}</a>
       </div>
     </form>
   </div>
   <br />
   <!-- Validation -->
   <div *ngIf="validationVariable == true" class="d-flex justify-content-center" style="position: absolute; left: 50%">
-    <div class="text-danger"><b>El parámetro de búsqueda no es válido</b></div>
+    <div class="text-danger"><b>{{'dpos.filter.novalid' | translate}}</b></div>
   </div>
   <!-- Load -->
   <div *ngIf="loadCompleted == false" class="d-flex justify-content-center" style="position: absolute; left: 50%">
@@ -57,15 +57,15 @@
     <div class="card-body">
       <div class="row mb-4">
         <div class="col">
-          <h5><b>Operaciones</b></h5>
+          <h5><b>{{'dpos.sales.operations.label' | translate}}</b></h5>
         </div>
 
         <!-- Indicadores -->
         <div class="col-5 text-end">
-          <label for="inputHeadSales" class="me-2">Nº operaciones</label>
+          <label for="inputHeadSales" class="me-2">{{'dpos.sales.operations.number.label' | translate}}</label>
           <input type="text" id="inputHeadSales" class="text-center me-5 inputHeadSales" [(ngModel)]="operationN"
             disabled />
-          <label for="inputHeadSales1" class="me-2">Total</label>
+          <label for="inputHeadSales1" class="me-2">{{'dpos.sales.operations.total.label' | translate}}</label>
           <input type="text" id="inputHeadSales1" class="text-center me-5 inputHeadSales" [(ngModel)]="totalSalesString"
             disabled />
           <button class="btn btn-outline-info justify-content-center">
@@ -84,22 +84,22 @@
                     <input class="form-check-input" type="checkbox" [checked]="isAllSelected"
                       (change)="CheckAll($event)" />
                   </th>
-                  <th class="text-start">Documento</th>
-                  <th class="text-center">Tipo</th>
-                  <th class="text-start">Fecha</th>
-                  <th class="text-center">Terminal</th>
-                  <th class="text-center">Factura verificada</th>
-                  <th class="text-end">Subtotal</th>
-                  <th class="text-end">Descuentos</th>
-                  <th class="text-end">Base imponible</th>
-                  <th class="text-end">IVA</th>
-                  <th class="text-end">Total</th>
+                  <th class="text-start">{{'dpos.sales.operation.document.label' | translate}}</th>
+                  <th class="text-center">{{'dpos.sales.operation.type.label' | translate}}</th>
+                  <th class="text-start">{{'dpos.sales.operation.data.label' | translate}}</th>
+                  <th class="text-center">{{'dpos.sales.operation.terminal.label' | translate}}</th>
+                  <th class="text-center">{{'dpos.sales.operation.tbai.label' | translate}}</th>
+                  <th class="text-end">{{'dpos.sales.operation.subtotal.label' | translate}}</th>
+                  <th class="text-end">{{'dpos.sales.operation.discount.label' | translate}}</th>
+                  <th class="text-end">{{'dpos.sales.operation.base.label' | translate}}</th>
+                  <th class="text-end">{{'dpos.sales.operation.tax.label' | translate}}</th>
+                  <th class="text-end">{{'dpos.sales.operation.total.label' | translate}}</th>
                   <th></th>
                 </tr>
               </thead>
               <ng-template #empty>
                 <td colspan="5">
-                  <b>No existen registros que mostrar</b>
+                  <b>{{'dpos.sales.operation.nodata.label' | translate}}</b>
                 </td>
               </ng-template>
               <tbody>
@@ -118,13 +118,13 @@
                         {{ sale.reference }}</span>
                     </td>
                     <td class="text-center align-middle" *ngIf="sale.type == 0">
-                      <div class="badge rounded-pill bg-sale">Venta</div>
+                      <div class="badge rounded-pill bg-sale">{{'dpos.sales.operation.order.label' | translate}}</div>
                     </td>
                     <td class="text-center align-middle" *ngIf="sale.type == 2">
-                      <div class="badge rounded-pill bg-refund">Devolución</div>
+                      <div class="badge rounded-pill bg-refund">{{'dpos.sales.operation.refund.label' | translate}}</div>
                     </td>
                     <td class="text-center align-middle" *ngIf="sale.type == 5">
-                      <div class="badge rounded-pill bg-edits">Rectificación</div>
+                      <div class="badge rounded-pill bg-edits">{{'dpos.sales.operation.rectification.label' | translate}}</div>
                     </td>
                     <td class="text-start align-middle">
                       {{ sale.createdAt | date : "dd/MM/yyyy hh:mm" }}
@@ -133,19 +133,18 @@
                       {{ sale.terminalNumber }}
                     </td>
                     <td class="text-center align-middle" *ngIf="sale.orderTicketBai == null">
-                      <div class="badge rounded-pill bg-pending"><i>No TicketBAI</i>
+                      <div class="badge rounded-pill bg-pending"><i>{{'dpos.sales.operation.tbai.no.label' | translate}}</i>
                       </div>
                     </td>
                     <td class="text-center align-middle" *ngIf="salesTicketBai[i] == 0">
-                      <div class="badge rounded-pill bg-accept"><i class="fa-solid fa-qrcode"></i> Enviado y aceptado
+                      <div class="badge rounded-pill bg-accept"><i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.tbai.status.accepted.label' | translate}}
                       </div>
                     </td>
                     <td class="text-center align-middle" *ngIf="salesTicketBai[i] == 1">
-                      <div class="badge rounded-pill bg-warning"><i class="fa-solid fa-qrcode"></i> Enviado y aceptado,
-                        con avisos</div>
+                      <div class="badge rounded-pill bg-warning"><i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.tbai.status.warnings.label' | translate}}</div>
                     </td>
                     <td class="text-center align-middle" *ngIf="salesTicketBai[i] == 2">
-                      <div class="badge rounded-pill bg-rejected"><i class="fa-solid fa-qrcode"></i> Enviado y rechazado
+                      <div class="badge rounded-pill bg-rejected"><i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.tbai.status.rejected.label' | translate}}
                       </div>
                     </td>
                     <td class="text-end align-middle">
