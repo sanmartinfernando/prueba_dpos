@@ -22,14 +22,18 @@ export class DashboardComponent implements OnInit {
 
   boundFormatDataLabel1: any;
   boundBarCustomColors: any;
+  loadedKPIChart = false;
+  loadedPMChart = false;
+  loadedTPChart = false;
+
+
+
   target;
   formatLabelCounter: number = 0;
   formatLabelCounter1: number = 0;
   idElement;
-  loadedGraphics = true;
-  loaded = false;
-  loadedPM = false;
-  loadedTP = false;
+
+  
   loadedOninit = false;
   terminalVarSearch: any = 'Todos';
   yearVarSearch = '';
@@ -162,10 +166,7 @@ export class DashboardComponent implements OnInit {
     )).value;
     if (this.monthVarSearch != 'Todos') {
       for (let i = 0; i < this.kpiDataset.length; i++) {
-       // if (i == +this.monthVarSearch - 1) {
-          this.colorsKPI.push({ name: this.kpiDataset[i].name, value: this.colors[0] });
-       // } else
-       //   this.colorsKPI.push({ name: this.kpiDataset[i].name, value: '#e5f2fe' });
+        this.colorsKPI.push({ name: this.kpiDataset[i].name, value: this.colors[0] });
       }
     }
     this.monthVarSearch = null;
@@ -441,6 +442,7 @@ export class DashboardComponent implements OnInit {
     //Comunicación con API para obtener los datos agregados que se muestran como base al iniciar la página en la sección de KPIs
     this.OrdersAggregateService.GetAggregationOrder(this.id).subscribe(
       (aggregation) => {
+        this.loadedKPIChart = false;
         this.aggregations = aggregation;
         //Bucle para recorrer el objeto respuesta
         for (let i = 0; i < this.aggregations.length; i++) {
@@ -451,14 +453,12 @@ export class DashboardComponent implements OnInit {
               case 0:
                 //Para cada caso se rellena el array de resultados tanto del total con los decimales ya aplicados como del conteo de nº de operaciones
                 this.resultsVarArray[0] =
-                  this.aggregations[i].total /
-                  this.Math.pow(10, this.aggregations[i].decimals);
+                  this.aggregations[i].total / this.Math.pow(10, this.aggregations[i].decimals);
                 this.resultsVarArray[3] = this.aggregations[i].count;
                 break;
               case 2:
                 this.resultsVarArray[1] =
-                  this.aggregations[i].total /
-                  this.Math.pow(10, this.aggregations[i].decimals);
+                  this.aggregations[i].total / this.Math.pow(10, this.aggregations[i].decimals);
                 this.resultsVarArray[4] = this.aggregations[i].count;
                 break;
               case 5:
@@ -479,17 +479,14 @@ export class DashboardComponent implements OnInit {
             this.resultsVarArray[i] = 0;
           }
         }
-      } /* ,
-  (error) => {
-    if (error.status == 401) {
-      this.isLoggedIn = false;
-    };
-  } */
+
+        this.loadedKPIChart = true;
+      }
     );
     //Comunicación con API para obtener los datos agregados que se muestran como base al iniciar la página en el gráfico de métodos de pago
     this.OrdersAggregateService.GetAggregationOrder(this.idPM).subscribe(
       (aggregation) => {
-        this.loadedPM = false;
+        this.loadedPMChart = false;
         this.aggregationsPM = aggregation;
         let addPM: number = 0;
         //Se realiza la suma del número de operaciones para, posteriormente, hacer el % de cada método de pago sobre el total
@@ -552,13 +549,8 @@ export class DashboardComponent implements OnInit {
           }
         }
         //Variable de carga de gráfico marcada como true
-        this.loadedPM = true;
-      } /* ,
-  (error) => {
-    if (error.status == 401) {
-      this.isLoggedIn = false;
-    };
-  } */
+        this.loadedPMChart = true;
+      }
     );
     //Comunicación con API para obtener los datos agregados que se muestran como base al iniciar la página en la sección de KPIs, apartado de movimientos de caja
     this.CashmovementsAggregateService.GetAggregationCashMovements(
@@ -566,12 +558,7 @@ export class DashboardComponent implements OnInit {
     ).subscribe(
       (aggregation) => {
         this.aggregationsCM = aggregation;
-      } /* ,
-  (error) => {
-    if (error.status == 401) {
-      this.isLoggedIn = false;
-    };
-  } */
+      }
     );
     //Comunicación con API para obtener el total de productos vendidos
     this.OrdersAggregateService.GetAggregationOrderTop3(this.idTP).subscribe(
@@ -616,20 +603,10 @@ export class DashboardComponent implements OnInit {
                 this.aggregationsTP[0].quantity) *
                 100
             );
-            this.loadedTP = true;
-          } /* ,
-  (error) => {
-    if (error.status == 401) {
-      this.isLoggedIn = false;
-    };
-  } */
+            this.loadedTPChart = true;
+          } 
         );
-      } /* ,
-    (error) => {
-      if (error.status == 401) {
-        this.isLoggedIn = false;
-      };
-    } */
+      }
     );
     //Gráfico de ventas base al cargar la página
     //Se establece el filtro de búsqueda de type en la variable a 0 para filtrar por operaciones de venta
@@ -652,8 +629,7 @@ export class DashboardComponent implements OnInit {
         //Se actualiza el array de datos del gráfico para que se dibujen los nuevos datos introducidos
         this.kpiDataset = [...this.kpiDataset];
         //Variables de carga de gráficos se ponen en true
-        this.loaded = true;
-        this.loadedGraphics = true;
+        this.loadedKPIChart = true;
       }
     );
     //Variable de carga de datos base marcada como true
@@ -813,7 +789,7 @@ export class DashboardComponent implements OnInit {
     this.OrdersAggregateService.GetAggregationOrder(this.idPM).subscribe(
       (aggregation) => {
         this.aggregationsPM = aggregation;
-        this.loadedPM = false;
+        this.loadedPMChart = false;
         //Se reinicia el array de datos del gráfico
         for (let i = 0; i < this.datasetPM.length; i++) {
           this.datasetPM[i].value = 0;
@@ -882,7 +858,7 @@ export class DashboardComponent implements OnInit {
         this.datasetPM = [...this.datasetPM];
 
         //Variable de carga del gráfico se cambia a true
-        this.loadedPM = true;
+        this.loadedPMChart = true;
       }
     );
     //Comunicación con API para obtener el total de productos vendidos
@@ -941,74 +917,64 @@ export class DashboardComponent implements OnInit {
             }
             //Para que se actualice el gráfico con los datos nuevos hay que reiniciar el array de datos
             this.datasetTop3 = [...this.datasetTop3];
-            this.loadedTP = true;
-          } /* ,
-      (error) => {
-        if (error.status == 401) {
-        this.isLoggedIn = false;
-          };
-      } */
+            this.loadedTPChart = true;
+          }
         );
-      } /* ,
-      (error) => {
-    if (error.status == 401) {
-      this.isLoggedIn = false;
-    };
-    } */
+      }
     );
-  }
-
-  //Método de cambio de título en sección de "Evolución de KPI"
-
-  showSales(event) {
-    //Se captura el nombre del KPI en el que se clicka para mostrar el gráfico
-    let target = event.target as HTMLElement;
-    let idElement: string = target.id.slice(0, 5);
-    //Segun el string capturado se activa la variable de nombre escogida y se desactiva el resto
-    switch (idElement) {
-      case 'sales':
-        this.showSalesVar = true;
-        this.showRefundsVar = false;
-        this.showAverageTicketVar = false;
-        this.showCashMovVar = false;
-        this.showResultsVar = false;
-        break;
-      case 'avera':
-        this.showSalesVar = false;
-        this.showRefundsVar = false;
-        this.showAverageTicketVar = true;
-        this.showCashMovVar = false;
-        this.showResultsVar = false;
-        break;
-      case 'refun':
-        this.showSalesVar = false;
-        this.showRefundsVar = true;
-        this.showAverageTicketVar = false;
-        this.showCashMovVar = false;
-        this.showResultsVar = false;
-        break;
-      case 'casmo':
-        this.showSalesVar = false;
-        this.showRefundsVar = false;
-        this.showAverageTicketVar = false;
-        this.showCashMovVar = true;
-        this.showResultsVar = false;
-        break;
-      case 'balan':
-        this.showSalesVar = false;
-        this.showRefundsVar = false;
-        this.showAverageTicketVar = false;
-        this.showCashMovVar = false;
-        this.showResultsVar = true;
-        break;
-    }
   }
 
   //Método de dibujado de gráfico de evolución de KPI
 
-  createSalesGraphic(event) {
-    this.loadedGraphics = false;
-    this.loaded = false;
+  fillCharKPIs(event) {
+    
+    this.loadedKPIChart = false;
+    
+    //Se captura el nombre del KPI en el que se clicka para mostrar el gráfico
+    let target = event.target as HTMLElement;
+    let idElement: string = target.id.slice(0, 5);
+
+
+    //Segun el string capturado se activa la variable de nombre escogida y se desactiva el resto
+switch (idElement) {
+  case 'sales':
+    this.showSalesVar = true;
+    this.showRefundsVar = false;
+    this.showAverageTicketVar = false;
+    this.showCashMovVar = false;
+    this.showResultsVar = false;
+    break;
+  case 'avera':
+    this.showSalesVar = false;
+    this.showRefundsVar = false;
+    this.showAverageTicketVar = true;
+    this.showCashMovVar = false;
+    this.showResultsVar = false;
+    break;
+  case 'refun':
+    this.showSalesVar = false;
+    this.showRefundsVar = true;
+    this.showAverageTicketVar = false;
+    this.showCashMovVar = false;
+    this.showResultsVar = false;
+    break;
+  case 'casmo':
+    this.showSalesVar = false;
+    this.showRefundsVar = false;
+    this.showAverageTicketVar = false;
+    this.showCashMovVar = true;
+    this.showResultsVar = false;
+    break;
+  case 'balan':
+    this.showSalesVar = false;
+    this.showRefundsVar = false;
+    this.showAverageTicketVar = false;
+    this.showCashMovVar = false;
+    this.showResultsVar = true;
+    break;
+}
+
+
     //Reset del array del gráfico
     for (let i = 0; i < this.kpiDataset.length; i++) {
       this.kpiDataset[i].value = 0;
@@ -1069,7 +1035,7 @@ export class DashboardComponent implements OnInit {
       ) {
         this.idElement = this.target.id.slice(0, 5);
       } else {
-        this.loadedGraphics = true;
+        this.loadedKPIChart = true;
       }
     }
     //Según el KPI seleccionado se dibuja el gráfico con los datos correspondientes
@@ -1104,8 +1070,7 @@ export class DashboardComponent implements OnInit {
             this.kpiDataset = [...this.kpiDataset];
 
             //Variables de carga de gráficos se ponen en true
-            this.loaded = true;
-            this.loadedGraphics = true;
+            this.loadedKPIChart = true;
           }
         );
         break;
@@ -1136,8 +1101,7 @@ export class DashboardComponent implements OnInit {
             //Se actualiza el array de datos del gráfico para que se dibujen los nuevos datos introducidos
             this.kpiDataset = [...this.kpiDataset];
             //Variables de carga de gráficos se ponen en true
-            this.loaded = true;
-            this.loadedGraphics = true;
+            this.loadedKPIChart = true;
           }
         );
         break;
@@ -1168,8 +1132,7 @@ export class DashboardComponent implements OnInit {
             //Se actualiza el array de datos del gráfico para que se dibujen los nuevos datos introducidos
             this.kpiDataset = [...this.kpiDataset];
             //Variables de carga de gráficos se ponen en true
-            this.loaded = true;
-            this.loadedGraphics = true;
+            this.loadedKPIChart = true;
           }
         );
         break;
@@ -1216,8 +1179,7 @@ export class DashboardComponent implements OnInit {
           //Se actualiza el array de datos del gráfico para que se dibujen los nuevos datos introducidos
           this.kpiDataset = [...this.kpiDataset];
           //Variables de carga de gráficos se ponen en true
-          this.loaded = true;
-          this.loadedGraphics = true;
+          this.loadedKPIChart = true;
         });
         break;
       case 'balan':
@@ -1279,8 +1241,7 @@ export class DashboardComponent implements OnInit {
           //Se actualiza el array del gráfico para que se dibujen los datos nuevos en el gráfico
           this.kpiDataset = [...this.kpiDataset];
           //Las variables de carga de gráfico se ponen en true
-          this.loaded = true;
-          this.loadedGraphics = true;
+          this.loadedKPIChart = true;
         });
     }
     console.log(this.IdEvo);

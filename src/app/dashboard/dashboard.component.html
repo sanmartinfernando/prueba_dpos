@@ -40,7 +40,7 @@
           <a type="button"><i class="fas fa-eraser"></i> </a>
         </button>
         <a type="button" class="btn btn-primary align-self-end" (click)="searchTerminal()"
-          (click)="createSalesGraphic($event)" (click)="barCustomColors()"><i
+          (click)="fillCharKPIs($event)" (click)="barCustomColors()"><i
             class="fas fa-search"></i>&nbsp;&nbsp;{{'dpos.action.search' | translate}}</a>
       </div>
     </form>
@@ -58,106 +58,69 @@
               style="color: #b197fc; margin-right: 10px"></i><b>KPIs</b>
           </h5>
           <div class="row">
-            <div id="salesBorder" class="kpi col d-flex align-items-center flex-column focus ms-3 mx-2"
-              (click)="showSales($event)" (click)="createSalesGraphic($event)">
+            <!-- KPI  Ventas -->
+            <div id="salesBorder" class="kpi col d-flex align-items-center flex-column focus ms-3 mx-2" (click)="fillCharKPIs($event)">
               <h6 class="mt-2">{{'dpos.dashboard.orders.label' | translate}}</h6>
-              <div *ngIf="
-                  aggregations !== undefined && aggregations.length > 0;
-                  else noresults
-                " id="salesdiv">
-                {{
-                aggregations[0].total / Math.pow(10, aggregations[0].decimals)
-                | currency : "Eur" : "€"
-                }}
+              <div *ngIf="aggregations !== undefined && aggregations.length > 0; else noresults" id="salesdiv">
+                {{ aggregations[0].total / Math.pow(10, aggregations[0].decimals) | currency : "Eur" : "€" }}
               </div>
               <div *ngIf="aggregations !== undefined && aggregations.length > 0" id="salesdiv1">
                 <small id="salessmall">{{ aggregations[0].count }}
-                  <ng-container id="salesngcontainer"
-                    *ngIf="aggregations[0].count > 1; else singular">operaciones</ng-container></small>
-              </div>
-            </div>
-            <div id="averageTicketBorder" class="kpi col d-flex align-items-center flex-column focus mx-2"
-              (click)="showSales($event)" (click)="createSalesGraphic($event)">
-              <h6 class="mt-2">{{'dpos.dashboard.average.ticket.label' | translate}}</h6>
-              <p id="averageTicketP2" *ngIf="
-                  aggregations !== undefined && aggregations.length;
-                  else noresults
-                ">
-                {{
-                aggregations[0].avg / Math.pow(10, aggregations[0].decimals)
-                | currency : "Eur" : "€"
-                }}
-              </p>
-            </div>
-            <div id="refundsBorder" class="kpi col d-flex align-items-center flex-column focus mx-2"
-              (click)="showSales($event)" (click)="createSalesGraphic($event)">
-              <h6 class="mt-2">{{'dpos.dashboard.refunds.label' | translate}}</h6>
-              <div id="refundsDiv" *ngIf="
-                  aggregations !== undefined &&
-                    aggregations.length &&
-                    resultsVarArray[1] != 0;
-                  else noresults
-                ">
-                {{ resultsVarArray[1] | currency : "Eur" : "€" }}
-              </div>
-              <div id="refundsDiv2" *ngIf="
-                  aggregations !== undefined &&
-                  aggregations.length &&
-                  resultsVarArray[4] != 0
-                ">
-                <small id="refundsSmall">{{ resultsVarArray[4] }}
-                  <ng-container id="refundsNgcontainer"
-                    *ngIf="resultsVarArray[4] > 1; else singular">{{'dpos.dashboard.operations.label' | translate}}</ng-container>
+                  <ng-container id="salesngcontainer" *ngIf="aggregations[0].count > 1; else singular">operaciones</ng-container>
                 </small>
               </div>
             </div>
-            <div id="casmovBorder" class="kpi col d-flex align-items-center flex-column focus mx-2"
-              (click)="showSales($event)" (click)="createSalesGraphic($event)">
+            <!-- KPI  Ticket Medio -->
+            <div id="averageTicketBorder" class="kpi col d-flex align-items-center flex-column focus mx-2" (click)="fillCharKPIs($event)">
+              <h6 class="mt-2">{{'dpos.dashboard.average.ticket.label' | translate}}</h6>
+              <p id="averageTicketP2" *ngIf="aggregations !== undefined && aggregations.length; else noresults">
+                {{ aggregations[0].avg / Math.pow(10, aggregations[0].decimals) | currency : "Eur" : "€" }}
+              </p>
+            </div>
+            <!-- KPI  Devoluciones -->
+            <div id="refundsBorder" class="kpi col d-flex align-items-center flex-column focus mx-2" (click)="fillCharKPIs($event)">
+              <h6 class="mt-2">{{'dpos.dashboard.refunds.label' | translate}}</h6>
+              <div id="refundsDiv" *ngIf="aggregations !== undefined && aggregations.length && resultsVarArray[1] != 0; else noresults">
+                {{ resultsVarArray[1] | currency : "Eur" : "€" }}
+              </div>
+              <div id="refundsDiv2" *ngIf="aggregations !== undefined && aggregations.length && resultsVarArray[4] != 0">
+                <small id="refundsSmall">{{ resultsVarArray[4] }}
+                  <ng-container id="refundsNgcontainer"*ngIf="resultsVarArray[4] > 1; else singular">
+                    {{'dpos.dashboard.operations.label' | translate}}
+                  </ng-container>
+                </small>
+              </div>
+            </div>
+            <!-- KPI  Movimientos Caja -->
+            <div id="casmovBorder" class="kpi col d-flex align-items-center flex-column focus mx-2" (click)="fillCharKPIs($event)">
               <h6 class="mt-2">{{'dpos.dashboard.cashmovement.label' | translate}}</h6>
-              <div id="casmovDiv" *ngIf="
-                  aggregationsCM !== undefined && aggregationsCM.length;
-                  else noresults
-                ">
-                {{
-                aggregationsCM[0].total /
-                Math.pow(10, aggregationsCM[0].decimals) -
-                aggregationsCM[1].total /
-                Math.pow(10, aggregationsCM[1].decimals)
-                | currency : "Eur" : "€"
-                }}
+              <div id="casmovDiv" *ngIf="aggregationsCM !== undefined && aggregationsCM.length; else noresults">
+                {{ aggregationsCM[0].total / Math.pow(10, aggregationsCM[0].decimals) - aggregationsCM[1].total / Math.pow(10, aggregationsCM[1].decimals) | currency : "Eur" : "€" }}
               </div>
               <div id="casmovDiv2" *ngIf="aggregationsCM !== undefined && aggregationsCM.length">
                 <small id="casmovSmall">{{ aggregationsCM[0].count + aggregationsCM[1].count }}
-                  <ng-container *ngIf="
-                      aggregationsCM[0].count + aggregationsCM[1].count > 1;
-                      else singular
-                    ">{{'dpos.dashboard.operations.label' | translate}}</ng-container>
+                  <ng-container *ngIf="aggregationsCM[0].count + aggregationsCM[1].count > 1; else singular">
+                      {{'dpos.dashboard.operations.label' | translate}}
+                    </ng-container>
                 </small>
               </div>
             </div>
+            <!-- KPI  Resultado -->
             <div id="balanceBorder" class="kpi col d-flex align-items-center flex-column focus me-3 mx-2"
-              (click)="showSales($event)" (click)="createSalesGraphic($event)">
+            (click)="fillCharKPIs($event)">
               <h6 class="mt-2">{{'dpos.dashboard.result.label' | translate}}</h6>
-              <p id="balanceP2" *ngIf="
-                  aggregations !== undefined && aggregations.length;
-                  else noresults
-                ">
-                {{
-                resultsVarArray[0] - resultsVarArray[1]
-                | currency : "Eur" : "€"
-                }}
+              <p id="balanceP2" *ngIf="aggregations !== undefined && aggregations.length; else noresults">
+                {{ resultsVarArray[0] - resultsVarArray[1] | currency : "Eur" : "€" }}
               </p>
             </div>
           </div>
+          <!-- Grafico Evaluación KPI -->
           <div>
             <h6 class="mt-5">
-              <b>Evolución KPI</b>
-              <ng-container *ngIf="showSalesVar == true || (showSalesVar == false &&
-                    showRefundsVar == false &&
-                    showAverageTicketVar == false &&
-                    showCashMovVar == false &&
-                    showResultsVar == false)
-                "><b>&nbsp;> Ventas</b></ng-container>
+              <b>{{'dpos.dashboard.evokpis.label' | translate}}</b>
+              <ng-container *ngIf="showSalesVar == true || (showSalesVar == false && showRefundsVar == false &&
+                    showAverageTicketVar == false && showCashMovVar == false && showResultsVar == false)
+                "><b>&nbsp;> {{'dpos.dashboard.orders.txt' | translate}}</b></ng-container>
               <ng-container *ngIf="showRefundsVar == true"><b>&nbsp;> {{'dpos.dashboard.refunds.txt' | translate}}</b></ng-container>
               <ng-container *ngIf="showAverageTicketVar == true"><b>&nbsp;> {{'dpos.dashboard.average.ticket.txt' | translate}}</b></ng-container>
               <ng-container *ngIf="showCashMovVar == true"><b>&nbsp;> {{'dpos.dashboard.cashmovements.txt' | translate}}</b></ng-container>
@@ -171,17 +134,12 @@
             </ng-template>
             <ng-template #nochart1><br />
               <b><i>{{'dpos.dashboard.nodata.label' | translate}}</i></b></ng-template>
-            <ng-container *ngIf="
-                (aggregationsEvo !== undefined && aggregationsEvo.length) ||
-                  (aggregationsEvoIn !== undefined &&
-                    aggregationsEvoIn.length) ||
-                  (aggregationsEvoOrder !== undefined &&
-                    aggregationsEvoOrder.length);
-                else nochart1
-              ">
+            <ng-container *ngIf="(aggregationsEvo !== undefined && aggregationsEvo.length) ||
+                  (aggregationsEvoIn !== undefined && aggregationsEvoIn.length) ||
+                  (aggregationsEvoOrder !== undefined && aggregationsEvoOrder.length); else nochart1">
               <ngx-charts-bar-vertical [view]="[1000, 350]" [results]="kpiDataset" [xAxis]="true" [yAxis]="true"
                 [showDataLabel]="true" [dataLabelFormatting]="boundFormatDataLabel1" [customColors]="colorsKPI"
-                [animations]="true" *ngIf="loaded == true; else nochart">
+                [animations]="true" *ngIf="loadedKPIChart == true; else spinner">
               </ngx-charts-bar-vertical></ng-container>
           </div>
         </div>
@@ -189,38 +147,32 @@
     </div>
     <div class="col-md-4">
       <div class="card mb-4">
+        <!-- Gráfico Top más vendidos -->
         <div class="card-body">
           <h5 class="mb-4">
             <i class="fa-solid fa-chart-line" style="color: #63e6be; margin-right: 10px"></i><b>{{'dpos.dashboard.topsells.label' | translate}}</b>
           </h5>
-          <ng-container *ngIf="
-                aggregationsTop3 !== undefined && aggregationsTop3.length;
-                else nochart1
-              ">
+          <ng-container *ngIf="aggregationsTop3 !== undefined && aggregationsTop3.length; else nochart1">
             <ngx-charts-bar-horizontal class="chart-horizontal" [view]="[450, 200]" [results]="datasetTop3" [animations]="true"
               [showDataLabel]="true" [xAxis]="false" [yAxis]="true" [legend]="false" [roundEdges]="true"
               [showXAxisLabel]="true" [showYAxisLabel]="true" [trimYAxisTicks]="false" [barPadding]="20"
               [tooltipDisabled]="true" [dataLabelFormatting]="formatDataLabel" [noBarWhenZero]="true" [customColors]="colorsTop3"
-              *ngIf="loadedTP == true; else spinner">
+              *ngIf="loadedTPChart == true; else spinner">
             </ngx-charts-bar-horizontal></ng-container>
         </div>
         <br>
       </div>
       <div class="card">
+        <!-- Gráfico Métodos de pago -->
         <div class="card-body">
-          <h5>
+          <h5 class="mb-4">
             <i class="fa-solid fa-credit-card" style="color: #74c0fc; margin-right: 10px"></i><b>{{'dpos.dashboard.paymentmethods.label' | translate}}</b>
           </h5>
-          <div class="d-flex mt-5">
-            <ng-container *ngIf="
-                  aggregationsPM !== undefined && aggregationsPM.length;
-                  else nochart1
-                ">
+            <ng-container *ngIf="aggregationsPM !== undefined && aggregationsPM.length; else nochart1">
               <ngx-charts-pie-chart [view]="[500, 250]" [results]="datasetPM" [doughnut]="true" [animations]="true"
                 [labels]="false" [maxLabelLength]="50" rcWidth [tooltipDisabled]="true" [arcWidth]="0.5" [legend]="true"
-                [customColors]="colorsPM" [legendTitle]="''" *ngIf="loadedPM == true; else spinner">
+                [customColors]="colorsPM" [legendTitle]="''" *ngIf="loadedPMChart == true; else spinner">
               </ngx-charts-pie-chart></ng-container>
-          </div>
         </div>
       </div>
     </div>
