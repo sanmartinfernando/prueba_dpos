@@ -26,35 +26,38 @@ export class DashboardComponent implements OnInit {
   loadedPMChart = false;
   loadedTPChart = false;
 
-
-
   target;
-  formatLabelCounter: number = 0;
-  formatLabelCounter1: number = 0;
   idElement;
-
-  
-  loadedOninit = false;
   terminalVarSearch: any = 'Todos';
   yearVarSearch = '';
   monthVarSearch = '';
   yearDate;
   monthDate;
-  today: Date = new Date();
-  year = this.today.getFullYear();
+  year = new Date().getFullYear();
   yearMilli = 0;
   yearMaxDate;
   yearMaxMilli = 0;
-  monthMaxMilli = 0;
   dateMilli = 0;
   dateMaxMilli = 0;
   resultsVarArray = new Array(3);
+  
+  //Variables consulta API
+  aggregations: OrderAggregation[];
+  aggregationsPM: OrderAggregation[];
+  aggregationsCM: OrderAggregation[];
+  aggregationsEvo: OrderAggregation[];
+  aggregationsEvoOrder: OrderAggregationCash[];
+  aggregationsEvoIn: OrderAggregationCash[];
+  aggregationsTop3: OrderAggregationTop3[];
+  Math = Math;
+
   //Variables selección de dato para kpi
   showSalesVar = false;
   showRefundsVar = false;
   showAverageTicketVar = false;
   showCashMovVar = false;
   showResultsVar = false;
+  
   //Variable de creación de gráficos
   valueGraphArrayIn = new Array(12);
   valueGraphArrayOut = new Array(12);
@@ -129,50 +132,6 @@ export class DashboardComponent implements OnInit {
 
   colorsTop3 = [];
 
-  //Función que añade % al final del value label de los gráficos
-
-  formatDataLabel(value) {
-    return value + '%';
-  }
-
-  //Función que solo muestra el value label en el gráfico de barras del mes que se ha seleccionado en el filtro
-
-  formatDataLabel1 = (value) => {
-    this.monthVarSearch = (<HTMLInputElement>(
-      document.getElementById('monthDate')
-    )).value;
-    if (this.monthVarSearch != 'Todos') {
-      if (this.kpiDataset[+this.monthVarSearch - 1].value == value && value !=0) {
-        value = value.toFixed(1) + '€';
-      } else {
-        value = null;
-      }
-    } else {
-      if (value == 0) {
-        value = null;
-      } else {
-        value = value.toFixed(1) + '€';
-      }
-    }
-    this.monthVarSearch = null;
-    return value;
-  };
-
-  //Función que varía el color de las barras del gráfico dependiendo del mes seleccionado (realza el mes seleccionado y diluye el del resto)
-  barCustomColors() {
-    this.colorsKPI = [];
-    this.monthVarSearch = (<HTMLInputElement>(
-      document.getElementById('monthDate')
-    )).value;
-    if (this.monthVarSearch != 'Todos') {
-      for (let i = 0; i < this.kpiDataset.length; i++) {
-        this.colorsKPI.push({ name: this.kpiDataset[i].name, value: this.colors[0] });
-      }
-    }
-    this.monthVarSearch = null;
-    return this.colorsKPI;
-  }
-  //Variables de búsqueda de aggregation
   //Variable aggregation orders
   id = [
     {
@@ -202,6 +161,7 @@ export class DashboardComponent implements OnInit {
       },
     },
   ];
+
   //Variable aggregation cashmovement
   idCM = [
     {
@@ -223,6 +183,7 @@ export class DashboardComponent implements OnInit {
       },
     },
   ];
+
   //Variable evolución
   IdEvo = [
     {
@@ -263,6 +224,7 @@ export class DashboardComponent implements OnInit {
       },
     },
   ];
+
   //Variable evolución Cash movements
   idEvoCash = [
     {
@@ -309,6 +271,7 @@ export class DashboardComponent implements OnInit {
       },
     },
   ];
+
   //Variable evolución Results
   IdEvoResults = [
     {
@@ -351,6 +314,7 @@ export class DashboardComponent implements OnInit {
       },
     },
   ];
+
   //Variable métodos de pago
   idPM = [
     {
@@ -371,6 +335,7 @@ export class DashboardComponent implements OnInit {
       },
     },
   ];
+
   //Variable top 3 productos vendidos
   idT3 = [
     {
@@ -403,6 +368,7 @@ export class DashboardComponent implements OnInit {
       $limit: 3,
     },
   ];
+
   //Variable de búsqueda para total de productos vendidos
   idTP = [
     {
@@ -425,189 +391,12 @@ export class DashboardComponent implements OnInit {
     },
   ];
 
-  //Variables consulta API
-
-  isLoggedIn: boolean = true;
-  aggregations: OrderAggregation[];
-  aggregationsPM: OrderAggregation[];
-  aggregationsCM: OrderAggregation[];
-  aggregationsEvo: OrderAggregation[];
-  aggregationsEvoOrder: OrderAggregationCash[];
-  aggregationsEvoIn: OrderAggregationCash[];
-  aggregationsTop3: OrderAggregationTop3[];
-  aggregationsTP: OrderAggregationTop3[];
-  Math = Math;
-
   ngOnInit(): void {
-    //Comunicación con API para obtener los datos agregados que se muestran como base al iniciar la página en la sección de KPIs
-    this.OrdersAggregateService.GetAggregationOrder(this.id).subscribe(
-      (aggregation) => {
-        this.loadedKPIChart = false;
-        this.aggregations = aggregation;
-        //Bucle para recorrer el objeto respuesta
-        for (let i = 0; i < this.aggregations.length; i++) {
-          //If para comprobar si existen datos y el objeto no está vacio
-          if (this.aggregations[i].total != null) {
-            //Switch para comprobar si existen datos de ventas (id 0), de devoluciones (id 2) o rectificaciones (id 5)
-            switch (this.aggregations[i]._id) {
-              case 0:
-                //Para cada caso se rellena el array de resultados tanto del total con los decimales ya aplicados como del conteo de nº de operaciones
-                this.resultsVarArray[0] =
-                  this.aggregations[i].total / this.Math.pow(10, this.aggregations[i].decimals);
-                this.resultsVarArray[3] = this.aggregations[i].count;
-                break;
-              case 2:
-                this.resultsVarArray[1] =
-                  this.aggregations[i].total / this.Math.pow(10, this.aggregations[i].decimals);
-                this.resultsVarArray[4] = this.aggregations[i].count;
-                break;
-              case 5:
-                this.resultsVarArray[2] =
-                  this.aggregations[i].total /
-                  this.Math.pow(10, this.aggregations[i].decimals);
-                this.resultsVarArray[5] = this.aggregations[i].count;
-                break;
-            }
-          } else {
-            //Si el objeto está vacio el array de resultados se rellena con un 0
-            this.resultsVarArray[i] = 0;
-          }
-        }
-        //Se recorre el array de resultados para sustituir elementos nulos o vacios por 0
-        for (let i = 0; i < this.resultsVarArray.length; i++) {
-          if (this.resultsVarArray[i] == null) {
-            this.resultsVarArray[i] = 0;
-          }
-        }
+    
+    this.getKPIs();
+    this.getTop3Chart();
+    this.getPaymentMethodsChart();
 
-        this.loadedKPIChart = true;
-      }
-    );
-    //Comunicación con API para obtener los datos agregados que se muestran como base al iniciar la página en el gráfico de métodos de pago
-    this.OrdersAggregateService.GetAggregationOrder(this.idPM).subscribe(
-      (aggregation) => {
-        this.loadedPMChart = false;
-        this.aggregationsPM = aggregation;
-        let addPM: number = 0;
-        //Se realiza la suma del número de operaciones para, posteriormente, hacer el % de cada método de pago sobre el total
-        for (let i = 0; i < this.aggregationsPM.length; i++) {
-          addPM = addPM + this.aggregationsPM[i].count;
-        }
-        //Se recorre el objeto respuesta
-        for (let i = 0; i < this.aggregationsPM.length; i++) {
-          //Se rellena el array que alimenta al gráfico con cada tipo de método de pago según el campo _id del objeto y se transforma el dato en % sobre el total
-          switch (this.aggregationsPM[i]._id) {
-            case 'Tarjeta':
-              this.datasetPM[1].value = Math.round(
-                (this.aggregationsPM[i].count / addPM) * 100
-              );
-              this.datasetPM[1].name =
-                this.datasetPM[1].name;// + ' ' + this.datasetPM[1].value + ' %';
-              break;
-            case 'Efectivo':
-              this.datasetPM[0].value = Math.round(
-                (this.aggregationsPM[i].count / addPM) * 100
-              );
-              this.datasetPM[0].name =
-                this.datasetPM[0].name;// + ' ' + this.datasetPM[0].value + ' %';
-              break;
-            case 'Vales':
-              this.datasetPM[2].value = Math.round(
-                (this.aggregationsPM[i].count / addPM) * 100
-              );
-              this.datasetPM[2].name =
-                this.datasetPM[2].name;// + ' ' + this.datasetPM[2].value + ' %';
-              break;
-            case 'Virtual':
-              this.datasetPM[3].value = Math.round(
-                (this.aggregationsPM[i].count / addPM) * 100
-              );
-              this.datasetPM[3].name =
-                this.datasetPM[3].name;// + ' ' + this.datasetPM[3].value + ' %';
-              break;
-            case 'Otros':
-              this.datasetPM[4].value = Math.round(
-                (this.aggregationsPM[i].count / addPM) * 100
-              );
-              this.datasetPM[4].name =
-                this.datasetPM[4].name;// + ' ' + this.datasetPM[4].value + ' %';
-              break;
-            case 'Bono Denda':
-              this.datasetPM[5].value = Math.round(
-                (this.aggregationsPM[i].count / addPM) * 100
-              );
-              this.datasetPM[5].name =
-                this.datasetPM[5].name;// + ' ' + this.datasetPM[5].value + ' %';
-              break;
-            case 'Rectificación':
-              this.datasetPM[6].value = Math.round(
-                (this.aggregationsPM[i].count / addPM) * 100
-              );
-              this.datasetPM[6].name =
-                this.datasetPM[6].name;// + ' ' + this.datasetPM[6].value + ' %';
-              break;
-          }
-        }
-        //Variable de carga de gráfico marcada como true
-        this.loadedPMChart = true;
-      }
-    );
-    //Comunicación con API para obtener los datos agregados que se muestran como base al iniciar la página en la sección de KPIs, apartado de movimientos de caja
-    this.CashmovementsAggregateService.GetAggregationCashMovements(
-      this.idCM
-    ).subscribe(
-      (aggregation) => {
-        this.aggregationsCM = aggregation;
-      }
-    );
-    //Comunicación con API para obtener el total de productos vendidos
-    this.OrdersAggregateService.GetAggregationOrderTop3(this.idTP).subscribe(
-      (aggregation) => {
-        this.aggregationsTP = aggregation;
-        console.log(this.aggregationsTP);
-        //Comunicación con API para obtener los datos del gráfico de top 3 productos vendidos al cargar la página
-        this.OrdersAggregateService.GetAggregationOrderTop3(
-          this.idT3
-        ).subscribe(
-          (aggregation) => {
-            this.aggregationsTop3 = aggregation;
-            console.log(this.aggregationsTop3);
-            //Se asocian los datos del objeto respuesta con los campos correspondientes del array de valores del gráfico
-            let sumaTP = 0;
-            this.colorsTop3 = [];
-            for (let i = 0; i < this.aggregationsTop3.length; i++) {
-              sumaTP = sumaTP + this.aggregationsTop3[i].quantity;
-              this.datasetTop3[i].name =
-                this.aggregationsTop3[i].product +
-                ' (' +
-                this.aggregationsTop3[i].quantity +
-                ' uds)';
-              this.datasetTop3[i].value = Math.round(
-                (this.aggregationsTop3[i].quantity /
-                  this.aggregationsTP[0].quantity) *
-                  100
-              );
-
-              this.colorsTop3.push({ name: this.datasetTop3[i].name, value: this.colors[i]});
-
-            }
-            //Se asocia el 4º puesto del array del gráfico correspondiente al apartado "resto de productos"
-            //El dato se obtiene restando el valor total de la consulta de aggregationsTP a la sumaTP
-            this.datasetTop3[3].name =
-              'Resto' +
-              ' (' +
-              (this.aggregationsTP[0].quantity - sumaTP) +
-              ' uds)';
-            this.datasetTop3[3].value = Math.round(
-              ((this.aggregationsTP[0].quantity - sumaTP) /
-                this.aggregationsTP[0].quantity) *
-                100
-            );
-            this.loadedTPChart = true;
-          } 
-        );
-      }
-    );
     //Gráfico de ventas base al cargar la página
     //Se establece el filtro de búsqueda de type en la variable a 0 para filtrar por operaciones de venta
     this.IdEvo[1].$match.type = 0;
@@ -632,8 +421,49 @@ export class DashboardComponent implements OnInit {
         this.loadedKPIChart = true;
       }
     );
-    //Variable de carga de datos base marcada como true
-    this.loadedOninit = true;
+  }
+
+  //Función que añade % al final del value label de los gráficos
+  formatDataLabel(value) {
+    return value + '%';
+  }
+
+  //Función que solo muestra el value label en el gráfico de barras del mes que se ha seleccionado en el filtro
+
+  formatDataLabel1 = (value) => {
+    this.monthVarSearch = (<HTMLInputElement>(
+      document.getElementById('monthDate')
+    )).value;
+    if (this.monthVarSearch != 'Todos') {
+      if (this.kpiDataset[+this.monthVarSearch - 1].value == value && value !=0) {
+        value = value.toFixed(1) + '€';
+      } else {
+        value = null;
+      }
+    } else {
+      if (value == 0) {
+        value = null;
+      } else {
+        value = value.toFixed(1) + '€';
+      }
+    }
+    this.monthVarSearch = null;
+    return value;
+  };
+
+  //Función que varía el color de las barras del gráfico dependiendo del mes seleccionado (realza el mes seleccionado y diluye el del resto)
+  barCustomColors() {
+    this.colorsKPI = [];
+    this.monthVarSearch = (<HTMLInputElement>(
+      document.getElementById('monthDate')
+    )).value;
+    if (this.monthVarSearch != 'Todos') {
+      for (let i = 0; i < this.kpiDataset.length; i++) {
+        this.colorsKPI.push({ name: this.kpiDataset[i].name, value: this.colors[0] });
+      }
+    }
+    this.monthVarSearch = null;
+    return this.colorsKPI;
   }
 
   //Método de filtro de búsqueda, modifica los datos mostrados en el apartado de KPIs en tiempo real conforme se cambian en el HTML
@@ -731,197 +561,9 @@ export class DashboardComponent implements OnInit {
       this.idTP[0].$match.terminal_number = this.terminalVarSearch;
     }
 
-    //Llamada al método de comunicación con la API para obtener el objeto correspondiente a los campos de ventas, ticket medio, devoluciones y resultado
-
-    this.OrdersAggregateService.GetAggregationOrder(this.id).subscribe(
-      (aggregation) => {
-        this.aggregations = aggregation;
-        //Se resetea el array de resultados
-        this.resultsVarArray = new Array(3);
-        for (let i = 0; i < this.aggregations.length; i++) {
-          if (this.aggregations[i].total != null) {
-            //Switch para comprobar si existen datos de ventas (id 0), de devoluciones (id 2) o rectificaciones (id 5)
-            switch (this.aggregations[i]._id) {
-              //Para cada caso se rellena el array de resultados tanto del total con los decimales ya aplicados como del conteo de nº de operaciones
-              case 0:
-                this.resultsVarArray[0] =
-                  this.aggregations[i].total /
-                  this.Math.pow(10, this.aggregations[i].decimals);
-                this.resultsVarArray[3] = this.aggregations[i].count;
-                break;
-              case 2:
-                this.resultsVarArray[1] =
-                  this.aggregations[i].total /
-                  this.Math.pow(10, this.aggregations[i].decimals);
-                this.resultsVarArray[4] = this.aggregations[i].count;
-                break;
-              case 5:
-                this.resultsVarArray[2] =
-                  this.aggregations[i].total /
-                  this.Math.pow(10, this.aggregations[i].decimals);
-                this.resultsVarArray[5] = this.aggregations[i].count;
-                break;
-            }
-          } else {
-            //Si el objeto está vacio el array de resultados se rellena con un 0
-            this.resultsVarArray[i] = 0;
-          }
-        }
-        //Se recorre el array de resultados para sustituir elementos nulos o vacios por 0
-        for (let i = 0; i < this.resultsVarArray.length; i++) {
-          if (this.resultsVarArray[i] == null) {
-            this.resultsVarArray[i] = 0;
-          }
-        }
-      }
-    );
-
-    //Se llama al método de comunicación de API para el campo de mov. caja
-
-    this.CashmovementsAggregateService.GetAggregationCashMovements(
-      this.idCM
-    ).subscribe((aggregation) => {
-      this.aggregationsCM = aggregation;
-    });
-
-    //Se llama al método de comunicación de API para el gráfico métodos de pago
-
-    this.OrdersAggregateService.GetAggregationOrder(this.idPM).subscribe(
-      (aggregation) => {
-        this.aggregationsPM = aggregation;
-        this.loadedPMChart = false;
-        //Se reinicia el array de datos del gráfico
-        for (let i = 0; i < this.datasetPM.length; i++) {
-          this.datasetPM[i].value = 0;
-        }
-        //Se realiza la suma del número de operaciones para, posteriormente, hacer el % de cada método de pago sobre el total
-        let addPM: number = 0;
-        for (let i = 0; i < this.aggregationsPM.length; i++) {
-          addPM = addPM + this.aggregationsPM[i].count;
-        }
-        //Se recorre el objeto respuesta
-        for (let i = 0; i < this.aggregationsPM.length; i++) {
-          //Se rellena el array que alimenta al gráfico con cada tipo de método de pago según el campo _id del objeto y se transforma el dato en % sobre el total
-          switch (this.aggregationsPM[i]._id) {
-            case 'Tarjeta':
-              this.datasetPM[1].value = Math.round(
-                (this.aggregationsPM[i].count / addPM) * 100
-              );
-              this.datasetPM[1].name =
-                'Tarjeta';// + ' ' + this.datasetPM[1].value + ' %';
-              break;
-            case 'Efectivo':
-              this.datasetPM[0].value = Math.round(
-                (this.aggregationsPM[i].count / addPM) * 100
-              );
-              this.datasetPM[0].name =
-                'Efectivo';// + ' ' + this.datasetPM[0].value + ' %';
-              break;
-            case 'Vales':
-              this.datasetPM[2].value = Math.round(
-                (this.aggregationsPM[i].count / addPM) * 100
-              );
-              this.datasetPM[2].name =
-                'Vales';// + ' ' + this.datasetPM[2].value + ' %';
-              break;
-            case 'Virtual':
-              this.datasetPM[3].value = Math.round(
-                (this.aggregationsPM[i].count / addPM) * 100
-              );
-              this.datasetPM[3].name =
-                'Virtual';// + ' ' + this.datasetPM[3].value + ' %';
-              break;
-            case 'Otros':
-              this.datasetPM[4].value = Math.round(
-                (this.aggregationsPM[i].count / addPM) * 100
-              );
-              this.datasetPM[4].name =
-                'Otros';// + ' ' + this.datasetPM[4].value + ' %';
-              break;
-            case 'Bono Denda':
-              this.datasetPM[5].value = Math.round(
-                (this.aggregationsPM[i].count / addPM) * 100
-              );
-              this.datasetPM[5].name =
-                'Bono Denda';// + ' ' + this.datasetPM[5].value + ' %';
-              break;
-            case 'Rectificación':
-              this.datasetPM[6].value = Math.round(
-                (this.aggregationsPM[i].count / addPM) * 100
-              );
-              this.datasetPM[6].name =
-                'Rectificación';// + ' ' + this.datasetPM[6].value + ' %';
-              break;
-          }
-        }
-        //Para que se actualice el gráfico con los datos nuevos hay que reiniciar el array de datos
-        this.datasetPM = [...this.datasetPM];
-
-        //Variable de carga del gráfico se cambia a true
-        this.loadedPMChart = true;
-      }
-    );
-    //Comunicación con API para obtener el total de productos vendidos
-    this.OrdersAggregateService.GetAggregationOrderTop3(this.idTP).subscribe(
-      (aggregation) => {
-        this.aggregationsTP = aggregation;
-        //Comunicación con API para obtener los datos del gráfico de top 3 productos vendidos al cargar la página
-        this.OrdersAggregateService.GetAggregationOrderTop3(
-          this.idT3
-        ).subscribe(
-          (aggregation) => {
-            this.aggregationsTop3 = aggregation;
-            console.log(this.aggregationsTop3);
-            //Se reinicia el array de datos del gráfico
-            for (let i = 0; i < this.datasetTop3.length; i++) {
-              this.datasetTop3[i].name = '';
-              this.datasetTop3[i].value = 0;
-            }
-            //Se asocian los datos del objeto respuesta con los campos correspondientes del array de valores del gráfico
-            let sumaTP = 0;
-            for (let i = 0; i < this.aggregationsTop3.length; i++) {
-              sumaTP = sumaTP + this.aggregationsTop3[i].quantity;
-              this.datasetTop3[i].name =
-                this.aggregationsTop3[i].product +
-                ' (' +
-                this.aggregationsTop3[i].quantity +
-                ' uds)';
-              this.datasetTop3[i].value = Math.round(
-                (this.aggregationsTop3[i].quantity /
-                  this.aggregationsTP[0].quantity) *
-                  100
-              );
-            }
-            //Se recorre el array de resultados para sustituir elementos nulos o vacios por 0
-            for (let i = 0; i < this.datasetTop3.length; i++) {
-              if (this.datasetTop3[i].value == 0) {
-                this.datasetTop3[i].name = 'No hay producto';
-              }
-            }
-            //Se asocia el 4º puesto del array del gráfico correspondiente al apartado "resto de productos"
-            //El dato se obtiene restando el valor total de la consulta de aggregationsTP a la sumaTP
-            if (
-              this.aggregationsTP !== undefined &&
-              this.aggregationsTP.length
-            ) {
-              this.datasetTop3[3].name =
-                'Resto' +
-                ' (' +
-                (this.aggregationsTP[0].quantity - sumaTP) +
-                ' uds)';
-              this.datasetTop3[3].value = Math.round(
-                ((this.aggregationsTP[0].quantity - sumaTP) /
-                  this.aggregationsTP[0].quantity) *
-                  100
-              );
-            }
-            //Para que se actualice el gráfico con los datos nuevos hay que reiniciar el array de datos
-            this.datasetTop3 = [...this.datasetTop3];
-            this.loadedTPChart = true;
-          }
-        );
-      }
-    );
+    this.getKPIs();
+    this.getTop3Chart();
+    this.getPaymentMethodsChart();
   }
 
   //Método de dibujado de gráfico de evolución de KPI
@@ -934,52 +576,51 @@ export class DashboardComponent implements OnInit {
     let target = event.target as HTMLElement;
     let idElement: string = target.id.slice(0, 5);
 
-
     //Segun el string capturado se activa la variable de nombre escogida y se desactiva el resto
-switch (idElement) {
-  case 'sales':
-    this.showSalesVar = true;
-    this.showRefundsVar = false;
-    this.showAverageTicketVar = false;
-    this.showCashMovVar = false;
-    this.showResultsVar = false;
-    break;
-  case 'avera':
-    this.showSalesVar = false;
-    this.showRefundsVar = false;
-    this.showAverageTicketVar = true;
-    this.showCashMovVar = false;
-    this.showResultsVar = false;
-    break;
-  case 'refun':
-    this.showSalesVar = false;
-    this.showRefundsVar = true;
-    this.showAverageTicketVar = false;
-    this.showCashMovVar = false;
-    this.showResultsVar = false;
-    break;
-  case 'casmo':
-    this.showSalesVar = false;
-    this.showRefundsVar = false;
-    this.showAverageTicketVar = false;
-    this.showCashMovVar = true;
-    this.showResultsVar = false;
-    break;
-  case 'balan':
-    this.showSalesVar = false;
-    this.showRefundsVar = false;
-    this.showAverageTicketVar = false;
-    this.showCashMovVar = false;
-    this.showResultsVar = true;
-    break;
-}
-
+    switch (idElement) {
+      case 'sales':
+        this.showSalesVar = true;
+        this.showRefundsVar = false;
+        this.showAverageTicketVar = false;
+        this.showCashMovVar = false;
+        this.showResultsVar = false;
+        break;
+      case 'avera':
+        this.showSalesVar = false;
+        this.showRefundsVar = false;
+        this.showAverageTicketVar = true;
+        this.showCashMovVar = false;
+        this.showResultsVar = false;
+        break;
+      case 'refun':
+        this.showSalesVar = false;
+        this.showRefundsVar = true;
+        this.showAverageTicketVar = false;
+        this.showCashMovVar = false;
+        this.showResultsVar = false;
+        break;
+      case 'casmo':
+        this.showSalesVar = false;
+        this.showRefundsVar = false;
+        this.showAverageTicketVar = false;
+        this.showCashMovVar = true;
+        this.showResultsVar = false;
+        break;
+      case 'balan':
+        this.showSalesVar = false;
+        this.showRefundsVar = false;
+        this.showAverageTicketVar = false;
+        this.showCashMovVar = false;
+        this.showResultsVar = true;
+        break;
+    }
 
     //Reset del array del gráfico
     for (let i = 0; i < this.kpiDataset.length; i++) {
       this.kpiDataset[i].value = 0;
     }
     this.kpiDataset = [...this.kpiDataset];
+
     //Si existen parámetros de búsqueda diferentes a los base se actualizan
     //Se atualiza la variable de búsqueda de terminal (en el if se establece el caso de todas las terminales y en el else el de terminal individual)
     if (this.terminalVarSearch == 'Todos') {
@@ -991,6 +632,7 @@ switch (idElement) {
       this.idEvoCash[1].$match.terminal_number = this.terminalVarSearch;
       this.IdEvoResults[1].$match.terminal_number = this.terminalVarSearch;
     }
+
     //Se actualiza la variable de búsqueda de intervalo de tiempo, en este caso solo se usa la de año ya que no se permite filtrar por mes
     console.log(this.yearMilli);
     this.yearVarSearch = (<HTMLInputElement>(
@@ -1038,6 +680,7 @@ switch (idElement) {
         this.loadedKPIChart = true;
       }
     }
+
     //Según el KPI seleccionado se dibuja el gráfico con los datos correspondientes
     console.log(this.idElement);
     switch (this.idElement) {
@@ -1247,4 +890,150 @@ switch (idElement) {
     console.log(this.IdEvo);
     console.log(this.kpiDataset);
   }
+
+  
+   /**
+    * Función para mostrar los datos de todos los KPI 
+    */
+   getKPIs() {
+
+    //Llamada a la API para obtener los datos agregados de que se muestran en la sección KPIs de movimientos de caja
+    this.CashmovementsAggregateService.GetAggregationCashMovements(this.idCM).subscribe(
+      (aggregation) => {
+        this.aggregationsCM = aggregation;
+      }
+    );
+
+
+    //Comunicación con API para obtener los datos agregados que se muestran como base al iniciar la página en la sección de KPIs
+    this.OrdersAggregateService.GetAggregationOrder(this.id).subscribe(
+      (aggregation) => {
+        this.aggregations = aggregation;
+        //Bucle para recorrer el objeto respuesta
+        for (let i = 0; i < this.aggregations.length; i++) {
+          //If para comprobar si existen datos y el objeto no está vacio
+          if (this.aggregations[i].total != null) {
+            //Switch para comprobar si existen datos de ventas (id 0), de devoluciones (id 2) o rectificaciones (id 5)
+            switch (this.aggregations[i]._id) {
+              case 0: //Ventas
+                //Para cada caso se rellena el array de resultados tanto del total con los decimales ya aplicados como del conteo de nº de operaciones
+                this.resultsVarArray[0] = this.aggregations[i].total / this.Math.pow(10, this.aggregations[i].decimals);
+                this.resultsVarArray[3] = this.aggregations[i].count;
+                break;
+              case 2: //Devoluciones
+                this.resultsVarArray[1] = this.aggregations[i].total / this.Math.pow(10, this.aggregations[i].decimals);
+                this.resultsVarArray[4] = this.aggregations[i].count;
+                break;
+              case 5: //Rectificaciones
+                this.resultsVarArray[2] = this.aggregations[i].total / this.Math.pow(10, this.aggregations[i].decimals);
+                this.resultsVarArray[5] = this.aggregations[i].count;
+                break;
+            }
+          } else {
+            //Si el objeto está vacio el array de resultados se rellena con un 0
+            this.resultsVarArray[i] = 0;
+          }
+        }
+        //Se recorre el array de resultados para sustituir elementos nulos o vacios por 0
+        for (let i = 0; i < this.resultsVarArray.length; i++) {
+          if (this.resultsVarArray[i] == null) {
+            this.resultsVarArray[i] = 0;
+          }
+        }
+      }
+    );
+  }
+
+  /**
+   * Función para mostrar los datos del gráfico de Top más vendidos
+   */
+  getTop3Chart() {
+    //Llamada a la API para obtener el total de productos vendidos
+    this.OrdersAggregateService.GetAggregationOrderTop3(this.idTP).subscribe(
+      (aggregation) => {
+        let aggregationsTP = aggregation;
+        //Llamada a la API para obtener los datos del gráfico de top 3 más vendidos
+        this.OrdersAggregateService.GetAggregationOrderTop3(this.idT3).subscribe(
+          (aggregation) => {
+            this.aggregationsTop3 = aggregation;
+            //Se asocian los datos del objeto respuesta con los campos correspondientes del array de valores del gráfico
+            let sumaTP = 0;
+            this.colorsTop3 = [];
+            for (let i = 0; i < this.aggregationsTop3.length; i++) {
+              sumaTP = sumaTP + this.aggregationsTop3[i].quantity;
+              this.datasetTop3[i].name = this.aggregationsTop3[i].product + ' (' + this.aggregationsTop3[i].quantity + ' uds)';
+              this.datasetTop3[i].value = Math.round((this.aggregationsTop3[i].quantity / aggregationsTP[0].quantity) * 100);
+              this.colorsTop3.push({ name: this.datasetTop3[i].name, value: this.colors[i]});
+            }
+            //Se asocia el 4º puesto del array del gráfico correspondiente al apartado "resto de productos"
+            //El dato se obtiene restando el valor total de la consulta de aggregationsTP a la sumaTP
+            this.datasetTop3[3].name = 'Resto (' + (aggregationsTP[0].quantity - sumaTP) +' uds)';
+            this.datasetTop3[3].value = Math.round(((aggregationsTP[0].quantity - sumaTP) / aggregationsTP[0].quantity) * 100);
+            this.loadedTPChart = true;
+          } 
+        );
+      }
+    );
+  }
+
+  /**
+   * Función para mostrar los datos del gráfico de métodos de pago
+   */
+  getPaymentMethodsChart() {
+    //Llamada a la API para obtener los métodos de pago
+    this.OrdersAggregateService.GetAggregationOrder(this.idPM).subscribe(
+      (aggregation) => {
+        this.aggregationsPM = aggregation;
+        this.loadedPMChart = false;
+        //Se reinicia el array de datos del gráfico
+        for (let i = 0; i < this.datasetPM.length; i++) {
+          this.datasetPM[i].value = 0;
+        }
+        //Se realiza la suma del número total de operaciones para, posteriormente, hacer el % de cada método de pago sobre el total
+        let totalPM: number = 0;
+        for (let i = 0; i < this.aggregationsPM.length; i++) {
+          totalPM = totalPM + this.aggregationsPM[i].count;
+        }
+        //Se recorre el objeto respuesta
+        for (let i = 0; i < this.aggregationsPM.length; i++) {
+          //Se rellena el array que alimenta al gráfico con cada tipo de método de pago
+          switch (this.aggregationsPM[i]._id) {
+            case 'Tarjeta':
+              this.datasetPM[1].value = Math.round((this.aggregationsPM[i].count / totalPM) * 100);
+              this.datasetPM[1].name = 'Tarjeta';
+              break;
+            case 'Efectivo':
+              this.datasetPM[0].value = Math.round((this.aggregationsPM[i].count / totalPM) * 100);
+              this.datasetPM[0].name ='Efectivo';
+              break;
+            case 'Vales':
+              this.datasetPM[2].value = Math.round((this.aggregationsPM[i].count / totalPM) * 100);
+              this.datasetPM[2].name = 'Vales';
+              break;
+            case 'Virtual':
+              this.datasetPM[3].value = Math.round((this.aggregationsPM[i].count / totalPM) * 100);
+              this.datasetPM[3].name = 'Virtual';
+              break;
+            case 'Otros':
+              this.datasetPM[4].value = Math.round((this.aggregationsPM[i].count / totalPM) * 100);
+              this.datasetPM[4].name = 'Otros';
+              break;
+            case 'Bono Denda':
+              this.datasetPM[5].value = Math.round((this.aggregationsPM[i].count / totalPM) * 100);
+              this.datasetPM[5].name = 'Bono Denda';
+              break;
+            case 'Rectificación':
+              this.datasetPM[6].value = Math.round((this.aggregationsPM[i].count / totalPM) * 100);
+              this.datasetPM[6].name = 'Rectificación';
+              break;
+          }
+        }
+        //Para que se actualice el gráfico con los datos nuevos hay que reiniciar el array de datos
+        this.datasetPM = [...this.datasetPM];
+        //Variable de carga del gráfico se cambia a true
+        this.loadedPMChart = true;
+      }
+    );
+  }
+
 }
