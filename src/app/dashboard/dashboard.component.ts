@@ -16,12 +16,9 @@ export class DashboardComponent implements OnInit {
     private OrdersAggregateService: OrdersAggregateService,
     private CashmovementsAggregateService: CashmovementsAggregateService
   ) {
-    this.boundFormatDataLabel1 = this.formatDataLabel1.bind(this);
-    this.boundBarCustomColors = this.barCustomColors.bind(this);
+    this.formatCurrencyLabel = this.formatCurrencyLabel.bind(this);
   }
 
-  boundFormatDataLabel1: any;
-  boundBarCustomColors: any;
   loadedKPIChart = false;
   loadedPMChart = false;
   loadedTPChart = false;
@@ -39,8 +36,12 @@ export class DashboardComponent implements OnInit {
   yearMaxMilli = 0;
   dateMilli = 0;
   dateMaxMilli = 0;
-  resultsVarArray = new Array(3);
-  
+  Math = Math;
+
+  ordersResult = { total: 0, count: 0 };
+  refundsResult = { total: 0, count: 0 };
+  rectificationsResult = { total: 0, count: 0 };
+
   //Variables consulta API
   aggregations: OrderAggregation[];
   aggregationsPM: OrderAggregation[];
@@ -49,8 +50,7 @@ export class DashboardComponent implements OnInit {
   aggregationsEvoOrder: OrderAggregationCash[];
   aggregationsEvoIn: OrderAggregationCash[];
   aggregationsTop3: OrderAggregationTop3[];
-  Math = Math;
-
+  
   //Variables selección de dato para kpi
   showSalesVar = false;
   showRefundsVar = false;
@@ -133,7 +133,7 @@ export class DashboardComponent implements OnInit {
   colorsTop3 = [];
 
   //Variable aggregation orders
-  id = [
+  idOrders = [
     {
       $unwind: '$order_payments',
     },
@@ -226,7 +226,7 @@ export class DashboardComponent implements OnInit {
   ];
 
   //Variable evolución Cash movements
-  idEvoCash = [
+  idEvoCM = [
     {
       $addFields: {
         created_at_formatted: {
@@ -391,46 +391,30 @@ export class DashboardComponent implements OnInit {
     },
   ];
 
+  /**
+   * Función de inicialización al cargar la pantalla
+   */
   ngOnInit(): void {
     
     this.getKPIs();
     this.getTop3Chart();
     this.getPaymentMethodsChart();
 
-    //Gráfico de ventas base al cargar la página
-    //Se establece el filtro de búsqueda de type en la variable a 0 para filtrar por operaciones de venta
-    this.IdEvo[1].$match.type = 0;
-    //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
-    this.OrdersAggregateService.GetAggregationOrder(this.IdEvo).subscribe(
-      (aggregation) => {
-        this.aggregationsEvo = aggregation;
-        //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
-        for (let i = 0; i < this.aggregationsEvo.length; i++) {
-          this.kpiDataset[this.aggregationsEvo[i]._id - 1].value =
-            this.aggregationsEvo[i].total / 100;
-        }
-        //Se rellenan aquellos campos sin datos en el array de valores del gráfico con 0
-        for (let i = 0; i < this.kpiDataset.length; i++) {
-          if (this.kpiDataset[i].value == null) {
-            this.kpiDataset[i].value = 0;
-          }
-        }
-        //Se actualiza el array de datos del gráfico para que se dibujen los nuevos datos introducidos
-        this.kpiDataset = [...this.kpiDataset];
-        //Variables de carga de gráficos se ponen en true
-        this.loadedKPIChart = true;
-      }
-    );
+    //Gráfico de ventas inicial al cargar la página
+    this.printSalesEvoChart();
   }
 
-  //Función que añade % al final del value label de los gráficos
-  formatDataLabel(value) {
+  /**
+   * Función que añade el caracter % en el value del chart Top más vendidos
+   */
+  formatPercentageLabel(value) {
     return value + '%';
   }
 
-  //Función que solo muestra el value label en el gráfico de barras del mes que se ha seleccionado en el filtro
-
-  formatDataLabel1 = (value) => {
+  /**
+   * Función que solo muestra el value label en el gráfico de barras del mes que se ha seleccionado en el filtro
+   */
+  formatCurrencyLabel = (value) => {
     this.monthVarSearch = (<HTMLInputElement>(
       document.getElementById('monthDate')
     )).value;
@@ -476,16 +460,15 @@ export class DashboardComponent implements OnInit {
     this.monthVarSearch = (<HTMLInputElement>(
       document.getElementById('monthDate')
     )).value;
-    console.log(this.monthVarSearch);
+
     //Se comprueba si es necesario filtrar por solo año o por año+mes, el if es el caso de solo año
     if (this.monthVarSearch.length == 0 || this.monthVarSearch == 'Todos') {
       //Se obtiene el año inicial (yearMilli) y el año máximo (yearMaxMilli) y se transforma a unicode
-      console.log('entra');
       this.yearDate = new Date(parseInt(this.yearVarSearch), 0);
       this.yearMilli = this.yearDate.getTime();
       this.yearMaxMilli = this.yearMilli + 31536000000;
       //Se actualizan las variables de búsqueda en el apartado de intervalo de fecha para enviar la consulta a la API
-      this.id[1].$match.created_at = {
+      this.idOrders[1].$match.created_at = {
         $gt: this.yearMilli,
         $lt: this.yearMaxMilli,
       };
@@ -509,7 +492,6 @@ export class DashboardComponent implements OnInit {
       //En el else se contempla el caso de que la búsqueda se realice con año+mes
     } else {
       //Se obtienen las variables de fechas (inicial (dateMilli) y max (dateMaxMilli)) teniendo en cuenta la variable de búsqueda de año y mes, se pasan a unicode
-      console.log('entra');
       this.yearDate = new Date(
         parseInt(this.yearVarSearch),
         parseInt(this.monthVarSearch) - 1
@@ -522,7 +504,7 @@ export class DashboardComponent implements OnInit {
       this.dateMaxMilli = this.yearMaxDate.getTime();
       console.log(this.dateMilli);
       //Se actualizan las variables de búsqueda en el apartado de intervalo de fecha para enviar la consulta a la API
-      this.id[1].$match.created_at = {
+      this.idOrders[1].$match.created_at = {
         $gt: this.dateMilli,
         $lt: this.dateMaxMilli,
       };
@@ -547,14 +529,14 @@ export class DashboardComponent implements OnInit {
      de búsqueda se establece con todos los números de terminal*/
     if (this.terminalVarSearch == 'Todos') {
       //Se modifican las variables de consulta en el apartado de terminal con todas las terminales
-      this.id[1].$match.terminal_number = { $in: ['1', '2'] };
+      this.idOrders[1].$match.terminal_number = { $in: ['1', '2'] };
       this.idCM[0].$match.terminal_number = { $in: ['1', '2'] };
       this.idPM[1].$match.terminal_number = { $in: ['1', '2'] };
       this.idT3[0].$match.terminal_number = { $in: ['1', '2'] };
       this.idTP[0].$match.terminal_number = { $in: ['1', '2'] };
     } else {
       //En el else se establece el caso en el que se busca solo por una única terminal y se modifica las variables de consulta acorde
-      this.id[1].$match.terminal_number = this.terminalVarSearch;
+      this.idOrders[1].$match.terminal_number = this.terminalVarSearch;
       this.idCM[0].$match.terminal_number = this.terminalVarSearch;
       this.idPM[1].$match.terminal_number = this.terminalVarSearch;
       this.idT3[0].$match.terminal_number = this.terminalVarSearch;
@@ -576,78 +558,34 @@ export class DashboardComponent implements OnInit {
     let target = event.target as HTMLElement;
     let idElement: string = target.id.slice(0, 5);
 
-    //Segun el string capturado se activa la variable de nombre escogida y se desactiva el resto
-    switch (idElement) {
-      case 'sales':
-        this.showSalesVar = true;
-        this.showRefundsVar = false;
-        this.showAverageTicketVar = false;
-        this.showCashMovVar = false;
-        this.showResultsVar = false;
-        break;
-      case 'avera':
-        this.showSalesVar = false;
-        this.showRefundsVar = false;
-        this.showAverageTicketVar = true;
-        this.showCashMovVar = false;
-        this.showResultsVar = false;
-        break;
-      case 'refun':
-        this.showSalesVar = false;
-        this.showRefundsVar = true;
-        this.showAverageTicketVar = false;
-        this.showCashMovVar = false;
-        this.showResultsVar = false;
-        break;
-      case 'casmo':
-        this.showSalesVar = false;
-        this.showRefundsVar = false;
-        this.showAverageTicketVar = false;
-        this.showCashMovVar = true;
-        this.showResultsVar = false;
-        break;
-      case 'balan':
-        this.showSalesVar = false;
-        this.showRefundsVar = false;
-        this.showAverageTicketVar = false;
-        this.showCashMovVar = false;
-        this.showResultsVar = true;
-        break;
-    }
-
     //Reset del array del gráfico
     for (let i = 0; i < this.kpiDataset.length; i++) {
       this.kpiDataset[i].value = 0;
     }
     this.kpiDataset = [...this.kpiDataset];
 
-    //Si existen parámetros de búsqueda diferentes a los base se actualizan
     //Se atualiza la variable de búsqueda de terminal (en el if se establece el caso de todas las terminales y en el else el de terminal individual)
     if (this.terminalVarSearch == 'Todos') {
       this.IdEvo[1].$match.terminal_number = { $in: ['1', '2'] };
-      this.idEvoCash[1].$match.terminal_number = { $in: ['1', '2'] };
+      this.idEvoCM[1].$match.terminal_number = { $in: ['1', '2'] };
       this.IdEvoResults[1].$match.terminal_number = { $in: ['1', '2'] };
     } else {
       this.IdEvo[1].$match.terminal_number = this.terminalVarSearch;
-      this.idEvoCash[1].$match.terminal_number = this.terminalVarSearch;
+      this.idEvoCM[1].$match.terminal_number = this.terminalVarSearch;
       this.IdEvoResults[1].$match.terminal_number = this.terminalVarSearch;
     }
 
     //Se actualiza la variable de búsqueda de intervalo de tiempo, en este caso solo se usa la de año ya que no se permite filtrar por mes
-    console.log(this.yearMilli);
-    this.yearVarSearch = (<HTMLInputElement>(
-      document.getElementById('yearDate')
-    )).value;
+    this.yearVarSearch = (<HTMLInputElement>(document.getElementById('yearDate'))).value;
     this.yearDate = new Date(parseInt(this.yearVarSearch), 0);
     this.yearMilli = this.yearDate.getTime();
     this.yearMaxMilli = this.yearMilli + 31536000000;
-
     if (this.yearMilli && this.yearMaxMilli != 0) {
       this.IdEvo[1].$match.created_at = {
         $gt: this.yearMilli,
         $lt: this.yearMaxMilli,
       };
-      this.idEvoCash[1].$match.created_at = {
+      this.idEvoCM[1].$match.created_at = {
         $gt: this.yearMilli,
         $lt: this.yearMaxMilli,
       };
@@ -657,241 +595,263 @@ export class DashboardComponent implements OnInit {
       };
     }
 
-    //Llamada a la API para obtener la agregación
-    //Se captura el nombre del KPI en el que se clicka para mostrar el gráfico
-    this.target = event.target as HTMLElement;
-    /*Se hace distinción si el click viene del apartado de KPIs (se actualiza el id para el switch) o si viene del filtro de búsqueda
-    (se reutiliza el id anterior para actualizar los datos del gráfico en tiempo real)*/
-    if (
-      (this.target.id == 'searchTer' || this.target.id == 'yearDate') &&
-      this.idElement != null
-    ) {
-      this.idElement = this.idElement;
-    } else {
-      if (
-        this.target.id.slice(0, 5) == 'sales' ||
-        this.target.id.slice(0, 5) == 'avera' ||
-        this.target.id.slice(0, 5) == 'refun' ||
-        this.target.id.slice(0, 5) == 'casmo' ||
-        this.target.id.slice(0, 5) == 'balan'
-      ) {
-        this.idElement = this.target.id.slice(0, 5);
-      } else {
-        this.loadedKPIChart = true;
-      }
-    }
-
-    //Según el KPI seleccionado se dibuja el gráfico con los datos correspondientes
-    console.log(this.idElement);
-    switch (this.idElement) {
+    //Segun el KPI seleccionado: se activa la variable de nombre escogida, se desactiva el resto,
+    //y se dibuja el gráfico con los datos correspondientes
+    switch (idElement) {
       case undefined:
       case 'sales':
-        //Se establece el filtro de búsqueda de type en la variable a 0 para filtrar por operaciones de venta
-        this.IdEvo[1].$match.type = 0;
-        //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
-        this.OrdersAggregateService.GetAggregationOrder(this.IdEvo).subscribe(
-          (aggregation) => {
-            this.aggregationsEvo = aggregation;
-
-            //Actualzamos los colores de las barras
-            for (let i = 0; i < this.colorsKPI.length; i++) {
-              this.colorsKPI[i].value = this.colors[0];
-            }
-
-            //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
-            for (let i = 0; i < this.aggregationsEvo.length; i++) {
-              this.kpiDataset[this.aggregationsEvo[i]._id - 1].value =
-                this.aggregationsEvo[i].total / 100;
-            }
-            //Se rellenan aquellos campos sin datos en el array de valores del gráfico con 0
-            for (let i = 0; i < this.kpiDataset.length; i++) {
-              if (this.kpiDataset[i].value == null) {
-                this.kpiDataset[i].value = 0;
-              }
-            }
-            //Se actualiza el array de datos del gráfico para que se dibujen los nuevos datos introducidos
-            this.kpiDataset = [...this.kpiDataset];
-
-            //Variables de carga de gráficos se ponen en true
-            this.loadedKPIChart = true;
-          }
-        );
+        this.showSalesVar = true;
+        this.showRefundsVar = false;
+        this.showAverageTicketVar = false;
+        this.showCashMovVar = false;
+        this.showResultsVar = false;
+        this.printSalesEvoChart();
         break;
       case 'avera':
-        //Se establece el filtro de búsqueda de type en la variable a 0 para filtrar por operaciones de venta
-        this.IdEvo[1].$match.type = 0;
-        //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
-        this.OrdersAggregateService.GetAggregationOrder(this.IdEvo).subscribe(
-          (aggregation) => {
-            this.aggregationsEvo = aggregation;
-
-            //Actualzamos los colores de las barras
-            for (let i = 0; i < this.colorsKPI.length; i++) {
-              this.colorsKPI[i].value = this.colors[1];
-            }
-
-            //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
-            for (let i = 0; i < this.aggregationsEvo.length; i++) {
-              this.kpiDataset[this.aggregationsEvo[i]._id - 1].value =
-                this.aggregationsEvo[i].avg / 100;
-            }
-            //Se rellenan aquellos campos sin datos en el array de valores del gráfico con 0
-            for (let i = 0; i < this.kpiDataset.length; i++) {
-              if (this.kpiDataset[i].value == null) {
-                this.kpiDataset[i].value = 0;
-              }
-            }
-            //Se actualiza el array de datos del gráfico para que se dibujen los nuevos datos introducidos
-            this.kpiDataset = [...this.kpiDataset];
-            //Variables de carga de gráficos se ponen en true
-            this.loadedKPIChart = true;
-          }
-        );
+        this.showSalesVar = false;
+        this.showRefundsVar = false;
+        this.showAverageTicketVar = true;
+        this.showCashMovVar = false;
+        this.showResultsVar = false;
+        this.printAverageEvoChart();
         break;
       case 'refun':
-        //Se establece el filtro de búsqueda de type en la variable a 2 para filtrar por operaciones de devolución
-        this.IdEvo[1].$match.type = 2;
-        //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
-        this.OrdersAggregateService.GetAggregationOrder(this.IdEvo).subscribe(
-          (aggregation) => {
-            this.aggregationsEvo = aggregation;
-
-            //Actualzamos los colores de las barras
-            for (let i = 0; i < this.colorsKPI.length; i++) {
-              this.colorsKPI[i].value = this.colors[2];
-            }
-
-            //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
-            for (let i = 0; i < this.aggregationsEvo.length; i++) {
-              this.kpiDataset[this.aggregationsEvo[i]._id - 1].value =
-                this.aggregationsEvo[i].total / 100;
-            }
-            //Se rellenan aquellos campos sin datos en el array de valores del gráfico con 0
-            for (let i = 0; i < this.kpiDataset.length; i++) {
-              if (this.kpiDataset[i].value == null) {
-                this.kpiDataset[i].value = 0;
-              }
-            }
-            //Se actualiza el array de datos del gráfico para que se dibujen los nuevos datos introducidos
-            this.kpiDataset = [...this.kpiDataset];
-            //Variables de carga de gráficos se ponen en true
-            this.loadedKPIChart = true;
-          }
-        );
+        this.showSalesVar = false;
+        this.showRefundsVar = true;
+        this.showAverageTicketVar = false;
+        this.showCashMovVar = false;
+        this.showResultsVar = false;
+        this.printRefundEvoChart();
         break;
       case 'casmo':
-        //Se inicializan los array de in y out donde se van a poner los datos de los movimientos de caja positivos y negativos
-        this.valueGraphArrayIn = new Array(12);
-        this.valueGraphArrayOut = new Array(12);
-        //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal y intervalo de tiempo)
-        this.CashmovementsAggregateService.GetAggregationCashMovementsEvo(
-          this.idEvoCash
-        ).subscribe((aggregation) => {
-          this.aggregationsEvoIn = aggregation;
-
-          //Actualzamos los colores de las barras
-          for (let i = 0; i < this.colorsKPI.length; i++) {
-            this.colorsKPI[i].value = this.colors[3];
-          }
-
-          //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
-          for (let i = 0; i < this.aggregationsEvoIn.length; i++) {
-            //Se separan los datos dependiendo de su id (0 movimiento in en el if y 1 movimiento out en el else)
-            if (this.aggregationsEvoIn[i]._id.type == 0) {
-              this.valueGraphArrayIn[this.aggregationsEvoIn[i]._id.month - 1] =
-                this.aggregationsEvoIn[i].total / 100;
-            } else {
-              this.valueGraphArrayOut[this.aggregationsEvoIn[i]._id.month - 1] =
-                this.aggregationsEvoIn[i].total / 100;
-            }
-          }
-          //Se rellenan aquellos campos sin datos en el array de valores in y out con 0
-          for (let i = 0; i < this.kpiDataset.length; i++) {
-            if (this.valueGraphArrayIn[i] == null) {
-              this.valueGraphArrayIn[i] = 0;
-            }
-            if (this.valueGraphArrayOut[i] == null) {
-              this.valueGraphArrayOut[i] = 0;
-            }
-          }
-          //Se rellena el array de datos del gráfico en el apartado value de cada elemento con la diferencia entre movimientos in y out
-          for (let i = 0; i < this.kpiDataset.length; i++) {
-            this.kpiDataset[i].value =
-              this.valueGraphArrayIn[i] - this.valueGraphArrayOut[i];
-          }
-          //Se actualiza el array de datos del gráfico para que se dibujen los nuevos datos introducidos
-          this.kpiDataset = [...this.kpiDataset];
-          //Variables de carga de gráficos se ponen en true
-          this.loadedKPIChart = true;
-        });
+        this.showSalesVar = false;
+        this.showRefundsVar = false;
+        this.showAverageTicketVar = false;
+        this.showCashMovVar = true;
+        this.showResultsVar = false;
+        this.printCMEvoChart();
         break;
       case 'balan':
-        //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
-        this.OrdersAggregateService.GetAggregationOrderEvo(
-          this.IdEvoResults
-        ).subscribe((aggregation) => {
-          this.aggregationsEvoOrder = aggregation;
-
-          //Actualzamos los colores de las barras
-          for (let i = 0; i < this.colorsKPI.length; i++) {
-            this.colorsKPI[i].value = this.colors[4];
-          }
-
-          //Se clasifican los datos obtenidos según el tipo ( 0 ventas, 2 devoluciones y 5 rectificaciones) en el array de resultados
-          for (let i = 0; i < this.aggregationsEvoOrder.length; i++) {
-            switch (this.aggregationsEvoOrder[i]._id.type) {
-              case 0:
-                this.valueGraphArraySales[
-                  this.aggregationsEvoOrder[i]._id.month - 1
-                ] = this.aggregationsEvoOrder[i].total / 100;
-                break;
-              case 2:
-                this.valueGraphArrayRefunds[
-                  this.aggregationsEvoOrder[i]._id.month - 1
-                ] = this.aggregationsEvoOrder[i].total / 100;
-                break;
-              case 5:
-                this.valueGraphArrayRect[
-                  this.aggregationsEvoOrder[i]._id.month - 1
-                ] = this.aggregationsEvoOrder[i].total / 100;
-                break;
-            }
-          }
-          //Se cambian los datos vacios del array de resultado por 0
-          for (let i = 0; i < this.valueGraphArraySales.length; i++) {
-            if (this.valueGraphArraySales[i] == null) {
-              this.valueGraphArraySales[i] = 0;
-            }
-            if (this.valueGraphArrayRefunds[i] == null) {
-              this.valueGraphArrayRefunds[i] = 0;
-            }
-            if (this.valueGraphArrayRect[i] == null) {
-              this.valueGraphArrayRect[i] = 0;
-            }
-          }
-          //Se actualizan los datos del array de resultados en el array de datos del gráfico para que se muestren los resultados (ventas - (devoluciones+rectificaciones))
-          for (let i = 0; i < this.valueGraphArraySales.length; i++) {
-            this.kpiDataset[i].value =
-              this.valueGraphArraySales[i] -
-              (this.valueGraphArrayRefunds[i] + this.valueGraphArrayRect[i]);
-          }
-          //Se rellenan con 0 los datos vacios del array del gráfico
-          for (let i = 0; i < this.kpiDataset.length; i++) {
-            if (this.kpiDataset[i].value == null) {
-              this.kpiDataset[i].value = 0;
-            }
-          }
-          //Se actualiza el array del gráfico para que se dibujen los datos nuevos en el gráfico
-          this.kpiDataset = [...this.kpiDataset];
-          //Las variables de carga de gráfico se ponen en true
-          this.loadedKPIChart = true;
-        });
+        this.showSalesVar = false;
+        this.showRefundsVar = false;
+        this.showAverageTicketVar = false;
+        this.showCashMovVar = false;
+        this.showResultsVar = true;
+        this.printBalancesEvoChart();
+        break;
+      default:
+        this.loadedKPIChart = true;
+        break;
     }
-    console.log(this.IdEvo);
-    console.log(this.kpiDataset);
   }
 
-  
+  printSalesEvoChart() {
+    //Se establece el filtro de búsqueda de type en la variable a 0 para filtrar por operaciones de venta
+    this.IdEvo[1].$match.type = 0;
+    //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
+    this.OrdersAggregateService.GetAggregationOrder(this.IdEvo).subscribe(
+      (aggregation) => {
+        this.aggregationsEvo = aggregation;
+
+        //Actualzamos los colores de las barras
+        for (let i = 0; i < this.colorsKPI.length; i++) {
+          this.colorsKPI[i].value = this.colors[0];
+        }
+
+        //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
+        for (let i = 0; i < this.aggregationsEvo.length; i++) {
+          this.kpiDataset[this.aggregationsEvo[i]._id - 1].value =
+            this.aggregationsEvo[i].total / 100;
+        }
+        //Se rellenan aquellos campos sin datos en el array de valores del gráfico con 0
+        for (let i = 0; i < this.kpiDataset.length; i++) {
+          if (this.kpiDataset[i].value == null) {
+            this.kpiDataset[i].value = 0;
+          }
+        }
+        //Se actualiza el array de datos del gráfico para que se dibujen los nuevos datos introducidos
+        this.kpiDataset = [...this.kpiDataset];
+
+        //Variables de carga de gráficos se ponen en true
+        this.loadedKPIChart = true;
+      }
+    );
+  }
+
+  printAverageEvoChart() {
+    //Se establece el filtro de búsqueda de type en la variable a 0 para filtrar por operaciones de venta
+    this.IdEvo[1].$match.type = 0;
+    //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
+    this.OrdersAggregateService.GetAggregationOrder(this.IdEvo).subscribe(
+      (aggregation) => {
+        this.aggregationsEvo = aggregation;
+
+        //Actualzamos los colores de las barras
+        for (let i = 0; i < this.colorsKPI.length; i++) {
+          this.colorsKPI[i].value = this.colors[1];
+        }
+
+        //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
+        for (let i = 0; i < this.aggregationsEvo.length; i++) {
+          this.kpiDataset[this.aggregationsEvo[i]._id - 1].value =
+            this.aggregationsEvo[i].avg / 100;
+        }
+        //Se rellenan aquellos campos sin datos en el array de valores del gráfico con 0
+        for (let i = 0; i < this.kpiDataset.length; i++) {
+          if (this.kpiDataset[i].value == null) {
+            this.kpiDataset[i].value = 0;
+          }
+        }
+        //Se actualiza el array de datos del gráfico para que se dibujen los nuevos datos introducidos
+        this.kpiDataset = [...this.kpiDataset];
+        //Variables de carga de gráficos se ponen en true
+        this.loadedKPIChart = true;
+      }
+    );
+  }
+
+  printRefundEvoChart() {
+    //Se establece el filtro de búsqueda de type en la variable a 2 para filtrar por operaciones de devolución
+    this.IdEvo[1].$match.type = 2;
+    //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
+    this.OrdersAggregateService.GetAggregationOrder(this.IdEvo).subscribe(
+      (aggregation) => {
+        this.aggregationsEvo = aggregation;
+
+        //Actualzamos los colores de las barras
+        for (let i = 0; i < this.colorsKPI.length; i++) {
+          this.colorsKPI[i].value = this.colors[2];
+        }
+
+        //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
+        for (let i = 0; i < this.aggregationsEvo.length; i++) {
+          this.kpiDataset[this.aggregationsEvo[i]._id - 1].value =
+            this.aggregationsEvo[i].total / 100;
+        }
+        //Se rellenan aquellos campos sin datos en el array de valores del gráfico con 0
+        for (let i = 0; i < this.kpiDataset.length; i++) {
+          if (this.kpiDataset[i].value == null) {
+            this.kpiDataset[i].value = 0;
+          }
+        }
+        //Se actualiza el array de datos del gráfico para que se dibujen los nuevos datos introducidos
+        this.kpiDataset = [...this.kpiDataset];
+        //Variables de carga de gráficos se ponen en true
+        this.loadedKPIChart = true;
+      }
+    );
+  }
+
+  printCMEvoChart() {
+    //Se inicializan los array de in y out donde se van a poner los datos de los movimientos de caja positivos y negativos
+    this.valueGraphArrayIn = new Array(12);
+    this.valueGraphArrayOut = new Array(12);
+    //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal y intervalo de tiempo)
+    this.CashmovementsAggregateService.GetAggregationCashMovementsEvo(
+      this.idEvoCM
+    ).subscribe((aggregation) => {
+      this.aggregationsEvoIn = aggregation;
+
+      //Actualzamos los colores de las barras
+      for (let i = 0; i < this.colorsKPI.length; i++) {
+        this.colorsKPI[i].value = this.colors[3];
+      }
+
+      //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
+      for (let i = 0; i < this.aggregationsEvoIn.length; i++) {
+        //Se separan los datos dependiendo de su id (0 movimiento in en el if y 1 movimiento out en el else)
+        if (this.aggregationsEvoIn[i]._id.type == 0) {
+          this.valueGraphArrayIn[this.aggregationsEvoIn[i]._id.month - 1] =
+            this.aggregationsEvoIn[i].total / 100;
+        } else {
+          this.valueGraphArrayOut[this.aggregationsEvoIn[i]._id.month - 1] =
+            this.aggregationsEvoIn[i].total / 100;
+        }
+      }
+      //Se rellenan aquellos campos sin datos en el array de valores in y out con 0
+      for (let i = 0; i < this.kpiDataset.length; i++) {
+        if (this.valueGraphArrayIn[i] == null) {
+          this.valueGraphArrayIn[i] = 0;
+        }
+        if (this.valueGraphArrayOut[i] == null) {
+          this.valueGraphArrayOut[i] = 0;
+        }
+      }
+      //Se rellena el array de datos del gráfico en el apartado value de cada elemento con la diferencia entre movimientos in y out
+      for (let i = 0; i < this.kpiDataset.length; i++) {
+        this.kpiDataset[i].value =
+          this.valueGraphArrayIn[i] - this.valueGraphArrayOut[i];
+      }
+      //Se actualiza el array de datos del gráfico para que se dibujen los nuevos datos introducidos
+      this.kpiDataset = [...this.kpiDataset];
+      //Variables de carga de gráficos se ponen en true
+      this.loadedKPIChart = true;
+    });
+  }
+
+  printBalancesEvoChart() {
+    //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
+    this.OrdersAggregateService.GetAggregationOrderEvo(
+      this.IdEvoResults
+    ).subscribe((aggregation) => {
+      this.aggregationsEvoOrder = aggregation;
+
+      //Actualzamos los colores de las barras
+      for (let i = 0; i < this.colorsKPI.length; i++) {
+        this.colorsKPI[i].value = this.colors[4];
+      }
+
+      //Se clasifican los datos obtenidos según el tipo ( 0 ventas, 2 devoluciones y 5 rectificaciones) en el array de resultados
+      for (let i = 0; i < this.aggregationsEvoOrder.length; i++) {
+        switch (this.aggregationsEvoOrder[i]._id.type) {
+          case 0:
+            this.valueGraphArraySales[
+              this.aggregationsEvoOrder[i]._id.month - 1
+            ] = this.aggregationsEvoOrder[i].total / 100;
+            break;
+          case 2:
+            this.valueGraphArrayRefunds[
+              this.aggregationsEvoOrder[i]._id.month - 1
+            ] = this.aggregationsEvoOrder[i].total / 100;
+            break;
+          case 5:
+            this.valueGraphArrayRect[
+              this.aggregationsEvoOrder[i]._id.month - 1
+            ] = this.aggregationsEvoOrder[i].total / 100;
+            break;
+        }
+      }
+      //Se cambian los datos vacios del array de resultado por 0
+      for (let i = 0; i < this.valueGraphArraySales.length; i++) {
+        if (this.valueGraphArraySales[i] == null) {
+          this.valueGraphArraySales[i] = 0;
+        }
+        if (this.valueGraphArrayRefunds[i] == null) {
+          this.valueGraphArrayRefunds[i] = 0;
+        }
+        if (this.valueGraphArrayRect[i] == null) {
+          this.valueGraphArrayRect[i] = 0;
+        }
+      }
+      //Se actualizan los datos del array de resultados en el array de datos del gráfico para que se muestren los resultados (ventas - (devoluciones+rectificaciones))
+      for (let i = 0; i < this.valueGraphArraySales.length; i++) {
+        this.kpiDataset[i].value =
+          this.valueGraphArraySales[i] -
+          (this.valueGraphArrayRefunds[i] + this.valueGraphArrayRect[i]);
+      }
+      //Se rellenan con 0 los datos vacios del array del gráfico
+      for (let i = 0; i < this.kpiDataset.length; i++) {
+        if (this.kpiDataset[i].value == null) {
+          this.kpiDataset[i].value = 0;
+        }
+      }
+      //Se actualiza el array del gráfico para que se dibujen los datos nuevos en el gráfico
+      this.kpiDataset = [...this.kpiDataset];
+      //Las variables de carga de gráfico se ponen en true
+      this.loadedKPIChart = true;
+    });
+  }
+
    /**
     * Función para mostrar los datos de todos los KPI 
     */
@@ -904,11 +864,14 @@ export class DashboardComponent implements OnInit {
       }
     );
 
-
     //Comunicación con API para obtener los datos agregados que se muestran como base al iniciar la página en la sección de KPIs
-    this.OrdersAggregateService.GetAggregationOrder(this.id).subscribe(
+    this.OrdersAggregateService.GetAggregationOrder(this.idOrders).subscribe(
       (aggregation) => {
         this.aggregations = aggregation;
+        this.ordersResult = {total: 0, count: 0};
+        this.refundsResult = {total: 0, count: 0};
+        this.rectificationsResult = {total: 0, count: 0};
+
         //Bucle para recorrer el objeto respuesta
         for (let i = 0; i < this.aggregations.length; i++) {
           //If para comprobar si existen datos y el objeto no está vacio
@@ -917,27 +880,18 @@ export class DashboardComponent implements OnInit {
             switch (this.aggregations[i]._id) {
               case 0: //Ventas
                 //Para cada caso se rellena el array de resultados tanto del total con los decimales ya aplicados como del conteo de nº de operaciones
-                this.resultsVarArray[0] = this.aggregations[i].total / this.Math.pow(10, this.aggregations[i].decimals);
-                this.resultsVarArray[3] = this.aggregations[i].count;
+                this.ordersResult.total += this.aggregations[i].total / this.Math.pow(10, this.aggregations[i].decimals);
+                this.ordersResult.count += this.aggregations[i].count;
                 break;
               case 2: //Devoluciones
-                this.resultsVarArray[1] = this.aggregations[i].total / this.Math.pow(10, this.aggregations[i].decimals);
-                this.resultsVarArray[4] = this.aggregations[i].count;
+                this.refundsResult.total += this.aggregations[i].total / this.Math.pow(10, this.aggregations[i].decimals);
+                this.refundsResult.count += this.aggregations[i].count;
                 break;
               case 5: //Rectificaciones
-                this.resultsVarArray[2] = this.aggregations[i].total / this.Math.pow(10, this.aggregations[i].decimals);
-                this.resultsVarArray[5] = this.aggregations[i].count;
+                this.rectificationsResult.total += this.aggregations[i].total / this.Math.pow(10, this.aggregations[i].decimals);
+                this.rectificationsResult.count += this.aggregations[i].count;
                 break;
             }
-          } else {
-            //Si el objeto está vacio el array de resultados se rellena con un 0
-            this.resultsVarArray[i] = 0;
-          }
-        }
-        //Se recorre el array de resultados para sustituir elementos nulos o vacios por 0
-        for (let i = 0; i < this.resultsVarArray.length; i++) {
-          if (this.resultsVarArray[i] == null) {
-            this.resultsVarArray[i] = 0;
           }
         }
       }

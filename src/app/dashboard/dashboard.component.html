@@ -80,12 +80,12 @@
             <!-- KPI  Devoluciones -->
             <div id="refundsBorder" class="kpi col d-flex align-items-center flex-column focus mx-2" (click)="fillCharKPIs($event)">
               <h6 class="mt-2">{{'dpos.dashboard.refunds.label' | translate}}</h6>
-              <div id="refundsDiv" *ngIf="aggregations !== undefined && aggregations.length && resultsVarArray[1] != 0; else noresults">
-                {{ resultsVarArray[1] | currency : "Eur" : "€" }}
+              <div id="refundsDiv" *ngIf="aggregations !== undefined && aggregations.length && refundsResult.total != 0; else noresults">
+                {{ refundsResult.total | currency : "Eur" : "€" }}
               </div>
-              <div id="refundsDiv2" *ngIf="aggregations !== undefined && aggregations.length && resultsVarArray[4] != 0">
-                <small id="refundsSmall">{{ resultsVarArray[4] }}
-                  <ng-container id="refundsNgcontainer"*ngIf="resultsVarArray[4] > 1; else singular">
+              <div id="refundsDiv2" *ngIf="aggregations !== undefined && aggregations.length && refundsResult.count != 0">
+                <small id="refundsSmall">{{ refundsResult.count }}
+                  <ng-container id="refundsNgcontainer"*ngIf="refundsResult.count > 1; else singular">
                     {{'dpos.dashboard.operations.label' | translate}}
                   </ng-container>
                 </small>
@@ -110,7 +110,7 @@
             (click)="fillCharKPIs($event)">
               <h6 class="mt-2">{{'dpos.dashboard.result.label' | translate}}</h6>
               <p id="balanceP2" *ngIf="aggregations !== undefined && aggregations.length; else noresults">
-                {{ resultsVarArray[0] - resultsVarArray[1] | currency : "Eur" : "€" }}
+                {{ ordersResult.total - refundsResult.total| currency : "Eur" : "€" }}
               </p>
             </div>
           </div>
@@ -138,7 +138,7 @@
                   (aggregationsEvoIn !== undefined && aggregationsEvoIn.length) ||
                   (aggregationsEvoOrder !== undefined && aggregationsEvoOrder.length); else nochart1">
               <ngx-charts-bar-vertical [view]="[1000, 350]" [results]="kpiDataset" [xAxis]="true" [yAxis]="true"
-                [showDataLabel]="true" [dataLabelFormatting]="boundFormatDataLabel1" [customColors]="colorsKPI"
+                [showDataLabel]="true" [dataLabelFormatting]="formatCurrencyLabel" [customColors]="colorsKPI"
                 [animations]="true" *ngIf="loadedKPIChart == true; else spinner">
               </ngx-charts-bar-vertical></ng-container>
           </div>
@@ -156,7 +156,7 @@
             <ngx-charts-bar-horizontal class="chart-horizontal" [view]="[450, 200]" [results]="datasetTop3" [animations]="true"
               [showDataLabel]="true" [xAxis]="false" [yAxis]="true" [legend]="false" [roundEdges]="true"
               [showXAxisLabel]="true" [showYAxisLabel]="true" [trimYAxisTicks]="false" [barPadding]="20"
-              [tooltipDisabled]="true" [dataLabelFormatting]="formatDataLabel" [noBarWhenZero]="true" [customColors]="colorsTop3"
+              [tooltipDisabled]="true" [dataLabelFormatting]="formatPercentageLabel" [noBarWhenZero]="true" [customColors]="colorsTop3"
               *ngIf="loadedTPChart == true; else spinner">
             </ngx-charts-bar-horizontal></ng-container>
         </div>
