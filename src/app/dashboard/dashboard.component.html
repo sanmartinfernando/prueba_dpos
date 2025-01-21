@@ -39,9 +39,8 @@
         <button type="reset" class="btn btn-outline-danger align-self-end">
           <a type="button"><i class="fas fa-eraser"></i> </a>
         </button>
-        <a type="button" class="btn btn-primary align-self-end" (click)="searchTerminal()"
-          (click)="fillCharKPIs($event)" (click)="barCustomColors()"><i
-            class="fas fa-search"></i>&nbsp;&nbsp;{{'dpos.action.search' | translate}}</a>
+        <a type="button" class="btn btn-primary align-self-end" (click)="searchTerminal()">
+          <i class="fas fa-search"></i>&nbsp;&nbsp;{{'dpos.action.search' | translate}}</a>
       </div>
     </form>
   </div>
@@ -61,12 +60,14 @@
             <!-- KPI  Ventas -->
             <div id="salesBorder" class="kpi col d-flex align-items-center flex-column focus ms-3 mx-2" (click)="fillCharKPIs($event)">
               <h6 class="mt-2">{{'dpos.dashboard.orders.label' | translate}}</h6>
-              <div *ngIf="aggregations !== undefined && aggregations.length > 0; else noresults" id="salesdiv">
-                {{ aggregations[0].total / Math.pow(10, aggregations[0].decimals) | currency : "Eur" : "€" }}
+              <div id="salesdiv" *ngIf="ordersResult.total != 0; else noresults" >
+                {{ ordersResult.count| currency : "Eur" : "€" }}
               </div>
-              <div *ngIf="aggregations !== undefined && aggregations.length > 0" id="salesdiv1">
-                <small id="salessmall">{{ aggregations[0].count }}
-                  <ng-container id="salesngcontainer" *ngIf="aggregations[0].count > 1; else singular">operaciones</ng-container>
+              <div id="salesdiv1" *ngIf="ordersResult.count != 0" >
+                <small id="salessmall">{{ ordersResult.count }}
+                  <ng-container id="salesngcontainer" *ngIf="ordersResult.count > 1; else singular">
+                    {{'dpos.dashboard.operations.label' | translate}}
+                  </ng-container>
                 </small>
               </div>
             </div>
@@ -80,10 +81,10 @@
             <!-- KPI  Devoluciones -->
             <div id="refundsBorder" class="kpi col d-flex align-items-center flex-column focus mx-2" (click)="fillCharKPIs($event)">
               <h6 class="mt-2">{{'dpos.dashboard.refunds.label' | translate}}</h6>
-              <div id="refundsDiv" *ngIf="aggregations !== undefined && aggregations.length && refundsResult.total != 0; else noresults">
+              <div id="refundsDiv" *ngIf="refundsResult.total != 0; else noresults">
                 {{ refundsResult.total | currency : "Eur" : "€" }}
               </div>
-              <div id="refundsDiv2" *ngIf="aggregations !== undefined && aggregations.length && refundsResult.count != 0">
+              <div id="refundsDiv2" *ngIf="refundsResult.count != 0">
                 <small id="refundsSmall">{{ refundsResult.count }}
                   <ng-container id="refundsNgcontainer"*ngIf="refundsResult.count > 1; else singular">
                     {{'dpos.dashboard.operations.label' | translate}}
@@ -110,7 +111,7 @@
             (click)="fillCharKPIs($event)">
               <h6 class="mt-2">{{'dpos.dashboard.result.label' | translate}}</h6>
               <p id="balanceP2" *ngIf="aggregations !== undefined && aggregations.length; else noresults">
-                {{ ordersResult.total - refundsResult.total| currency : "Eur" : "€" }}
+                {{ balanceResult | currency : "Eur" : "€" }}
               </p>
             </div>
           </div>

@@ -42,6 +42,7 @@ export class DashboardComponent implements OnInit {
   avTicketResult = 0;
   cashMovementsResult = 0;
   cashMovementsOperationsResult = 0;
+  balanceResult = 0;
 
   //Variables consulta API
   aggregations: OrderAggregation[];
@@ -443,12 +444,8 @@ export class DashboardComponent implements OnInit {
 
   searchTerminal() {
     //Obtención de variables de búsqueda de año y mes
-    this.yearVarSearch = (<HTMLInputElement>(
-      document.getElementById('yearDate')
-    )).value;
-    this.monthVarSearch = (<HTMLInputElement>(
-      document.getElementById('monthDate')
-    )).value;
+    this.yearVarSearch = (<HTMLInputElement>(document.getElementById('yearDate'))).value;
+    this.monthVarSearch = (<HTMLInputElement>(document.getElementById('monthDate'))).value;
 
     //Se comprueba si es necesario filtrar por solo año o por año+mes, el if es el caso de solo año
     if (this.monthVarSearch.length == 0 || this.monthVarSearch == 'Todos') {
@@ -491,7 +488,6 @@ export class DashboardComponent implements OnInit {
         parseInt(this.monthVarSearch)
       );
       this.dateMaxMilli = this.yearMaxDate.getTime();
-      console.log(this.dateMilli);
       //Se actualizan las variables de búsqueda en el apartado de intervalo de fecha para enviar la consulta a la API
       this.idOrders[1].$match.created_at = {
         $gt: this.dateMilli,
@@ -535,6 +531,7 @@ export class DashboardComponent implements OnInit {
     this.getKPIs();
     this.getTop3Chart();
     this.getPaymentMethodsChart();
+    this.fillCharKPIs(undefined);
   }
 
   //Método de dibujado de gráfico de evolución de KPI
@@ -544,14 +541,11 @@ export class DashboardComponent implements OnInit {
     this.loadedKPIChart = false;
     
     //Se captura el nombre del KPI en el que se clicka para mostrar el gráfico
-    let target = event.target as HTMLElement;
-    let idElement: string = target.id.slice(0, 5);
-
-    //Reset del array del gráfico
-    for (let i = 0; i < this.kpiDataset.length; i++) {
-      this.kpiDataset[i].value = 0;
+    let idElement:string = 'sales'; 
+    if(event != undefined) {
+      let target = event.target as HTMLElement;
+      idElement = target.id.slice(0, 5);
     }
-    this.kpiDataset = [...this.kpiDataset];
 
     //Se atualiza la variable de búsqueda de terminal (en el if se establece el caso de todas las terminales y en el else el de terminal individual)
     if (this.terminalVarSearch == 'Todos') {
@@ -666,6 +660,38 @@ export class DashboardComponent implements OnInit {
     );
   }
 
+  printRefundEvoChart() {
+    //Se establece el filtro de búsqueda de type en la variable a 2 para filtrar por operaciones de devolución
+    this.IdEvo[1].$match.type = 2;
+
+    //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
+    this.OrdersAggregateService.GetAggregationOrder(this.IdEvo).subscribe(
+      (aggregationsEvo) => {
+        //Actualzamos los colores de las barras
+        for (let i = 0; i < this.colorsKPI.length; i++) {
+          this.colorsKPI[i].value = this.colors[2];
+        }
+
+        //Se inicializan los valores del array
+        for (let i = 0; i < this.kpiDataset.length; i++) {
+            this.kpiDataset[i].value = 0;
+        }
+
+        //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
+        for (let i = 0; i < aggregationsEvo.length; i++) {
+          this.kpiDataset[aggregationsEvo[i]._id - 1].value = aggregationsEvo[i].total / 100;
+        }
+
+      
+        //Se actualiza el array de datos del gráfico para que se dibujen los nuevos datos introducidos
+        this.kpiDataset = [...this.kpiDataset];
+
+        //Variables de carga de gráficos se ponen en true
+        this.loadedKPIChart = true;
+      }
+    );
+  }
+
   printAverageEvoChart() {
     //Se establece el filtro de búsqueda de type en la variable a 0 para filtrar por operaciones de venta
     this.IdEvo[1].$match.type = 0;
@@ -689,39 +715,6 @@ export class DashboardComponent implements OnInit {
           this.kpiDataset[aggregationsEvo[i]._id - 1].value = aggregationsEvo[i].avg / 100;
         }
 
-        //Se actualiza el array de datos del gráfico para que se dibujen los nuevos datos introducidos
-        this.kpiDataset = [...this.kpiDataset];
-
-        //Variables de carga de gráficos se ponen en true
-        this.loadedKPIChart = true;
-      }
-    );
-  }
-
-  printRefundEvoChart() {
-    //Se establece el filtro de búsqueda de type en la variable a 2 para filtrar por operaciones de devolución
-    this.IdEvo[1].$match.type = 2;
-
-    //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
-    this.OrdersAggregateService.GetAggregationOrder(this.IdEvo).subscribe(
-      (aggregationsEvo) => {
-
-        //Actualzamos los colores de las barras
-        for (let i = 0; i < this.colorsKPI.length; i++) {
-          this.colorsKPI[i].value = this.colors[2];
-        }
-
-        //Se inicializan los valores del array
-        for (let i = 0; i < this.kpiDataset.length; i++) {
-            this.kpiDataset[i].value = 0;
-        }
-
-        //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
-        for (let i = 0; i < aggregationsEvo.length; i++) {
-          this.kpiDataset[aggregationsEvo[i]._id - 1].value = aggregationsEvo[i].total / 100;
-        }
-
-      
         //Se actualiza el array de datos del gráfico para que se dibujen los nuevos datos introducidos
         this.kpiDataset = [...this.kpiDataset];
 
@@ -791,7 +784,6 @@ export class DashboardComponent implements OnInit {
         this.colorsKPI[i].value = this.colors[4];
       }
 
-
       //Inicializamos los arrays
       for (let i = 0; i < this.kpiDataset.length; i++) {
           valueGraphArraySales[i] = 0;
@@ -800,21 +792,29 @@ export class DashboardComponent implements OnInit {
           this.kpiDataset[i].value = 0;
       }
 
+      let totalSales = 0;
+      let totalRefunds = 0;
+      let totalRectifications = 0;
+      
       //Se clasifican los datos obtenidos según el tipo ( 0 ventas, 2 devoluciones y 5 rectificaciones) en el array de resultados
       for (let i = 0; i < aggregationsEvoOrder.length; i++) {
-
         switch (aggregationsEvoOrder[i]._id.type) {
           case 0:
             valueGraphArraySales[aggregationsEvoOrder[i]._id.month - 1] = aggregationsEvoOrder[i].total / 100;
+            totalSales += aggregationsEvoOrder[i].total / 100;
             break;
           case 2:
             valueGraphArrayRefunds[aggregationsEvoOrder[i]._id.month - 1] = aggregationsEvoOrder[i].total / 100;
+            totalRefunds += aggregationsEvoOrder[i].total / 100;
             break;
           case 5:
             valueGraphArrayRect[aggregationsEvoOrder[i]._id.month - 1] = aggregationsEvoOrder[i].total / 100;
+            totalRectifications += aggregationsEvoOrder[i].total / 100;
             break;
         }
       }
+
+      this.balanceResult = totalSales - (totalRefunds + totalRectifications);
 
       //Se actualizan los datos del array de resultados en el array de datos del gráfico para que se muestren los resultados (ventas - (devoluciones+rectificaciones))
       for (let i = 0; i < this.kpiDataset.length; i++) {
@@ -837,7 +837,7 @@ export class DashboardComponent implements OnInit {
     //Llamada a la API para obtener los datos agregados de que se muestran en la sección KPIs de movimientos de caja
     this.CashmovementsAggregateService.GetAggregationCashMovements(this.idCM).subscribe(
       (aggregationsCM) => {
-        this.cashMovementsResult = aggregationsCM[0].total / Math.pow(10, aggregationsCM[0].decimals) - aggregationsCM[1].total / Math.pow(10, aggregationsCM[1].decimals);
+        this.cashMovementsResult = (aggregationsCM[0].total / Math.pow(10, aggregationsCM[0].decimals)) - (aggregationsCM[1].total / Math.pow(10, aggregationsCM[1].decimals));
         this.cashMovementsOperationsResult = aggregationsCM[0].count + aggregationsCM[1].count;
       }
     );
@@ -850,6 +850,7 @@ export class DashboardComponent implements OnInit {
         this.refundsResult = {total: 0, count: 0};
         this.rectificationsResult = {total: 0, count: 0};
         this.avTicketResult = 0;
+        this.balanceResult = 0;
 
         let countAvg = 0;
 
@@ -878,6 +879,7 @@ export class DashboardComponent implements OnInit {
           }
         }
 
+        this.balanceResult = this.ordersResult.total - (this.refundsResult.total + this.rectificationsResult.total);
         this.avTicketResult = this.avTicketResult / countAvg;
       }
     );
