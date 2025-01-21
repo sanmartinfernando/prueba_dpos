@@ -23,8 +23,6 @@ export class DashboardComponent implements OnInit {
   loadedPMChart = false;
   loadedTPChart = false;
 
-  target;
-  idElement;
   terminalVarSearch: any = 'Todos';
   yearVarSearch = '';
   monthVarSearch = '';
@@ -41,15 +39,12 @@ export class DashboardComponent implements OnInit {
   ordersResult = { total: 0, count: 0 };
   refundsResult = { total: 0, count: 0 };
   rectificationsResult = { total: 0, count: 0 };
+  avTicketResult = 0;
+  cashMovementsResult = 0;
+  cashMovementsOperationsResult = 0;
 
   //Variables consulta API
   aggregations: OrderAggregation[];
-  aggregationsPM: OrderAggregation[];
-  aggregationsCM: OrderAggregation[];
-  aggregationsEvo: OrderAggregation[];
-  aggregationsEvoOrder: OrderAggregationCash[];
-  aggregationsEvoIn: OrderAggregationCash[];
-  aggregationsTop3: OrderAggregationTop3[];
   
   //Variables selección de dato para kpi
   showSalesVar = false;
@@ -58,12 +53,6 @@ export class DashboardComponent implements OnInit {
   showCashMovVar = false;
   showResultsVar = false;
   
-  //Variable de creación de gráficos
-  valueGraphArrayIn = new Array(12);
-  valueGraphArrayOut = new Array(12);
-  valueGraphArraySales = new Array(12);
-  valueGraphArrayRefunds = new Array(12);
-  valueGraphArrayRect = new Array(12);
 
   colors = ['#6DB9FF', 
             '#1FCC92',
@@ -648,27 +637,26 @@ export class DashboardComponent implements OnInit {
   printSalesEvoChart() {
     //Se establece el filtro de búsqueda de type en la variable a 0 para filtrar por operaciones de venta
     this.IdEvo[1].$match.type = 0;
+
     //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
     this.OrdersAggregateService.GetAggregationOrder(this.IdEvo).subscribe(
-      (aggregation) => {
-        this.aggregationsEvo = aggregation;
+      (aggregationsEvo) => {
 
         //Actualzamos los colores de las barras
         for (let i = 0; i < this.colorsKPI.length; i++) {
           this.colorsKPI[i].value = this.colors[0];
         }
 
-        //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
-        for (let i = 0; i < this.aggregationsEvo.length; i++) {
-          this.kpiDataset[this.aggregationsEvo[i]._id - 1].value =
-            this.aggregationsEvo[i].total / 100;
-        }
-        //Se rellenan aquellos campos sin datos en el array de valores del gráfico con 0
+        //Se inicializan los valores
         for (let i = 0; i < this.kpiDataset.length; i++) {
-          if (this.kpiDataset[i].value == null) {
             this.kpiDataset[i].value = 0;
-          }
         }
+
+        //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
+        for (let i = 0; i < aggregationsEvo.length; i++) {
+          this.kpiDataset[aggregationsEvo[i]._id - 1].value = aggregationsEvo[i].total / 100;
+        }
+        
         //Se actualiza el array de datos del gráfico para que se dibujen los nuevos datos introducidos
         this.kpiDataset = [...this.kpiDataset];
 
@@ -681,29 +669,29 @@ export class DashboardComponent implements OnInit {
   printAverageEvoChart() {
     //Se establece el filtro de búsqueda de type en la variable a 0 para filtrar por operaciones de venta
     this.IdEvo[1].$match.type = 0;
+
     //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
     this.OrdersAggregateService.GetAggregationOrder(this.IdEvo).subscribe(
-      (aggregation) => {
-        this.aggregationsEvo = aggregation;
+      (aggregationsEvo) => {
 
         //Actualzamos los colores de las barras
         for (let i = 0; i < this.colorsKPI.length; i++) {
           this.colorsKPI[i].value = this.colors[1];
         }
 
-        //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
-        for (let i = 0; i < this.aggregationsEvo.length; i++) {
-          this.kpiDataset[this.aggregationsEvo[i]._id - 1].value =
-            this.aggregationsEvo[i].avg / 100;
-        }
-        //Se rellenan aquellos campos sin datos en el array de valores del gráfico con 0
+        //Se inicializan los valores
         for (let i = 0; i < this.kpiDataset.length; i++) {
-          if (this.kpiDataset[i].value == null) {
             this.kpiDataset[i].value = 0;
-          }
         }
+
+        //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
+        for (let i = 0; i < aggregationsEvo.length; i++) {
+          this.kpiDataset[aggregationsEvo[i]._id - 1].value = aggregationsEvo[i].avg / 100;
+        }
+
         //Se actualiza el array de datos del gráfico para que se dibujen los nuevos datos introducidos
         this.kpiDataset = [...this.kpiDataset];
+
         //Variables de carga de gráficos se ponen en true
         this.loadedKPIChart = true;
       }
@@ -713,29 +701,30 @@ export class DashboardComponent implements OnInit {
   printRefundEvoChart() {
     //Se establece el filtro de búsqueda de type en la variable a 2 para filtrar por operaciones de devolución
     this.IdEvo[1].$match.type = 2;
+
     //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
     this.OrdersAggregateService.GetAggregationOrder(this.IdEvo).subscribe(
-      (aggregation) => {
-        this.aggregationsEvo = aggregation;
+      (aggregationsEvo) => {
 
         //Actualzamos los colores de las barras
         for (let i = 0; i < this.colorsKPI.length; i++) {
           this.colorsKPI[i].value = this.colors[2];
         }
 
-        //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
-        for (let i = 0; i < this.aggregationsEvo.length; i++) {
-          this.kpiDataset[this.aggregationsEvo[i]._id - 1].value =
-            this.aggregationsEvo[i].total / 100;
-        }
-        //Se rellenan aquellos campos sin datos en el array de valores del gráfico con 0
+        //Se inicializan los valores del array
         for (let i = 0; i < this.kpiDataset.length; i++) {
-          if (this.kpiDataset[i].value == null) {
             this.kpiDataset[i].value = 0;
-          }
         }
+
+        //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
+        for (let i = 0; i < aggregationsEvo.length; i++) {
+          this.kpiDataset[aggregationsEvo[i]._id - 1].value = aggregationsEvo[i].total / 100;
+        }
+
+      
         //Se actualiza el array de datos del gráfico para que se dibujen los nuevos datos introducidos
         this.kpiDataset = [...this.kpiDataset];
+
         //Variables de carga de gráficos se ponen en true
         this.loadedKPIChart = true;
       }
@@ -743,110 +732,98 @@ export class DashboardComponent implements OnInit {
   }
 
   printCMEvoChart() {
+
     //Se inicializan los array de in y out donde se van a poner los datos de los movimientos de caja positivos y negativos
-    this.valueGraphArrayIn = new Array(12);
-    this.valueGraphArrayOut = new Array(12);
+    let valueGraphArrayIn = new Array(12);
+    let valueGraphArrayOut = new Array(12);
+
     //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal y intervalo de tiempo)
-    this.CashmovementsAggregateService.GetAggregationCashMovementsEvo(
-      this.idEvoCM
-    ).subscribe((aggregation) => {
-      this.aggregationsEvoIn = aggregation;
+    this.CashmovementsAggregateService.GetAggregationCashMovementsEvo(this.idEvoCM).subscribe(
+      (aggregationsEvoIn) => {
 
       //Actualzamos los colores de las barras
       for (let i = 0; i < this.colorsKPI.length; i++) {
         this.colorsKPI[i].value = this.colors[3];
       }
 
-      //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
-      for (let i = 0; i < this.aggregationsEvoIn.length; i++) {
-        //Se separan los datos dependiendo de su id (0 movimiento in en el if y 1 movimiento out en el else)
-        if (this.aggregationsEvoIn[i]._id.type == 0) {
-          this.valueGraphArrayIn[this.aggregationsEvoIn[i]._id.month - 1] =
-            this.aggregationsEvoIn[i].total / 100;
-        } else {
-          this.valueGraphArrayOut[this.aggregationsEvoIn[i]._id.month - 1] =
-            this.aggregationsEvoIn[i].total / 100;
-        }
-      }
-      //Se rellenan aquellos campos sin datos en el array de valores in y out con 0
+      //Se inicializan los arrays
       for (let i = 0; i < this.kpiDataset.length; i++) {
-        if (this.valueGraphArrayIn[i] == null) {
-          this.valueGraphArrayIn[i] = 0;
-        }
-        if (this.valueGraphArrayOut[i] == null) {
-          this.valueGraphArrayOut[i] = 0;
+          valueGraphArrayIn[i] = 0;
+          valueGraphArrayOut[i] = 0;
+          this.kpiDataset[i].value = 0;
+      }
+
+      //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
+      for (let i = 0; i < aggregationsEvoIn.length; i++) {
+        //Se separan los datos dependiendo de su id (0 movimiento in en el if y 1 movimiento out en el else)
+        if (aggregationsEvoIn[i]._id.type == 0) {
+          valueGraphArrayIn[aggregationsEvoIn[i]._id.month - 1] = aggregationsEvoIn[i].total / 100;
+        } else {
+          valueGraphArrayOut[aggregationsEvoIn[i]._id.month - 1] = aggregationsEvoIn[i].total / 100;
         }
       }
+      
       //Se rellena el array de datos del gráfico en el apartado value de cada elemento con la diferencia entre movimientos in y out
       for (let i = 0; i < this.kpiDataset.length; i++) {
-        this.kpiDataset[i].value =
-          this.valueGraphArrayIn[i] - this.valueGraphArrayOut[i];
+        this.kpiDataset[i].value = valueGraphArrayIn[i] - valueGraphArrayOut[i];
       }
+
       //Se actualiza el array de datos del gráfico para que se dibujen los nuevos datos introducidos
       this.kpiDataset = [...this.kpiDataset];
+
       //Variables de carga de gráficos se ponen en true
       this.loadedKPIChart = true;
     });
   }
 
   printBalancesEvoChart() {
+
+    let valueGraphArraySales = new Array(12);
+    let valueGraphArrayRect = new Array(12);
+    let valueGraphArrayRefunds = new Array(12);
+
     //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
-    this.OrdersAggregateService.GetAggregationOrderEvo(
-      this.IdEvoResults
-    ).subscribe((aggregation) => {
-      this.aggregationsEvoOrder = aggregation;
+    this.OrdersAggregateService.GetAggregationOrderEvo(this.IdEvoResults).subscribe(
+      (aggregationsEvoOrder) => {
 
       //Actualzamos los colores de las barras
       for (let i = 0; i < this.colorsKPI.length; i++) {
         this.colorsKPI[i].value = this.colors[4];
       }
 
+
+      //Inicializamos los arrays
+      for (let i = 0; i < this.kpiDataset.length; i++) {
+          valueGraphArraySales[i] = 0;
+          valueGraphArrayRefunds[i] = 0;
+          valueGraphArrayRect[i] = 0;
+          this.kpiDataset[i].value = 0;
+      }
+
       //Se clasifican los datos obtenidos según el tipo ( 0 ventas, 2 devoluciones y 5 rectificaciones) en el array de resultados
-      for (let i = 0; i < this.aggregationsEvoOrder.length; i++) {
-        switch (this.aggregationsEvoOrder[i]._id.type) {
+      for (let i = 0; i < aggregationsEvoOrder.length; i++) {
+
+        switch (aggregationsEvoOrder[i]._id.type) {
           case 0:
-            this.valueGraphArraySales[
-              this.aggregationsEvoOrder[i]._id.month - 1
-            ] = this.aggregationsEvoOrder[i].total / 100;
+            valueGraphArraySales[aggregationsEvoOrder[i]._id.month - 1] = aggregationsEvoOrder[i].total / 100;
             break;
           case 2:
-            this.valueGraphArrayRefunds[
-              this.aggregationsEvoOrder[i]._id.month - 1
-            ] = this.aggregationsEvoOrder[i].total / 100;
+            valueGraphArrayRefunds[aggregationsEvoOrder[i]._id.month - 1] = aggregationsEvoOrder[i].total / 100;
             break;
           case 5:
-            this.valueGraphArrayRect[
-              this.aggregationsEvoOrder[i]._id.month - 1
-            ] = this.aggregationsEvoOrder[i].total / 100;
+            valueGraphArrayRect[aggregationsEvoOrder[i]._id.month - 1] = aggregationsEvoOrder[i].total / 100;
             break;
         }
       }
-      //Se cambian los datos vacios del array de resultado por 0
-      for (let i = 0; i < this.valueGraphArraySales.length; i++) {
-        if (this.valueGraphArraySales[i] == null) {
-          this.valueGraphArraySales[i] = 0;
-        }
-        if (this.valueGraphArrayRefunds[i] == null) {
-          this.valueGraphArrayRefunds[i] = 0;
-        }
-        if (this.valueGraphArrayRect[i] == null) {
-          this.valueGraphArrayRect[i] = 0;
-        }
-      }
+
       //Se actualizan los datos del array de resultados en el array de datos del gráfico para que se muestren los resultados (ventas - (devoluciones+rectificaciones))
-      for (let i = 0; i < this.valueGraphArraySales.length; i++) {
-        this.kpiDataset[i].value =
-          this.valueGraphArraySales[i] -
-          (this.valueGraphArrayRefunds[i] + this.valueGraphArrayRect[i]);
-      }
-      //Se rellenan con 0 los datos vacios del array del gráfico
       for (let i = 0; i < this.kpiDataset.length; i++) {
-        if (this.kpiDataset[i].value == null) {
-          this.kpiDataset[i].value = 0;
-        }
+        this.kpiDataset[i].value = valueGraphArraySales[i] - (valueGraphArrayRefunds[i] + valueGraphArrayRect[i]);
       }
+
       //Se actualiza el array del gráfico para que se dibujen los datos nuevos en el gráfico
       this.kpiDataset = [...this.kpiDataset];
+      
       //Las variables de carga de gráfico se ponen en true
       this.loadedKPIChart = true;
     });
@@ -859,8 +836,9 @@ export class DashboardComponent implements OnInit {
 
     //Llamada a la API para obtener los datos agregados de que se muestran en la sección KPIs de movimientos de caja
     this.CashmovementsAggregateService.GetAggregationCashMovements(this.idCM).subscribe(
-      (aggregation) => {
-        this.aggregationsCM = aggregation;
+      (aggregationsCM) => {
+        this.cashMovementsResult = aggregationsCM[0].total / Math.pow(10, aggregationsCM[0].decimals) - aggregationsCM[1].total / Math.pow(10, aggregationsCM[1].decimals);
+        this.cashMovementsOperationsResult = aggregationsCM[0].count + aggregationsCM[1].count;
       }
     );
 
@@ -871,11 +849,16 @@ export class DashboardComponent implements OnInit {
         this.ordersResult = {total: 0, count: 0};
         this.refundsResult = {total: 0, count: 0};
         this.rectificationsResult = {total: 0, count: 0};
+        this.avTicketResult = 0;
+
+        let countAvg = 0;
 
         //Bucle para recorrer el objeto respuesta
         for (let i = 0; i < this.aggregations.length; i++) {
           //If para comprobar si existen datos y el objeto no está vacio
           if (this.aggregations[i].total != null) {
+            this.avTicketResult += this.aggregations[i].avg / 100;
+            countAvg++;
             //Switch para comprobar si existen datos de ventas (id 0), de devoluciones (id 2) o rectificaciones (id 5)
             switch (this.aggregations[i]._id) {
               case 0: //Ventas
@@ -894,6 +877,8 @@ export class DashboardComponent implements OnInit {
             }
           }
         }
+
+        this.avTicketResult = this.avTicketResult / countAvg;
       }
     );
   }
@@ -902,21 +887,22 @@ export class DashboardComponent implements OnInit {
    * Función para mostrar los datos del gráfico de Top más vendidos
    */
   getTop3Chart() {
+
+    this.loadedTPChart = false;
+
     //Llamada a la API para obtener el total de productos vendidos
     this.OrdersAggregateService.GetAggregationOrderTop3(this.idTP).subscribe(
-      (aggregation) => {
-        let aggregationsTP = aggregation;
+      (aggregationsTP) => {
         //Llamada a la API para obtener los datos del gráfico de top 3 más vendidos
         this.OrdersAggregateService.GetAggregationOrderTop3(this.idT3).subscribe(
-          (aggregation) => {
-            this.aggregationsTop3 = aggregation;
+          (aggregationsTop3) => {
             //Se asocian los datos del objeto respuesta con los campos correspondientes del array de valores del gráfico
             let sumaTP = 0;
             this.colorsTop3 = [];
-            for (let i = 0; i < this.aggregationsTop3.length; i++) {
-              sumaTP = sumaTP + this.aggregationsTop3[i].quantity;
-              this.datasetTop3[i].name = this.aggregationsTop3[i].product + ' (' + this.aggregationsTop3[i].quantity + ' uds)';
-              this.datasetTop3[i].value = Math.round((this.aggregationsTop3[i].quantity / aggregationsTP[0].quantity) * 100);
+            for (let i = 0; i < aggregationsTop3.length; i++) {
+              sumaTP = sumaTP + aggregationsTop3[i].quantity;
+              this.datasetTop3[i].name = aggregationsTop3[i].product + ' (' + aggregationsTop3[i].quantity + ' uds)';
+              this.datasetTop3[i].value = Math.round((aggregationsTop3[i].quantity / aggregationsTP[0].quantity) * 100);
               this.colorsTop3.push({ name: this.datasetTop3[i].name, value: this.colors[i]});
             }
             //Se asocia el 4º puesto del array del gráfico correspondiente al apartado "resto de productos"
@@ -934,50 +920,52 @@ export class DashboardComponent implements OnInit {
    * Función para mostrar los datos del gráfico de métodos de pago
    */
   getPaymentMethodsChart() {
+
+    this.loadedPMChart = false;
+
     //Llamada a la API para obtener los métodos de pago
     this.OrdersAggregateService.GetAggregationOrder(this.idPM).subscribe(
-      (aggregation) => {
-        this.aggregationsPM = aggregation;
-        this.loadedPMChart = false;
+      (aggregationsPM) => {
+        
         //Se reinicia el array de datos del gráfico
         for (let i = 0; i < this.datasetPM.length; i++) {
           this.datasetPM[i].value = 0;
         }
         //Se realiza la suma del número total de operaciones para, posteriormente, hacer el % de cada método de pago sobre el total
         let totalPM: number = 0;
-        for (let i = 0; i < this.aggregationsPM.length; i++) {
-          totalPM = totalPM + this.aggregationsPM[i].count;
+        for (let i = 0; i < aggregationsPM.length; i++) {
+          totalPM = totalPM + aggregationsPM[i].count;
         }
         //Se recorre el objeto respuesta
-        for (let i = 0; i < this.aggregationsPM.length; i++) {
+        for (let i = 0; i < aggregationsPM.length; i++) {
           //Se rellena el array que alimenta al gráfico con cada tipo de método de pago
-          switch (this.aggregationsPM[i]._id) {
+          switch (aggregationsPM[i]._id) {
             case 'Tarjeta':
-              this.datasetPM[1].value = Math.round((this.aggregationsPM[i].count / totalPM) * 100);
+              this.datasetPM[1].value = Math.round((aggregationsPM[i].count / totalPM) * 100);
               this.datasetPM[1].name = 'Tarjeta';
               break;
             case 'Efectivo':
-              this.datasetPM[0].value = Math.round((this.aggregationsPM[i].count / totalPM) * 100);
+              this.datasetPM[0].value = Math.round((aggregationsPM[i].count / totalPM) * 100);
               this.datasetPM[0].name ='Efectivo';
               break;
             case 'Vales':
-              this.datasetPM[2].value = Math.round((this.aggregationsPM[i].count / totalPM) * 100);
+              this.datasetPM[2].value = Math.round((aggregationsPM[i].count / totalPM) * 100);
               this.datasetPM[2].name = 'Vales';
               break;
             case 'Virtual':
-              this.datasetPM[3].value = Math.round((this.aggregationsPM[i].count / totalPM) * 100);
+              this.datasetPM[3].value = Math.round((aggregationsPM[i].count / totalPM) * 100);
               this.datasetPM[3].name = 'Virtual';
               break;
             case 'Otros':
-              this.datasetPM[4].value = Math.round((this.aggregationsPM[i].count / totalPM) * 100);
+              this.datasetPM[4].value = Math.round((aggregationsPM[i].count / totalPM) * 100);
               this.datasetPM[4].name = 'Otros';
               break;
             case 'Bono Denda':
-              this.datasetPM[5].value = Math.round((this.aggregationsPM[i].count / totalPM) * 100);
+              this.datasetPM[5].value = Math.round((aggregationsPM[i].count / totalPM) * 100);
               this.datasetPM[5].name = 'Bono Denda';
               break;
             case 'Rectificación':
-              this.datasetPM[6].value = Math.round((this.aggregationsPM[i].count / totalPM) * 100);
+              this.datasetPM[6].value = Math.round((aggregationsPM[i].count / totalPM) * 100);
               this.datasetPM[6].name = 'Rectificación';
               break;
           }
