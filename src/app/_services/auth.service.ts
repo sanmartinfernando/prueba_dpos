@@ -24,6 +24,8 @@ export class AuthService {
   isLoggedIn: boolean = false;
   _storageService;
 
+  portalUsersToken;
+
   constructor(private http: HttpClient) {}
 
   async login(UserName: string, Password: string): Promise<string> {
@@ -133,6 +135,15 @@ export class AuthService {
     }
     return '';
   }
+
+  public getPortalUsersToken() {
+    return this.portalUsersToken;
+  }
+
+  public setPortalUsersToken(token: string) {
+    return this.portalUsersToken = token;
+  }
+
 
   public clearToken(): void {
     window.localStorage.removeItem(StringConstants.TOKEN_KEY);

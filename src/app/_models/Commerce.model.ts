@@ -1,0 +1,29 @@
+import { Terminal } from "./Terminal.model";
+
+export class Commerce {
+    _id;
+    commerceId: number;
+    commerceNumber: string;
+    name: string;
+    lastName: string;
+    tradeName: string;
+    nif: string;
+    address: string;
+    postalCode: string;
+    city: string;
+    state: string;
+    country: string;
+    phone: string;
+    email: string;
+    resellerId: number;
+    typology: string;
+    createdAt: string;
+    updatedAt: string;
+    subscribedAt: string;
+    unSubscribedAt: string;
+    terminals_Total: string;
+    terminals_Active: string;
+    terminals: Terminal[];
+    activated: boolean;
+    deactivated: boolean;
+}

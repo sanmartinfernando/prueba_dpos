@@ -30,7 +30,18 @@ export class HttpRequestInterceptor implements HttpInterceptor {
       return next.handle(req);
     }
     let authReq = req;
-    if (req.url.includes('wsenrollment')) {
+
+    if (req.url.includes('PortalUsers/commerces') || req.url.includes('PortalUsers/terminals')) {
+      const token = this.authService.getPortalUsersToken();
+      if (token != null) {
+        authReq = req.clone({
+          headers: req.headers.set(
+            SecurityConstants.TOKEN_HEADER_KEY,
+            `${SecurityConstants.TOKEN_PREFIX} ${token}`
+          ),
+        });
+      }
+    } else if (req.url.includes('wsenrollment')) {
       const token = this.authService.getToken2();
       if (token != null) {
         authReq = req.clone({

@@ -2,8 +2,9 @@ import { CashmovementsAggregateService } from './../_services/cashmovements-aggr
 import { OrdersAggregateService } from './../_services/orders-aggregate.service';
 import { Component, OnInit } from '@angular/core';
 import { OrderAggregation } from '../_models/Orderaggregation.model';
-import { OrderAggregationCash } from '../_models/OrderAggregationCash.model';
-import { OrderAggregationTop3 } from '../_models/Top3Sales.model';
+import { PortalUsersService } from '../_services/portal-users.service';
+import { Commerce } from '../_models/Commerce.model';
+import { AuthService } from '../_services/auth.service';
 
 @Component({
   selector: 'DPOSW-dashboard',
@@ -14,7 +15,9 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private OrdersAggregateService: OrdersAggregateService,
-    private CashmovementsAggregateService: CashmovementsAggregateService
+    private CashmovementsAggregateService: CashmovementsAggregateService,
+    private PortalUsersService: PortalUsersService,
+    private authService: AuthService
   ) {
     this.formatCurrencyLabel = this.formatCurrencyLabel.bind(this);
   }
@@ -46,6 +49,7 @@ export class DashboardComponent implements OnInit {
 
   //Variables consulta API
   aggregations: OrderAggregation[];
+  commerces: Commerce[];
   
   //Variables selección de dato para kpi
   showSalesVar = false;
@@ -385,10 +389,36 @@ export class DashboardComponent implements OnInit {
    * Función de inicialización al cargar la pantalla
    */
   ngOnInit(): void {
-    
+
+    this.PortalUsersService.GetToken().subscribe(
+      (portalUserToken)=> {
+        this.authService.setPortalUsersToken(portalUserToken.token);
+        this.PortalUsersService.GetCommerces().subscribe(
+          (commerces) => {
+            this.commerces = commerces;
+          },
+          (error) => {
+          }
+        );
+
+        this.PortalUsersService.GetTerminals().subscribe(
+          (terminals) => {
+            console.log("Terminales: " + terminals);
+          },
+          (error) => {
+            console.error("Error Commerces: ", error);
+          }
+        );
+
+      },
+      (error) => {
+        console.error("Error", error);
+      }
+    );
+
     this.getKPIs();
-    this.getTop3Chart();
-    this.getPaymentMethodsChart();
+   this.getTop3Chart();
+   this.getPaymentMethodsChart();
 
     //Gráfico de ventas inicial al cargar la página
     this.printSalesEvoChart();
