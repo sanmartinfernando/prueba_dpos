@@ -7,6 +7,14 @@ import { TerminalListService } from '../_services/terminal-list.service';
 import { AuthService } from '../_services/auth.service';
 import { Terminal } from '../_models/Terminal.model';
 import { CommercesService } from '../_services/commerces.service';
+import { OrdersFilter } from '../_models/_filters/orders.filter';
+import { CashMovementsFilter } from '../_models/_filters/cashMovements.filter';
+import { EvolutionFilter } from '../_models/_filters/evolution.filter';
+import { EvolutionCMFilter } from '../_models/_filters/evolutionCM.filter';
+import { EvolutionResultsFilter } from '../_models/_filters/evolutionResults.filter';
+import { PaymentMethodsFilter } from '../_models/_filters/paymentMethods.filter';
+import { Top3Filter } from '../_models/_filters/top3.filter';
+import { TopProductsFilter } from '../_models/_filters/topProducts.filter';
 
 @Component({
   selector: 'DPOSW-dashboard',
@@ -30,7 +38,7 @@ export class DashboardComponent implements OnInit {
   loadedPMChart = false;
   loadedTPChart = false;
 
-  terminalSelected: any = 'Todos';
+  terminalSelected: string = 'Todos';
   yearVarSearch = '';
   monthVarSearch = '';
   yearDate;
@@ -132,264 +140,15 @@ export class DashboardComponent implements OnInit {
 
   colorsTop3 = [];
 
-  //Variable aggregation orders
-  idOrders = [
-    {
-      $unwind: '$order_payments',
-    },
-    {
-      $match: {
-        terminal_number: { $in: ['1', '2'] },
-        created_at: { $gt: 1704063600000, $lt: 1735686000000 },
-      },
-    },
-    {
-      $group: {
-        _id: '$type',
-        count: {
-          $sum: 1,
-        },
-        avg: {
-          $avg: '$total',
-        },
-        total: {
-          $sum: '$total',
-        },
-        decimals: {
-          $first: '$decimals',
-        },
-      },
-    },
-  ];
-
-  //Variable aggregation cashmovement
-  idCM = [
-    {
-      $match: {
-        terminal_number: { $in: ['1', '2'] },
-        created_at: { $gt: 1704063600000, $lt: 1735686000000 },
-      },
-    },
-    {
-      $group: {
-        _id: '$type',
-        count: {
-          $sum: 1,
-        },
-        total: {
-          $sum: '$amount',
-        },
-        decimals: { $first: '$decimals' },
-      },
-    },
-  ];
-
-  //Variable evolución
-  IdEvo = [
-    {
-      $addFields: {
-        created_at_formatted: {
-          $toDate: '$created_at',
-        },
-      },
-    },
-    {
-      $match: {
-        terminal_number: { $in: ['1', '2'] },
-        type: 0,
-        created_at: { $gt: 1704063600000, $lt: 1735686000000 },
-      },
-    },
-    {
-      $group: {
-        _id: {
-          $month: '$created_at_formatted',
-        },
-        total: {
-          $sum: '$total',
-        },
-        avg: {
-          $avg: '$total',
-        },
-        count: {
-          $sum: 1,
-        },
-        created_at: { $first: '$created_at' },
-        created_at_formatted: { $first: '$created_at_formatted' },
-      },
-    },
-    {
-      $sort: {
-        _id: 1,
-      },
-    },
-  ];
-
-  //Variable evolución Cash movements
-  idEvoCM = [
-    {
-      $addFields: {
-        created_at_formatted: {
-          $toDate: '$created_at',
-        },
-      },
-    },
-    {
-      $match: {
-        terminal_number: { $in: ['1', '2'] },
-        created_at: { $gt: 1704063600000, $lt: 1735686000000 },
-      },
-    },
-    {
-      $group: {
-        _id: {
-          month: {
-            $month: '$created_at_formatted',
-          },
-          type: '$type',
-        },
-        total: {
-          $sum: '$amount',
-        },
-        avg: {
-          $avg: '$amount',
-        },
-        count: {
-          $sum: 1,
-        },
-        created_at: {
-          $first: '$created_at',
-        },
-        created_at_formatted: {
-          $first: '$created_at_formatted',
-        },
-      },
-    },
-    {
-      $sort: {
-        _id: 1,
-      },
-    },
-  ];
-
-  //Variable evolución Results
-  IdEvoResults = [
-    {
-      $addFields: {
-        created_at_formatted: {
-          $toDate: '$created_at',
-        },
-      },
-    },
-    {
-      $match: {
-        terminal_number: { $in: ['1', '2'] },
-        created_at: { $gt: 1704063600000, $lt: 1735686000000 },
-      },
-    },
-    {
-      $group: {
-        _id: {
-          month: {
-            $month: '$created_at_formatted',
-          },
-          type: '$type',
-        },
-        total: {
-          $sum: '$total',
-        },
-        avg: {
-          $avg: '$total',
-        },
-        count: {
-          $sum: 1,
-        },
-        created_at: { $first: '$created_at' },
-        created_at_formatted: { $first: '$created_at_formatted' },
-      },
-    },
-    {
-      $sort: {
-        _id: 1,
-      },
-    },
-  ];
-
-  //Variable métodos de pago
-  idPM = [
-    {
-      $unwind: '$order_payments',
-    },
-    {
-      $match: {
-        terminal_number: { $in: ['1', '2'] },
-        created_at: { $gt: 1704063600000, $lt: 1735686000000 },
-      },
-    },
-    {
-      $group: {
-        _id: '$order_payments.name',
-        count: {
-          $sum: 1,
-        },
-      },
-    },
-  ];
-
-  //Variable top 3 productos vendidos
-  idT3 = [
-    {
-      $match: {
-        terminal_number: { $in: ['1', '2'] },
-        created_at: { $gt: 1704063600000, $lt: 1735686000000 },
-        type: 0,
-      },
-    },
-    {
-      $unwind: '$order_lines',
-    },
-    {
-      $group: {
-        _id: '$order_lines.product_name',
-        quantity: {
-          $sum: '$order_lines.quantity',
-        },
-        product: {
-          $first: '$order_lines.product_name',
-        },
-      },
-    },
-    {
-      $sort: {
-        quantity: -1,
-      },
-    },
-    {
-      $limit: 3,
-    },
-  ];
-
-  //Variable de búsqueda para total de productos vendidos
-  idTP = [
-    {
-      $match: {
-        terminal_number: { $in: ['1', '2'] },
-        created_at: { $gt: 1704063600000, $lt: 1735686000000 },
-        type: 0,
-      },
-    },
-    {
-      $unwind: '$order_lines',
-    },
-    {
-      $group: {
-        _id: null,
-        quantity: {
-          $sum: '$order_lines.quantity',
-        },
-      },
-    },
-  ];
+  //Variable de filtros para llamadas a la API
+  idOrders;
+  idCM;
+  idEvo;
+  idEvoCM;
+  idEvoResults;
+  idPM;
+  idT3;
+  idTP;
 
   /**
    * Función de inicialización al cargar la pantalla
@@ -406,10 +165,24 @@ export class DashboardComponent implements OnInit {
             (terminals) => {
               this.terminals = terminals.filter(terminal => terminal.commerceId = this.commerceId);
               console.log("Terminales: " + terminals);
+
               if(this.terminals.length != 0) {
                 this.terminalsNumber = this.terminals.map(terminal => terminal.terminalNumber);
               }
-              this.terminalSelected = terminals[0].terminalNumber;  
+              this.terminalsNumber.unshift('Todos');
+
+              this.terminalSelected = this.terminalsNumber[0];  
+
+              //inicializamos los filtros de las llamadas a la API
+              this.idOrders = new OrdersFilter(this.terminalsNumber).idOrders;
+              this.idCM = new CashMovementsFilter(this.terminalsNumber).idCM;
+              this.idEvo = new EvolutionFilter(this.terminalsNumber).idEvo;
+              this.idEvoCM = new EvolutionCMFilter(this.terminalsNumber).idEvoCM;
+              this.idEvoResults = new EvolutionResultsFilter(this.terminalsNumber).idEvoResults;
+              this.idPM = new PaymentMethodsFilter(this.terminalsNumber).idPM;
+              this.idT3 = new Top3Filter(this.terminalsNumber).idT3;
+              this.idTP = new TopProductsFilter(this.terminalsNumber).idTP;
+
             },
             (error) => {
               console.error("Error Commerces: ", error);
@@ -550,11 +323,11 @@ export class DashboardComponent implements OnInit {
      de búsqueda se establece con todos los números de terminal*/
     if (this.terminalSelected == 'Todos') {
       //Se modifican las variables de consulta en el apartado de terminal con todas las terminales
-      this.idOrders[1].$match.terminal_number = { $in: ['1', '2'] };
-      this.idCM[0].$match.terminal_number = { $in: ['1', '2'] };
-      this.idPM[1].$match.terminal_number = { $in: ['1', '2'] };
-      this.idT3[0].$match.terminal_number = { $in: ['1', '2'] };
-      this.idTP[0].$match.terminal_number = { $in: ['1', '2'] };
+      this.idOrders[1].$match.terminal_number = { $in: this.terminalsNumber };
+      this.idCM[0].$match.terminal_number = { $in: this.terminalsNumber };
+      this.idPM[1].$match.terminal_number = { $in: this.terminalsNumber };
+      this.idT3[0].$match.terminal_number = { $in: this.terminalsNumber };
+      this.idTP[0].$match.terminal_number = { $in: this.terminalsNumber };
     } else {
       //En el else se establece el caso en el que se busca solo por una única terminal y se modifica las variables de consulta acorde
       this.idOrders[1].$match.terminal_number = this.terminalSelected;
@@ -585,13 +358,13 @@ export class DashboardComponent implements OnInit {
 
     //Se atualiza la variable de búsqueda de terminal (en el if se establece el caso de todas las terminales y en el else el de terminal individual)
     if (this.terminalSelected == 'Todos') {
-      this.IdEvo[1].$match.terminal_number = { $in: ['1', '2'] };
-      this.idEvoCM[1].$match.terminal_number = { $in: ['1', '2'] };
-      this.IdEvoResults[1].$match.terminal_number = { $in: ['1', '2'] };
+      this.idEvo[1].$match.terminal_number = { $in: this.terminalsNumber };
+      this.idEvoCM[1].$match.terminal_number = { $in: this.terminalsNumber };
+      this.idEvoResults[1].$match.terminal_number = { $in: this.terminalsNumber };
     } else {
-      this.IdEvo[1].$match.terminal_number = this.terminalSelected;
+      this.idEvo[1].$match.terminal_number = this.terminalSelected;
       this.idEvoCM[1].$match.terminal_number = this.terminalSelected;
-      this.IdEvoResults[1].$match.terminal_number = this.terminalSelected;
+      this.idEvoResults[1].$match.terminal_number = this.terminalSelected;
     }
 
     //Se actualiza la variable de búsqueda de intervalo de tiempo, en este caso solo se usa la de año ya que no se permite filtrar por mes
@@ -600,7 +373,7 @@ export class DashboardComponent implements OnInit {
     this.yearMilli = this.yearDate.getTime();
     this.yearMaxMilli = this.yearMilli + 31536000000;
     if (this.yearMilli && this.yearMaxMilli != 0) {
-      this.IdEvo[1].$match.created_at = {
+      this.idEvo[1].$match.created_at = {
         $gt: this.yearMilli,
         $lt: this.yearMaxMilli,
       };
@@ -608,7 +381,7 @@ export class DashboardComponent implements OnInit {
         $gt: this.yearMilli,
         $lt: this.yearMaxMilli,
       };
-      this.IdEvoResults[1].$match.created_at = {
+      this.idEvoResults[1].$match.created_at = {
         $gt: this.yearMilli,
         $lt: this.yearMaxMilli,
       };
@@ -666,10 +439,10 @@ export class DashboardComponent implements OnInit {
 
   printSalesEvoChart() {
     //Se establece el filtro de búsqueda de type en la variable a 0 para filtrar por operaciones de venta
-    this.IdEvo[1].$match.type = 0;
+    this.idEvo[1].$match.type = 0;
 
     //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
-    this.OrdersAggregateService.GetAggregationOrder(this.IdEvo).subscribe(
+    this.OrdersAggregateService.GetAggregationOrder(this.idEvo).subscribe(
       (aggregationsEvo) => {
 
         //Actualzamos los colores de las barras
@@ -698,10 +471,10 @@ export class DashboardComponent implements OnInit {
 
   printRefundEvoChart() {
     //Se establece el filtro de búsqueda de type en la variable a 2 para filtrar por operaciones de devolución
-    this.IdEvo[1].$match.type = 2;
+    this.idEvo[1].$match.type = 2;
 
     //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
-    this.OrdersAggregateService.GetAggregationOrder(this.IdEvo).subscribe(
+    this.OrdersAggregateService.GetAggregationOrder(this.idEvo).subscribe(
       (aggregationsEvo) => {
         //Actualzamos los colores de las barras
         for (let i = 0; i < this.colorsKPI.length; i++) {
@@ -730,10 +503,10 @@ export class DashboardComponent implements OnInit {
 
   printAverageEvoChart() {
     //Se establece el filtro de búsqueda de type en la variable a 0 para filtrar por operaciones de venta
-    this.IdEvo[1].$match.type = 0;
+    this.idEvo[1].$match.type = 0;
 
     //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
-    this.OrdersAggregateService.GetAggregationOrder(this.IdEvo).subscribe(
+    this.OrdersAggregateService.GetAggregationOrder(this.idEvo).subscribe(
       (aggregationsEvo) => {
 
         //Actualzamos los colores de las barras
@@ -812,7 +585,7 @@ export class DashboardComponent implements OnInit {
     let valueGraphArrayRefunds = new Array(12);
 
     //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
-    this.OrdersAggregateService.GetAggregationOrderEvo(this.IdEvoResults).subscribe(
+    this.OrdersAggregateService.GetAggregationOrderEvo(this.idEvoResults).subscribe(
       (aggregationsEvoOrder) => {
 
       //Actualzamos los colores de las barras
