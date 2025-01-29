@@ -26,17 +26,10 @@
         <DOPSW-lang-switcher></DOPSW-lang-switcher>
       </li>
       <li class="mx-3 nav-item pt-2 pb-2">
-
-        <select
-            class="form-select-commerce"
-            *ngIf="username; else loginLink"
-            name="commerce"
-            [(ngModel)]="commerceSearch"
-            id="searchCommerce"
-          >
-          <option selected>Comercio</option>
-          <option>Comercio 1</option>
-          <option>Comercio 2</option>
+        <select class="form-select-commerce" id="searchCommerce" name="commerce" [(ngModel)]="commerceSelected" (change)="onCommerceChange()" *ngIf="username; else loginLink">
+          <option *ngFor="let commerce of commerces" [value]="commerce.commerceNumber">
+            {{ commerce.commerceNumber }}
+          </option>
         </select>
       </li>
       <li class="mx-3 nav-item pt-2 pb-2">

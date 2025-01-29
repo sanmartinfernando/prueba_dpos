@@ -4,6 +4,9 @@ import { Page } from 'src/app/_models/Page';
 import { StorageService } from 'src/app/_services/storage.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/_services/auth.service';
+import { Commerce } from 'src/app/_models/Commerce.model';
+import { PortalUsersService } from 'src/app/_services/portal-users.service';
+import { CommercesService } from '../../_services/commerces.service';
 
 @Component({
   selector: 'DPOSW-header',
@@ -16,13 +19,18 @@ export class HeaderComponent implements OnInit {
     username: string;
     private authService: AuthService;
     isLoggedIn: boolean = false;
-    commerceSearch: any = 'Comercio';
+    commerceSelected;
+    commerces: Commerce[];
 
   constructor(private _pagesService: PagesService,
-    private storageService: StorageService,public router: Router, private route: ActivatedRoute, private _authService : AuthService){
+    private PortalUsersService: PortalUsersService,
+    private CommercesService: CommercesService,
+    private storageService: StorageService,
+    public router: Router, 
+    private route: ActivatedRoute, 
+    private _authService : AuthService){
 
     this.pages=_pagesService.pages;
-    //this.username = this.storageService.getUsername();
     this.authService = _authService;
   }
   ngOnInit(): void {
@@ -34,16 +42,35 @@ export class HeaderComponent implements OnInit {
       if(user !== undefined && user != null){
         this.isLoggedIn = true;
         this.username = user.user;
+
+        this.PortalUsersService.GetToken().subscribe(
+          (portalUserToken)=> {
+            this.authService.setPortalUsersToken(portalUserToken.token);
+            this.CommercesService.GetCommerceList().subscribe(
+              (commerces) => {
+                this.commerces = commerces;
+                this.commerceSelected = commerces[0].commerceNumber
+                this.CommercesService.setCommerceId(this.getCommerceId());
+              },
+              (error) => {
+                console.error("Error Commerces: ", error);
+              }
+            );
+          },
+          (error) => {
+            console.error("Error Portal user token", error);
+          }
+        );
+
+
+
       }else{
         this.isLoggedIn = false;
       }
 
     });
-   // this.storageService.loggedin$.subscribe(loggedin => this.isLoggedIn=loggedin )
-
 
     console.log(this.isLoggedIn)
-
   }
 
   title: string= "DPOS"
@@ -68,4 +95,16 @@ export class HeaderComponent implements OnInit {
     this.storageService.setComponent(component);
   }
 
+  onCommerceChange(): void {
+    this.CommercesService.setCommerceId(this.getCommerceId());
+    console.log('Comercio seleccionado:', this.commerceSelected);
+  }
+  
+  getCommerceId(): number {
+    const commerce = this.commerces.find(commerce => commerce.commerceNumber = this.commerceSelected);
+    if(commerce != undefined) {
+      return commerce.commerceId;
+    }
+    return 0;
+  }
 }

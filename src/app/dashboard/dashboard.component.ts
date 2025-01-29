@@ -3,8 +3,10 @@ import { OrdersAggregateService } from './../_services/orders-aggregate.service'
 import { Component, OnInit } from '@angular/core';
 import { OrderAggregation } from '../_models/Orderaggregation.model';
 import { PortalUsersService } from '../_services/portal-users.service';
-import { Commerce } from '../_models/Commerce.model';
+import { TerminalListService } from '../_services/terminal-list.service';
 import { AuthService } from '../_services/auth.service';
+import { Terminal } from '../_models/Terminal.model';
+import { CommercesService } from '../_services/commerces.service';
 
 @Component({
   selector: 'DPOSW-dashboard',
@@ -17,6 +19,8 @@ export class DashboardComponent implements OnInit {
     private OrdersAggregateService: OrdersAggregateService,
     private CashmovementsAggregateService: CashmovementsAggregateService,
     private PortalUsersService: PortalUsersService,
+    private TerminalListService: TerminalListService,
+    private CommercesService: CommercesService,
     private authService: AuthService
   ) {
     this.formatCurrencyLabel = this.formatCurrencyLabel.bind(this);
@@ -26,7 +30,7 @@ export class DashboardComponent implements OnInit {
   loadedPMChart = false;
   loadedTPChart = false;
 
-  terminalVarSearch: any = 'Todos';
+  terminalSelected: any = 'Todos';
   yearVarSearch = '';
   monthVarSearch = '';
   yearDate;
@@ -47,10 +51,13 @@ export class DashboardComponent implements OnInit {
   cashMovementsOperationsResult = 0;
   balanceResult = 0;
 
+  terminals: Terminal[];
+  terminalsNumber: string[];
+  commerceId: number = 0;
+
   //Variables consulta API
   aggregations: OrderAggregation[];
-  commerces: Commerce[];
-  
+ 
   //Variables selección de dato para kpi
   showSalesVar = false;
   showRefundsVar = false;
@@ -58,7 +65,6 @@ export class DashboardComponent implements OnInit {
   showCashMovVar = false;
   showResultsVar = false;
   
-
   colors = ['#6DB9FF', 
             '#1FCC92',
             '#FF803C', 
@@ -390,31 +396,31 @@ export class DashboardComponent implements OnInit {
    */
   ngOnInit(): void {
 
+    this.CommercesService.commerceId$.subscribe((commerceId) => {
+      this.commerceId = commerceId;
+      
     this.PortalUsersService.GetToken().subscribe(
       (portalUserToken)=> {
         this.authService.setPortalUsersToken(portalUserToken.token);
-        this.PortalUsersService.GetCommerces().subscribe(
-          (commerces) => {
-            this.commerces = commerces;
-          },
-          (error) => {
-          }
-        );
-
-        this.PortalUsersService.GetTerminals().subscribe(
-          (terminals) => {
-            console.log("Terminales: " + terminals);
-          },
-          (error) => {
-            console.error("Error Commerces: ", error);
-          }
-        );
-
+          this.TerminalListService.GetTerminalList().subscribe(
+            (terminals) => {
+              this.terminals = terminals.filter(terminal => terminal.commerceId = this.commerceId);
+              console.log("Terminales: " + terminals);
+              if(this.terminals.length != 0) {
+                this.terminalsNumber = this.terminals.map(terminal => terminal.terminalNumber);
+              }
+              this.terminalSelected = terminals[0].terminalNumber;  
+            },
+            (error) => {
+              console.error("Error Commerces: ", error);
+            }
+          );
       },
       (error) => {
-        console.error("Error", error);
+        console.error("Error Portal user token", error);
       }
     );
+  })
 
     this.getKPIs();
    this.getTop3Chart();
@@ -542,7 +548,7 @@ export class DashboardComponent implements OnInit {
     }
     /*Variable de búsqueda "Terminal". En el if se establece el caso en el que se selecciona el valor "Todos" por lo que la variable
      de búsqueda se establece con todos los números de terminal*/
-    if (this.terminalVarSearch == 'Todos') {
+    if (this.terminalSelected == 'Todos') {
       //Se modifican las variables de consulta en el apartado de terminal con todas las terminales
       this.idOrders[1].$match.terminal_number = { $in: ['1', '2'] };
       this.idCM[0].$match.terminal_number = { $in: ['1', '2'] };
@@ -551,11 +557,11 @@ export class DashboardComponent implements OnInit {
       this.idTP[0].$match.terminal_number = { $in: ['1', '2'] };
     } else {
       //En el else se establece el caso en el que se busca solo por una única terminal y se modifica las variables de consulta acorde
-      this.idOrders[1].$match.terminal_number = this.terminalVarSearch;
-      this.idCM[0].$match.terminal_number = this.terminalVarSearch;
-      this.idPM[1].$match.terminal_number = this.terminalVarSearch;
-      this.idT3[0].$match.terminal_number = this.terminalVarSearch;
-      this.idTP[0].$match.terminal_number = this.terminalVarSearch;
+      this.idOrders[1].$match.terminal_number = this.terminalSelected;
+      this.idCM[0].$match.terminal_number = this.terminalSelected;
+      this.idPM[1].$match.terminal_number = this.terminalSelected;
+      this.idT3[0].$match.terminal_number = this.terminalSelected;
+      this.idTP[0].$match.terminal_number = this.terminalSelected;
     }
 
     this.getKPIs();
@@ -578,14 +584,14 @@ export class DashboardComponent implements OnInit {
     }
 
     //Se atualiza la variable de búsqueda de terminal (en el if se establece el caso de todas las terminales y en el else el de terminal individual)
-    if (this.terminalVarSearch == 'Todos') {
+    if (this.terminalSelected == 'Todos') {
       this.IdEvo[1].$match.terminal_number = { $in: ['1', '2'] };
       this.idEvoCM[1].$match.terminal_number = { $in: ['1', '2'] };
       this.IdEvoResults[1].$match.terminal_number = { $in: ['1', '2'] };
     } else {
-      this.IdEvo[1].$match.terminal_number = this.terminalVarSearch;
-      this.idEvoCM[1].$match.terminal_number = this.terminalVarSearch;
-      this.IdEvoResults[1].$match.terminal_number = this.terminalVarSearch;
+      this.IdEvo[1].$match.terminal_number = this.terminalSelected;
+      this.idEvoCM[1].$match.terminal_number = this.terminalSelected;
+      this.IdEvoResults[1].$match.terminal_number = this.terminalSelected;
     }
 
     //Se actualiza la variable de búsqueda de intervalo de tiempo, en este caso solo se usa la de año ya que no se permite filtrar por mes
@@ -1009,5 +1015,4 @@ export class DashboardComponent implements OnInit {
       }
     );
   }
-
 }
