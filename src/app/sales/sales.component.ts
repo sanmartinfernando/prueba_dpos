@@ -438,7 +438,6 @@ export class SalesComponent implements OnInit {
   }
 
   //Checkboxes
-
   CheckAll(event: any) {
     if (event.target.checked) {
       this.selectedIndices = [];
@@ -456,16 +455,13 @@ export class SalesComponent implements OnInit {
   }
 
   //Encriptación
-
   sendSalesDetails(id: string) {
     this.code = this.EncryptionService.encryptData(id);
     this.code = '/details/' + this.EncryptionService.encode(this.code);
   }
 
-
   //Boton Descargar
   downloadCSV(){
     this.CsvdownloadService.downloadSalesFile(this.sales, 'Sales', "es-ES");
   }
-
 }

@@ -54,6 +54,7 @@ export class AuthService {
         console.log(validation);
         var userInfo = new User();
         userInfo.user = loginRequest.userName;
+        userInfo.pwd = loginRequest.password;
         this.loginEvent(userInfo);
       });
 

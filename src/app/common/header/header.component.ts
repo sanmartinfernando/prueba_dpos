@@ -43,7 +43,7 @@ export class HeaderComponent implements OnInit {
         this.isLoggedIn = true;
         this.username = user.user;
 
-        this.PortalUsersService.GetToken().subscribe(
+        this.PortalUsersService.GetToken(user).subscribe(
           (portalUserToken)=> {
             this.authService.setPortalUsersToken(portalUserToken.token);
             this.CommercesService.GetCommerceList().subscribe(
