@@ -1,4 +1,4 @@
-import { Balance } from "./Balance.model";
+import { Balance } from "./balance.model";
 
 export class BalanceInfo {
   size: number;

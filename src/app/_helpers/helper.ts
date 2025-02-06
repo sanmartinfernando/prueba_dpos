@@ -26,7 +26,6 @@ export default class Helper {
         const dateToday = moment(Date.now()).format("yyyy-MM-DD");
         let dateFormatted = moment(date).format("yyyy-MM-DD");
         let timeFormatted = moment(date).format("HH:mm");
-        // return dateToday == dateFormatted ? "Hoy " + timeFormatted : dateFormatted + " " + timeFormatted;
         if (dateFormatted == dateToday) {
             dateFormatted = "Hoy"
         }
@@ -42,6 +41,4 @@ export default class Helper {
         }
         return queryStringParams.join("&");
     }
-
-
 }

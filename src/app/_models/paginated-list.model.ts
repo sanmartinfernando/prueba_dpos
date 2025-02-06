@@ -1,4 +1,4 @@
-export class PaginatedList<T>{
-    total: number = 0;
-    list: T[] = [];
+export class PaginatedList<T> {
+  public total: number = 0;
+  public list:T[] = [];
 }

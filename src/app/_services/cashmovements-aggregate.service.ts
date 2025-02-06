@@ -3,8 +3,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.dev-inte';
 import { RestRoutes } from '../_config/rest-routes.config';
-import { OrderAggregation } from '../_models/Orderaggregation.model';
-import { OrderAggregationCash } from '../_models/OrderAggregationCash.model';
+import { OrderAggregation } from '../_models/order-aggregation.model';
+import { OrderCashAggregation } from '../_models/order-cash-aggregation.model';
 
 @Injectable({
   providedIn: 'root'
@@ -26,9 +26,9 @@ export class CashmovementsAggregateService {
     return this.http.post<OrderAggregation[]>(urlCommerces, searchParams, this.httpOptions);
   }
 
-  GetAggregationCashMovementsEvo(searchParams): Observable<OrderAggregationCash[]> {
+  GetAggregationCashMovementsEvo(searchParams): Observable<OrderCashAggregation[]> {
     let urlCommerces: string = `${environment.urlWS}${RestRoutes.CASH_AGGREGATION}`;
-    return this.http.post<OrderAggregationCash[]>(urlCommerces, searchParams, this.httpOptions);
+    return this.http.post<OrderCashAggregation[]>(urlCommerces, searchParams, this.httpOptions);
   }
 
 }

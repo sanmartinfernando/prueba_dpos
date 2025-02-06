@@ -3,7 +3,6 @@ import { FilterStep } from "./filters.interface";
 export class EvolutionFilter {
 
   public idEvo: FilterStep[];
-
   private terminalsId: string[];
   private fromDate: number;
   private toDate: number;

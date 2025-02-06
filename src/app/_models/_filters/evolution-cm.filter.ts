@@ -1,9 +1,8 @@
 import { FilterStep } from "./filters.interface";
 
-export class EvolutionResultsFilter {
+export class EvolutionCMFilter {
 
-  public idEvoResults: FilterStep[];
-
+  public idEvoCashMovement: FilterStep[];
   private terminalsId: string[];
   private fromDate: number;
   private toDate: number;
@@ -14,7 +13,7 @@ export class EvolutionResultsFilter {
     this.fromDate = fromDate ?? 1704063600000;
     this.toDate = toDate ?? 1735686000000;
 
-    this.idEvoResults = [
+    this.idEvoCashMovement = [
       {
         $addFields: {
           created_at_formatted: {
@@ -37,16 +36,20 @@ export class EvolutionResultsFilter {
             type: '$type',
           },
           total: {
-            $sum: '$total',
+            $sum: '$amount',
           },
           avg: {
-            $avg: '$total',
+            $avg: '$amount',
           },
           count: {
             $sum: 1,
           },
-          created_at: { $first: '$created_at' },
-          created_at_formatted: { $first: '$created_at_formatted' },
+          created_at: {
+            $first: '$created_at',
+          },
+          created_at_formatted: {
+            $first: '$created_at_formatted',
+          },
         },
       },
       {
@@ -58,6 +61,6 @@ export class EvolutionResultsFilter {
   }
 
   toJSON(): string {
-    return JSON.stringify(this.idEvoResults);
+    return JSON.stringify(this.idEvoCashMovement);
   }
 }

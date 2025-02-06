@@ -1,7 +1,6 @@
-import { Terminal } from "./Terminal.model";
+import { Terminal } from "./terminal.model";
 
 export class Commerce {
-    _id;
     commerceId: number;
     commerceNumber: string;
     name: string;

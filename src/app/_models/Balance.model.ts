@@ -1,5 +1,5 @@
-import { BalanceCommerce } from "./BalanceCommerce.model";
-import { BalanceLine } from "./BalanceLine.model";
+import { BalanceCommerce } from "./balance-commerce.model";
+import { BalanceLine } from "./balance-line.model";
 
 export class Balance {
   balanceId: string;

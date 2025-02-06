@@ -1,5 +1,4 @@
-export class LoginRequest2 {
+export class AuthRequest {
   public clientKey: string;
   public secretKey: string;
-  constructor() { }
 }

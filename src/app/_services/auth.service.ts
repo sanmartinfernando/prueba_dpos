@@ -5,9 +5,9 @@ import { environment } from 'src/environments/environment.development';
 import { User } from '../_models/user.model';
 import Helper from '../_helpers/helper';
 import { RestRoutes } from '../_config/rest-routes.config';
-import { LoginRequest } from '../_models/LoginRequest.model';
+import { LoginRequest } from '../_models/login-request.model';
 import { StringConstants } from '../_config/string-constants';
-import { LoginRequest2 } from '../_models/LoginRequest2.model';
+import { AuthRequest } from '../_models/auth-request.model';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -35,7 +35,6 @@ export class AuthService {
     var loginRequest = new LoginRequest();
     loginRequest.userName = UserName;
     loginRequest.password = Password;
-    console.log(loginRequest);
     await fetch(urlLogin, {
       method: 'POST',
       headers: {
@@ -61,7 +60,7 @@ export class AuthService {
 
     let urlLogin2: string = `${environment.urlAuth}${RestRoutes.AUTH}/authorize`;
     console.log(urlLogin2);
-    var loginRequest2 = new LoginRequest2();
+    var loginRequest2 = new AuthRequest();
     loginRequest2.clientKey = 'F0F0427E-FDDF-4A0F-910B-7FE1075BE366';
     loginRequest2.secretKey = 'j5$R8N3DB1my';
     console.log(loginRequest2);

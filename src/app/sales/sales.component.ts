@@ -3,8 +3,7 @@ import { EncryptionService } from './../_services/encryption.service';
 import { SalesinfoService } from './../_services/salesinfo.service';
 import { CsvdownloadService } from '../_services/csvdownload.service';
 import { Component, OnInit } from '@angular/core';
-import { SalesInfo } from '../_models/SalesInfo.model';
-import { TerminalList } from '../_models/TerminalList.model';
+import { OrderInfo } from '../_models/order-info.model';
 import { PortalUsersService } from '../_services/portal-users.service';
 import { TerminalListService } from '../_services/terminal-list.service';
 import { CommercesService } from '../_services/commerces.service';
@@ -18,8 +17,7 @@ export class SalesComponent implements OnInit {
 
   currentFormats: any;
   size: number = 2147483647;
-  sales: SalesInfo;
-  terminals: TerminalList;
+  sales: OrderInfo;
   selectSales = new Array(3);
   salesTicketBai = new Array;
   operationN: number;

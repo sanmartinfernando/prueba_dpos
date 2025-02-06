@@ -3,7 +3,6 @@ export class Page {
     text: string;
     code: string;
     icon: string;
-    //constructor();
     constructor(id?:string,text?:string,code?:string,icon?:string) {
         this.id = id || '';
         this.text = text || '';

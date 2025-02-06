@@ -1,20 +1,20 @@
 import { CashmovementsAggregateService } from './../_services/cashmovements-aggregate.service';
 import { OrdersAggregateService } from './../_services/orders-aggregate.service';
 import { Component, OnInit } from '@angular/core';
-import { OrderAggregation } from '../_models/Orderaggregation.model';
+import { OrderAggregation } from '../_models/order-aggregation.model';
 import { PortalUsersService } from '../_services/portal-users.service';
 import { TerminalListService } from '../_services/terminal-list.service';
 import { AuthService } from '../_services/auth.service';
-import { Terminal } from '../_models/Terminal.model';
+import { Terminal } from '../_models/terminal.model';
 import { CommercesService } from '../_services/commerces.service';
 import { OrdersFilter } from '../_models/_filters/orders.filter';
-import { CashMovementsFilter } from '../_models/_filters/cashMovements.filter';
+import { CashMovementsFilter } from '../_models/_filters/cash-movements.filter';
 import { EvolutionFilter } from '../_models/_filters/evolution.filter';
-import { EvolutionCMFilter } from '../_models/_filters/evolutionCM.filter';
-import { EvolutionResultsFilter } from '../_models/_filters/evolutionResults.filter';
-import { PaymentMethodsFilter } from '../_models/_filters/paymentMethods.filter';
+import { EvolutionCMFilter } from '../_models/_filters/evolution-cm.filter';
+import { EvolutionResultsFilter } from '../_models/_filters/evolution-results.filter';
+import { PaymentMethodsFilter } from '../_models/_filters/payment-methods.filter';
 import { Top3Filter } from '../_models/_filters/top3.filter';
-import { TopProductsFilter } from '../_models/_filters/topProducts.filter';
+import { TopProductsFilter } from '../_models/_filters/top-products.filter';
 import { StorageService } from '../_services/storage.service';
 
 @Component({
@@ -169,13 +169,13 @@ export class DashboardComponent implements OnInit {
             
             //inicializamos los filtros de las llamadas a la API
             this.idOrders = new OrdersFilter(this.terminalsNumber).idOrders;
-            this.idCM = new CashMovementsFilter(this.terminalsNumber).idCM;
+            this.idCM = new CashMovementsFilter(this.terminalsNumber).idCashMovement;
             this.idEvo = new EvolutionFilter(this.terminalsNumber).idEvo;
-            this.idEvoCM = new EvolutionCMFilter(this.terminalsNumber).idEvoCM;
+            this.idEvoCM = new EvolutionCMFilter(this.terminalsNumber).idEvoCashMovement;
             this.idEvoResults = new EvolutionResultsFilter(this.terminalsNumber).idEvoResults;
-            this.idPM = new PaymentMethodsFilter(this.terminalsNumber).idPM;
-            this.idT3 = new Top3Filter(this.terminalsNumber).idT3;
-            this.idTP = new TopProductsFilter(this.terminalsNumber).idTP;
+            this.idPM = new PaymentMethodsFilter(this.terminalsNumber).idPaymentMethods;
+            this.idT3 = new Top3Filter(this.terminalsNumber).idTop3;
+            this.idTP = new TopProductsFilter(this.terminalsNumber).idTopProducts;
             
             this.getKPIs();
             this.getTop3Chart();

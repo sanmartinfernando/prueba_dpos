@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.dev-inte';
 import { RestRoutes } from '../_config/rest-routes.config';
-import { Commerce } from '../_models/Commerce.model';
+import { Commerce } from '../_models/commerce.model';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({

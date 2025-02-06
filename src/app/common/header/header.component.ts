@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { PagesService } from 'src/app/_services/pages.service';
-import { Page } from 'src/app/_models/Page';
+import { Page } from 'src/app/_models/page.model';
 import { StorageService } from 'src/app/_services/storage.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/_services/auth.service';
-import { Commerce } from 'src/app/_models/Commerce.model';
+import { Commerce } from 'src/app/_models/commerce.model';
 import { PortalUsersService } from 'src/app/_services/portal-users.service';
 import { CommercesService } from '../../_services/commerces.service';
 

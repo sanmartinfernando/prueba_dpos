@@ -1,0 +1,39 @@
+import { OrderCommerce } from "./order-commerce.model";
+import { OrderLine } from "./order-line.model";
+import { OrderPayment } from "./order-payment.model";
+import { OrderTax } from "./order-tax.model";
+import { OrderTicketBai } from "./order-ticketbai.model";
+
+export class Order {
+  orderId: string;
+  currency: string;
+  reference: string;
+  type: number;
+  status: number;
+  subTotal: number;
+  subTotalTaxes: number;
+  taxesDiscount: number;
+  total: number;
+  totalDiscount: number;
+  totalTaxes: number;
+  decimals: number;
+  createdAt: number;
+  updatedAt: number;
+  finishedAt: number;
+  itemsCount: number;
+  parentOrderId: string;
+  indexedAt: string;
+  orderLines: OrderLine[];
+  orderTaxes: OrderTax[];
+  orderPayments: OrderPayment[];
+  orderCommerce: OrderCommerce;
+  orderCustomer: string;
+  orderTicketBai:   OrderTicketBai;
+  orderDiscounts: string;
+  childs: string;
+  hash: string;
+  terminalUid: string;
+  terminalNumber: number;
+  appVersion: string;
+  reseller: string;
+}

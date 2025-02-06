@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { SalesInfo } from '../_models/SalesInfo.model';
-import { BalanceInfo } from '../_models/BalanceInfo.model';
-import { Balance } from '../_models/Balance.model';
-import { SalesReport } from '../_models/SalesReport.model';
+import { OrderInfo } from '../_models/order-info.model';
+import { BalanceInfo } from '../_models/balance-info.model';
+import { Balance } from '../_models/balance.model';
+import { SalesReport } from '../_models/sales-report.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,7 @@ export class CsvdownloadService {
 
   constructor() { }
   
-  downloadSalesFile(sales: SalesInfo, filename = 'data', language) {
+  downloadSalesFile(sales: OrderInfo, filename = 'data', language) {
     
     let headers;
 

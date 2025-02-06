@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
-import { PwConditionsModel } from 'src/app/_models/PwConditions.model';
-import { PwResetModel } from 'src/app/_models/pwreset.model';
+import { PwdConditions } from 'src/app/_models/pwd-conditions.model';
+import { PwdReset } from 'src/app/_models/pwd-reset.model';
 import { PwresetService } from 'src/app/_services/pwreset.service';
 
 @Component({
@@ -13,7 +13,7 @@ export class PwresetComponent {
   constructor(private router: Router, private PwresetService: PwresetService) {}
 
 
-  conditions: PwConditionsModel;
+  conditions: PwdConditions;
   userLocal: string = '';
   userPassword: string = '';
   userConfirmPassword: string = '';
@@ -23,7 +23,7 @@ export class PwresetComponent {
     confirmPassword: '',
   };
   token;
-  response: PwResetModel;
+  response: PwdReset;
   error = new Array;
   counter;
 

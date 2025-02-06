@@ -1,13 +1,8 @@
-export class PwConditionsModel {
-
-
+export class PwdConditions {
     requireMinLength: number;
     requireUppercase: true;
     requireLowercase: true;
     requireDigit: true;
     requireNonAlphanumeric: true;
-    userNameCannotBeInPassword: true
-
-
+    userNameCannotBeInPassword: true;
 }
-

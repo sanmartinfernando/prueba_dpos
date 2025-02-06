@@ -5,7 +5,7 @@ export const RestRoutes = {
   CONTACTS_GETSH: `${API}/Contacts/GetSH/{page}`,
   LANGUAGES: `${API}/Languages`,
   USER: `${API}/user`,
-  AUTH: `${API}/auth`, // WS controller para peticiones auth
+  AUTH: `${API}/auth`,
   AUTHPU:`${API}/auth/portalusers`,
   ALERTS: `${API}/Alerts`,
   ALERTS_SUMMARY: `${API}/Alerts/summaries`,

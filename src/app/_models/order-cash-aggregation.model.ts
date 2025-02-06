@@ -1,4 +1,4 @@
-export class OrderAggregationCash {
+export class OrderCashAggregation {
   _id: {
     month: number,
     type: number

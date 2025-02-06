@@ -7,7 +7,7 @@ import { PortalUsersService } from '../_services/portal-users.service';
 import { TerminalListService } from '../_services/terminal-list.service';
 import { CommercesService } from '../_services/commerces.service';
 import { AuthService } from '../_services/auth.service';
-import { Balance } from '../_models/Balance.model';
+import { Balance } from '../_models/balance.model';
 
 @Component({
   selector: 'DPOSW-balances',

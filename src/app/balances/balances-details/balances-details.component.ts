@@ -5,7 +5,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Data, Router, Routes } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { StorageService } from 'src/app/_services/storage.service';
-import { Balance } from 'src/app/_models/Balance.model';
+import { Balance } from 'src/app/_models/balance.model';
 
 @Component({
   selector: 'DPOSW-balances-details',

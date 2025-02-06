@@ -2,8 +2,7 @@ import { FilterStep } from "./filters.interface";
 
 export class CashMovementsFilter {
 
-  public idCM: FilterStep[];
-
+  public idCashMovement: FilterStep[];
   private terminalsId: string[];
   private fromDate: number;
   private toDate: number;
@@ -14,7 +13,7 @@ export class CashMovementsFilter {
     this.fromDate = fromDate ?? 1704063600000;
     this.toDate = toDate ?? 1735686000000;
 
-    this.idCM = [
+    this.idCashMovement = [
       {
         $match: {
           terminal_number: { $in: this.terminalsId },
@@ -33,6 +32,6 @@ export class CashMovementsFilter {
   }
 
   toJSON(): string {
-    return JSON.stringify(this.idCM);
+    return JSON.stringify(this.idCashMovement);
   }
 }
