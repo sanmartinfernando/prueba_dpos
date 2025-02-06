@@ -4,8 +4,8 @@ import { EncryptionService } from './../../_services/encryption.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Data, Router, Routes } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { BalanceDetailId } from 'src/app/_models/BalaceDetailId.model';
 import { StorageService } from 'src/app/_services/storage.service';
+import { Balance } from 'src/app/_models/Balance.model';
 
 @Component({
   selector: 'DPOSW-balances-details',
@@ -14,7 +14,7 @@ import { StorageService } from 'src/app/_services/storage.service';
 })
 export class BalancesDetailsComponent implements OnInit{
 
-  balances : BalanceDetailId;
+  balances : Balance;
   isLoggedIn:boolean = true;
   nPage:number=1;
   nRecords:number;

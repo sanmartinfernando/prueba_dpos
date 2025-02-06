@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SalesInfo } from '../_models/SalesInfo.model';
 import { BalanceInfo } from '../_models/BalanceInfo.model';
-import { ArqueoX } from '../_models/ArqueoX.model';
+import { Balance } from '../_models/Balance.model';
 import { SalesReport } from '../_models/SalesReport.model';
 
 @Injectable({
@@ -72,7 +72,7 @@ export class CsvdownloadService {
     document.body.removeChild(dwldLink);
   }
 
-  downloadBalancesFile(balances: BalanceInfo, filename = 'data', language) {
+  downloadBalancesFile(balances: Balance[], filename = 'data', language) {
     
     let headers;
 
@@ -114,7 +114,7 @@ export class CsvdownloadService {
     ];
 
     // Convertir a CSV con solo los datos y encabezados específicos
-    let csvData = this.convertToCSV(balances.data, fields, headers);
+    let csvData = this.convertToCSV(balances, fields, headers);
     
     let blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
     let dwldLink = document.createElement("a");
@@ -127,7 +127,7 @@ export class CsvdownloadService {
     document.body.removeChild(dwldLink);
   }
 
-  downloadArqueoXFile(arqueoX: ArqueoX, filename = 'data', language) {
+  downloadArqueoXFile(arqueoX: Balance, filename = 'data', language) {
     
     let headers;
 
@@ -219,7 +219,7 @@ export class CsvdownloadService {
     document.body.removeChild(dwldLink);
   }
 
-  downloadPaymentMethodsFile(arqueoX: ArqueoX, filename = 'data', language) {
+  downloadPaymentMethodsFile(arqueoX: Balance, filename = 'data', language) {
     
     let headers;
 

@@ -1,17 +1,12 @@
 <br />
-<!-- <app-login class="container-fluid header-main" *ngIf="isLoggedIn == false"> </app-login> -->
 <div class="container-fluid header-main" >
   <div>
     <!-- Formulario de búsqueda -->
     <form class="d-flex flex-wrap mx-1">
       <div class="me-3">
         <label class="form-label">{{'dpos.filter.terminal' | translate}}</label>
-        <select
-          class="form-select"
-          name="terminal"
-          [(ngModel)]="terminalVarSearch">
-          <option selected>{{'dpos.filter.all' | translate}}</option>
-          <option *ngFor="let terminal of selectSales[0]; index as i">
+        <select class="form-select" id="searchTer" name="terminal" [(ngModel)]="terminalSelected" >
+          <option *ngFor="let terminal of terminalsNumber" [value]="terminal">
             {{ terminal }}
           </option>
         </select>
@@ -25,15 +20,12 @@
         <input type="date" class="form-control" id="tilDate" />
       </div>
       <div id="searchButtonsDiv" class="ms-5 d-flex overflow-auto">
-        <button type="reset" class="btn btn-outline-danger align-self-end"> <a type="button"
-          ><i class="fas fa-eraser"></i>
-        </a></button>
-        <a
-          type="button"
-          class="btn btn-primary align-self-end"
-          (click)="searchSales()"
-          ><i class="fas fa-search"></i>&nbsp;&nbsp;{{'dpos.action.search' | translate}}</a
-        >
+        <button type="reset" class="btn btn-outline-danger align-self-end"> 
+          <a type="button"><i class="fas fa-eraser"></i></a>
+        </button>
+        <a type="button" class="btn btn-primary align-self-end" (click)="searchSales()">
+          <i class="fas fa-search"></i>&nbsp;&nbsp;{{'dpos.action.search' | translate}}
+        </a>
       </div>
     </form>
   </div>
@@ -64,8 +56,7 @@
               <thead class="text-customer">
                 <tr>
                   <th class="text-center">
-                    <input class="form-check-input" type="checkbox" [checked]="isAllSelected"
-                      (change)="CheckAll($event)" />
+                    <input class="form-check-input" type="checkbox" [checked]="isAllSelected" (change)="checkAll($event)" />
                   </th>
                   <th class="text-start">{{'dpos.balances.document.label' | translate}}</th>
                   <th class="text-center">{{'dpos.balances.terminal.label' | translate}}</th>
@@ -83,17 +74,13 @@
                 </td>
               </ng-template>
               <tbody>
-                <ng-container *ngIf="emptySearch == false; else empty">
-                  <tr *ngFor="
-                      let balance of balances.data
-                        | paginate : { itemsPerPage: 10, currentPage: page };
-                      index as i
-                    ">
+                <ng-container *ngIf="loadCompleted; else empty">
+                  <tr *ngFor=" let balance of balances | paginate : { itemsPerPage: 10, currentPage: page }; index as i">
                     <td class="text-center align-middle">
                       <input class="form-check-input" type="checkbox" [checked]="isAllSelected" />
                     </td>
-                    <td class="text-start align-middle" id="massivetransfer"><span style="font-weight: 500;color:grey;">
-                      {{ balance.reference }}</span>
+                    <td class="text-start align-middle" id="massivetransfer">
+                      <span style="font-weight: 500;color:grey;">{{ balance.reference }}</span>
                     </td>
                     <td class="text-center align-middle">
                       {{ balance.terminalNumber }}
@@ -115,7 +102,8 @@
                     </td>
                     <td class="text-end">
                       <span id="detailsticket" class="align-middle" style="cursor: pointer;">
-                        <a [routerLink]="code" (click)="sendSalesDetails(balance.balanceId)"><i class="fa-solid fa-arrow-right" style="color: #74c0fc;"></i></a></span>
+                        <a [routerLink]="code" (click)="sendSalesDetails(balance.balanceId)"><i class="fa-solid fa-arrow-right" style="color: #74c0fc;"></i></a>
+                      </span>
                     </td>
                   </tr>
                 </ng-container>

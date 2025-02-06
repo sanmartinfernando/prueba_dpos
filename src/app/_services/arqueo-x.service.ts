@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.dev-inte';
 import { RestRoutes } from '../_config/rest-routes.config';
-import { ArqueoX } from '../_models/ArqueoX.model';
+import { Balance } from '../_models/Balance.model';
 
 
 @Injectable({
@@ -21,9 +21,9 @@ export class ArqueoXService {
 
   constructor(private http: HttpClient) { }
 
-  GetArqueoX(fromDate:number, toDate:number): Observable<ArqueoX> {
+  GetArqueoX(fromDate:number, toDate:number): Observable<Balance> {
     let urlCommerces: string = `${environment.urlWS}${RestRoutes.ARQUEO_X}${fromDate}${RestRoutes.ARQUEO_X2}${toDate}`;
     console.log(urlCommerces)
-    return this.http.post<ArqueoX>(urlCommerces, this.httpOptions);
+    return this.http.post<Balance>(urlCommerces, this.httpOptions);
   }
 }

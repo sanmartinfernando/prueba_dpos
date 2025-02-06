@@ -1,11 +1,14 @@
 import { StorageService } from 'src/app/_services/storage.service';
-import { TerminalListService } from './../_services/terminal-list.service';
 import { EncryptionService } from './../_services/encryption.service';
 import { SalesinfoService } from './../_services/salesinfo.service';
 import { CsvdownloadService } from '../_services/csvdownload.service';
 import { Component, OnInit } from '@angular/core';
 import { SalesInfo } from '../_models/SalesInfo.model';
 import { TerminalList } from '../_models/TerminalList.model';
+import { PortalUsersService } from '../_services/portal-users.service';
+import { TerminalListService } from '../_services/terminal-list.service';
+import { CommercesService } from '../_services/commerces.service';
+import { AuthService } from '../_services/auth.service';
 
 @Component({
   selector: 'DPOSW-sales',
@@ -31,7 +34,8 @@ export class SalesComponent implements OnInit {
   validationVariable: boolean = false;
 
   //Parámetros de búsqueda
-  terminalVarSearch: string = null;
+  public terminalsNumber: string[];
+  terminalSelected: string = null;
   searchCounter: boolean = false;
   sinceDate: string;
   sinceDateMilli: number;
@@ -55,11 +59,201 @@ export class SalesComponent implements OnInit {
     private SalesinfoService: SalesinfoService,
     private EncryptionService: EncryptionService,
     private CsvdownloadService: CsvdownloadService,
+    private StorageService: StorageService,
+    private PortalUsersService: PortalUsersService,
     private TerminalListService: TerminalListService,
-    private StorageService: StorageService
+    private CommercesService: CommercesService,
+    private AuthService: AuthService
   ) {  }
 
   ngOnInit(): void {
+
+    this.loadCompleted = false;
+
+    this.StorageService.userInfo.subscribe((user) =>{
+      this.CommercesService.commerceId$.subscribe((commerceId) => {
+        this.PortalUsersService.GetToken(user).subscribe((portalUserToken)=> {
+          this.AuthService.setPortalUsersToken(portalUserToken.token);
+          this.TerminalListService.GetTerminalList().subscribe((terminals) => {
+            terminals = terminals.filter(terminal => terminal.commerceId = commerceId);
+            if(terminals.length != 0) {
+              this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
+            }
+            this.terminalsNumber.unshift('Todos');
+            this.terminalSelected = this.terminalsNumber[0];
+            this.getSalesInfo();
+            this.loadCompleted = true;
+          },
+          (error) => {
+            console.error("Error Commerces: ", error);
+          });
+        },
+        (error) => {
+          console.error("Error Portal user token", error);
+        });
+      });
+    });
+  }
+
+  //Método de búsqueda
+
+  searchSales() {
+
+    this.validationVariable = false;
+    this.loadCompleted = false;
+    if (this.terminalSelected == '' || this.typeVarSearch == '') {
+      this.terminalSelected = null;
+      this.typeVarSearch = null;
+    }
+    //Obtención variables fechas
+    this.loadCompleted = false;
+    this.sinceDate = (<HTMLInputElement>(
+      document.getElementById('sinceDate')
+    )).value;
+    this.sinceDateMilli = Date.parse(this.sinceDate);
+    this.tilDate = (<HTMLInputElement>document.getElementById('tilDate')).value;
+    this.tilDateMilli = Date.parse(this.tilDate);
+
+    //Comienzo query búsqueda
+    this.varSearch = "&qs={'and':[";
+
+    //Parámetros de búsqueda activos
+    //Terminal
+    if (this.terminalSelected != null) {
+      if (this.searchCounter == false) {
+        this.searchCounter = true;
+      }
+      if (this.terminalSelected == 'Todos') {
+        this.varSearch = this.varSearch + "{'or':[";
+        for (let i = 0; i < this.selectSales[0].length; i++) {
+          if (i == 0) {
+            this.varSearch =
+              this.varSearch +
+              "{'field':'terminal_number','op':'=','value':'" +
+              this.selectSales[0][i] +
+              "'}";
+          } else {
+            this.varSearch =
+              this.varSearch +
+              ",{'field':'terminal_number','op':'=','value':'" +
+              this.selectSales[0][i] +
+              "'}";
+          }
+        }
+        this.varSearch = this.varSearch + ']}';
+      } else {
+        this.emptySearch = false;
+        this.varSearch =
+          this.varSearch +
+          "{'field':'terminal_number','op':'=','value':'" +
+          this.terminalSelected +
+          "'}";
+      }
+    }
+    //Desde fecha
+    if (this.sinceDateMilli > 0) {
+      if (this.searchCounter == false) {
+        this.searchCounter = true;
+      } else {
+        this.varSearch = this.varSearch + ',';
+      }
+      this.emptySearch = false;
+      this.varSearch =
+        this.varSearch +
+        "{'field':'CreatedAt','op':'>','value':'" +
+        this.sinceDateMilli +
+        "'}";
+    }
+    //Hasta fecha
+    if (this.tilDateMilli > 0) {
+      if (this.searchCounter == false) {
+        this.searchCounter = true;
+      } else {
+        this.varSearch = this.varSearch + ',';
+      }
+      this.emptySearch = false;
+      this.varSearch =
+        this.varSearch +
+        "{'field':'CreatedAt','op':'<','value':'" +
+        this.tilDateMilli +
+        "'}";
+    }
+    //Tipo de operación
+    if (this.typeVarSearch != null) {
+      if (this.searchCounter == false) {
+        this.searchCounter = true;
+      } else {
+        this.varSearch = this.varSearch + ',';
+      }
+      if (this.typeVarSearch == 'Todos') {
+        this.varSearch = this.varSearch + "{'or':[";
+        for (let i = 0; i < this.selectSales[1].length; i++) {
+          if (i == 0) {
+            this.varSearch =
+              this.varSearch +
+              "{'field':'Type','op':'=','value':'" +
+              this.translatedTypeVarSearch[i] +
+              "'}";
+          } else {
+            this.varSearch =
+              this.varSearch +
+              ",{'field':'Type','op':'=','value':'" +
+              this.translatedTypeVarSearch[i] +
+              "'}";
+          }
+        }
+        this.varSearch = this.varSearch + ']}';
+      } else {
+        switch (this.typeVarSearch) {
+          case 'Venta':
+            this.selTransTypeVarSearch = 0;
+            break;
+          case 'Devolución':
+            this.selTransTypeVarSearch = 2;
+            break;
+          case 'Rectificación':
+            this.selTransTypeVarSearch = 5;
+        }
+        this.emptySearch = false;
+        this.varSearch =
+          this.varSearch +
+          "{'field':'Type','op':'=','value':'" +
+          this.selTransTypeVarSearch +
+          "'}";
+      }
+    }
+    //Nº de Documento
+    if (this.documentVarSearch != null) {
+      if (
+        this.documentVarSearch.includes('=') ||
+        this.documentVarSearch.includes('(') ||
+        this.documentVarSearch.includes(')')
+      ) {
+        this.validationVariable = true;
+        this.loadCompleted = true
+        return;
+      }
+      if (this.searchCounter == false) {
+        this.searchCounter = true;
+      } else {
+        this.varSearch = this.varSearch + ',';
+      }
+      this.emptySearch = false;
+      this.varSearch =
+        this.varSearch +
+        "{'field':'Reference','op':'=*.*','value':'" +
+        this.documentVarSearch +
+        "'}";
+
+
+    }
+    this.varSearch = this.varSearch + ']}';
+    this.searchCounter = false;
+
+    this.getSalesInfo();
+  }
+
+  getSalesInfo() {
     this.SalesinfoService.GetSalesInfo(this.size, this.searchParams0).subscribe(
       (sale) => {
         this.sales = sale;
@@ -76,7 +270,6 @@ export class SalesComponent implements OnInit {
 
         //Creación de arrays del select del formulario de búsqueda
         //Terminal
-
         for (let i = 0; i < this.sales.data.length; i++) {
           let counterSelect: boolean = false;
           if (i == 0) {
@@ -168,7 +361,6 @@ export class SalesComponent implements OnInit {
         this.loadCompleted = true;
 
         this.salesTicketBai = []
-
         for( let i=0; i<= this.sales.data.length; i++){
           if(this.sales.data[i] != null && this.sales.data[i].orderTicketBai != null ){
             if (this.sales.data[i].orderTicketBai.status == '00' && this.sales.data[i].orderTicketBai.warns.length <= 0) {
@@ -189,256 +381,11 @@ export class SalesComponent implements OnInit {
           this.StorageService.clean();
         };
       }
-
-
-    );
-    //Conexión con Wsenrollment
-    /* this.TerminalListService.GetTerminalList().subscribe(
-      (terminal) => {(this.terminals = terminal)
-        console.log(terminal)
-      }
-    ); */
-
-    //Estados ticketBai
-
-
-
-  }
-
-  //Método de búsqueda
-
-  searchSales() {
-    this.validationVariable = false;
-    this.loadCompleted = false;
-    if (this.terminalVarSearch == '' || this.typeVarSearch == '') {
-      this.terminalVarSearch = null;
-      this.typeVarSearch = null;
-    }
-    //Obtención variables fechas
-    this.loadCompleted = false;
-    this.sinceDate = (<HTMLInputElement>(
-      document.getElementById('sinceDate')
-    )).value;
-    this.sinceDateMilli = Date.parse(this.sinceDate);
-    this.tilDate = (<HTMLInputElement>document.getElementById('tilDate')).value;
-    this.tilDateMilli = Date.parse(this.tilDate);
-
-    //Comienzo query búsqueda
-    this.varSearch = "&qs={'and':[";
-
-    //Parámetros de búsqueda activos
-    //Terminal
-    if (this.terminalVarSearch != null) {
-      if (this.searchCounter == false) {
-        this.searchCounter = true;
-      }
-      if (this.terminalVarSearch == 'Todos') {
-        this.varSearch = this.varSearch + "{'or':[";
-        for (let i = 0; i < this.selectSales[0].length; i++) {
-          if (i == 0) {
-            this.varSearch =
-              this.varSearch +
-              "{'field':'terminal_number','op':'=','value':'" +
-              this.selectSales[0][i] +
-              "'}";
-          } else {
-            this.varSearch =
-              this.varSearch +
-              ",{'field':'terminal_number','op':'=','value':'" +
-              this.selectSales[0][i] +
-              "'}";
-          }
-        }
-        this.varSearch = this.varSearch + ']}';
-      } else {
-        this.emptySearch = false;
-        this.varSearch =
-          this.varSearch +
-          "{'field':'terminal_number','op':'=','value':'" +
-          this.terminalVarSearch +
-          "'}";
-      }
-    }
-    //Desde fecha
-    if (this.sinceDateMilli > 0) {
-      if (this.searchCounter == false) {
-        this.searchCounter = true;
-      } else {
-        this.varSearch = this.varSearch + ',';
-      }
-      this.emptySearch = false;
-      this.varSearch =
-        this.varSearch +
-        "{'field':'CreatedAt','op':'>','value':'" +
-        this.sinceDateMilli +
-        "'}";
-    }
-    //Hasta fecha
-    if (this.tilDateMilli > 0) {
-      if (this.searchCounter == false) {
-        this.searchCounter = true;
-      } else {
-        this.varSearch = this.varSearch + ',';
-      }
-      this.emptySearch = false;
-      this.varSearch =
-        this.varSearch +
-        "{'field':'CreatedAt','op':'<','value':'" +
-        this.tilDateMilli +
-        "'}";
-    }
-    //Tipo de operación
-    console.log(this.typeVarSearch);
-    if (this.typeVarSearch != null) {
-      if (this.searchCounter == false) {
-        this.searchCounter = true;
-      } else {
-        this.varSearch = this.varSearch + ',';
-      }
-      if (this.typeVarSearch == 'Todos') {
-        this.varSearch = this.varSearch + "{'or':[";
-        for (let i = 0; i < this.selectSales[1].length; i++) {
-          if (i == 0) {
-            this.varSearch =
-              this.varSearch +
-              "{'field':'Type','op':'=','value':'" +
-              this.translatedTypeVarSearch[i] +
-              "'}";
-          } else {
-            this.varSearch =
-              this.varSearch +
-              ",{'field':'Type','op':'=','value':'" +
-              this.translatedTypeVarSearch[i] +
-              "'}";
-          }
-        }
-        this.varSearch = this.varSearch + ']}';
-      } else {
-        switch (this.typeVarSearch) {
-          case 'Venta':
-            this.selTransTypeVarSearch = 0;
-            break;
-          case 'Devolución':
-            this.selTransTypeVarSearch = 2;
-            break;
-          case 'Rectificación':
-            this.selTransTypeVarSearch = 5;
-        }
-        this.emptySearch = false;
-        this.varSearch =
-          this.varSearch +
-          "{'field':'Type','op':'=','value':'" +
-          this.selTransTypeVarSearch +
-          "'}";
-      }
-    }
-    //Nº de Documento
-    if (this.documentVarSearch != null) {
-      if (
-        this.documentVarSearch.includes('=') ||
-        this.documentVarSearch.includes('(') ||
-        this.documentVarSearch.includes(')')
-      ) {
-        this.validationVariable = true;
-        this.loadCompleted = true
-        return;
-      }
-      if (this.searchCounter == false) {
-        this.searchCounter = true;
-      } else {
-        this.varSearch = this.varSearch + ',';
-      }
-      this.emptySearch = false;
-      this.varSearch =
-        this.varSearch +
-        "{'field':'Reference','op':'=*.*','value':'" +
-        this.documentVarSearch +
-        "'}";
-
-
-    }
-
-    //Búsqueda vacia
-    if (
-      this.terminalVarSearch == null &&
-      this.sinceDateMilli == null &&
-      this.tilDateMilli == null &&
-      this.typeVarSearch == null &&
-      this.documentVarSearch == null
-    ) {
-      this.SalesinfoService.GetSalesInfo(
-        this.size,
-        this.searchParams0
-      ).subscribe((sale) => {
-        this.sales = sale;
-        this.operationN = this.sales.data.length;
-        for (let i = 0; i < this.sales.data.length; i++) {
-          this.totalSales = this.totalSales + Number(this.sales.data[i].total);
-        }
-        this.totalSalesString = this.totalSales.toString() + ' €';
-      },
-      (error) => {
-        if (error.status == 401) {
-          this.isLoggedIn = false;
-          this.StorageService.clean();
-        };
-      } );
-    }
-
-    //Cierre y reseteo de parámetros
-    this.varSearch = this.varSearch + ']}';
-    this.searchCounter = false;
-
-    //Llamada API
-    this.SalesinfoService.GetSalesInfo(this.size, this.varSearch).subscribe(
-      (sale) => {
-        this.sales = sale;
-        if (sale.data.length <= 0) {
-          this.emptySearch = true;
-        }
-        this.operationN = this.sales.data.length;
-        this.totalSales = 0;
-        for (let i = 0; i < this.sales.data.length; i++) {
-          this.totalSales = this.totalSales + Number(this.sales.data[i].total);
-        }
-        this.totalSales = this.totalSales / 100;
-        this.totalSalesString = this.totalSales.toString() + ' €';
-        this.loadCompleted = true;
-
-        //Estado TicketBai
-
-        this.salesTicketBai = []
-
-        for( let i=0; i<= this.sales.data.length; i++){
-          if(this.sales.data[i].orderTicketBai != null){
-            if (this.sales.data[i].orderTicketBai.status == '00' && this.sales.data[i].orderTicketBai.warns.length <= 0) {
-            this.salesTicketBai[i]=0
-          }
-          }
-          if(this.sales.data[i].orderTicketBai != null){
-            if (this.sales.data[i].orderTicketBai.status == '00' && this.sales.data[i].orderTicketBai.warns.length > 0) {
-            this.salesTicketBai[i]=0
-          }
-          }
-          if(this.sales.data[i].orderTicketBai != null){
-            if (this.sales.data[i].orderTicketBai.status == '01') {
-            this.salesTicketBai[i]=0
-          }
-        }
-        }
-
-      },
-      (error) => {
-        if (error.status == 401) {
-          this.isLoggedIn = false;
-          this.StorageService.clean();
-        };
-      }
     );
   }
 
   //Checkboxes
-  CheckAll(event: any) {
+  checkAll(event: any) {
     if (event.target.checked) {
       this.selectedIndices = [];
       for (let i = 0; i < this.sales.data.length; i++) {

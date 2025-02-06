@@ -1,13 +1,10 @@
 import { StorageService } from 'src/app/_services/storage.service';
 import { EncryptionService } from './../../_services/encryption.service';
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DatePipe } from '@angular/common';
 import { SalesInfoDetailId } from 'src/app/_models/SalesDetailId.model';
 import { Salesdetailid } from 'src/app/_services/salesdetailid.service';
 import { DownloadPDFService } from 'src/app/_services/downloadpdf.service';
-
 
 
 @Component({

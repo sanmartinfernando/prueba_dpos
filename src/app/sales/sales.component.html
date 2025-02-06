@@ -6,19 +6,18 @@
     <form class="d-flex flex-wrap mx-1">
       <div class="me-3">
         <label class="form-label">{{'dpos.filter.terminal' | translate}}</label>
-        <select class="form-select" name="terminal" [(ngModel)]="terminalVarSearch">
-          <option>{{'dpos.filter.all' | translate}}</option>
-          <option *ngFor="let terminal of selectSales[0]; index as i">
+        <select class="form-select" id="searchTer" name="terminal" [(ngModel)]="terminalSelected" >
+          <option *ngFor="let terminal of terminalsNumber" [value]="terminal">
             {{ terminal }}
           </option>
         </select>
       </div>
       <div class="mx-3">
-        <label class="form-label">{{'dpos.filter.data.from' | translate}}</label>
+        <label class="form-label">{{'dpos.filter.date.from' | translate}}</label>
         <input type="date" class="form-control" id="sinceDate" />
       </div>
       <div class="mx-3">
-        <label class="form-label">{{'dpos.filter.data.to' | translate}}</label>
+        <label class="form-label">{{'dpos.filter.date.to' | translate}}</label>
         <input type="date" class="form-control" id="tilDate" />
       </div>
       <div class="mx-3">
@@ -82,7 +81,7 @@
                 <tr>
                   <th class="text-center">
                     <input class="form-check-input" type="checkbox" [checked]="isAllSelected"
-                      (change)="CheckAll($event)" />
+                      (change)="checkAll($event)" />
                   </th>
                   <th class="text-start">{{'dpos.sales.operation.document.label' | translate}}</th>
                   <th class="text-center">{{'dpos.sales.operation.type.label' | translate}}</th>

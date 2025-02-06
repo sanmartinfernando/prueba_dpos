@@ -3,7 +3,11 @@ import { EncryptionService } from './../_services/encryption.service';
 import { BalanceinfoService } from './../_services/balanceinfo.service';
 import { CsvdownloadService } from '../_services/csvdownload.service';
 import { Component, OnInit } from '@angular/core';
-import { BalanceInfo } from '../_models/BalanceInfo.model';
+import { PortalUsersService } from '../_services/portal-users.service';
+import { TerminalListService } from '../_services/terminal-list.service';
+import { CommercesService } from '../_services/commerces.service';
+import { AuthService } from '../_services/auth.service';
+import { Balance } from '../_models/Balance.model';
 
 @Component({
   selector: 'DPOSW-balances',
@@ -12,24 +16,26 @@ import { BalanceInfo } from '../_models/BalanceInfo.model';
 })
 export class BalancesComponent implements OnInit {
 
+  constructor(private BalanceinfoService: BalanceinfoService, 
+    private EncryptionService: EncryptionService, 
+    private StorageService: StorageService, 
+    private CsvdownloadService: CsvdownloadService,
+    private PortalUsersService: PortalUsersService,
+    private TerminalListService: TerminalListService,
+    private CommercesService: CommercesService,
+    private AuthService: AuthService) {
+
+    }
+
   Math = Math;
-  
-  // ---------------- Propiedades------------------
-
-  constructor(private BalanceinfoService: BalanceinfoService, private EncryptionService: EncryptionService, private StorageService: StorageService, private CsvdownloadService: CsvdownloadService) {}
-
-  size: number = 2147483647;
-  balances: BalanceInfo;
-  selectSales = new Array(3);
+  balances: Balance[];
   page: number = 0;
-  searchParams0: string = '';
   code: string;
   loadCompleted: boolean = false;
-  isLoggedIn:boolean = true;
   mismatch = new Array;
 
-  //Parámetros de búsqueda
-  terminalVarSearch: string = null;
+  public terminalsNumber: string[];
+  terminalSelected: string = null;
   searchCounter: boolean = false;
   sinceDate: string;
   sinceDateMilli: number;
@@ -46,71 +52,42 @@ export class BalancesComponent implements OnInit {
   counter = 0;
 
   ngOnInit(): void {
-    this.BalanceinfoService.GetBalanceInfo(this.size, this.searchParams0).subscribe(
-      (balance) => {
-        this.balances = balance;
 
-        for (let i = 0; i < 3; i++) {
-          this.selectSales[i] = new Array(this.balances.data.length);
-        }
-
-      //Creación de arrays del select del formulario de búsqueda
-        //Terminal
-
-        for (let i = 0; i < this.balances.data.length; i++) {
-          this.mismatch[i] = Math.abs(this.balances.data[i].manualCashRecount)-Math.abs(this.balances.data[i].autoCashRecount);
-          let counterSelect: boolean = false;
-          if (i == 0) {
-            this.selectSales[0][i] = this.balances.data[i].terminalNumber;
-            console.log(this.selectSales[0][i]);
-          } else {
-            for (let z = 0; z <= i; z++) {
-              if (
-                this.selectSales[0][z] == this.balances.data[i].terminalNumber ||
-                counterSelect == true
-              ) {
-                counterSelect = true;
-              }
-              if (counterSelect == false && z == i) {
-                this.selectSales[0][i] = this.balances.data[i].terminalNumber;
-              }
+    this.StorageService.userInfo.subscribe((user) =>{
+      this.CommercesService.commerceId$.subscribe((commerceId) => {
+        this.PortalUsersService.GetToken(user).subscribe((portalUserToken)=> {
+          this.AuthService.setPortalUsersToken(portalUserToken.token);
+          this.TerminalListService.GetTerminalList().subscribe((terminals) => {
+            terminals = terminals.filter(terminal => terminal.commerceId = commerceId);
+            if(terminals.length != 0) {
+              this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
             }
-            counterSelect = false;
-          }
-
-        //Eliminación espacios en blanco de arrays
-          //Terminal
-        for (let i = this.balances.data.length - 1; i >= 0; i--) {
-          if (this.selectSales[0][i] == null) {
-            this.selectSales[0].splice(i, 1);
-          }
-        }
-        }
-        this.loadCompleted=true;
-      },
-      (error) => {
-        if (error.status == 401) {
-          this.isLoggedIn = false;
-          this.StorageService.clean();
-        };
-      }
-    );
-
+            this.terminalsNumber.unshift('Todos');
+            this.terminalSelected = this.terminalsNumber[0];
+            this.getBalanceInfo();
+            this.loadCompleted = true;
+          },
+          (error) => {
+            console.error("Error Commerces: ", error);
+          });
+        },
+        (error) => {
+          console.error("Error Portal user token", error);
+        });
+      });
+    });
   }
 
 
-
   //Método de búsqueda
-
   searchSales() {
-    this.loadCompleted=false;
-    if( this.terminalVarSearch == ""){
-      this.terminalVarSearch=null;
+
+    if( this.terminalSelected == ""){
+      this.terminalSelected=null;
     }
+
     //Obtención variables fechas
-    this.sinceDate = (<HTMLInputElement>(
-      document.getElementById('sinceDate')
-    )).value;
+    this.sinceDate = (<HTMLInputElement>(document.getElementById('sinceDate'))).value;
     this.sinceDateMilli = Date.parse(this.sinceDate);
     this.tilDate = (<HTMLInputElement>document.getElementById('tilDate')).value;
     this.tilDateMilli = Date.parse(this.tilDate);
@@ -120,80 +97,97 @@ export class BalancesComponent implements OnInit {
 
     //Parámetros de búsqueda activos
     //Terminal
-    if (this.terminalVarSearch != null) {
+    if (this.terminalSelected != null) {
       if (this.searchCounter == false) {
         this.searchCounter = true;
       }
       this.emptySearch = false;
-      this.varSearch =
-        this.varSearch +
-        "{'field':'terminal_number','op':'=','value':'" +
-        this.terminalVarSearch +
-        "'}";
+      this.varSearch = this.varSearch + "{'field':'terminal_number','op':'=','value':'" + this.terminalSelected + "'}";
     }
+
     //Desde fecha
     if (this.sinceDateMilli > 0) {
-      console.log(1);
-      console.log(this.searchCounter);
       if (this.searchCounter == false) {
         this.searchCounter = true;
       } else {
         this.varSearch = this.varSearch + ',';
       }
-      console.log(this.searchCounter);
       this.emptySearch = false;
-      this.varSearch =
-        this.varSearch +
-        "{'field':'StartedAt','op':'>','value':'" +
-        this.sinceDateMilli +
-        "'}";
+      this.varSearch = this.varSearch + "{'field':'StartedAt','op':'>','value':'" + this.sinceDateMilli + "'}";
     }
+
     //Hasta fecha
     if (this.tilDateMilli > 0) {
-      console.log(2);
-      console.log(this.searchCounter);
       if (this.searchCounter == false) {
         this.searchCounter = true;
       } else {
         this.varSearch = this.varSearch + ',';
       }
-      console.log(this.searchCounter);
       this.emptySearch = false;
-      this.varSearch =
-        this.varSearch +
-        "{'field':'FinishedAt','op':'<','value':'" +
-        this.tilDateMilli +
-        "'}";
+      this.varSearch = this.varSearch + "{'field':'FinishedAt','op':'<','value':'" + this.tilDateMilli + "'}";
     }
-
 
     //Búsqueda vacia
-    if (this.terminalVarSearch!= null && this.sinceDateMilli == 0 && this.tilDateMilli == 0) {
-      this.BalanceinfoService.GetBalanceInfo(this.size, this.searchParams0).subscribe(
-        (balance) => {
-          this.balances = balance;})
+    if (this.terminalSelected!= null && this.sinceDateMilli == 0 && this.tilDateMilli == 0) {
+      this.getBalanceInfo();
     }
-
 
     //Cierre y reseteo de parámetros
     this.varSearch = this.varSearch + ']}';
     this.searchCounter = false;
 
-    console.log(this.varSearch);
+    this.getBalanceInfo();
+  }
 
-    //Llamada API
-    this.BalanceinfoService.GetBalanceInfo(this.size, this.varSearch).subscribe(
-      (balance) => {
-        this.balances = balance;
-        if (balance.data.length <= 0) {
-          this.emptySearch = true;
+
+  //Llamada API
+  getBalanceInfo() {
+    this.loadCompleted=false;
+    let size: number = 2147483647;
+    let selectSales = new Array(3);
+    let searchParams0: string = '';
+
+
+    this.BalanceinfoService.GetBalanceInfo(size, searchParams0).subscribe(
+      (balanceInfo) => {
+        this.balances = balanceInfo.data;
+        for (let i = 0; i < 3; i++) {
+          selectSales[i] = new Array(this.balances.length);
         }
-        console.log(this.emptySearch);
+
+      //Creación de arrays del select del formulario de búsqueda
+        //Terminal
+
+        for (let i = 0; i < this.balances.length; i++) {
+          let balance: Balance = this.balances[i];
+          this.mismatch[i] = Math.abs(balance.manualCashRecount)-Math.abs(balance.autoCashRecount);
+          let counterSelect: boolean = false;
+          if (i == 0) {
+            selectSales[0][i] = balance.terminalNumber;
+          } else {
+            for (let z = 0; z <= i; z++) {
+              if (selectSales[0][z] == balance.terminalNumber || counterSelect == true) {
+                counterSelect = true;
+              }
+              if (counterSelect == false && z == i) {
+                selectSales[0][i] = balance.terminalNumber;
+              }
+            }
+            counterSelect = false;
+          }
+
+          //Eliminación espacios en blanco de arrays
+          //Terminal
+          for (let i = this.balances.length - 1; i >= 0; i--) {
+            if (selectSales[0][i] == null) {
+              selectSales[0].splice(i, 1);
+            }
+          }
+        }
         this.loadCompleted=true;
       },
       (error) => {
         if (error.status == 401) {
-          this.isLoggedIn = false;
           this.StorageService.clean();
         };
       }
@@ -201,11 +195,10 @@ export class BalancesComponent implements OnInit {
   }
 
   //Checkboxes
-
-  CheckAll(event: any) {
+  checkAll(event: any) {
     if (event.target.checked) {
       this.selectedIndices = [];
-      for (let i = 0; i < this.balances.data.length; i++) {
+      for (let i = 0; i < this.balances.length; i++) {
         let globalIndex = i;
         this.selectedIndices.push(globalIndex);
       }
@@ -219,12 +212,10 @@ export class BalancesComponent implements OnInit {
   }
 
   //Encriptación
-
   sendSalesDetails(id:string) {
-
     this.code = this.EncryptionService.encryptData(id)
     this.code = '/balances-details/' + this.EncryptionService.encode(this.code);
-    }
+  }
 
   //Boton Descargar CSV
   downloadCSV(){
