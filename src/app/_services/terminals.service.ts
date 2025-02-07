@@ -1,27 +1,28 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BalanceId } from '../_models/BalanceId.model';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.dev-inte';
 import { RestRoutes } from '../_config/rest-routes.config';
+import { Terminal } from '../_models/terminal.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class BalanceidService {
+export class TerminalsService {
 
   httpOptions = {
     headers: new HttpHeaders(
       {
-        'Content-type': 'application/json'
+        'accept': 'text/plain',
+        'Api-Version': '4'
       }
     )
   };
 
   constructor(private http: HttpClient) { }
 
-  GetBalanceId(ID: string): Observable<BalanceId> {
-    let urlCommerces: string = `${environment.urlWS}${RestRoutes.BALANCE_ID}${ID}`;
-    return this.http.get<BalanceId>(urlCommerces, this.httpOptions);
+  getTerminalList(): Observable<Terminal[]> {
+    let urlPortalUserTerminals: string = `${environment.urlWE}${RestRoutes.PORTALUSERS_TERMINALS}`;
+          return this.http.get<Terminal[]>(urlPortalUserTerminals, this.httpOptions);
   }
 }

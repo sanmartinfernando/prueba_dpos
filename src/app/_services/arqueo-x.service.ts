@@ -21,9 +21,8 @@ export class ArqueoXService {
 
   constructor(private http: HttpClient) { }
 
-  GetArqueoX(fromDate:number, toDate:number): Observable<Balance> {
-    let urlCommerces: string = `${environment.urlWS}${RestRoutes.ARQUEO_X}${fromDate}${RestRoutes.ARQUEO_X2}${toDate}`;
-    console.log(urlCommerces)
-    return this.http.post<Balance>(urlCommerces, this.httpOptions);
+  public getArqueoX(fromDate:number, toDate:number): Observable<Balance> {
+    let urlArqueoX: string = `${environment.urlWS}${RestRoutes.BALANCES_ARQUEO_X}${fromDate}${RestRoutes.PARAM_TODATE}${toDate}`;
+    return this.http.post<Balance>(urlArqueoX, this.httpOptions);
   }
 }

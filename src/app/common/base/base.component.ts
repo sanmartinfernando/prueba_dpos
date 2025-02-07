@@ -9,8 +9,10 @@ import { Router } from '@angular/router';
 export class BaseComponent  implements OnInit{
 
   constructor(public router: Router) { }
+
   ngOnInit(): void {
   }
+
   onError(error?:string){
     var page = "/error";
     var params = {};
@@ -19,6 +21,7 @@ export class BaseComponent  implements OnInit{
     }
     this.router.navigate([page],{ queryParams: params});
   }
+  
   onLoginRequired(callbackUrl?:string){
     var page = "/login";
     var params = {};
@@ -27,6 +30,7 @@ export class BaseComponent  implements OnInit{
     }
     this.router.navigate([page],{ queryParams: params});
   }
+  
   onUnauthorized(callbackUrl?:string){
     var page = "/unauthorized";
     var params = {};
@@ -35,5 +39,4 @@ export class BaseComponent  implements OnInit{
     }
     this.router.navigate([page],{ queryParams: params});
   }
-
 }

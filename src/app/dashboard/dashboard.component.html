@@ -7,9 +7,7 @@
         <div class="me-3">
           <label class="form-label">{{'dpos.filter.terminal' | translate}}</label>
           <select class="form-select" id="searchTer" name="terminal" [(ngModel)]="terminalSelected" >
-            <option *ngFor="let terminal of terminalsNumber" [value]="terminal">
-              {{ terminal }}
-            </option>
+            <option *ngFor="let terminal of terminalsNumber" [value]="terminal">{{ terminal }}</option>
           </select>
         </div>
         <div class="mx-3">

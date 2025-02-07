@@ -1,20 +1,18 @@
 <nav class="sidenav d-flex flex-column vh-100" style="background-color: #001B61;">
   <div class="flex-shrink-0 p-2 text-white">
-    <a class="d-flex align-items-center justify-content-center mb-0 text-white text-decoration-none"
-      (click)="titleHeader(title0)" routerLink="/">
+    <a class="d-flex align-items-center justify-content-center mb-0 text-white text-decoration-none" (click)="titleHeader(title0)" routerLink="/">
       <i class="fa-solid fa-box py-2 logo"></i>
     </a>
   </div>
   <div id="navBar1" class="flex-shrink-0">
     <ul id="navBarMain" class="navbar-nav flex-column align-items-stretch">
-      <ng-container  >
-      <li *ngFor="let page of pages">
-        <a class="nav-link m-3 d-flex flex-column align-items-center" (click)="titleHeader(page.text)"
+      <ng-container>
+        <li *ngFor="let page of pages">
+          <a class="nav-link m-3 d-flex flex-column align-items-center" (click)="titleHeader(page.text)"
           routerLink="/{{ page.code }}" routerLinkActive="active-link" (click)="component(page.code)">
-          <i class="{{ page.icon }}  fa-2xl MT-3"></i>{{page.text}}
-        </a>
-      </li>
-    </ng-container>
+          <i class="{{ page.icon }}  fa-2xl MT-3"></i>{{page.text}}</a>
+        </li>
+      </ng-container>
     </ul>
   </div>
 </nav>
@@ -27,15 +25,12 @@
       </li>
       <li class="mx-3 nav-item pt-2 pb-2">
         <select class="form-select-commerce" id="searchCommerce" name="commerce" [(ngModel)]="commerceSelected" (change)="onCommerceChange()" *ngIf="username; else loginLink">
-          <option *ngFor="let commerce of commerces" [value]="commerce.commerceNumber">
-            {{ commerce.commerceNumber }}
-          </option>
+          <option *ngFor="let commerce of commerces" [value]="commerce.commerceNumber">{{ commerce.commerceNumber }}</option>
         </select>
       </li>
       <li class="mx-3 nav-item pt-2 pb-2">
         <a class="btn btn-light" *ngIf="username" (click)="logOut()" style="cursor: pointer">
-          <i class="fa-solid fa-circle-user fa-lg" style="color: #ffbb00;"></i>&nbsp;&nbsp;{{
-          username }}&nbsp;&nbsp;&nbsp;<span class="fa-solid fa-arrow-right-from-bracket"></span>
+          <i class="fa-solid fa-circle-user fa-lg" style="color: #ffbb00;"></i>&nbsp;&nbsp;{{ username }}&nbsp;&nbsp;&nbsp;<span class="fa-solid fa-arrow-right-from-bracket"></span>
         </a>
       </li>
       <ng-template #loginLink>

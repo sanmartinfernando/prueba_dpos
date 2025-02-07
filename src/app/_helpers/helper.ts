@@ -2,23 +2,10 @@ import * as moment from "moment";
 
 export default class Helper {
 
-    /**
-     * Check the Http response. If not a status that need further logic (Ok / 409)
-     * logs the response and Throws an error.
-     * Actualmente solo funciona para los fetch.
-     * @param response 
-     * @returns Response or Error
-     */
     static handleErrors(response) {
-        console.log('handleErrors');
-        console.log(response);
-        console.log(response.status);
         if (!(response.status == 200 || response.status == 409)) {
-            console.log('!(response.status==200 || response.status==409)');
-            console.log(response);
             throw Error(response.statusText);
         }
-        console.log('handleErrors');
         return response;
     }
 

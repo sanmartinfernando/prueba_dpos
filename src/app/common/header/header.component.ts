@@ -15,42 +15,38 @@ import { CommercesService } from '../../_services/commerces.service';
 })
 export class HeaderComponent implements OnInit {
 
-    public pages : Page[] = [];
-    username: string;
-    private authService: AuthService;
-    isLoggedIn: boolean = false;
-    commerceSelected;
-    commerces: Commerce[];
+  pages : Page[] = [];
+  username: string;
+  authService: AuthService;
+  isLoggedIn: boolean = false;
+  commerceSelected: string;
+  commerces: Commerce[];
+  title: string= "DPOS";
+  title0: string= "DPOS";
 
-  constructor(private _pagesService: PagesService,
-    private PortalUsersService: PortalUsersService,
-    private CommercesService: CommercesService,
+  constructor(private pagesService: PagesService,
+    private _authService : AuthService,
+    private portalUsersService: PortalUsersService,
+    private commercesService: CommercesService,
     private storageService: StorageService,
-    public router: Router, 
-    private route: ActivatedRoute, 
-    private _authService : AuthService){
-
-    this.pages=_pagesService.pages;
+    public router: Router){
+    this.pages = pagesService.pages;
     this.authService = _authService;
   }
+
   ngOnInit(): void {
-
-
     this.storageService.userInfo.subscribe(user =>{
-      console.log('this.storageService.userInfo.subscribe');
-      console.log(user);
       if(user !== undefined && user != null){
         this.isLoggedIn = true;
         this.username = user.user;
-
-        this.PortalUsersService.GetToken(user).subscribe(
+        this.portalUsersService.getToken(user).subscribe(
           (portalUserToken)=> {
             this.authService.setPortalUsersToken(portalUserToken.token);
-            this.CommercesService.GetCommerceList().subscribe(
+            this.commercesService.getCommerceList().subscribe(
               (commerces) => {
                 this.commerces = commerces;
                 this.commerceSelected = commerces[0].commerceNumber
-                this.CommercesService.setCommerceId(this.getCommerceId());
+                this.commercesService.setCommerceId(this.getCommerceId());
               },
               (error) => {
                 console.error("Error Commerces: ", error);
@@ -61,24 +57,14 @@ export class HeaderComponent implements OnInit {
             console.error("Error Portal user token", error);
           }
         );
-
-
-
       }else{
         this.isLoggedIn = false;
       }
-
     });
-
-    console.log(this.isLoggedIn)
   }
 
-  title: string= "DPOS"
-  title0: string= "DPOS"
-
-  titleHeader(name){
+  titleHeader(name: string){
       this.title=name;
-      //this.storageService.updateloggin(this.isLoggedIn);
   }
 
   logOut(){
@@ -88,7 +74,7 @@ export class HeaderComponent implements OnInit {
   }
 
   ngDoCheck() {
-    //this.username = this.storageService.getUsername();
+
   }
 
   component(component:string){
@@ -96,8 +82,7 @@ export class HeaderComponent implements OnInit {
   }
 
   onCommerceChange(): void {
-    this.CommercesService.setCommerceId(this.getCommerceId());
-    console.log('Comercio seleccionado:', this.commerceSelected);
+    this.commercesService.setCommerceId(this.getCommerceId());
   }
   
   getCommerceId(): number {

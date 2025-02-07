@@ -14,9 +14,7 @@
       <div class="me-3">
         <label class="form-label">{{'dpos.filter.terminal' | translate}}</label>
         <select class="form-select" id="searchTer" name="terminal" [(ngModel)]="terminalSelected" >
-          <option *ngFor="let terminal of terminalsNumber" [value]="terminal">
-            {{ terminal }}
-          </option>
+          <option *ngFor="let terminal of terminalsNumber" [value]="terminal">{{ terminal }}</option>
         </select>
       </div>
       <div class="mx-3">
@@ -85,18 +83,10 @@
                 <ng-container *ngIf="loadCompleted && emptySearch == false; else empty">
                   <tr *ngFor="let taxes of sales.balanceLines | paginate : { itemsPerPage: 10, currentPage: page }">
                     <ng-container *ngIf="taxes.itemName.substring(0, 3) == 'IVA'">
-                      <td class="text-start align-middle">
-                        {{ taxes.itemName }}
-                      </td>
-                      <td class="text-end align-middle">
-                        {{ taxes.itemValue / Math.pow(10, taxes.decimals) }}
-                      </td>
-                      <td class="text-end align-middle">
-                        {{ taxes.base / Math.pow(10, taxes.decimals) | currency : "Eur" : "€" }}
-                      </td>
-                      <td class="text-end align-middle">
-                        {{ taxes.total / Math.pow(10, taxes.decimals) | currency : "Eur" : "€" }}
-                      </td>
+                      <td class="text-start align-middle">{{ taxes.itemName }}</td>
+                      <td class="text-end align-middle">{{ taxes.itemValue / Math.pow(10, taxes.decimals) }}</td>
+                      <td class="text-end align-middle">{{ taxes.base / Math.pow(10, taxes.decimals) | currency : "Eur" : "€" }}</td>
+                      <td class="text-end align-middle">{{ taxes.total / Math.pow(10, taxes.decimals) | currency : "Eur" : "€" }}</td>
                     </ng-container>
                   </tr>
                 </ng-container>
@@ -107,7 +97,6 @@
                   <td class="text-end align-middle"><b>{{ totalCuote | currency : "Eur" : "€"}}</b></td>
                 </tr>
               </tbody>
-              
             </table>
             <div class="has-text-centered">
               <pagination-controls (pageChange)="page = $event"></pagination-controls>
@@ -136,18 +125,10 @@
               <tbody>
                 <ng-container *ngIf="emptySearch == false; else empty">
                   <tr *ngFor="let product of indexProduct | paginate : { itemsPerPage: 10, currentPage: page }; index as z">
-                    <td class="text-start align-middle">
-                      {{ product.product }}
-                    </td>
-                    <td class="text-end align-middle">
-                      {{ product.total / 100000000 / ( (product.units ?? 2) / 1000) | currency : "Eur" : "€" }}
-                    </td>
-                    <td class="text-end align-middle">
-                      {{ (product.units ?? 2) / 1000 }}
-                    </td>
-                    <td class="text-end align-middle">
-                      {{ product.total / 100000000 | currency : "Eur" : "€" }}
-                    </td>
+                    <td class="text-start align-middle">{{ product.product }}</td>
+                    <td class="text-end align-middle">{{ product.total / 100000000 / ( (product.units ?? 2) / 1000) | currency : "Eur" : "€" }}</td>
+                    <td class="text-end align-middle">{{ (product.units ?? 2) / 1000 }}</td>
+                    <td class="text-end align-middle">{{ product.total / 100000000 | currency : "Eur" : "€" }}</td>
                   </tr>
                 </ng-container>
                 <tr>
@@ -186,16 +167,10 @@
                 <ng-container *ngIf="loadCompleted && emptySearch == false; else empty">
                   <tr *ngFor="let paymentmethod of sales.balanceLines; index as i">
                     <ng-container *ngIf="paymentmethod.itemName.substring(0, 3) == 'Efe'">
-                      <td class="text-start align-middle">
-                        {{ paymentmethod.itemName }}
-                      </td>
+                      <td class="text-start align-middle">{{ paymentmethod.itemName }}</td>
                       <td></td>
-                      <td class="text-end align-middle">
-                        {{ paymentmethod.percentage + " %" }}
-                      </td>
-                      <td class="text-end align-middle">
-                        {{ paymentmethod.total / Math.pow(10, paymentmethod.decimals) | currency : "Eur" : "€" }}
-                      </td>
+                      <td class="text-end align-middle">{{ paymentmethod.percentage + " %" }}</td>
+                      <td class="text-end align-middle">{{ paymentmethod.total / Math.pow(10, paymentmethod.decimals) | currency : "Eur" : "€" }}</td>
                     </ng-container>
                   </tr>
                 </ng-container>

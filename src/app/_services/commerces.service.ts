@@ -3,8 +3,8 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.dev-inte';
 import { RestRoutes } from '../_config/rest-routes.config';
-import { Commerce } from '../_models/commerce.model';
 import { BehaviorSubject } from 'rxjs';
+import { Commerce } from '../_models/commerce.model';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +25,7 @@ export class CommercesService {
 
   constructor(private http: HttpClient) { }
 
-  GetCommerceList(): Observable<Commerce[]> {
+  getCommerceList(): Observable<Commerce[]> {
     let urlPortalUserCommerces: string = `${environment.urlWE}${RestRoutes.PORTALUSERS_COMMERCES}`;
     return this.http.get<Commerce[]>(urlPortalUserCommerces, this.httpOptions);
   }

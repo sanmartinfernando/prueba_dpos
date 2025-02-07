@@ -1,13 +1,13 @@
 import { StorageService } from 'src/app/_services/storage.service';
 import { EncryptionService } from './../_services/encryption.service';
-import { BalanceinfoService } from './../_services/balanceinfo.service';
-import { CsvdownloadService } from '../_services/csvdownload.service';
+import { DownloadCsvService } from '../_services/download-csv.service';
 import { Component, OnInit } from '@angular/core';
 import { PortalUsersService } from '../_services/portal-users.service';
-import { TerminalListService } from '../_services/terminal-list.service';
+import { TerminalsService } from '../_services/terminals.service';
 import { CommercesService } from '../_services/commerces.service';
 import { AuthService } from '../_services/auth.service';
 import { Balance } from '../_models/balance.model';
+import { BalancesService } from '../_services/balances.service';
 
 @Component({
   selector: 'DPOSW-balances',
@@ -16,17 +16,17 @@ import { Balance } from '../_models/balance.model';
 })
 export class BalancesComponent implements OnInit {
 
-  constructor(private BalanceinfoService: BalanceinfoService, 
-    private EncryptionService: EncryptionService, 
-    private StorageService: StorageService, 
-    private CsvdownloadService: CsvdownloadService,
-    private PortalUsersService: PortalUsersService,
-    private TerminalListService: TerminalListService,
-    private CommercesService: CommercesService,
-    private AuthService: AuthService) {
+  constructor(private balancesService: BalancesService,
+    private encryptionService: EncryptionService, 
+    private storageService: StorageService, 
+    private downloadCsvService: DownloadCsvService,
+    private portalUsersService: PortalUsersService,
+    private terminalsService: TerminalsService,
+    private commercesService: CommercesService,
+    private authService: AuthService) {
 
     }
-
+    
   Math = Math;
   balances: Balance[];
   page: number = 0;
@@ -34,7 +34,7 @@ export class BalancesComponent implements OnInit {
   loadCompleted: boolean = false;
   mismatch = new Array;
 
-  public terminalsNumber: string[];
+  terminalsNumber: string[];
   terminalSelected: string = null;
   searchCounter: boolean = false;
   sinceDate: string;
@@ -46,18 +46,16 @@ export class BalancesComponent implements OnInit {
   varSearch: string = null;
   emptySearch: boolean = false;
 
-  // Checkboxes
   selectedIndices: number[] = [];
   isAllSelected: boolean = false;
   counter = 0;
 
   ngOnInit(): void {
-
-    this.StorageService.userInfo.subscribe((user) =>{
-      this.CommercesService.commerceId$.subscribe((commerceId) => {
-        this.PortalUsersService.GetToken(user).subscribe((portalUserToken)=> {
-          this.AuthService.setPortalUsersToken(portalUserToken.token);
-          this.TerminalListService.GetTerminalList().subscribe((terminals) => {
+    this.storageService.userInfo.subscribe((user) =>{
+      this.commercesService.commerceId$.subscribe((commerceId) => {
+        this.portalUsersService.getToken(user).subscribe((portalUserToken)=> {
+          this.authService.setPortalUsersToken(portalUserToken.token);
+          this.terminalsService.getTerminalList().subscribe((terminals) => {
             terminals = terminals.filter(terminal => terminal.commerceId = commerceId);
             if(terminals.length != 0) {
               this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
@@ -77,7 +75,6 @@ export class BalancesComponent implements OnInit {
       });
     });
   }
-
 
   //Método de búsqueda
   searchSales() {
@@ -139,25 +136,23 @@ export class BalancesComponent implements OnInit {
     this.getBalanceInfo();
   }
 
-
   //Llamada API
   getBalanceInfo() {
+
     this.loadCompleted=false;
     let size: number = 2147483647;
     let selectSales = new Array(3);
     let searchParams0: string = '';
 
-
-    this.BalanceinfoService.GetBalanceInfo(size, searchParams0).subscribe(
+    this.balancesService.getBalanceInfo(size, searchParams0).subscribe(
       (balanceInfo) => {
         this.balances = balanceInfo.data;
         for (let i = 0; i < 3; i++) {
           selectSales[i] = new Array(this.balances.length);
         }
-
-      //Creación de arrays del select del formulario de búsqueda
+        
+        //Creación de arrays del select del formulario de búsqueda
         //Terminal
-
         for (let i = 0; i < this.balances.length; i++) {
           let balance: Balance = this.balances[i];
           this.mismatch[i] = Math.abs(balance.manualCashRecount)-Math.abs(balance.autoCashRecount);
@@ -188,7 +183,7 @@ export class BalancesComponent implements OnInit {
       },
       (error) => {
         if (error.status == 401) {
-          this.StorageService.clean();
+          this.storageService.clean();
         };
       }
     );
@@ -213,13 +208,12 @@ export class BalancesComponent implements OnInit {
 
   //Encriptación
   sendSalesDetails(id:string) {
-    this.code = this.EncryptionService.encryptData(id)
-    this.code = '/balances-details/' + this.EncryptionService.encode(this.code);
+    this.code = this.encryptionService.encryptData(id)
+    this.code = '/balances-details/' + this.encryptionService.encode(this.code);
   }
 
   //Boton Descargar CSV
   downloadCSV(){
-    this.CsvdownloadService.downloadBalancesFile(this.balances, 'Balances', "es-ES");
+    this.downloadCsvService.downloadBalancesFile(this.balances, 'Balances', "es-ES");
   }
-
 }

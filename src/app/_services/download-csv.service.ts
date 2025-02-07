@@ -1,19 +1,18 @@
 import { Injectable } from '@angular/core';
 import { OrderInfo } from '../_models/order-info.model';
-import { BalanceInfo } from '../_models/balance-info.model';
 import { Balance } from '../_models/balance.model';
 import { SalesReport } from '../_models/sales-report.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CsvdownloadService {
+export class DownloadCsvService {
 
   constructor() { }
   
-  downloadSalesFile(sales: OrderInfo, filename = 'data', language) {
+  public downloadSalesFile(sales: OrderInfo, filename = 'data', language: string) {
     
-    let headers;
+    let headers:string[];
 
     // Encabezados en ambos idiomas
     const headersES = [
@@ -72,9 +71,9 @@ export class CsvdownloadService {
     document.body.removeChild(dwldLink);
   }
 
-  downloadBalancesFile(balances: Balance[], filename = 'data', language) {
+  public downloadBalancesFile(balances: Balance[], filename = 'data', language: string) {
     
-    let headers;
+    let headers: string[];
 
     // Encabezados en ambos idiomas
     const headersES = [
@@ -127,9 +126,9 @@ export class CsvdownloadService {
     document.body.removeChild(dwldLink);
   }
 
-  downloadArqueoXFile(arqueoX: Balance, filename = 'data', language) {
+  public downloadArqueoXFile(arqueoX: Balance, filename = 'data', language: string) {
     
-    let headers;
+    let headers: string[];
 
     // Encabezados en ambos idiomas
     const headersES = [
@@ -173,9 +172,9 @@ export class CsvdownloadService {
     document.body.removeChild(dwldLink);
   }
 
-  downloadSalesReportFile(salesReport: SalesReport, filename = 'data', language) {
+  public downloadSalesReportFile(salesReport: SalesReport, filename = 'data', language: string) {
     
-    let headers;
+    let headers: string[];
 
     // Encabezados en ambos idiomas
     const headersES = [
@@ -219,9 +218,9 @@ export class CsvdownloadService {
     document.body.removeChild(dwldLink);
   }
 
-  downloadPaymentMethodsFile(arqueoX: Balance, filename = 'data', language) {
+  public downloadPaymentMethodsFile(arqueoX: Balance, filename = 'data', language: string) {
     
-    let headers;
+    let headers: string[];
 
     // Encabezados en ambos idiomas
     const headersES = [
@@ -262,7 +261,7 @@ export class CsvdownloadService {
     document.body.removeChild(dwldLink);
   }
 
-  convertToCSV(objArray, fields, headers) {
+  public convertToCSV(objArray:any, fields:string[], headers: string[]) {
     let array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
     let str = headers.join(';') + '\r\n'; 
 

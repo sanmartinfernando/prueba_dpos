@@ -1,7 +1,8 @@
 <div class="container-fluid header-main mt-4">
   <div class="d-flex justify-content-between mb-2" *ngIf="loadCompleted">
-    <a [routerLink]="['/balances']" type="button" class="" style="text-decoration: none;"><i
-        class="fa-solid fa-angle-left"></i>{{'dpos.balances-details.back.btn' | translate}}</a>
+    <a [routerLink]="['/balances']" type="button" class="" style="text-decoration: none;">
+      <i class="fa-solid fa-angle-left"></i>{{'dpos.balances-details.back.btn' | translate}}
+    </a>
     <button class="btn btn-sm btn-danger" (click)="donwloadPDF()">
       <i class="fa-solid fa-file-pdf fa-xl"></i>
     </button>
@@ -14,13 +15,9 @@
         </div>
         <div class="flex-fill text-end">
           <label id="lblcomercial_cif" class="small"><span> {{balances.balanceCommerce?.nif}}</span></label><br />
-          <label id="lblcomercial_address" class="small"><span>{{ balances.balanceCommerce?.address
-              }}</span></label><br />
-          <label id="lblcomercial_email" class="small"><span>{{ balances.balanceCommerce?.email
-              }}</span></label><br />
-          <label id="lbldate" type="date" class="small text-customer"><span>{{
-              balances.finishedAt | date : "dd/MM/yyyy HH:mm:ss"
-              }}</span></label>
+          <label id="lblcomercial_address" class="small"><span>{{ balances.balanceCommerce?.address }}</span></label><br />
+          <label id="lblcomercial_email" class="small"><span>{{ balances.balanceCommerce?.email }}</span></label><br />
+          <label id="lbldate" type="date" class="small text-customer"><span>{{ balances.finishedAt | date : "dd/MM/yyyy HH:mm:ss" }}</span></label>
         </div>
       </div>
       <div class="card-body">
@@ -34,8 +31,7 @@
             <label class="">{{'dpos.balances-details.balance.from.label' | translate}} {{ balances.startedAt | date : "dd/MM/yyyy hh:mm" }}</label>
           </div>
           <div class="col text-end">
-            <label class="">{{'dpos.balances-details.balance.to.label' | translate}}
-              {{ balances.finishedAt | date : "dd/MM/yyyy hh:mm" }}</label>
+            <label class="">{{'dpos.balances-details.balance.to.label' | translate}} {{ balances.finishedAt | date : "dd/MM/yyyy hh:mm" }}</label>
           </div>
         </div>
         <div class="row px-2 pb-1">
@@ -48,11 +44,7 @@
             <label class="">{{'dpos.balances-details.balance.totaloperations.label' | translate}}</label>
           </div>
           <div class="col text-end">
-            <label class="">{{
-              balances.salesCount +
-              balances.refundsCount +
-              balances.rectifyCount
-              }}</label>
+            <label class="">{{ balances.salesCount + balances.refundsCount + balances.rectifyCount }}</label>
           </div>
         </div>
         <div class="row px-2 pb-1">
@@ -60,10 +52,7 @@
             <label class="">{{'dpos.balances-details.balance.sells.label' | translate}}</label>
           </div>
           <div class="col text-end">
-            <label class="">{{
-              balances.sales / Math.pow(10, balances.decimals)
-              | currency : "Eur" : "€"
-              }}</label>
+            <label class="">{{ balances.sales / Math.pow(10, balances.decimals) | currency : "Eur" : "€" }}</label>
           </div>
         </div>
         <div class="row px-2 pb-1">
@@ -71,10 +60,7 @@
             <label class="">{{'dpos.balances-details.balance.cashmovements.label' | translate}}</label>
           </div>
           <div class="col text-end">
-            <label class="">{{
-              (balances.in - balances.out) / Math.pow(10, balances.decimals)
-              | currency : "Eur" : "€"
-              }}</label>
+            <label class="">{{ (balances.in - balances.out) / Math.pow(10, balances.decimals) | currency : "Eur" : "€" }}</label>
           </div>
         </div>
         <div class="row px-2 pb-1">
@@ -82,10 +68,7 @@
             <label class="">{{'dpos.balances-details.balance.refunds.label' | translate}}</label>
           </div>
           <div class="col text-end">
-            <label class="">{{
-              balances.refunds / Math.pow(10, balances.decimals)
-              | currency : "Eur" : "€"
-              }}</label>
+            <label class="">{{ balances.refunds / Math.pow(10, balances.decimals) | currency : "Eur" : "€" }}</label>
           </div>
         </div>
         <div class="row px-2 pb-1">
@@ -94,10 +77,7 @@
             <label class=""><b>{{'dpos.balances-details.balance.totalamount.label' | translate}}</b></label>
           </div>
           <div class="col text-end">
-            <label class=""><b>{{
-                balances.total / Math.pow(10, balances.decimals)
-                | currency : "Eur" : "€"
-                }}</b></label>
+            <label class=""><b>{{ balances.total / Math.pow(10, balances.decimals) | currency : "Eur" : "€" }}</b></label>
           </div>
         </div>
         <div class="row px-2 pb-1 pt-2">
@@ -109,7 +89,6 @@
           </div>
         </div>
       </div>
-
       <div class="card-body">
         <div class="d-flex">
           <div class="row flex-fill">
@@ -117,7 +96,7 @@
               <label><span class=" "><b>{{'dpos.balances-details.cashbalance.label' | translate}}</b></span></label>
             </div>
             <div class="col text-end">
-              <label class=" "><b>{{'dpos.balances-details.cashbalance.import.label' | translate}}</b> </label>
+              <label class=" "><b>{{'dpos.balances-details.cashbalance.import.label' | translate}}</b></label>
             </div>
           </div>
         </div>
@@ -126,10 +105,7 @@
             <label>{{'dpos.balances-details.cashbalance.initial.label' | translate}}</label>
           </div>
           <div class="col text-end">
-            <label class="">{{
-              balances.opening / Math.pow(10, balances.decimals)
-              | currency : "Eur" : "€"
-              }}</label>
+            <label class="">{{ balances.opening / Math.pow(10, balances.decimals) | currency : "Eur" : "€" }}</label>
           </div>
         </div>
         <div class="row px-2 pb-1">
@@ -137,10 +113,7 @@
             <label class="">{{'dpos.balances-details.cashbalance.sells.label' | translate}}</label>
           </div>
           <div class="col text-end">
-            <label class="">{{
-              balances.sales / Math.pow(10, balances.decimals)
-              | currency : "Eur" : "€"
-              }}</label>
+            <label class="">{{ balances.sales / Math.pow(10, balances.decimals) | currency : "Eur" : "€" }}</label>
           </div>
         </div>
         <div class="row px-2 pb-1">
@@ -148,10 +121,7 @@
             <label class="">{{'dpos.balances-details.cashbalance.in.label' | translate}}</label>
           </div>
           <div class="col text-end">
-            <label class="">{{
-              balances.in / Math.pow(10, balances.decimals)
-              | currency : "Eur" : "€"
-              }}</label>
+            <label class="">{{ balances.in / Math.pow(10, balances.decimals) | currency : "Eur" : "€" }}</label>
           </div>
         </div>
         <div class="row px-2 pb-1">
@@ -159,10 +129,7 @@
             <label class="">{{'dpos.balances-details.cashbalance.out.label' | translate}}</label>
           </div>
           <div class="col text-end">
-            <label class="">{{
-              balances.out / Math.pow(10, balances.decimals)
-              | currency : "Eur" : "€"
-              }}</label>
+            <label class="">{{ balances.out / Math.pow(10, balances.decimals) | currency : "Eur" : "€" }}</label>
           </div>
         </div>
         <div class="row px-2 pb-1">
@@ -170,10 +137,7 @@
             <label class="">{{'dpos.balances-details.cashbalance.refund.label' | translate}}</label>
           </div>
           <div class="col text-end">
-            <label class="">{{
-              balances.refunds / Math.pow(10, balances.decimals)
-              | currency : "Eur" : "€"
-              }}</label>
+            <label class="">{{ balances.refunds / Math.pow(10, balances.decimals) | currency : "Eur" : "€" }}</label>
           </div>
         </div>
         <div class="row px-2 pb-1">
@@ -181,10 +145,7 @@
             <label class="">{{'dpos.balances-details.cashbalance.cashcalculated.label' | translate}}</label>
           </div>
           <div class="col text-end">
-            <label class="">{{
-              balances.autoCashRecount / Math.pow(10, balances.decimals)
-              | currency : "Eur" : "€"
-              }}</label>
+            <label class="">{{ balances.autoCashRecount / Math.pow(10, balances.decimals) | currency : "Eur" : "€" }}</label>
           </div>
         </div>
         <div class="row px-2 pb-1">
@@ -192,10 +153,7 @@
             <label class="">{{'dpos.balances-details.cashbalance.effectivecount.label' | translate}}</label>
           </div>
           <div class="col text-end">
-            <label class="">{{
-              balances.manualCashRecount / Math.pow(10, balances.decimals)
-              | currency : "Eur" : "€"
-              }}</label>
+            <label class="">{{ balances.manualCashRecount / Math.pow(10, balances.decimals) | currency : "Eur" : "€" }}</label>
           </div>
         </div>
         <div class="row px-2 pb-1">
@@ -203,10 +161,7 @@
             <label class="">{{'dpos.balances-details.cashbalance.mismatch.label' | translate}}</label>
           </div>
           <div class="col text-end">
-            <label class=" ">{{
-              (balances.autoCashRecount - balances.manualCashRecount) /
-              Math.pow(10, balances.decimals) | currency : "Eur" : "€"
-              }}</label>
+            <label class=" ">{{ (balances.autoCashRecount - balances.manualCashRecount) / Math.pow(10, balances.decimals) | currency : "Eur" : "€" }}</label>
           </div>
         </div>
         <div class="row px-2 pb-1">
@@ -214,9 +169,7 @@
             <label class="">{{'dpos.balances-details.cashbalance.cashwithdrawal.label' | translate}}</label>
           </div>
           <div class="col text-end">
-            <label>{{
-              0 / Math.pow(10, balances.decimals) | currency : "Eur" : "€"
-              }}</label>
+            <label>{{ 0 / Math.pow(10, balances.decimals) | currency : "Eur" : "€" }}</label>
           </div>
         </div>
         <div class="row px-2 pb-1">
@@ -224,14 +177,10 @@
             <label>{{'dpos.balances-details.cashbalance.deposit.label' | translate}}</label>
           </div>
           <div class="col text-end">
-            <label>{{
-              balances.nextOpening / Math.pow(10, balances.decimals)
-              | currency : "Eur" : "€"
-              }}</label>
+            <label>{{ balances.nextOpening / Math.pow(10, balances.decimals) | currency : "Eur" : "€" }}</label>
           </div>
         </div>
       </div>
-
       <div class="card-body">
         <div class="d-flex">
           <div class="row flex-fill">
@@ -277,8 +226,6 @@
           </div>
         </div>
       </div>
-
-
       <div class="card-body">
         <div class="d-flex">
           <div class="row flex-fill">
@@ -301,15 +248,12 @@
               </thead>
               <tbody>
                 <tr *ngFor="let paymentmethod of balances.balanceLines; index as i">
-                  <ng-container
-                    *ngIf="paymentmethod.itemName.substring(0,3) == 'Efe' || paymentmethod.itemName.substring(0,3) == 'Tar' || paymentmethod.itemName.substring(0,3) == 'Val' || paymentmethod.itemName.substring(0,3) == 'Vir' || paymentmethod.itemName.substring(0,3) == 'Otr' || paymentmethod.itemName.substring(0,3) == 'Bon' || paymentmethod.itemName.substring(0,3) == 'Rec'">
+                  <ng-container *ngIf="paymentmethod.itemName.substring(0,3) == 'Efe' || paymentmethod.itemName.substring(0,3) == 'Tar' || paymentmethod.itemName.substring(0,3) == 'Val' || paymentmethod.itemName.substring(0,3) == 'Vir' || paymentmethod.itemName.substring(0,3) == 'Otr' || paymentmethod.itemName.substring(0,3) == 'Bon' || paymentmethod.itemName.substring(0,3) == 'Rec'">
                     <td>{{paymentmethod.itemName}}</td>
-
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td class="text-end">{{paymentmethod.total /
-                      Math.pow(10, paymentmethod.decimals)*(-1) | currency : "Eur" : "€"}}</td>
+                    <td class="text-end">{{paymentmethod.total / Math.pow(10, paymentmethod.decimals)*(-1) | currency : "Eur" : "€"}}</td>
                   </ng-container>
                 </tr>
                 <tr>

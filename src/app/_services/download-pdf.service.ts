@@ -1,21 +1,24 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { environment } from 'src/environments/environment.dev-inte';
+import { RestRoutes } from '../_config/rest-routes.config';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DownloadPDFService {
+
   constructor(private http: HttpClient) {}
 
-  downloadFile(id:string): void {
-    const apiUrl = 'https://dpos.diusframi.tech:39443/wstickets/api/Balances/'+id+'/download';
+  public downloadBalancesFile(id:string): void {
+    const apiUrl = `${environment.urlWS}${RestRoutes.BALANCES}${id}/download`;
     this.http.get(apiUrl, { responseType: 'blob' }).subscribe((response) => {
       this.saveFile(response, id);
     });
   }
 
-  downloadFileOrders(id:string): void {
-    const apiUrl = 'https://dpos.diusframi.tech:39443/wstickets/api/Orders/'+id+'/download';
+  public downloadOrdersFile(id:string): void {
+    const apiUrl = `${environment.urlWS}${RestRoutes.ORDERS}${id}/download`;
     this.http.get(apiUrl, { responseType: 'blob' }).subscribe((response) => {
       this.saveFile(response, id);
     });
@@ -24,7 +27,7 @@ export class DownloadPDFService {
   private saveFile(blob: Blob, id:string): void {
     const link = document.createElement('a');
     link.href = window.URL.createObjectURL(blob);
-    link.download = id+'.pdf'; // Cambia el nombre según el archivo
+    link.download = id+'.pdf'; 
     link.click();
   }
 }

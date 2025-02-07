@@ -1,19 +1,16 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
-import { PwdConditions } from 'src/app/_models/pwd-conditions.model';
+import { PwdProperties } from 'src/app/_models/pwd-properties.model';
 import { PwdReset } from 'src/app/_models/pwd-reset.model';
-import { PwresetService } from 'src/app/_services/pwreset.service';
+import { PortalUsersService } from 'src/app/_services/portal-users.service';
 
 @Component({
   selector: 'app-pwreset',
   templateUrl: './pwreset.component.html',
 })
 export class PwresetComponent {
-  constructor(private router: Router, private PwresetService: PwresetService) {}
 
-
-  conditions: PwdConditions;
+  properties: PwdProperties;
   userLocal: string = '';
   userPassword: string = '';
   userConfirmPassword: string = '';
@@ -22,10 +19,12 @@ export class PwresetComponent {
     password: '',
     confirmPassword: '',
   };
-  token;
+  token: string[];
   response: PwdReset;
   error = new Array;
-  counter;
+  counter: number;
+
+  constructor(private router: Router, private portalUsersService: PortalUsersService) {}
 
   resetPW() {
     this.error = [];
@@ -38,11 +37,9 @@ export class PwresetComponent {
     this.parameters.userName = this.userLocal;
     this.parameters.password = this.userPassword;
     this.parameters.confirmPassword = this.userConfirmPassword;
-    this.PwresetService.checkPwCond().subscribe(
-      (condition) => {
-        this.conditions = condition;
-        console.log(this.conditions)
-        this.PwresetService.PwResetMethod(this.parameters).subscribe(
+    this.portalUsersService.checkPwdProperties().subscribe((properties) => {
+        this.properties = properties;
+        this.portalUsersService.resetPwd(this.parameters).subscribe(
           (response) => {
             this.response = response;
           },
@@ -50,7 +47,7 @@ export class PwresetComponent {
             if (error.error.Errors != null) {
               for (let i = 0; i < error.error.Errors.length; i++) {
                 if( error.error.Errors[i]== "MinimalLengthNotReached"){
-                  this.error.push("La contraseña debe tener al menos "+ this.conditions.requireMinLength +" caracteres")
+                  this.error.push("La contraseña debe tener al menos "+ this.properties.requireMinLength +" caracteres")
                 }
                 if( error.error.Errors[i]== "UppercaseRequired"){
                   this.error.push("La contraseña debe tener al menos 1 mayúscula")
@@ -75,10 +72,7 @@ export class PwresetComponent {
             }
           }
         );
-
-
       }
     )
-
   }
 }

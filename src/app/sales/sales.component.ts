@@ -1,13 +1,13 @@
 import { StorageService } from 'src/app/_services/storage.service';
 import { EncryptionService } from './../_services/encryption.service';
-import { SalesinfoService } from './../_services/salesinfo.service';
-import { CsvdownloadService } from '../_services/csvdownload.service';
+import { DownloadCsvService } from '../_services/download-csv.service';
 import { Component, OnInit } from '@angular/core';
 import { OrderInfo } from '../_models/order-info.model';
 import { PortalUsersService } from '../_services/portal-users.service';
-import { TerminalListService } from '../_services/terminal-list.service';
+import { TerminalsService } from '../_services/terminals.service';
 import { CommercesService } from '../_services/commerces.service';
 import { AuthService } from '../_services/auth.service';
+import { OrdersService } from '../_services/orders.service';
 
 @Component({
   selector: 'DPOSW-sales',
@@ -54,32 +54,30 @@ export class SalesComponent implements OnInit {
   counter = 0;
 
   constructor(
-    private SalesinfoService: SalesinfoService,
-    private EncryptionService: EncryptionService,
-    private CsvdownloadService: CsvdownloadService,
-    private StorageService: StorageService,
-    private PortalUsersService: PortalUsersService,
-    private TerminalListService: TerminalListService,
-    private CommercesService: CommercesService,
-    private AuthService: AuthService
+    private encryptionService: EncryptionService,
+    private ordersService: OrdersService,
+    private downloadCsvService: DownloadCsvService,
+    private storageService: StorageService,
+    private portalUsersService: PortalUsersService,
+    private terminalsService: TerminalsService,
+    private commercesService: CommercesService,
+    private authService: AuthService
   ) {  }
 
   ngOnInit(): void {
-
     this.loadCompleted = false;
-
-    this.StorageService.userInfo.subscribe((user) =>{
-      this.CommercesService.commerceId$.subscribe((commerceId) => {
-        this.PortalUsersService.GetToken(user).subscribe((portalUserToken)=> {
-          this.AuthService.setPortalUsersToken(portalUserToken.token);
-          this.TerminalListService.GetTerminalList().subscribe((terminals) => {
+    this.storageService.userInfo.subscribe((user) =>{
+      this.commercesService.commerceId$.subscribe((commerceId) => {
+        this.portalUsersService.getToken(user).subscribe((portalUserToken)=> {
+          this.authService.setPortalUsersToken(portalUserToken.token);
+          this.terminalsService.getTerminalList().subscribe((terminals) => {
             terminals = terminals.filter(terminal => terminal.commerceId = commerceId);
             if(terminals.length != 0) {
               this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
             }
             this.terminalsNumber.unshift('Todos');
             this.terminalSelected = this.terminalsNumber[0];
-            this.getSalesInfo();
+            this.getOrderInfo();
             this.loadCompleted = true;
           },
           (error) => {
@@ -93,10 +91,7 @@ export class SalesComponent implements OnInit {
     });
   }
 
-  //Método de búsqueda
-
   searchSales() {
-
     this.validationVariable = false;
     this.loadCompleted = false;
     if (this.terminalSelected == '' || this.typeVarSearch == '') {
@@ -242,17 +237,14 @@ export class SalesComponent implements OnInit {
         "{'field':'Reference','op':'=*.*','value':'" +
         this.documentVarSearch +
         "'}";
-
-
     }
     this.varSearch = this.varSearch + ']}';
     this.searchCounter = false;
-
-    this.getSalesInfo();
+    this.getOrderInfo();
   }
 
-  getSalesInfo() {
-    this.SalesinfoService.GetSalesInfo(this.size, this.searchParams0).subscribe(
+  getOrderInfo() {
+    this.ordersService.getOrderInfo(this.size, this.searchParams0).subscribe(
       (sale) => {
         this.sales = sale;
         this.operationN = this.sales.data.length;
@@ -261,7 +253,6 @@ export class SalesComponent implements OnInit {
         }
         this.totalSales = this.totalSales / 100;
         this.totalSalesString = this.totalSales.toString() + ' €';
-
         for (let i = 0; i < 3; i++) {
           this.selectSales[i] = new Array(this.sales.data.length);
         }
@@ -274,10 +265,7 @@ export class SalesComponent implements OnInit {
             this.selectSales[0][i] = this.sales.data[i].terminalNumber;
           } else {
             for (let z = 0; z <= i; z++) {
-              if (
-                this.selectSales[0][z] == this.sales.data[i].terminalNumber ||
-                counterSelect == true
-              ) {
+              if (this.selectSales[0][z] == this.sales.data[i].terminalNumber || counterSelect == true) {
                 counterSelect = true;
               }
               if (counterSelect == false && z == i) {
@@ -291,10 +279,7 @@ export class SalesComponent implements OnInit {
             this.selectSales[1][i] = this.sales.data[i].type;
           } else {
             for (let z = 0; z <= i; z++) {
-              if (
-                this.selectSales[1][z] == this.sales.data[i].type ||
-                counterSelect == true
-              ) {
+              if (this.selectSales[1][z] == this.sales.data[i].type || counterSelect == true) {
                 counterSelect = true;
               }
               if (counterSelect == false && z == i) {
@@ -308,10 +293,7 @@ export class SalesComponent implements OnInit {
             this.selectSales[2][i] = this.sales.data[i].reference;
           } else {
             for (let z = 0; z <= i; z++) {
-              if (
-                this.selectSales[2][z] == this.sales.data[i].reference ||
-                counterSelect == true
-              ) {
+              if (this.selectSales[2][z] == this.sales.data[i].reference || counterSelect == true) {
                 counterSelect = true;
               }
 
@@ -376,7 +358,7 @@ export class SalesComponent implements OnInit {
       (error) => {
         if (error.status == 401) {
           this.isLoggedIn = false;
-          this.StorageService.clean();
+          this.storageService.clean();
         };
       }
     );
@@ -401,12 +383,12 @@ export class SalesComponent implements OnInit {
 
   //Encriptación
   sendSalesDetails(id: string) {
-    this.code = this.EncryptionService.encryptData(id);
-    this.code = '/details/' + this.EncryptionService.encode(this.code);
+    this.code = this.encryptionService.encryptData(id);
+    this.code = '/details/' + this.encryptionService.encode(this.code);
   }
 
   //Boton Descargar
   downloadCSV(){
-    this.CsvdownloadService.downloadSalesFile(this.sales, 'Sales', "es-ES");
+    this.downloadCsvService.downloadSalesFile(this.sales, 'Sales', "es-ES");
   }
 }

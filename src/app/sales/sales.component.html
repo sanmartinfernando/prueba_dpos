@@ -1,5 +1,4 @@
 <br />
-<!-- <app-login class="container-fluid header-main" *ngIf="isLoggedIn == false"> </app-login> -->
 <div class="container-fluid header-main">
   <div>
     <!-- Formulario de búsqueda -->
@@ -7,9 +6,7 @@
       <div class="me-3">
         <label class="form-label">{{'dpos.filter.terminal' | translate}}</label>
         <select class="form-select" id="searchTer" name="terminal" [(ngModel)]="terminalSelected" >
-          <option *ngFor="let terminal of terminalsNumber" [value]="terminal">
-            {{ terminal }}
-          </option>
+          <option *ngFor="let terminal of terminalsNumber" [value]="terminal">{{ terminal }}</option>
         </select>
       </div>
       <div class="mx-3">
@@ -24,9 +21,7 @@
         <label class="form-label">{{'dpos.filter.operationtype' | translate}}</label>
         <select class="form-select" name="operation" [(ngModel)]="typeVarSearch">
           <option>{{'dpos.filter.all' | translate}}</option>
-          <option *ngFor="let type of selectSales[1]; index as i">
-            {{ type }}
-          </option>
+          <option *ngFor="let type of selectSales[1]; index as i">{{ type }}</option>
         </select>
       </div>
       <div class="mx-3">
@@ -34,11 +29,12 @@
         <input type="text" class="form-control" name="documentN" [(ngModel)]="documentVarSearch">
       </div>
       <div id="searchButtonsDiv" class="ms-5 d-flex overflow-auto">
-        <button type="reset" class="btn btn-outline-danger align-self-end"> <a type="button"><i
-              class="fas fa-eraser"></i>
-          </a></button>
-        <a type="button" class="btn btn-primary align-self-end" (click)="searchSales()"><i
-            class="fas fa-search"></i>&nbsp;&nbsp;{{'dpos.action.search' | translate}}</a>
+        <button type="reset" class="btn btn-outline-danger align-self-end"> 
+          <a type="button"><i class="fas fa-eraser"></i></a>
+        </button>
+        <a type="button" class="btn btn-primary align-self-end" (click)="searchSales()">
+          <i class="fas fa-search"></i>&nbsp;&nbsp;{{'dpos.action.search' | translate}}
+        </a>
       </div>
     </form>
   </div>
@@ -58,15 +54,12 @@
         <div class="col">
           <h5><b>{{'dpos.sales.operations.label' | translate}}</b></h5>
         </div>
-
         <!-- Indicadores -->
         <div class="col-5 text-end">
           <label for="inputHeadSales" class="me-2">{{'dpos.sales.operations.number.label' | translate}}</label>
-          <input type="text" id="inputHeadSales" class="text-center me-5 inputHeadSales" [(ngModel)]="operationN"
-            disabled />
+          <input type="text" id="inputHeadSales" class="text-center me-5 inputHeadSales" [(ngModel)]="operationN" disabled />
           <label for="inputHeadSales1" class="me-2">{{'dpos.sales.operations.total.label' | translate}}</label>
-          <input type="text" id="inputHeadSales1" class="text-center me-5 inputHeadSales" [(ngModel)]="totalSalesString"
-            disabled />
+          <input type="text" id="inputHeadSales1" class="text-center me-5 inputHeadSales" [(ngModel)]="totalSalesString" disabled />
           <button class="btn btn-outline-info justify-content-center">
             <i class="fa-solid fa-file-csv fa-xl" (click)="downloadCSV()"></i>
           </button>
@@ -103,18 +96,12 @@
               </ng-template>
               <tbody>
                 <ng-container *ngIf="emptySearch == false; else empty">
-                  <tr *ngFor="
-                      let sale of sales.data
-                        | paginate : { itemsPerPage: 10, currentPage: page };
-                      index as i
-                    ">
+                  <tr *ngFor="let sale of sales.data | paginate : { itemsPerPage: 10, currentPage: page }; index as i">
                     <td class="text-center align-middle">
                       <input class="form-check-input" type="checkbox" [checked]="isAllSelected" />
                     </td>
                     <td class="text-start align-middle">
-                      <!--<i class="fa-solid fa-receipt fa-xl me-1 text-amber"></i>--><span
-                        style="font-weight: 500;color:grey;">
-                        {{ sale.reference }}</span>
+                      <span style="font-weight: 500;color:grey;">{{ sale.reference }}</span>
                     </td>
                     <td class="text-center align-middle" *ngIf="sale.type == 0">
                       <div class="badge rounded-pill bg-sale">{{'dpos.sales.operation.order.label' | translate}}</div>
@@ -132,18 +119,23 @@
                       {{ sale.terminalNumber }}
                     </td>
                     <td class="text-center align-middle" *ngIf="sale.orderTicketBai == null">
-                      <div class="badge rounded-pill bg-pending"><i>{{'dpos.sales.operation.tbai.no.label' | translate}}</i>
+                      <div class="badge rounded-pill bg-pending">
+                        <i>{{'dpos.sales.operation.tbai.no.label' | translate}}</i>
                       </div>
                     </td>
                     <td class="text-center align-middle" *ngIf="salesTicketBai[i] == 0">
-                      <div class="badge rounded-pill bg-accept"><i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.tbai.status.accepted.label' | translate}}
+                      <div class="badge rounded-pill bg-accept">
+                        <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.tbai.status.accepted.label' | translate}}
                       </div>
                     </td>
                     <td class="text-center align-middle" *ngIf="salesTicketBai[i] == 1">
-                      <div class="badge rounded-pill bg-warning"><i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.tbai.status.warnings.label' | translate}}</div>
+                      <div class="badge rounded-pill bg-warning">
+                        <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.tbai.status.warnings.label' | translate}}
+                      </div>
                     </td>
                     <td class="text-center align-middle" *ngIf="salesTicketBai[i] == 2">
-                      <div class="badge rounded-pill bg-rejected"><i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.tbai.status.rejected.label' | translate}}
+                      <div class="badge rounded-pill bg-rejected">
+                        <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.tbai.status.rejected.label' | translate}}
                       </div>
                     </td>
                     <td class="text-end align-middle">
@@ -153,22 +145,18 @@
                       {{ sale.totalDiscount / (Math.pow(10, sale.decimals)) | currency : "Eur" : "€" }}
                     </td>
                     <td class="text-end align-middle">
-                      {{
-                      sale.orderTaxes[0].base / (Math.pow(10, sale.orderTaxes[0].decimals)) | currency : "Eur" : "€"
-                      }}
+                      {{ sale.orderTaxes[0].base / (Math.pow(10, sale.orderTaxes[0].decimals)) | currency : "Eur" : "€" }}
                     </td>
                     <td class="text-end align-middle">
-                      {{
-                      sale.orderTaxes[0].total / (Math.pow(10, sale.orderTaxes[0].decimals)) | currency : "Eur" : "€"
-                      }}
+                      {{ sale.orderTaxes[0].total / (Math.pow(10, sale.orderTaxes[0].decimals)) | currency : "Eur" : "€" }}
                     </td>
                     <td class="text-end align-middle">
                       {{ sale.total / (Math.pow(10, sale.decimals)) | currency : "Eur" : "€" }}
                     </td>
                     <td class="text-end align-middle">
                       <span id="detailsticket" class="align-center">
-                        <a [routerLink]="code" (click)="sendSalesDetails(sale.orderId)"><i
-                            class="fa-solid fa-arrow-right" style="color: #74c0fc"></i></a></span>
+                        <a [routerLink]="code" (click)="sendSalesDetails(sale.orderId)"><i class="fa-solid fa-arrow-right" style="color: #74c0fc"></i></a>
+                      </span>
                     </td>
                   </tr>
                 </ng-container>

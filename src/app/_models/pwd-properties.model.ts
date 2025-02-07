@@ -1,4 +1,4 @@
-export class PwdConditions {
+export class PwdProperties {
     requireMinLength: number;
     requireUppercase: true;
     requireLowercase: true;

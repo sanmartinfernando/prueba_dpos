@@ -2,12 +2,12 @@ import { StorageService } from 'src/app/_services/storage.service';
 import { ArqueoXService } from './../_services/arqueo-x.service';
 import { Component, OnInit } from '@angular/core';
 import { EncryptionService } from '../_services/encryption.service';
-import { CsvdownloadService } from '../_services/csvdownload.service';
+import { DownloadCsvService } from '../_services/download-csv.service';
 import { Balance } from '../_models/balance.model';
 import { SalesReport, SalesReportAggregations } from '../_models/sales-report.model';
 import { SalesReportService } from '../_services/sales-report.service';
 import { PortalUsersService } from '../_services/portal-users.service';
-import { TerminalListService } from '../_services/terminal-list.service';
+import { TerminalsService } from '../_services/terminals.service';
 import { CommercesService } from '../_services/commerces.service';
 import { AuthService } from '../_services/auth.service';
 
@@ -19,15 +19,15 @@ import { AuthService } from '../_services/auth.service';
 export class ReportsComponent implements OnInit {
 
   constructor(
-    private EncryptionService: EncryptionService,
-    private ArqueoXService: ArqueoXService,
-    private SalesReportService: SalesReportService,
-    private StorageService: StorageService,
-    private CsvdownloadService: CsvdownloadService,
-    private PortalUsersService: PortalUsersService,
-    private TerminalListService: TerminalListService,
-    private CommercesService: CommercesService,
-    private AuthService: AuthService
+    private encryptionService: EncryptionService,
+    private arqueoXService: ArqueoXService,
+    private salesReportService: SalesReportService,
+    private storageService: StorageService,
+    private downloadCsvService: DownloadCsvService,
+    private portalUsersService: PortalUsersService,
+    private terminalsService: TerminalsService,
+    private commercesService: CommercesService,
+    private authService: AuthService
   ) {}
 
   size: number = 2147483647;
@@ -60,12 +60,11 @@ export class ReportsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCompleted = false;
-
-    this.StorageService.userInfo.subscribe((user) =>{
-      this.CommercesService.commerceId$.subscribe((commerceId) => {
-        this.PortalUsersService.GetToken(user).subscribe((portalUserToken)=> {
-          this.AuthService.setPortalUsersToken(portalUserToken.token);
-          this.TerminalListService.GetTerminalList().subscribe((terminals) => {
+    this.storageService.userInfo.subscribe((user) =>{
+      this.commercesService.commerceId$.subscribe((commerceId) => {
+        this.portalUsersService.getToken(user).subscribe((portalUserToken)=> {
+          this.authService.setPortalUsersToken(portalUserToken.token);
+          this.terminalsService.getTerminalList().subscribe((terminals) => {
             terminals = terminals.filter(terminal => terminal.commerceId = commerceId);
             if(terminals.length != 0) {
               this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
@@ -168,8 +167,8 @@ export class ReportsComponent implements OnInit {
 
     this.loadCompleted = false;
 
-    this.ArqueoXService.GetArqueoX(this.sinceDateMilli, this.tilDateMilli).subscribe(
-      (arqueo) => {
+    this.arqueoXService.getArqueoX(this.sinceDateMilli, this.tilDateMilli).subscribe((arqueo) => 
+      {
         this.sales = arqueo;
 
         //Calculo de indicadores totales informes
@@ -193,7 +192,7 @@ export class ReportsComponent implements OnInit {
         }
 
         this.loadCompleted = true;
-      },
+      }, 
       (error) => {
         if (error.status == 404) {
           this.loadCompleted = true;
@@ -205,41 +204,41 @@ export class ReportsComponent implements OnInit {
   private getSalesReport() {
     
     this.loadCompleted = false;
-    this.SalesReportService.GetSalesReport(this.sinceDateMilli, this.tilDateMilli).subscribe((salesReport) => {
-
-      this.indexProduct = Object.values(salesReport.aggregations);
-      //Calculo indices totales productos
-      for (let i = 0; i < this.indexProduct.length; i++) {
-        this.totalUnits = this.totalUnits + (this.indexProduct[i].units ?? 2) / Math.pow(10, 3);
-        this.totalUnitsValor = this.totalUnitsValor + this.indexProduct[i].total / Math.pow(10, 8);
-      }
-
-      this.loadCompleted = true;
-    },(error) => {
-      if (error.status == 404) {
-        this.emptySearch = true;
+    this.salesReportService.getSalesReport(this.sinceDateMilli, this.tilDateMilli).subscribe((salesReport) => 
+      {
+        this.indexProduct = Object.values(salesReport.aggregations);
+        //Calculo indices totales productos
+        for (let i = 0; i < this.indexProduct.length; i++) {
+          this.totalUnits = this.totalUnits + (this.indexProduct[i].units ?? 2) / Math.pow(10, 3);
+          this.totalUnitsValor = this.totalUnitsValor + this.indexProduct[i].total / Math.pow(10, 8);
+        }
         this.loadCompleted = true;
+      },(error) => {
+        if (error.status == 404) {
+          this.emptySearch = true;
+          this.loadCompleted = true;
+        }
+        if (error.status == 401){
+          this.storageService.clean();
+        }
       }
-      if (error.status == 401){
-        this.StorageService.clean();
-      }
-    });
+    );
   }
 
   //Encriptación
   sendSalesDetails(id: string) {
-    let code = this.EncryptionService.encryptData(id);
-    code = '/details/' + this.EncryptionService.encode(code);
+    let code = this.encryptionService.encryptData(id);
+    code = '/details/' + this.encryptionService.encode(code);
   }
 
   //Boton Descargar
   downloadReports(){
     if(this.reportVarSearch == 'Impuestos') {
-      this.CsvdownloadService.downloadArqueoXFile(this.sales, 'ArqueoX', "es-ES");
+      this.downloadCsvService.downloadArqueoXFile(this.sales, 'ArqueoX', "es-ES");
     } else if(this.reportVarSearch == 'Productos') {
-      this.CsvdownloadService.downloadSalesReportFile(this.salesReports, 'SalesReport', "es-ES");
+      this.downloadCsvService.downloadSalesReportFile(this.salesReports, 'SalesReport', "es-ES");
     } else if(this.reportVarSearch == 'Métodos de pago') {
-      this.CsvdownloadService.downloadPaymentMethodsFile(this.sales, 'PaymentMethods', "es-ES");
+      this.downloadCsvService.downloadPaymentMethodsFile(this.sales, 'PaymentMethods', "es-ES");
     }
   }
 }

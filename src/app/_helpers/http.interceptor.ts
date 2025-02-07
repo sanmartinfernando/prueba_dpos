@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpHandler, HttpRequest, HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
+import { HttpInterceptor, HttpHandler, HttpRequest, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthService } from '../_services/auth.service';
 import { RestRoutes } from '../_config/rest-routes.config';
 import { SecurityConstants } from '../_config/security-constants.config';
@@ -9,12 +9,11 @@ export class HttpRequestInterceptor implements HttpInterceptor {
 
   constructor(private authService: AuthService) {}
 
-  intercept(req: HttpRequest<any>, next: HttpHandler) {
+  public intercept(req: HttpRequest<any>, next: HttpHandler) {
+    let authReq = req;
     if (req.url.endsWith(RestRoutes.AUTH)) {
       return next.handle(req);
     }
-    let authReq = req;
-
     if (req.url.includes('PortalUsers/commerces') || req.url.includes('PortalUsers/terminals')) {
       const token = this.authService.getPortalUsersToken();
       if (token != null) {

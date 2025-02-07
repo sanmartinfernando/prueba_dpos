@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, Observable, Subject, firstValueFrom } from 'rxjs';
+import { Subject, firstValueFrom } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import { User } from '../_models/user.model';
 import Helper from '../_helpers/helper';
@@ -9,29 +9,25 @@ import { LoginRequest } from '../_models/login-request.model';
 import { StringConstants } from '../_config/string-constants';
 import { AuthRequest } from '../_models/auth-request.model';
 
-const httpOptions = {
-  headers: new HttpHeaders({
-    'Content-Type': 'application/json',
-  }),
-};
-
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
+
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+    }),
+  };
+
   public configObservable = new Subject<User>();
-
-  isLoggedIn: boolean = false;
-  _storageService;
-
-  portalUsersToken;
+  public portalUsersToken: string;
 
   constructor(private http: HttpClient) {}
 
   async login(UserName: string, Password: string): Promise<string> {
-    let urlLogin: string = `${environment.urlAuth}${RestRoutes.AUTHPU}/login`;
-    //let urlLogin: string = `${environment.urlAuth}${RestRoutes.AUTH}/login`;
-    console.log(urlLogin);
+
+    let urlLogin: string = `${environment.urlAuth}${RestRoutes.AUTH_PORTALUSERS}/login`;
     var loginRequest = new LoginRequest();
     loginRequest.userName = UserName;
     loginRequest.password = Password;
@@ -43,27 +39,24 @@ export class AuthService {
       },
       body: JSON.stringify(loginRequest),
     })
-      .then(Helper.handleErrors)
-      .then((response) => response.json())
-      .then(async (result) => {
-        console.log(result);
-        this.saveToken(result.token);
-        this.saveUserName(loginRequest.userName);
-        let validation = await this.validate();
-        console.log(validation);
-        var userInfo = new User();
-        userInfo.user = loginRequest.userName;
-        userInfo.pwd = loginRequest.password;
-        this.loginEvent(userInfo);
-      });
-
+    .then(Helper.handleErrors)
+    .then((response) => response.json())
+    .then(async (result) => {
+      console.log(result);
+      this.saveToken(result.token);
+      this.saveUserName(loginRequest.userName);
+      let validation = await this.validate();
+      console.log(validation);
+      var userInfo = new User();
+      userInfo.user = loginRequest.userName;
+      userInfo.pwd = loginRequest.password;
+      this.loginEvent(userInfo);
+    });
 
     let urlLogin2: string = `${environment.urlAuth}${RestRoutes.AUTH}/authorize`;
-    console.log(urlLogin2);
     var loginRequest2 = new AuthRequest();
     loginRequest2.clientKey = 'F0F0427E-FDDF-4A0F-910B-7FE1075BE366';
     loginRequest2.secretKey = 'j5$R8N3DB1my';
-    console.log(loginRequest2);
     await fetch(urlLogin2, {
       method: 'POST',
       headers: {
@@ -72,36 +65,30 @@ export class AuthService {
       },
       body: JSON.stringify(loginRequest2),
     })
-      .then(Helper.handleErrors)
-      .then((response) => response.json())
-      .then(async (result) => {
-        console.log(result);
-        window.localStorage.removeItem(StringConstants.TOKEN_KEY2);
-        window.localStorage.setItem(StringConstants.TOKEN_KEY2, result.token);
-        let validation = await this.validate();
-        console.log(validation);
-      });
-    return this.getToken(); // llamar al obs de actualizar usuario en todos lados
+    .then(Helper.handleErrors)
+    .then((response) => response.json())
+    .then(async (result) => {
+      console.log(result);
+      window.localStorage.removeItem(StringConstants.TOKEN_KEY2);
+      window.localStorage.setItem(StringConstants.TOKEN_KEY2, result.token);
+      let validation = await this.validate();
+      console.log(validation);
+    });
+    return this.getToken();
   }
 
   async validate(): Promise<object> {
     let url: string = `${environment.urlAuth}${RestRoutes.AUTH}/validate`;
-    return firstValueFrom(this.http.post(url, httpOptions));
+    return firstValueFrom(this.http.post(url, this.httpOptions));
   }
 
   async getUserInfo(): Promise<User> {
     let urlUser: string = `${environment.urlAuth}${RestRoutes.USER}`;
-    return firstValueFrom(this.http.get<User>(urlUser, httpOptions));
+    return firstValueFrom(this.http.get<User>(urlUser, this.httpOptions));
   }
+  
   loginEvent(user: User) {
     this.configObservable.next(user);
-  }
-  setLoggedIn() {
-    this.isLoggedIn = true;
-  }
-
-  getLoggedIn() {
-    return this.isLoggedIn;
   }
 
   logOut() {
@@ -143,8 +130,7 @@ export class AuthService {
   public setPortalUsersToken(token: string) {
     return this.portalUsersToken = token;
   }
-
-
+  
   public clearToken(): void {
     window.localStorage.removeItem(StringConstants.TOKEN_KEY);
   }

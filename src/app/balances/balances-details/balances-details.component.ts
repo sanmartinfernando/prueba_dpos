@@ -1,8 +1,8 @@
-import { DownloadPDFService } from './../../_services/downloadpdf.service';
-import { Balancedetailid } from './../../_services/balancedetailid.service';
+import { DownloadPDFService } from '../../_services/download-pdf.service';
+import { BalancesService } from '../../_services/balances.service';
 import { EncryptionService } from './../../_services/encryption.service';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Data, Router, Routes } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { StorageService } from 'src/app/_services/storage.service';
 import { Balance } from 'src/app/_models/balance.model';
@@ -12,7 +12,7 @@ import { Balance } from 'src/app/_models/balance.model';
   templateUrl: './balances-details.component.html',
   styleUrls: []
 })
-export class BalancesDetailsComponent implements OnInit{
+export class BalancesDetailsComponent implements OnInit {
 
   balances : Balance;
   isLoggedIn:boolean = true;
@@ -22,60 +22,51 @@ export class BalancesDetailsComponent implements OnInit{
   itemTypeTax2 = 2;
   itemTypeTax3 = 3;
   Math = Math;
-
   loadCompleted: boolean = false;
   element = true;
-
   balancesId:string;
   index:any;
 
-
-  constructor(private route:ActivatedRoute ,
-    private httpClient: HttpClient,
-    private EncryptionService: EncryptionService,
-    private paramsUrl: ActivatedRoute,
-    private BalancedetailidService: Balancedetailid,
-    private DownloadPDFService: DownloadPDFService,
-    private StorageService: StorageService) {
+  constructor(private encryptionService: EncryptionService,
+    private activatedRoute: ActivatedRoute,
+    private balancesService: BalancesService,
+    private downloadPDFService: DownloadPDFService,
+    private storageService: StorageService) {
   }
-
+  
   ngOnInit(): void {
-    let iddecode = this.EncryptionService.decode(this.paramsUrl.snapshot.params['id']);
-    this.balancesId = this.EncryptionService.decrypt(iddecode);
-    this.BalancedetailidService.GetBalanceDetail(this.balancesId).subscribe(ticketBalances=>{
+    let iddecode = this.encryptionService.decode(this.activatedRoute.snapshot.params['id']);
+    this.balancesId = this.encryptionService.decrypt(iddecode);
+    this.balancesService.getBalanceDetail(this.balancesId).subscribe(ticketBalances=> {
       this.balances=ticketBalances;
       this.loadCompleted = true;
-  },
-  (error) => {
-    if (error.status == 401) {
-      this.isLoggedIn = false;
-      this.StorageService.clean();
-    };
+    },
+    (error) => {
+      if (error.status == 401) {
+        this.isLoggedIn = false;
+        this.storageService.clean();
+      };
+    });
   }
-);
-}
-
-
+  
   donwloadPDF(){
-    this.DownloadPDFService.downloadFile(this.balancesId)
+    this.downloadPDFService.downloadBalancesFile(this.balancesId);
   }
-
-
 
   itemType(arr :any[]){
     return arr.filter(item=> item.ItemType === this.itemTypeTax);
   }
+
   itemType2(arr :any[]){
     return arr.filter(item=> item.ItemType === this.itemTypeTax2);
   }
+
   itemType3(arr :any[]){
     return arr.filter(item=> item.ItemType === this.itemTypeTax3);
   }
+
   getDecimal(x :any){
-    x = (x /100).toFixed(2).replace(".", ",")
-    return x
+    x = (x /100).toFixed(2).replace(".", ",");
+    return x;
   }
 }
-
-
-

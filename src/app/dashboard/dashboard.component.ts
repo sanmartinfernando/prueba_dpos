@@ -1,9 +1,9 @@
-import { CashmovementsAggregateService } from './../_services/cashmovements-aggregate.service';
-import { OrdersAggregateService } from './../_services/orders-aggregate.service';
+import { CashMovementsService } from '../_services/cash-movements.service';
+import { OrdersService } from '../_services/orders.service';
 import { Component, OnInit } from '@angular/core';
 import { OrderAggregation } from '../_models/order-aggregation.model';
 import { PortalUsersService } from '../_services/portal-users.service';
-import { TerminalListService } from '../_services/terminal-list.service';
+import { TerminalsService } from '../_services/terminals.service';
 import { AuthService } from '../_services/auth.service';
 import { Terminal } from '../_models/terminal.model';
 import { CommercesService } from '../_services/commerces.service';
@@ -16,6 +16,7 @@ import { PaymentMethodsFilter } from '../_models/_filters/payment-methods.filter
 import { Top3Filter } from '../_models/_filters/top3.filter';
 import { TopProductsFilter } from '../_models/_filters/top-products.filter';
 import { StorageService } from '../_services/storage.service';
+import { FilterStep } from '../_models/_filters/filters.interface';
 
 @Component({
   selector: 'DPOSW-dashboard',
@@ -138,11 +139,11 @@ export class DashboardComponent implements OnInit {
   public colorsTop3 = [];
 
   constructor(
-    private OrdersAggregateService: OrdersAggregateService,
-    private CashmovementsAggregateService: CashmovementsAggregateService,
-    private PortalUsersService: PortalUsersService,
-    private TerminalListService: TerminalListService,
-    private CommercesService: CommercesService,
+    private ordersService: OrdersService,
+    private cashMovementsService: CashMovementsService,
+    private portalUsersService: PortalUsersService,
+    private terminalsService: TerminalsService,
+    private commercesService: CommercesService,
     private storageService: StorageService,
     private authService: AuthService
   ) {
@@ -155,11 +156,11 @@ export class DashboardComponent implements OnInit {
   public ngOnInit(): void {
     
     this.storageService.userInfo.subscribe((user) =>{
-      this.CommercesService.commerceId$.subscribe((commerceId) => {
+      this.commercesService.commerceId$.subscribe((commerceId) => {
         this.commerceId = commerceId;
-        this.PortalUsersService.GetToken(user).subscribe((portalUserToken)=> {
+        this.portalUsersService.getToken(user).subscribe((portalUserToken)=> {
           this.authService.setPortalUsersToken(portalUserToken.token);
-          this.TerminalListService.GetTerminalList().subscribe((terminals) => {
+          this.terminalsService.getTerminalList().subscribe((terminals) => {
             this.terminals = terminals.filter(terminal => terminal.commerceId = this.commerceId);
             if(this.terminals.length != 0) {
               this.terminalsNumber = this.terminals.map(terminal => terminal.terminalNumber);
@@ -424,7 +425,7 @@ export class DashboardComponent implements OnInit {
     //Se establece el filtro de búsqueda de type en la variable a 0 para filtrar por operaciones de venta
     this.idEvo[1].$match.type = 0;
     //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
-    this.OrdersAggregateService.GetAggregationOrder(this.idEvo).subscribe((aggregationsEvo) => {
+    this.ordersService.getOrderAggregate(this.idEvo).subscribe((aggregationsEvo) => {
         //Actualzamos los colores de las barras
         for (let i = 0; i < this.colorsKPI.length; i++) {
           this.colorsKPI[i].value = this.colors[0];
@@ -453,7 +454,7 @@ export class DashboardComponent implements OnInit {
     //Se establece el filtro de búsqueda de type en la variable a 2 para filtrar por operaciones de devolución
     this.idEvo[1].$match.type = 2;
     //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
-    this.OrdersAggregateService.GetAggregationOrder(this.idEvo).subscribe((aggregationsEvo) => {
+    this.ordersService.getOrderAggregate(this.idEvo).subscribe((aggregationsEvo) => {
         //Actualzamos los colores de las barras
         for (let i = 0; i < this.colorsKPI.length; i++) {
           this.colorsKPI[i].value = this.colors[2];
@@ -482,7 +483,7 @@ export class DashboardComponent implements OnInit {
     //Se establece el filtro de búsqueda de type en la variable a 0 para filtrar por operaciones de venta
     this.idEvo[1].$match.type = 0;
     //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
-    this.OrdersAggregateService.GetAggregationOrder(this.idEvo).subscribe((aggregationsEvo) => {
+    this.ordersService.getOrderAggregate(this.idEvo).subscribe((aggregationsEvo) => {
         //Actualzamos los colores de las barras
         for (let i = 0; i < this.colorsKPI.length; i++) {
           this.colorsKPI[i].value = this.colors[1];
@@ -512,7 +513,7 @@ export class DashboardComponent implements OnInit {
     let valueGraphArrayIn = new Array(12);
     let valueGraphArrayOut = new Array(12);
     //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal y intervalo de tiempo)
-    this.CashmovementsAggregateService.GetAggregationCashMovementsEvo(this.idEvoCM).subscribe((aggregationsEvoIn) => {
+    this.cashMovementsService.getCashMovementsAggregate(this.idEvoCM).subscribe((aggregationsEvoIn) => {
       //Actualzamos los colores de las barras
       for (let i = 0; i < this.colorsKPI.length; i++) {
         this.colorsKPI[i].value = this.colors[3];
@@ -552,7 +553,7 @@ export class DashboardComponent implements OnInit {
     let valueGraphArrayRect = new Array(12);
     let valueGraphArrayRefunds = new Array(12);
     //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
-    this.OrdersAggregateService.GetAggregationOrderEvo(this.idEvoResults).subscribe((aggregationsEvoOrder) => {
+    this.ordersService.getOrderAggregate(this.idEvoResults).subscribe((aggregationsEvoOrder) => {
       //Actualzamos los colores de las barras
       for (let i = 0; i < this.colorsKPI.length; i++) {
         this.colorsKPI[i].value = this.colors[4];
@@ -602,7 +603,7 @@ export class DashboardComponent implements OnInit {
    private getKPIs() {
 
     //Llamada a la API para obtener los datos agregados de que se muestran en la sección KPIs de movimientos de caja
-    this.CashmovementsAggregateService.GetAggregationCashMovements(this.idCM).subscribe(
+    this.cashMovementsService.getCashMovementsAggregate(this.idCM).subscribe(
       (aggregationsCM) => {
         this.cashMovementsResult = (aggregationsCM[0].total / Math.pow(10, aggregationsCM[0].decimals)) - (aggregationsCM[1].total / Math.pow(10, aggregationsCM[1].decimals));
         this.cashMovementsOperationsResult = aggregationsCM[0].count + aggregationsCM[1].count;
@@ -610,7 +611,7 @@ export class DashboardComponent implements OnInit {
     );
 
     //Comunicación con API para obtener los datos agregados que se muestran como base al iniciar la página en la sección de KPIs
-    this.OrdersAggregateService.GetAggregationOrder(this.idOrders).subscribe(
+    this.ordersService.getOrderAggregate(this.idOrders).subscribe(
       (aggregation) => {
         this.aggregations = aggregation;
         this.ordersResult = {total: 0, count: 0};
@@ -660,10 +661,10 @@ export class DashboardComponent implements OnInit {
     this.loadedTPChart = false;
 
     //Llamada a la API para obtener el total de productos vendidos
-    this.OrdersAggregateService.GetAggregationOrderTop3(this.idTP).subscribe(
+    this.ordersService.getOrderTop3Aggregate(this.idTP).subscribe(
       (aggregationsTP) => {
         //Llamada a la API para obtener los datos del gráfico de top 3 más vendidos
-        this.OrdersAggregateService.GetAggregationOrderTop3(this.idT3).subscribe(
+        this.ordersService.getOrderTop3Aggregate(this.idT3).subscribe(
           (aggregationsTop3) => {
             //Se asocian los datos del objeto respuesta con los campos correspondientes del array de valores del gráfico
             let sumaTP = 0;
@@ -692,7 +693,7 @@ export class DashboardComponent implements OnInit {
 
     this.loadedPMChart = false;
     //Llamada a la API para obtener los métodos de pago
-    this.OrdersAggregateService.GetAggregationOrder(this.idPM).subscribe((aggregationsPM) => {
+    this.ordersService.getOrderAggregate(this.idPM).subscribe((aggregationsPM) => {
         //Se reinicia el array de datos del gráfico
         for (let i = 0; i < this.datasetPM.length; i++) {
           this.datasetPM[i].value = 0;

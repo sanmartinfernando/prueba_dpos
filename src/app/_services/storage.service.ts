@@ -1,16 +1,14 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { User } from '../_models/user.model';
 import { AuthService } from './auth.service';
 import { StringConstants } from '../_config/string-constants';
-
 
 @Injectable({
   providedIn: 'root'
 })
 export class StorageService {
 
-  private authSuscription!: Subscription;
   public userInfo = new BehaviorSubject(this.getUser());
   private loggedin: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
   public loggedin$: Observable<boolean>= this.loggedin.asObservable();
@@ -19,9 +17,7 @@ export class StorageService {
   component: string;
 
   constructor(private authService: AuthService) {
-    this.authSuscription = this.authService.configObservable.subscribe(user => {
-      console.log('xxxxxxxxxxxxxxxxxxxxxxxx');
-      console.log(user);
+    this.authService.configObservable.subscribe(user => {
       this.saveUser(user);
     });
   }
@@ -39,7 +35,6 @@ export class StorageService {
   remove(key: string) {
     localStorage.removeItem(key);
   }
-
 
   setUsername(username: string) {
     this.username = username;
@@ -63,30 +58,25 @@ export class StorageService {
     }
     this.userInfo.next(user);
   }
+
   public updateVerifiedEmail() {
-    // actualizar la visualización de email verificado en la web
     let user = this.getUser();
     if (user) {
       user.email_verified = true;
       this.saveUser(user);
     }
   }
+
   public getUser(): any {
     const user = window.localStorage.getItem(StringConstants.USER_KEY);
-    console.log(StringConstants.USER_KEY);
-    console.log(user);
-
     if (user) {
       return JSON.parse(user);
     }
-    console.log('bbb');
-
     return null;
   }
 
   public isLoggedIn(): boolean {
     const user = window.localStorage.getItem(StringConstants.USER_KEY);
-    console.log(user);
     if (user) {
       return true;
     }
@@ -100,27 +90,8 @@ export class StorageService {
   getComponent() {
     return this.component;
   }
-
-
-  public getValidationValue(): any {
-    let validationdata = window.localStorage.getItem(StringConstants.VALIDATIONDATA_KEY);
-    if (validationdata) {
-    } else {
-      validationdata = this.getGuid();
-      window.localStorage.setItem(StringConstants.VALIDATIONDATA_KEY, validationdata);//
-    }
-    return validationdata;
-  }
-  private getGuid(): string {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-      var r = Math.random() * 16 | 0,
-        v = c == 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
-    });
-  }
-
+  
   updateloggin(logginupdated){
     this.loggedin.next(logginupdated)
   }
-
 }
