@@ -32,8 +32,8 @@ export class DetailsComponent implements OnInit {
       this.activatedRoute.snapshot.params['id']
     );
     this.orderId = this.encryptionService.decrypt(iddecode);
-    this.ordersService.getOrderDetail(this.orderId).subscribe((ticketVentas) => 
-      {
+    this.ordersService.getOrderDetail(this.orderId).subscribe({
+      next: (ticketVentas) => {
         this.ticket = ticketVentas;
         this.salesTicketBai = [];
         if (this.ticket.orderTicketBai != null) {
@@ -44,13 +44,13 @@ export class DetailsComponent implements OnInit {
         }
         this.loadCompleted = true;
       } ,
-      (error) => {
+      error: (error) => {
         if (error.status == 401) {
           this.isLoggedIn = false;
           this.storageService.clean();
         };
       }
-    );
+    });
   }
 
   //Calcular valores totales de Orderlines.Subtotal y OrderTaxes.Base

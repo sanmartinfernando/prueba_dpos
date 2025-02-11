@@ -3,7 +3,6 @@ import { BalancesService } from '../../_services/balances.service';
 import { EncryptionService } from './../../_services/encryption.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { StorageService } from 'src/app/_services/storage.service';
 import { Balance } from 'src/app/_models/balance.model';
 
@@ -37,16 +36,20 @@ export class BalancesDetailsComponent implements OnInit {
   ngOnInit(): void {
     let iddecode = this.encryptionService.decode(this.activatedRoute.snapshot.params['id']);
     this.balancesId = this.encryptionService.decrypt(iddecode);
-    this.balancesService.getBalanceDetail(this.balancesId).subscribe(ticketBalances=> {
-      this.balances=ticketBalances;
-      this.loadCompleted = true;
-    },
-    (error) => {
-      if (error.status == 401) {
-        this.isLoggedIn = false;
-        this.storageService.clean();
-      };
-    });
+
+    this.balancesService.getBalanceDetail(this.balancesId).subscribe(
+      {
+        next: (ticketBalances) => {
+          this.balances=ticketBalances;
+          this.loadCompleted = true;
+        },
+        error: (error) => {
+          if (error.status == 401) {
+            this.isLoggedIn = false;
+            this.storageService.clean();
+          };
+        }
+      });
   }
   
   donwloadPDF(){

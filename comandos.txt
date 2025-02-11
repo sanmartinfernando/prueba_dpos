@@ -30,3 +30,6 @@ npm install
 
 # comandos node INICIAR WEB
 node main.js
+
+#Borrar cache
+npm cache clean --force

@@ -42,11 +42,9 @@ export class AuthService {
     .then(Helper.handleErrors)
     .then((response) => response.json())
     .then(async (result) => {
-      console.log(result);
       this.saveToken(result.token);
       this.saveUserName(loginRequest.userName);
       let validation = await this.validate();
-      console.log(validation);
       var userInfo = new User();
       userInfo.user = loginRequest.userName;
       userInfo.pwd = loginRequest.password;
@@ -68,11 +66,9 @@ export class AuthService {
     .then(Helper.handleErrors)
     .then((response) => response.json())
     .then(async (result) => {
-      console.log(result);
       window.localStorage.removeItem(StringConstants.TOKEN_KEY2);
       window.localStorage.setItem(StringConstants.TOKEN_KEY2, result.token);
       let validation = await this.validate();
-      console.log(validation);
     });
     return this.getToken();
   }
@@ -97,7 +93,6 @@ export class AuthService {
   }
 
   public saveUserName(username: any): void {
-    console.log('save:' + username);
     window.localStorage.removeItem(StringConstants.USERNAME_KEY);
     window.localStorage.setItem(StringConstants.USERNAME_KEY, username); //
   }

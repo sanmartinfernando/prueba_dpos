@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { PagesService } from 'src/app/_services/pages.service';
 import { Page } from 'src/app/_models/page.model';
 import { StorageService } from 'src/app/_services/storage.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthService } from 'src/app/_services/auth.service';
 import { Commerce } from 'src/app/_models/commerce.model';
 import { PortalUsersService } from 'src/app/_services/portal-users.service';
@@ -39,24 +39,24 @@ export class HeaderComponent implements OnInit {
       if(user !== undefined && user != null){
         this.isLoggedIn = true;
         this.username = user.user;
-        this.portalUsersService.getToken(user).subscribe(
-          (portalUserToken)=> {
+        this.portalUsersService.getToken(user).subscribe({
+          next: (portalUserToken)=> {
             this.authService.setPortalUsersToken(portalUserToken.token);
-            this.commercesService.getCommerceList().subscribe(
-              (commerces) => {
+            this.commercesService.getCommerceList().subscribe({
+              next: (commerces) => {
                 this.commerces = commerces;
                 this.commerceSelected = commerces[0].commerceNumber
                 this.commercesService.setCommerceId(this.getCommerceId());
               },
-              (error) => {
+              error: (error) => {
                 console.error("Error Commerces: ", error);
               }
-            );
+            });
           },
-          (error) => {
+          error: (error) => {
             console.error("Error Portal user token", error);
           }
-        );
+        });
       }else{
         this.isLoggedIn = false;
       }

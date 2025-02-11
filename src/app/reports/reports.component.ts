@@ -62,25 +62,29 @@ export class ReportsComponent implements OnInit {
     this.loadCompleted = false;
     this.storageService.userInfo.subscribe((user) =>{
       this.commercesService.commerceId$.subscribe((commerceId) => {
-        this.portalUsersService.getToken(user).subscribe((portalUserToken)=> {
-          this.authService.setPortalUsersToken(portalUserToken.token);
-          this.terminalsService.getTerminalList().subscribe((terminals) => {
-            terminals = terminals.filter(terminal => terminal.commerceId = commerceId);
-            if(terminals.length != 0) {
-              this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
-            }
-            this.terminalsNumber.unshift('Todos');
-            this.terminalSelected = this.terminalsNumber[0];
-            this.getArqueoX();
-            this.getSalesReport();
-            this.loadCompleted = true;
+        this.portalUsersService.getToken(user).subscribe({
+          next: (portalUserToken)=> {
+            this.authService.setPortalUsersToken(portalUserToken.token);
+            this.terminalsService.getTerminalList().subscribe({
+              next: (terminals) => {
+                terminals = terminals.filter(terminal => terminal.commerceId = commerceId);
+                if(terminals.length != 0) {
+                  this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
+                }
+                this.terminalsNumber.unshift('Todos');
+                this.terminalSelected = this.terminalsNumber[0];
+                this.getArqueoX();
+                this.getSalesReport();
+                this.loadCompleted = true;
+              },
+              error: (error) => {
+                console.error("Error Commerces: ", error);
+              }
+            });
           },
-          (error) => {
-            console.error("Error Commerces: ", error);
-          });
-        },
-        (error) => {
-          console.error("Error Portal user token", error);
+          error: (error) => {
+            console.error("Error Portal user token", error);
+          }
         });
       });
     });
@@ -88,12 +92,10 @@ export class ReportsComponent implements OnInit {
 
   //Método de búsqueda
   searchSales() {
-
     if (this.terminalSelected == 'Todos') {
       this.terminalSelected = null;
     }
     this.loadCompleted = false;
-
     //Obtención variables fechas
     this.sinceDate = (<HTMLInputElement>(document.getElementById('sinceDate'))).value;
     if(this.sinceDate.length>0){
@@ -103,10 +105,8 @@ export class ReportsComponent implements OnInit {
     if(this.tilDate.length>0){
       this.tilDateMilli = Date.parse(this.tilDate);
     }
-
     //Comienzo query búsqueda
     let varSearch: string = "&qs={'and':[";
-
     //Parámetros de búsqueda activos
     //Terminal
     if (this.terminalSelected != null) {
@@ -128,7 +128,6 @@ export class ReportsComponent implements OnInit {
         varSearch += "{'field':'terminal_number','op':'=','value':'" + this.terminalSelected + "'}";
       }
     }
-
     //Desde fecha
     if (this.sinceDateMilli != undefined) {
       if (this.searchCounter == false) {
@@ -139,7 +138,6 @@ export class ReportsComponent implements OnInit {
       this.emptySearch = false;
       varSearch += "{'field':'CreatedAt','op':'>','value':'" + this.sinceDateMilli + "'}";
     }
-
     //Hasta fecha
     if (this.tilDateMilli > 0) {
       if (this.searchCounter == false) {
@@ -150,11 +148,9 @@ export class ReportsComponent implements OnInit {
       this.emptySearch = false;
       varSearch += "{'field':'CreatedAt','op':'<','value':'" + this.tilDateMilli + "'}";
     }
-
     //Cierre y reseteo de parámetros
     varSearch += ']}';
     this.searchCounter = false;
-
     //Llamada API
     if (this.reportVarSearch == 'Impuestos' || this.reportVarSearch == 'Métodos de pago') {
       this.getArqueoX();
@@ -164,13 +160,10 @@ export class ReportsComponent implements OnInit {
   }
 
   private getArqueoX() {
-
     this.loadCompleted = false;
-
-    this.arqueoXService.getArqueoX(this.sinceDateMilli, this.tilDateMilli).subscribe((arqueo) => 
-      {
+    this.arqueoXService.getArqueoX(this.sinceDateMilli, this.tilDateMilli).subscribe({
+      next: (arqueo) => {
         this.sales = arqueo;
-
         //Calculo de indicadores totales informes
         for (let i = 0; this.sales.balanceLines != null && i < this.sales.balanceLines.length; i++) {
           if (this.sales.balanceLines[i].itemName.substring(0, 3) == 'IVA') {
@@ -190,22 +183,20 @@ export class ReportsComponent implements OnInit {
             this.totalValuePercentage = this.totalValuePercentage + this.sales.balanceLines[i].total / Math.pow(10, this.sales.balanceLines[i].decimals);
           }
         }
-
         this.loadCompleted = true;
       }, 
-      (error) => {
+      error: (error) => {
         if (error.status == 404) {
           this.loadCompleted = true;
         }
       }
-    );
+    });
   }
 
   private getSalesReport() {
-    
     this.loadCompleted = false;
-    this.salesReportService.getSalesReport(this.sinceDateMilli, this.tilDateMilli).subscribe((salesReport) => 
-      {
+    this.salesReportService.getSalesReport(this.sinceDateMilli, this.tilDateMilli).subscribe({
+      next: (salesReport) => {
         this.indexProduct = Object.values(salesReport.aggregations);
         //Calculo indices totales productos
         for (let i = 0; i < this.indexProduct.length; i++) {
@@ -213,7 +204,8 @@ export class ReportsComponent implements OnInit {
           this.totalUnitsValor = this.totalUnitsValor + this.indexProduct[i].total / Math.pow(10, 8);
         }
         this.loadCompleted = true;
-      },(error) => {
+      },
+      error: (error) => {
         if (error.status == 404) {
           this.emptySearch = true;
           this.loadCompleted = true;
@@ -222,7 +214,7 @@ export class ReportsComponent implements OnInit {
           this.storageService.clean();
         }
       }
-    );
+    });
   }
 
   //Encriptación

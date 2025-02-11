@@ -24,7 +24,7 @@ export class BalancesComponent implements OnInit {
     private terminalsService: TerminalsService,
     private commercesService: CommercesService,
     private authService: AuthService) {
-
+    
     }
     
   Math = Math;
@@ -53,24 +53,28 @@ export class BalancesComponent implements OnInit {
   ngOnInit(): void {
     this.storageService.userInfo.subscribe((user) =>{
       this.commercesService.commerceId$.subscribe((commerceId) => {
-        this.portalUsersService.getToken(user).subscribe((portalUserToken)=> {
-          this.authService.setPortalUsersToken(portalUserToken.token);
-          this.terminalsService.getTerminalList().subscribe((terminals) => {
-            terminals = terminals.filter(terminal => terminal.commerceId = commerceId);
-            if(terminals.length != 0) {
-              this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
-            }
-            this.terminalsNumber.unshift('Todos');
-            this.terminalSelected = this.terminalsNumber[0];
-            this.getBalanceInfo();
-            this.loadCompleted = true;
+        this.portalUsersService.getToken(user).subscribe({
+          next: (portalUserToken)=> {
+            this.authService.setPortalUsersToken(portalUserToken.token);
+            this.terminalsService.getTerminalList().subscribe({
+              next: (terminals) => {
+                terminals = terminals.filter(terminal => terminal.commerceId = commerceId);
+                if(terminals.length != 0) {
+                  this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
+                }
+                this.terminalsNumber.unshift('Todos');
+                this.terminalSelected = this.terminalsNumber[0];
+                this.getBalanceInfo();
+                this.loadCompleted = true;
+              },
+              error: (error) => {
+                console.error("Error Commerces: ", error);
+              }
+            });
           },
-          (error) => {
-            console.error("Error Commerces: ", error);
-          });
-        },
-        (error) => {
-          console.error("Error Portal user token", error);
+          error: (error) => {
+            console.error("Error Portal user token", error);
+          }
         });
       });
     });
@@ -78,7 +82,6 @@ export class BalancesComponent implements OnInit {
 
   //Método de búsqueda
   searchSales() {
-
     if( this.terminalSelected == ""){
       this.terminalSelected=null;
     }
@@ -143,14 +146,12 @@ export class BalancesComponent implements OnInit {
     let size: number = 2147483647;
     let selectSales = new Array(3);
     let searchParams0: string = '';
-
-    this.balancesService.getBalanceInfo(size, searchParams0).subscribe(
-      (balanceInfo) => {
+    this.balancesService.getBalanceInfo(size, searchParams0).subscribe({
+      next: (balanceInfo) => {
         this.balances = balanceInfo.data;
         for (let i = 0; i < 3; i++) {
           selectSales[i] = new Array(this.balances.length);
         }
-        
         //Creación de arrays del select del formulario de búsqueda
         //Terminal
         for (let i = 0; i < this.balances.length; i++) {
@@ -170,7 +171,6 @@ export class BalancesComponent implements OnInit {
             }
             counterSelect = false;
           }
-
           //Eliminación espacios en blanco de arrays
           //Terminal
           for (let i = this.balances.length - 1; i >= 0; i--) {
@@ -181,12 +181,12 @@ export class BalancesComponent implements OnInit {
         }
         this.loadCompleted=true;
       },
-      (error) => {
+      error: (error) => {
         if (error.status == 401) {
           this.storageService.clean();
         };
       }
-    );
+    });
   }
 
   //Checkboxes

@@ -39,11 +39,11 @@ export class PwresetComponent {
     this.parameters.confirmPassword = this.userConfirmPassword;
     this.portalUsersService.checkPwdProperties().subscribe((properties) => {
         this.properties = properties;
-        this.portalUsersService.resetPwd(this.parameters).subscribe(
-          (response) => {
+        this.portalUsersService.resetPwd(this.parameters).subscribe({
+          next: (response) => {
             this.response = response;
           },
-           (error) => {
+          error: (error) => {
             if (error.error.Errors != null) {
               for (let i = 0; i < error.error.Errors.length; i++) {
                 if( error.error.Errors[i]== "MinimalLengthNotReached"){
@@ -71,7 +71,7 @@ export class PwresetComponent {
               }
             }
           }
-        );
+        });
       }
     )
   }

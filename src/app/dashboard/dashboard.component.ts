@@ -16,7 +16,6 @@ import { PaymentMethodsFilter } from '../_models/_filters/payment-methods.filter
 import { Top3Filter } from '../_models/_filters/top3.filter';
 import { TopProductsFilter } from '../_models/_filters/top-products.filter';
 import { StorageService } from '../_services/storage.service';
-import { FilterStep } from '../_models/_filters/filters.interface';
 
 @Component({
   selector: 'DPOSW-dashboard',
@@ -154,41 +153,43 @@ export class DashboardComponent implements OnInit {
    * Función de inicialización al cargar la pantalla
    */
   public ngOnInit(): void {
-    
     this.storageService.userInfo.subscribe((user) =>{
       this.commercesService.commerceId$.subscribe((commerceId) => {
         this.commerceId = commerceId;
-        this.portalUsersService.getToken(user).subscribe((portalUserToken)=> {
-          this.authService.setPortalUsersToken(portalUserToken.token);
-          this.terminalsService.getTerminalList().subscribe((terminals) => {
-            this.terminals = terminals.filter(terminal => terminal.commerceId = this.commerceId);
-            if(this.terminals.length != 0) {
-              this.terminalsNumber = this.terminals.map(terminal => terminal.terminalNumber);
-            }
-            this.terminalsNumber.unshift('Todos');
-            this.terminalSelected = this.terminalsNumber[0];
-            
-            //inicializamos los filtros de las llamadas a la API
-            this.idOrders = new OrdersFilter(this.terminalsNumber).idOrders;
-            this.idCM = new CashMovementsFilter(this.terminalsNumber).idCashMovement;
-            this.idEvo = new EvolutionFilter(this.terminalsNumber).idEvo;
-            this.idEvoCM = new EvolutionCMFilter(this.terminalsNumber).idEvoCashMovement;
-            this.idEvoResults = new EvolutionResultsFilter(this.terminalsNumber).idEvoResults;
-            this.idPM = new PaymentMethodsFilter(this.terminalsNumber).idPaymentMethods;
-            this.idT3 = new Top3Filter(this.terminalsNumber).idTop3;
-            this.idTP = new TopProductsFilter(this.terminalsNumber).idTopProducts;
-            
-            this.getKPIs();
-            this.getTop3Chart();
-            this.getPaymentMethodsChart();
-            this.printSalesEvoChart();
+        this.portalUsersService.getToken(user).subscribe({
+          next: (portalUserToken)=> {
+            this.authService.setPortalUsersToken(portalUserToken.token);
+            this.terminalsService.getTerminalList().subscribe({
+              next: (terminals) => {
+                this.terminals = terminals.filter(terminal => terminal.commerceId = this.commerceId);
+                if(this.terminals.length != 0) {
+                  this.terminalsNumber = this.terminals.map(terminal => terminal.terminalNumber);
+                }
+                this.terminalsNumber.unshift('Todos');
+                this.terminalSelected = this.terminalsNumber[0];
+                //inicializamos los filtros de las llamadas a la API
+                this.idOrders = new OrdersFilter(this.terminalsNumber).idOrders;
+                this.idCM = new CashMovementsFilter(this.terminalsNumber).idCashMovement;
+                this.idEvo = new EvolutionFilter(this.terminalsNumber).idEvo;
+                this.idEvoCM = new EvolutionCMFilter(this.terminalsNumber).idEvoCashMovement;
+                this.idEvoResults = new EvolutionResultsFilter(this.terminalsNumber).idEvoResults;
+                this.idPM = new PaymentMethodsFilter(this.terminalsNumber).idPaymentMethods;
+                this.idT3 = new Top3Filter(this.terminalsNumber).idTop3;
+                this.idTP = new TopProductsFilter(this.terminalsNumber).idTopProducts;
+                
+                this.getKPIs();
+                this.getTop3Chart();
+                this.getPaymentMethodsChart();
+                this.printSalesEvoChart();
+              },
+              error: (error) => {
+                console.error("Error Commerces: ", error);
+              }
+            });
           },
-          (error) => {
-            console.error("Error Commerces: ", error);
-          });
-        },
-        (error) => {
-          console.error("Error Portal user token", error);
+          error: (error) => {
+            console.error("Error Portal user token", error);
+          }
         });
       });
     });
@@ -242,11 +243,9 @@ export class DashboardComponent implements OnInit {
    * Método de filtro de búsqueda, modifica los datos mostrados en el apartado de KPIs en tiempo real conforme se cambian en el HTML
    */
   public searchTerminal() {
-    
     //Obtención de variables de búsqueda de año y mes
     this.yearVarSearch = (<HTMLInputElement>(document.getElementById('yearDate'))).value;
     this.monthVarSearch = (<HTMLInputElement>(document.getElementById('monthDate'))).value;
-    
     //Se comprueba si es necesario filtrar por solo año o por año+mes, el if es el caso de solo año
     if (this.monthVarSearch.length == 0 || this.monthVarSearch == 'Todos') {
       //Se obtiene el año inicial (yearMilli) y el año máximo (yearMaxMilli) y se transforma a unicode
@@ -326,16 +325,13 @@ export class DashboardComponent implements OnInit {
 
   //Método de dibujado de gráfico de evolución de KPI
   public fillCharKPIs(event: any) {
-    
     this.loadedKPIChart = false;
-    
     //Se captura el nombre del KPI en el que se clicka para mostrar el gráfico
     let idElement:string = 'sales'; 
     if(event != undefined) {
       let target = event.target as HTMLElement;
       idElement = target.id.slice(0, 5);
     }
-
     //Se atualiza la variable de búsqueda de terminal (en el if se establece el caso de todas las terminales y en el else el de terminal individual)
     if (this.terminalSelected == 'Todos') {
       this.idEvo[1].$match.terminal_number = { $in: this.terminalsNumber };
@@ -346,7 +342,6 @@ export class DashboardComponent implements OnInit {
       this.idEvoCM[1].$match.terminal_number = this.terminalSelected;
       this.idEvoResults[1].$match.terminal_number = this.terminalSelected;
     }
-
     //Se actualiza la variable de búsqueda de intervalo de tiempo, en este caso solo se usa la de año ya que no se permite filtrar por mes
     this.yearVarSearch = (<HTMLInputElement>(document.getElementById('yearDate'))).value;
     this.yearDate = new Date(parseInt(this.yearVarSearch), 0);
@@ -366,7 +361,6 @@ export class DashboardComponent implements OnInit {
         $lt: this.yearMaxMilli,
       };
     }
-
     //Segun el KPI seleccionado: se activa la variable de nombre escogida, se desactiva el resto,
     //y se dibuja el gráfico con los datos correspondientes
     switch (idElement) {
@@ -450,7 +444,6 @@ export class DashboardComponent implements OnInit {
    * Función para mostrar los datos de la evolución de las devoluciones
    */
   private printRefundEvoChart() {
-    
     //Se establece el filtro de búsqueda de type en la variable a 2 para filtrar por operaciones de devolución
     this.idEvo[1].$match.type = 2;
     //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
@@ -479,7 +472,6 @@ export class DashboardComponent implements OnInit {
    * Función para mostrar los datos de la evolución del ticket medio
    */
   private printAverageEvoChart() {
-
     //Se establece el filtro de búsqueda de type en la variable a 0 para filtrar por operaciones de venta
     this.idEvo[1].$match.type = 0;
     //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
@@ -508,7 +500,6 @@ export class DashboardComponent implements OnInit {
    * Función para mostrar los datos de la evolución de los movimientos de caja
    */
   private printCMEvoChart() {
-
     //Se inicializan los array de in y out donde se van a poner los datos de los movimientos de caja positivos y negativos
     let valueGraphArrayIn = new Array(12);
     let valueGraphArrayOut = new Array(12);
@@ -548,7 +539,6 @@ export class DashboardComponent implements OnInit {
    * Función para mostrar los datos de la evolución de los cierres de caja
    */
   private printBalancesEvoChart() {
-
     let valueGraphArraySales = new Array(12);
     let valueGraphArrayRect = new Array(12);
     let valueGraphArrayRefunds = new Array(12);
@@ -601,7 +591,6 @@ export class DashboardComponent implements OnInit {
     * Función para mostrar los datos de todos los KPI 
     */
    private getKPIs() {
-
     //Llamada a la API para obtener los datos agregados de que se muestran en la sección KPIs de movimientos de caja
     this.cashMovementsService.getCashMovementsAggregate(this.idCM).subscribe(
       (aggregationsCM) => {
@@ -609,7 +598,6 @@ export class DashboardComponent implements OnInit {
         this.cashMovementsOperationsResult = aggregationsCM[0].count + aggregationsCM[1].count;
       }
     );
-
     //Comunicación con API para obtener los datos agregados que se muestran como base al iniciar la página en la sección de KPIs
     this.ordersService.getOrderAggregate(this.idOrders).subscribe(
       (aggregation) => {
@@ -619,9 +607,7 @@ export class DashboardComponent implements OnInit {
         this.rectificationsResult = {total: 0, count: 0};
         this.avTicketResult = 0;
         this.balanceResult = 0;
-
         let countAvg = 0;
-
         //Bucle para recorrer el objeto respuesta
         for (let i = 0; i < this.aggregations.length; i++) {
           //If para comprobar si existen datos y el objeto no está vacio
@@ -646,7 +632,6 @@ export class DashboardComponent implements OnInit {
             }
           }
         }
-
         this.balanceResult = this.ordersResult.total - (this.refundsResult.total + this.rectificationsResult.total);
         this.avTicketResult = this.avTicketResult / countAvg;
       }
@@ -657,9 +642,7 @@ export class DashboardComponent implements OnInit {
    * Función para mostrar los datos del gráfico de Top más vendidos
    */
   private getTop3Chart() {
-
     this.loadedTPChart = false;
-
     //Llamada a la API para obtener el total de productos vendidos
     this.ordersService.getOrderTop3Aggregate(this.idTP).subscribe(
       (aggregationsTP) => {
@@ -690,7 +673,6 @@ export class DashboardComponent implements OnInit {
    * Función para mostrar los datos del gráfico de métodos de pago
    */
   private getPaymentMethodsChart() {
-
     this.loadedPMChart = false;
     //Llamada a la API para obtener los métodos de pago
     this.ordersService.getOrderAggregate(this.idPM).subscribe((aggregationsPM) => {

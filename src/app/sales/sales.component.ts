@@ -68,24 +68,28 @@ export class SalesComponent implements OnInit {
     this.loadCompleted = false;
     this.storageService.userInfo.subscribe((user) =>{
       this.commercesService.commerceId$.subscribe((commerceId) => {
-        this.portalUsersService.getToken(user).subscribe((portalUserToken)=> {
-          this.authService.setPortalUsersToken(portalUserToken.token);
-          this.terminalsService.getTerminalList().subscribe((terminals) => {
-            terminals = terminals.filter(terminal => terminal.commerceId = commerceId);
-            if(terminals.length != 0) {
-              this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
-            }
-            this.terminalsNumber.unshift('Todos');
-            this.terminalSelected = this.terminalsNumber[0];
-            this.getOrderInfo();
-            this.loadCompleted = true;
+        this.portalUsersService.getToken(user).subscribe({
+          next: (portalUserToken)=> {
+            this.authService.setPortalUsersToken(portalUserToken.token);
+            this.terminalsService.getTerminalList().subscribe({
+              next: (terminals) => {
+                terminals = terminals.filter(terminal => terminal.commerceId = commerceId);
+                if(terminals.length != 0) {
+                  this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
+                }
+                this.terminalsNumber.unshift('Todos');
+                this.terminalSelected = this.terminalsNumber[0];
+                this.getOrderInfo();
+                this.loadCompleted = true;
+              },
+              error: (error) => {
+                console.error("Error Commerces: ", error);
+              }
+            });
           },
-          (error) => {
-            console.error("Error Commerces: ", error);
-          });
-        },
-        (error) => {
-          console.error("Error Portal user token", error);
+          error: (error) => {
+            console.error("Error Portal user token", error);
+          }
         });
       });
     });
