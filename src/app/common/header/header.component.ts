@@ -86,7 +86,7 @@ export class HeaderComponent implements OnInit {
   }
   
   getCommerceId(): number {
-    const commerce = this.commerces.find(commerce => commerce.commerceNumber = this.commerceSelected);
+    const commerce = this.commerces.find(commerce => commerce.commerceNumber == this.commerceSelected);
     if(commerce != undefined) {
       return commerce.commerceId;
     }

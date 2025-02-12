@@ -73,7 +73,7 @@ export class SalesComponent implements OnInit {
             this.authService.setPortalUsersToken(portalUserToken.token);
             this.terminalsService.getTerminalList().subscribe({
               next: (terminals) => {
-                terminals = terminals.filter(terminal => terminal.commerceId = commerceId);
+                terminals = terminals.filter(terminal => terminal.commerceId == commerceId && terminal.terminalNumber != null);
                 if(terminals.length != 0) {
                   this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
                 }

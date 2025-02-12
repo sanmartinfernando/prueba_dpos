@@ -161,7 +161,8 @@ export class DashboardComponent implements OnInit {
             this.authService.setPortalUsersToken(portalUserToken.token);
             this.terminalsService.getTerminalList().subscribe({
               next: (terminals) => {
-                this.terminals = terminals.filter(terminal => terminal.commerceId = this.commerceId);
+                this.terminals = [];
+                this.terminals = terminals.filter(terminal => terminal.commerceId == this.commerceId && terminal.terminalNumber != null);
                 if(this.terminals.length != 0) {
                   this.terminalsNumber = this.terminals.map(terminal => terminal.terminalNumber);
                 }
