@@ -27,9 +27,6 @@
     </form>
   </div>
   <br />
-  <div *ngIf="loadCompleted==false" class="ms-5 d-flex justify-content-center" style="position: absolute; left: 50%">
-    <div class="spinner-border  text-danger"></div>
-  </div>
   <div class="card">
     <div class="card-body">
       <div class="row mb-4" >
@@ -42,7 +39,11 @@
           </button>
         </div>
       </div>
-      <div class="row">
+
+      <div *ngIf="loadCompleted==false" class="ms-5 d-flex justify-content-center">
+        <div class="spinner-border  text-danger"></div>
+      </div>
+      <div class="row"  *ngIf="loadCompleted">
         <div class="col">
           <div class="table-responsive">
             <table class="table table-hover order-table" data-pagination="true" data-page-size="10">

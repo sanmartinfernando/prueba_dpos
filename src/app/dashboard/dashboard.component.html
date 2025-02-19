@@ -133,10 +133,10 @@
             </ng-template>
             <ng-template #nochart1><br />
               <b><i>{{'dpos.dashboard.nodata.label' | translate}}</i></b></ng-template>
-            <ng-container *ngIf="loadedKPIChart; else nochart1">
+            <ng-container *ngIf="loadedKPIChart; else spinner">
               <ngx-charts-bar-vertical [view]="[1000, 350]" [results]="kpiDataset" [xAxis]="true" [yAxis]="true"
                 [showDataLabel]="true" [dataLabelFormatting]="formatCurrencyLabel" [customColors]="colorsKPI"
-                [animations]="true" *ngIf="loadedKPIChart == true; else spinner">
+                [animations]="true" *ngIf="loadedKPIChart == true; else nochart1">
               </ngx-charts-bar-vertical></ng-container>
           </div>
         </div>
@@ -149,12 +149,12 @@
           <h5 class="mb-4">
             <i class="fa-solid fa-chart-line" style="color: #63e6be; margin-right: 10px"></i><b>{{'dpos.dashboard.topsells.label' | translate}}</b>
           </h5>
-          <ng-container *ngIf="loadedTPChart; else nochart1">
+          <ng-container *ngIf="loadedTPChart; else spinner">
             <ngx-charts-bar-horizontal class="chart-horizontal" [view]="[450, 200]" [results]="datasetTop3" [animations]="true"
               [showDataLabel]="true" [xAxis]="false" [yAxis]="true" [legend]="false" [roundEdges]="true"
               [showXAxisLabel]="true" [showYAxisLabel]="true" [trimYAxisTicks]="false" [barPadding]="20"
               [tooltipDisabled]="true" [dataLabelFormatting]="formatPercentageLabel" [noBarWhenZero]="true" [customColors]="colorsTop3"
-              *ngIf="loadedTPChart == true; else spinner">
+              *ngIf="loadedTPChart == true; else nochart1">
             </ngx-charts-bar-horizontal></ng-container>
         </div>
         <br>
@@ -165,10 +165,10 @@
           <h5 class="mb-4">
             <i class="fa-solid fa-credit-card" style="color: #74c0fc; margin-right: 10px"></i><b>{{'dpos.dashboard.paymentmethods.label' | translate}}</b>
           </h5>
-            <ng-container *ngIf="loadedPMChart; else nochart1">
+            <ng-container *ngIf="loadedPMChart; else spinner">
               <ngx-charts-pie-chart [view]="[500, 250]" [results]="datasetPM" [doughnut]="true" [animations]="true"
                 [labels]="false" [maxLabelLength]="50" rcWidth [tooltipDisabled]="true" [arcWidth]="0.5" [legend]="true"
-                [customColors]="colorsPM" [legendTitle]="''" *ngIf="loadedPMChart == true; else spinner">
+                [customColors]="colorsPM" [legendTitle]="''" *ngIf="loadedPMChart == true; else nochart1">
               </ngx-charts-pie-chart></ng-container>
         </div>
       </div>

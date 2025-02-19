@@ -57,7 +57,7 @@ export class DashboardComponent implements OnInit {
   
   public terminalsNumber: string[];
   private terminals: Terminal[];
-  private commerceId: number = 0;
+  private commerceId: number;
 
   //Variables consulta API
   public aggregations: OrderAggregation[];
@@ -169,19 +169,19 @@ export class DashboardComponent implements OnInit {
                 this.terminalsNumber.unshift('Todos');
                 this.terminalSelected = this.terminalsNumber[0];
                 //inicializamos los filtros de las llamadas a la API
-                this.idOrders = new OrdersFilter(this.terminalsNumber).idOrders;
-                this.idCM = new CashMovementsFilter(this.terminalsNumber).idCashMovement;
-                this.idEvo = new EvolutionFilter(this.terminalsNumber).idEvo;
-                this.idEvoCM = new EvolutionCMFilter(this.terminalsNumber).idEvoCashMovement;
-                this.idEvoResults = new EvolutionResultsFilter(this.terminalsNumber).idEvoResults;
-                this.idPM = new PaymentMethodsFilter(this.terminalsNumber).idPaymentMethods;
-                this.idT3 = new Top3Filter(this.terminalsNumber).idTop3;
-                this.idTP = new TopProductsFilter(this.terminalsNumber).idTopProducts;
+                this.idOrders = new OrdersFilter(this.terminalsNumber, this.commerceId).idOrders;
+                this.idCM = new CashMovementsFilter(this.terminalsNumber, this.commerceId).idCashMovement;
+                this.idEvo = new EvolutionFilter(this.terminalsNumber, this.commerceId).idEvo;
+                this.idEvoCM = new EvolutionCMFilter(this.terminalsNumber, this.commerceId).idEvoCashMovement;
+                this.idEvoResults = new EvolutionResultsFilter(this.terminalsNumber, this.commerceId).idEvoResults;
+                this.idPM = new PaymentMethodsFilter(this.terminalsNumber, this.commerceId).idPaymentMethods;
+                this.idT3 = new Top3Filter(this.terminalsNumber, this.commerceId).idTop3;
+                this.idTP = new TopProductsFilter(this.terminalsNumber, this.commerceId).idTopProducts;
                 
                 this.getKPIs();
                 this.getTop3Chart();
                 this.getPaymentMethodsChart();
-                this.printSalesEvoChart();
+                this.fillCharKPIs(undefined);
               },
               error: (error) => {
                 console.error("Error Commerces: ", error);
@@ -366,6 +366,7 @@ export class DashboardComponent implements OnInit {
     //y se dibuja el gráfico con los datos correspondientes
     switch (idElement) {
       case undefined:
+      default:
       case 'sales':
         this.showSalesVar = true;
         this.showRefundsVar = false;
@@ -406,9 +407,6 @@ export class DashboardComponent implements OnInit {
         this.showResultsVar = true;
         this.printBalancesEvoChart();
         break;
-      default:
-        this.loadedKPIChart = true;
-        break;
     }
   }
 
@@ -421,7 +419,7 @@ export class DashboardComponent implements OnInit {
     this.idEvo[1].$match.type = 0;
     //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
     this.ordersService.getOrderAggregate(this.idEvo).subscribe((aggregationsEvo) => {
-        //Actualzamos los colores de las barras
+      //Actualzamos los colores de las barras
         for (let i = 0; i < this.colorsKPI.length; i++) {
           this.colorsKPI[i].value = this.colors[0];
         }
@@ -476,8 +474,8 @@ export class DashboardComponent implements OnInit {
     //Se establece el filtro de búsqueda de type en la variable a 0 para filtrar por operaciones de venta
     this.idEvo[1].$match.type = 0;
     //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
-    this.ordersService.getOrderAggregate(this.idEvo).subscribe((aggregationsEvo) => {
-        //Actualzamos los colores de las barras
+    this.ordersService.getOrderAggregate(this.idEvo).subscribe((aggregationsEvo) => { 
+      //Actualzamos los colores de las barras
         for (let i = 0; i < this.colorsKPI.length; i++) {
           this.colorsKPI[i].value = this.colors[1];
         }
@@ -593,12 +591,12 @@ export class DashboardComponent implements OnInit {
     */
    private getKPIs() {
     //Llamada a la API para obtener los datos agregados de que se muestran en la sección KPIs de movimientos de caja
-    this.cashMovementsService.getCashMovementsAggregate(this.idCM).subscribe(
-      (aggregationsCM) => {
-        this.cashMovementsResult = (aggregationsCM[0].total / Math.pow(10, aggregationsCM[0].decimals)) - (aggregationsCM[1].total / Math.pow(10, aggregationsCM[1].decimals));
-        this.cashMovementsOperationsResult = aggregationsCM[0].count + aggregationsCM[1].count;
-      }
-    );
+    //this.cashMovementsService.getCashMovementsAggregate(this.idCM).subscribe(
+    //  (aggregationsCM) => {
+    //    this.cashMovementsResult = (aggregationsCM[0].total / Math.pow(10, aggregationsCM[0].decimals)) - (aggregationsCM[1].total / Math.pow(10, aggregationsCM[1].decimals));
+    //    this.cashMovementsOperationsResult = aggregationsCM[0].count + aggregationsCM[1].count;
+    //  }
+    //);
     //Comunicación con API para obtener los datos agregados que se muestran como base al iniciar la página en la sección de KPIs
     this.ordersService.getOrderAggregate(this.idOrders).subscribe(
       (aggregation) => {

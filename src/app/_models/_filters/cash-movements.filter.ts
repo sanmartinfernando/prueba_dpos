@@ -4,10 +4,11 @@ export class CashMovementsFilter {
 
   public idCashMovement: FilterStep[];
   private terminalsId: string[];
+  private commerceId: number;
   private fromDate: number;
   private toDate: number;
 
-  constructor(terminalsId: string[], fromDate?: number, toDate?: number) {
+  constructor(terminalsId: string[], commerceId: number, fromDate?: number, toDate?: number) {
 
     this.terminalsId = terminalsId;
     this.fromDate = fromDate ?? 1704063600000;
@@ -17,6 +18,7 @@ export class CashMovementsFilter {
       {
         $match: {
           terminal_number: { $in: this.terminalsId },
+          commerce_id: { $eq: this.commerceId },
           created_at: { $gt: this.fromDate, $lt: this.toDate },
         },
       },

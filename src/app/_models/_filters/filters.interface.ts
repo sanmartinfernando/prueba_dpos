@@ -13,6 +13,7 @@ interface Unwind {
 interface Match {
   $match: {
     terminal_number: { $in: string[] };
+    commerce_id?: { $eq: number };
     type?: number;
     created_at: { $gt: number; $lt: number };
   };

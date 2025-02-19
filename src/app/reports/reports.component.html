@@ -36,10 +36,6 @@
     </form>
   </div>
   <br />
-  <!-- Load -->
-  <div *ngIf="loadCompleted == false" class="d-flex justify-content-center" style="position: absolute; left: 50%">
-    <div class="spinner-border text-danger"></div>
-  </div>
   <!-- Tabla e indicadores -->
   <br />
   <div class="card">
@@ -57,12 +53,15 @@
           </button>
          </div>
       </div>
+      <div *ngIf="loadCompleted == false" class="d-flex justify-content-center">
+        <div class="spinner-border text-danger"></div>
+      </div>
       <!-- Tabla vacia -->
       <div class="row" *ngIf="reportVarSearch == null">
         <b>{{'dpos.reports.selectreport.label' | translate}}</b>
       </div>
       <!-- Tabla impuestos-->
-      <div class="row" *ngIf="reportVarSearch == 'Impuestos'">
+      <div class="row" *ngIf="reportVarSearch == 'Impuestos' && loadCompleted">
         <div class="col">
           <div class="table-responsive">
             <table class="table table-hover order-table" data-pagination="true" data-page-size="10">
@@ -105,7 +104,7 @@
         </div>
       </div>
       <!-- Tabla productos -->
-      <div class="row" *ngIf="reportVarSearch == 'Productos'">
+      <div class="row" *ngIf="reportVarSearch == 'Productos' && loadCompleted">
         <div class="col">
           <div class="table-responsive">
             <table class="table table-hover order-table" data-pagination="true" data-page-size="10">
@@ -146,7 +145,7 @@
         </div>
       </div>
       <!-- Tabla métodos de pago -->
-      <div class="row" *ngIf="reportVarSearch == 'Métodos de pago'">
+      <div class="row" *ngIf="reportVarSearch == 'Métodos de pago' && loadCompleted">
         <div class="col">
           <div class="table-responsive">
             <table class="table table-hover order-table" data-pagination="true" data-page-size="10">
