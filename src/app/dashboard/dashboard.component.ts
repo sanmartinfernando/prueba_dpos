@@ -244,79 +244,45 @@ export class DashboardComponent implements OnInit {
    * Método de filtro de búsqueda, modifica los datos mostrados en el apartado de KPIs en tiempo real conforme se cambian en el HTML
    */
   public searchTerminal() {
+
+    let fromDate:number = 0;
+    let toDate:number = 0;
+    let terminalsSelected: any;
+
     //Obtención de variables de búsqueda de año y mes
     this.yearVarSearch = (<HTMLInputElement>(document.getElementById('yearDate'))).value;
     this.monthVarSearch = (<HTMLInputElement>(document.getElementById('monthDate'))).value;
+
     //Se comprueba si es necesario filtrar por solo año o por año+mes, el if es el caso de solo año
     if (this.monthVarSearch.length == 0 || this.monthVarSearch == 'Todos') {
       //Se obtiene el año inicial (yearMilli) y el año máximo (yearMaxMilli) y se transforma a unicode
       this.yearDate = new Date(parseInt(this.yearVarSearch), 0);
-      this.yearMilli = this.yearDate.getTime();
-      this.yearMaxMilli = this.yearMilli + 31536000000;
-      //Se actualizan las variables de búsqueda en el apartado de intervalo de fecha para enviar la consulta a la API
-      this.idOrders[1].$match.created_at = {
-        $gt: this.yearMilli,
-        $lt: this.yearMaxMilli,
-      };
-      this.idCM[0].$match.created_at = {
-        $gt: this.yearMilli,
-        $lt: this.yearMaxMilli,
-      };
-      this.idPM[1].$match.created_at = {
-        $gt: this.yearMilli,
-        $lt: this.yearMaxMilli,
-      };
-      this.idT3[0].$match.created_at = {
-        $gt: this.yearMilli,
-        $lt: this.yearMaxMilli,
-      };
-      this.idTP[0].$match.created_at = {
-        $gt: this.yearMilli,
-        $lt: this.yearMaxMilli,
-      };
+      fromDate = this.yearDate.getTime();
+      toDate = this.yearMilli + 31536000000;
     //En el else se contempla el caso de que la búsqueda se realice con año+mes
     } else {
       //Se obtienen las variables de fechas (inicial (dateMilli) y max (dateMaxMilli)) teniendo en cuenta la variable de búsqueda de año y mes, se pasan a unicode
       this.yearDate = new Date(parseInt(this.yearVarSearch), parseInt(this.monthVarSearch) - 1);
-      this.dateMilli = this.yearDate.getTime();
+      fromDate = this.yearDate.getTime();
       this.yearMaxDate = new Date(parseInt(this.yearVarSearch), parseInt(this.monthVarSearch));
-      this.dateMaxMilli = this.yearMaxDate.getTime();
-      //Se actualizan las variables de búsqueda en el apartado de intervalo de fecha para enviar la consulta a la API
-      this.idOrders[1].$match.created_at = {
-        $gt: this.dateMilli,
-        $lt: this.dateMaxMilli,
-      };
-      this.idCM[0].$match.created_at = {
-        $gt: this.dateMilli,
-        $lt: this.dateMaxMilli,
-      };
-      this.idPM[1].$match.created_at = {
-        $gt: this.dateMilli,
-        $lt: this.dateMaxMilli,
-      };
-      this.idT3[0].$match.created_at = {
-        $gt: this.dateMilli,
-        $lt: this.dateMaxMilli,
-      };
-      this.idTP[0].$match.created_at = {
-        $gt: this.dateMilli,
-        $lt: this.dateMaxMilli,
-      };
+      toDate = this.yearMaxDate.getTime();
     }
+
     //Si se selecciona el valor "Todos", se establece con todos los números de terminal
     if (this.terminalSelected == 'Todos') {
-      this.idOrders[1].$match.terminal_number = { $in: this.terminalsNumber };
-      this.idCM[0].$match.terminal_number = { $in: this.terminalsNumber };
-      this.idPM[1].$match.terminal_number = { $in: this.terminalsNumber };
-      this.idT3[0].$match.terminal_number = { $in: this.terminalsNumber };
-      this.idTP[0].$match.terminal_number = { $in: this.terminalsNumber };
+      terminalsSelected = this.terminalsNumber;
     } else {
-      this.idOrders[1].$match.terminal_number = this.terminalSelected;
-      this.idCM[0].$match.terminal_number = this.terminalSelected;
-      this.idPM[1].$match.terminal_number = this.terminalSelected;
-      this.idT3[0].$match.terminal_number = this.terminalSelected;
-      this.idTP[0].$match.terminal_number = this.terminalSelected;
+      terminalsSelected = this.terminalSelected;
     }
+
+    this.idOrders = new OrdersFilter(terminalsSelected, this.commerceId, fromDate, toDate).idOrders;
+    this.idCM = new CashMovementsFilter(terminalsSelected, this.commerceId, fromDate, toDate).idCashMovement;
+    this.idEvo = new EvolutionFilter(terminalsSelected, this.commerceId, fromDate, toDate).idEvo;
+    this.idEvoCM = new EvolutionCMFilter(terminalsSelected, this.commerceId, fromDate, toDate).idEvoCashMovement;
+    this.idEvoResults = new EvolutionResultsFilter(terminalsSelected, this.commerceId, fromDate, toDate).idEvoResults;
+    this.idPM = new PaymentMethodsFilter(terminalsSelected, this.commerceId, fromDate, toDate).idPaymentMethods;
+    this.idT3 = new Top3Filter(terminalsSelected, this.commerceId, fromDate, toDate).idTop3;
+    this.idTP = new TopProductsFilter(terminalsSelected, this.commerceId, fromDate, toDate).idTopProducts;
 
     this.getKPIs();
     this.getTop3Chart();
@@ -326,42 +292,16 @@ export class DashboardComponent implements OnInit {
 
   //Método de dibujado de gráfico de evolución de KPI
   public fillCharKPIs(event: any) {
+
     this.loadedKPIChart = false;
+
     //Se captura el nombre del KPI en el que se clicka para mostrar el gráfico
     let idElement:string = 'sales'; 
     if(event != undefined) {
       let target = event.target as HTMLElement;
       idElement = target.id.slice(0, 5);
     }
-    //Se atualiza la variable de búsqueda de terminal (en el if se establece el caso de todas las terminales y en el else el de terminal individual)
-    if (this.terminalSelected == 'Todos') {
-      this.idEvo[1].$match.terminal_number = { $in: this.terminalsNumber };
-      this.idEvoCM[1].$match.terminal_number = { $in: this.terminalsNumber };
-      this.idEvoResults[1].$match.terminal_number = { $in: this.terminalsNumber };
-    } else {
-      this.idEvo[1].$match.terminal_number = this.terminalSelected;
-      this.idEvoCM[1].$match.terminal_number = this.terminalSelected;
-      this.idEvoResults[1].$match.terminal_number = this.terminalSelected;
-    }
-    //Se actualiza la variable de búsqueda de intervalo de tiempo, en este caso solo se usa la de año ya que no se permite filtrar por mes
-    this.yearVarSearch = (<HTMLInputElement>(document.getElementById('yearDate'))).value;
-    this.yearDate = new Date(parseInt(this.yearVarSearch), 0);
-    this.yearMilli = this.yearDate.getTime();
-    this.yearMaxMilli = this.yearMilli + 31536000000;
-    if (this.yearMilli && this.yearMaxMilli != 0) {
-      this.idEvo[1].$match.created_at = {
-        $gt: this.yearMilli,
-        $lt: this.yearMaxMilli,
-      };
-      this.idEvoCM[1].$match.created_at = {
-        $gt: this.yearMilli,
-        $lt: this.yearMaxMilli,
-      };
-      this.idEvoResults[1].$match.created_at = {
-        $gt: this.yearMilli,
-        $lt: this.yearMaxMilli,
-      };
-    }
+    
     //Segun el KPI seleccionado: se activa la variable de nombre escogida, se desactiva el resto,
     //y se dibuja el gráfico con los datos correspondientes
     switch (idElement) {
@@ -417,22 +357,29 @@ export class DashboardComponent implements OnInit {
 
     //Se establece el filtro de búsqueda de type en la variable a 0 para filtrar por operaciones de venta
     this.idEvo[1].$match.type = 0;
+
+    //Actualzamos los colores de las barras
+    for (let i = 0; i < this.colorsKPI.length; i++) {
+      this.colorsKPI[i].value = this.colors[0];
+    }
+    //Se inicializan los valores
+    for (let i = 0; i < this.kpiDataset.length; i++) {
+        this.kpiDataset[i].value = 0;
+    }
+
     //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
     this.ordersService.getOrderAggregate(this.idEvo).subscribe((aggregationsEvo) => {
-      //Actualzamos los colores de las barras
-        for (let i = 0; i < this.colorsKPI.length; i++) {
-          this.colorsKPI[i].value = this.colors[0];
-        }
-        //Se inicializan los valores
-        for (let i = 0; i < this.kpiDataset.length; i++) {
-            this.kpiDataset[i].value = 0;
-        }
+
         //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
         for (let i = 0; i < aggregationsEvo.length; i++) {
+          console.log(this.kpiDataset[aggregationsEvo[i]._id - 1]);
+          console.log(this.kpiDataset[aggregationsEvo[i]._id - 1].value);
+          console.log(aggregationsEvo[i].total / 100);
           this.kpiDataset[aggregationsEvo[i]._id - 1].value = aggregationsEvo[i].total / 100;
         }
         //Se actualiza el array de datos del gráfico para que se dibujen los nuevos datos introducidos
         this.kpiDataset = [...this.kpiDataset];
+
         //Variables de carga de gráficos se ponen en true
         this.loadedKPIChart = true;
       }
@@ -591,12 +538,13 @@ export class DashboardComponent implements OnInit {
     */
    private getKPIs() {
     //Llamada a la API para obtener los datos agregados de que se muestran en la sección KPIs de movimientos de caja
-    //this.cashMovementsService.getCashMovementsAggregate(this.idCM).subscribe(
-    //  (aggregationsCM) => {
-    //    this.cashMovementsResult = (aggregationsCM[0].total / Math.pow(10, aggregationsCM[0].decimals)) - (aggregationsCM[1].total / Math.pow(10, aggregationsCM[1].decimals));
-    //    this.cashMovementsOperationsResult = aggregationsCM[0].count + aggregationsCM[1].count;
-    //  }
-    //);
+    this.cashMovementsService.getCashMovementsAggregate(this.idCM).subscribe(
+      (aggregationsCM) => {
+        this.cashMovementsResult = (aggregationsCM[0].total / Math.pow(10, aggregationsCM[0].decimals)) - (aggregationsCM[1].total / Math.pow(10, aggregationsCM[1].decimals));
+        this.cashMovementsOperationsResult = aggregationsCM[0].count + aggregationsCM[1].count;
+      }
+    );
+
     //Comunicación con API para obtener los datos agregados que se muestran como base al iniciar la página en la sección de KPIs
     this.ordersService.getOrderAggregate(this.idOrders).subscribe(
       (aggregation) => {
@@ -641,6 +589,7 @@ export class DashboardComponent implements OnInit {
    * Función para mostrar los datos del gráfico de Top más vendidos
    */
   private getTop3Chart() {
+
     this.loadedTPChart = false;
     //Llamada a la API para obtener el total de productos vendidos
     this.ordersService.getOrderTop3Aggregate(this.idTP).subscribe(
@@ -672,6 +621,7 @@ export class DashboardComponent implements OnInit {
    * Función para mostrar los datos del gráfico de métodos de pago
    */
   private getPaymentMethodsChart() {
+
     this.loadedPMChart = false;
     //Llamada a la API para obtener los métodos de pago
     this.ordersService.getOrderAggregate(this.idPM).subscribe((aggregationsPM) => {
@@ -724,5 +674,39 @@ export class DashboardComponent implements OnInit {
         this.loadedPMChart = true;
       }
     );
+  }
+
+  public resetKpiDataset() {
+    this.kpiDataset = [
+      { name: 'Ene', value: 0 },
+      { name: 'Feb', value: 0 },
+      { name: 'Mar', value: 0 },
+      { name: 'Abr', value: 0 },
+      { name: 'May', value: 0 },
+      { name: 'Jun', value: 0 },
+      { name: 'Jul', value: 0 },
+      { name: 'Ago', value: 0 },
+      { name: 'Sep', value: 0 },
+      { name: 'Oct', value: 0 },
+      { name: 'Nov', value: 0 },
+      { name: 'Dic', value: 0 },
+    ];
+  }
+  
+  public resetColorsKPI() {
+    this.colorsKPI = [
+      { name: 'Ene', value: this.colors[0] },
+      { name: 'Feb', value: this.colors[0] },
+      { name: 'Mar', value: this.colors[0] },
+      { name: 'Abr', value: this.colors[0] },
+      { name: 'May', value: this.colors[0] },
+      { name: 'Jun', value: this.colors[0] },
+      { name: 'Jul', value: this.colors[0] },
+      { name: 'Ago', value: this.colors[0] },
+      { name: 'Sep', value: this.colors[0] },
+      { name: 'Oct', value: this.colors[0] },
+      { name: 'Nov', value: this.colors[0] },
+      { name: 'Dic', value: this.colors[0] },
+    ];
   }
 }
