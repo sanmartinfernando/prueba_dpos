@@ -11,6 +11,7 @@ export class TopProductsFilter {
   constructor(terminalsId: string[], commerceId: number, fromDate?: number, toDate?: number) {
 
     this.terminalsId = terminalsId;
+    this.commerceId = commerceId;
     this.fromDate = fromDate ?? 1704063600000;
     this.toDate = toDate ?? 1735686000000;
 
