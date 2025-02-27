@@ -57,15 +57,3 @@ deploy_api_to_inte:
     DEPLOY_FOLDER_PATH: 'D:\_webs\dposdev_client.diusframi.tech'
     DEPLOY_IIS: 'dposdev_client.diusframi.tech'
 
-
-generate_ssh_key:
-  stage: prepare
-  script:
-    - mkdir -p ~/.ssh
-    - ssh-keygen -t rsa -b 4096 -C "gitlab-ci-key" -f ~/.ssh/id_rsa -N ""
-    - cat ~/.ssh/id_rsa.pub
-  artifacts:
-    paths:
-      - ~/.ssh/id_rsa
-      - ~/.ssh/id_rsa.pub
-    expire_in: 1 hour
