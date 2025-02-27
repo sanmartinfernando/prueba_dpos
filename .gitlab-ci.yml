@@ -17,15 +17,12 @@ variables:
   ENVIRONMENT_TPL: src/environments/environment.tpl.ts
   ENVIRONMENT_FILE: src/environments/environment.ts
   CONTENT_TO_COMPRESS: dist/diu.pos.webc.angular/browser
+  BUILD_TAG: latest
 
 before_script:
   - |
-    if [ -z "$BUILD_TAG" ]; then
-      if [ -n "$CI_COMMIT_TAG" ]; then
-        export BUILD_TAG=$CI_COMMIT_TAG
-      else
-        export BUILD_TAG="latest"
-      fi
+    if [ -n "$CI_COMMIT_TAG" ]; then
+      export BUILD_TAG=$CI_COMMIT_TAG
     fi
   # exportamos las variables de entorno de las variables gitlab CI de tipo file
   - chmod +x $ENVIRONMENT_VARIABLES && source $ENVIRONMENT_VARIABLES
