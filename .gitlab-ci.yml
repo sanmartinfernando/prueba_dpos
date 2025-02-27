@@ -37,7 +37,8 @@ before_script:
     - envsubst < $ENVIRONMENT_TPL > $ENVIRONMENT_FILE
     - npm run build
     - cd $CONTENT_TO_COMPRESS
-    - zip -r ${PROJECT_NAME}.${CI_ENVIRONMENT_SLUG}.${BUILD_TAG}.zip *
+    - zip -r ${CI_PROJECT_DIR}/${PROJECT_NAME}.${CI_ENVIRONMENT_SLUG}.${BUILD_TAG}.zip *
+    - cd ${CI_PROJECT_DIR}
     - ls -lah # PAra visualizar si sea ha creado el archivo zip.
   artifacts:
     paths:
