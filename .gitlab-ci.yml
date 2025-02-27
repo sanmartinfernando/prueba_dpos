@@ -1,4 +1,4 @@
-image: alpine:3.21
+
 
 default:
   tags:
@@ -8,8 +8,7 @@ default:
 stages:
   - test
   - build
-  - deploy_inte
-  - deploy_prod
+  - deploy
 
 
 variables:
@@ -26,6 +25,7 @@ before_script:
     fi
   # exportamos las variables de entorno de las variables gitlab CI de tipo file
   - chmod +x $ENVIRONMENT_VARIABLES && source $ENVIRONMENT_VARIABLES
+  - chmod +x $SHARED_ENVIRONTMENT_VARIABLES && source $SHARED_ENVIRONTMENT_VARIABLES
 
 
 .build_template:
@@ -59,6 +59,35 @@ build_prod:
 
 
 
+.deploy_template:
+  stage: deploy
+  image: amazon/aws-cli:latest
+  script:
+    # Configuración de AWS CLI
+    - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+    - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+    - aws configure set region $AWS_REGION
+
+    # Aquí tiene que ir la logica de subida a s3
+    - aws s3 cp ${PROJECT_NAME}.${CI_ENVIRONMENT_SLUG}.${BUILD_TAG}.zip $AWS_S3_BUCKET_URI # ex: s3://amplify-dpos-panel-cliente/staging/
+    # Después de subirlo a s3 hay que notificarlo a Amplify para que lance una implementación utilizando el nuevo compilado.
 
 
 
+deploy_inte:
+  extends: .deploy_template
+  environment:
+    name: inte
+    deployment_tier: staging
+  dependencies:
+    - build_inte
+
+deploy_prod:
+  extends: .deploy_template
+  environment:
+    name: production
+    deployment_tier: production
+  needs:
+    - deploy_inte
+  dependencies:
+    - build_prod
