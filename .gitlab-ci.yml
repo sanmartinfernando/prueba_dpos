@@ -79,6 +79,8 @@ deploy_inte:
   environment:
     name: inte
     deployment_tier: staging
+  needs:
+    - build_inte
   dependencies:
     - build_inte
 
@@ -89,5 +91,6 @@ deploy_prod:
     deployment_tier: production
   needs:
     - deploy_inte
+    - build_prod
   dependencies:
     - build_prod
