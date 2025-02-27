@@ -37,7 +37,7 @@ before_script:
     - apk update && apk add --no-cache zip gettext
     - npm install
     - envsubst < $ENVIRONMENT_TPL > $ENVIRONMENT_FILE
-    - npx ng build
+    - npm run build
     - zip -r ${PROJECT_NAME}.${CI_ENVIRONMENT_SLUG}.${BUILD_TAG}.zip dist/
   artifacts:
     paths:

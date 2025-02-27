@@ -1,3 +1,4 @@
+
 export class Terminal {
     terminalId: number;
     commerceId: number;

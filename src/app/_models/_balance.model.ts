@@ -1,6 +1,7 @@
 import { BalanceCommerce } from "./balance-commerce.model";
 import { BalanceLine } from "./balance-line.model";
 
+
 export class Balance {
   balanceId: string;
   reference: string;
