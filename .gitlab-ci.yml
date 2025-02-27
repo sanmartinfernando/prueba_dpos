@@ -16,7 +16,7 @@ variables:
   PROJECT_NAME: DPOS.Web.Client
   ENVIRONMENT_TPL: src/environments/environment.tpl.ts
   ENVIRONMENT_FILE: src/environments/environment.ts
-  CONTENT_TO_COMPRESS: dist/diu.pos.webc.angular/browser/*
+  CONTENT_TO_COMPRESS: dist/diu.pos.webc.angular/browser/
   BUILD_TAG: latest
 
 before_script:
@@ -36,7 +36,8 @@ before_script:
     - npm install
     - envsubst < $ENVIRONMENT_TPL > $ENVIRONMENT_FILE
     - npm run build
-    - zip -r ${PROJECT_NAME}.${CI_ENVIRONMENT_SLUG}.${BUILD_TAG}.zip $CONTENT_TO_COMPRESS
+    - cd $CONTENT_TO_COMPRESS
+    - zip -r ${PROJECT_NAME}.${CI_ENVIRONMENT_SLUG}.${BUILD_TAG}.zip *
     - ls -lah # PAra visualizar si sea ha creado el archivo zip.
   artifacts:
     paths:
