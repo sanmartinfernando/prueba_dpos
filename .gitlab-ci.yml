@@ -1,59 +1,63 @@
-include:
-- project: knowledge_base_pipelines/ci_templates
-  ref: main
-  file: angular_templates/angular_job_templates.yml
+image: alpine:3.21
 
-# Flujo "deploy-development": Build && deploy_to_dev > Manual or Branch pipeline over "development branch" - Each commit
-# Flujo "deploy-inte": Build && analisys && update registry && deploy_to_inte > Tag pipeline ¿over "development branch"? - Tags testv1.1.0
+default:
+  tags:
+    - local-docker
 
-# Place project specific paths in variables to make the rest of the script more generic
+
+stages:
+  - test
+  - build
+  - deploy_inte
+  - deploy_prod
+
+
 variables:
-  #General project app PATH 
-  APP_PROJECT_NAME: 'DIU.WEB.Clients' #In Olympus projects, expected to be the folder name under 'Applications' and the project Solution name. In netCore apis, expected the projectName.  In netCore apis, just the projectname to package folders. 
+  PROJECT_NAME: DPOS.Web.Client
+  ENVIRONMENT_TPL: src/environments/environment.tpl.ts
+  ENVIRONMENT_FILE: src/environments/environment.ts
 
-  #General project app PATH. Relative path to the solution folder inside repository. User for analysis or build, stages.
-  PROJECT_PATH: ''
+before_script:
+  - |
+    if [ -z "$BUILD_TAG" ]; then
+      if [ -n "$CI_COMMIT_TAG" ]; then
+        export BUILD_TAG=$CI_COMMIT_TAG
+      else
+        export BUILD_TAG="latest"
+      fi
+    fi
+  # exportamos las variables de entorno de las variables gitlab CI de tipo file
+  - chmod +x $ENVIRONMENT_VARIABLES && source $ENVIRONMENT_VARIABLES
 
-  #Analisis de código:
-  KIWUAN_PROJECT: 'dpos_web_client' #Set Kiwuan project name 
+
+.build_template:
+  stage: build
+  image: node:current-alpine3.21
+  script:
+    - apk update && apk add --no-cache zip gettext
+    - npm install
+    - envsubst < $ENVIRONMENT_TPL > $ENVIRONMENT_FILE
+    - npx ng build
+    - zip -r ${PROJECT_NAME}.${CI_ENVIRONMENT_SLUG}.${BUILD_TAG}.zip dist/
+  artifacts:
+    paths:
+      - ${PROJECT_NAME}.${CI_ENVIRONMENT_SLUG}.${BUILD_TAG}.zip
 
 
-codeanalysis_test_job:
-  extends: .codeanalysis_kiwuan_partial_template
-  
-codeanalysis_base_job:
-  extends: .codeanalysis_kiwuan_base_template
+build_inte:
+  extends: .build_template
+  environment:
+    name: inte
+    deployment_tier: staging
 
-build:
-  extends: .build_angular_template
-  variables:
-    PUBLISH_DIR: 'dist\diu.pos.webc.angular'
+build_prod:
+  extends: .build_template
+  environment:
+    name: production
+    deployment_tier: production
 
-package_release:
-  extends: .package_release_template
 
-#Upload packaged zip file to Package Registry
-upload_build_package:
-  extends: .upload_package_template
 
-create_release: #temporal job.
-  extends: .create_release_template
 
-#Deploy build stored in package_release
-deploy_api_to_dev:
-  extends: .deploy_net_web_to_dev_template
-  tags:
-    - baco
-  variables:
-    DEPLOY_FOLDER_PATH: 'D:\_webs\dpos_client.diusframi.tech'
-    DEPLOY_IIS: 'dpos_client.diusframi.tech'
 
-#Deploy build stored in package_release
-deploy_api_to_inte:
-  extends: .deploy_net_web_to_inte_template
-  tags:
-    - baco
-  variables:   
-    DEPLOY_FOLDER_PATH: 'D:\_webs\dposdev_client.diusframi.tech'
-    DEPLOY_IIS: 'dposdev_client.diusframi.tech'
 
