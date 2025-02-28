@@ -77,10 +77,10 @@ before_script:
     - BRANCH_EXISTS=$(aws amplify list-branches --app-id $AWS_AMPLIFY_APP_ID --query "branches[?branchName=='$CI_ENVIRONMENT_SLUG'].branchName" --output text)
     - |
       if [ -z "$BRANCH_EXISTS" ]; then
-        echo "Branch does not exist. Creating branch...";
-        aws amplify create-branch --app-id $AWS_AMPLIFY_APP_ID --branch-name $CI_ENVIRONMENT_SLUG;
+        echo "Branch does not exist. Creating branch..."
+        aws amplify create-branch --app-id $AWS_AMPLIFY_APP_ID --branch-name $CI_ENVIRONMENT_SLUG
       else
-        echo "Branch already exists. Skipping creation.";
+        echo "Branch already exists. Skipping creation."
       fi
 
     # Subimos el compilado al s3 Bucket
