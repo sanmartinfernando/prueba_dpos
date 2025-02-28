@@ -51,11 +51,11 @@ build_inte:
     name: inte
     deployment_tier: staging
 
-build_prod:
-  extends: .build_template
-  environment:
-    name: production
-    deployment_tier: production
+#build_prod:
+#  extends: .build_template
+#  environment:
+#    name: production
+#    deployment_tier: production
 
 
 
@@ -81,8 +81,9 @@ build_prod:
     - aws configure set region $AWS_REGION
 
     # Aquí tiene que ir la logica de subida a s3
+    - env
     - echo "${PROJECT_NAME}.${CI_ENVIRONMENT_SLUG}.${BUILD_TAG}.zip"
-    - echo "s3 bucket -> $AWS_S3_BUCKET_URI"
+    - echo "AWS S3 Bucket URI $AWS_S3_BUCKET_URI"
 
     - aws s3 cp "${PROJECT_NAME}.${CI_ENVIRONMENT_SLUG}.${BUILD_TAG}.zip" "$AWS_S3_BUCKET_URI" # ex: s3://amplify-dpos-panel-cliente/staging/
 
@@ -100,13 +101,13 @@ deploy_inte:
   dependencies:
     - build_inte
 
-deploy_prod:
-  extends: .deploy_template
-  environment:
-    name: production
-    deployment_tier: production
-  needs:
-    - deploy_inte
-    - build_prod
-  dependencies:
-    - build_prod
+#deploy_prod:
+#  extends: .deploy_template
+#  environment:
+#    name: production
+#    deployment_tier: production
+#  needs:
+#    - deploy_inte
+#    - build_prod
+#  dependencies:
+#    - build_prod
