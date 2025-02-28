@@ -73,6 +73,15 @@ before_script:
     - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
     - aws configure set region $AWS_REGION
 
+    - echo "Checking if branch exists..."
+    - BRANCH_EXISTS=$(aws amplify list-branches --app-id $AWS_AMPLIFY_APP_ID --query "branches[?branchName=='$CI_ENVIRONMENT_SLUG'].branchName" --output text)
+    - |
+      if [ -z "$BRANCH_EXISTS" ]; then
+        echo "Branch does not exist. Creating branch...";
+        aws amplify create-branch --app-id $AWS_AMPLIFY_APP_ID --branch-name $CI_ENVIRONMENT_SLUG;
+      else
+        echo "Branch already exists. Skipping creation.";
+      fi
 
     # Subimos el compilado al s3 Bucket
     - echo "${PROJECT_NAME}.${CI_ENVIRONMENT_SLUG}.${BUILD_TAG}.zip"
@@ -80,7 +89,7 @@ before_script:
     - aws s3 cp "${PROJECT_NAME}.${CI_ENVIRONMENT_SLUG}.${BUILD_TAG}.zip" "$AWS_S3_BUCKET_URI" # ex: s3://amplify-dpos-panel-cliente/staging/
 
     # Después de subirlo a s3 hay que notificarlo a Amplify para que lance una implementación utilizando el nuevo compilado.
-    - aws amplify start-deployment --app-id $AWS_AMPLIFY_APP_ID --branch-name $AWS_AMPLIFY_BRANCH_NAME --source-url "${AWS_S3_BUCKET_URI}${PROJECT_NAME}.${CI_ENVIRONMENT_SLUG}.${BUILD_TAG}.zip"
+    - aws amplify start-deployment --app-id $AWS_AMPLIFY_APP_ID --branch-name $CI_ENVIRONMENT_SLUG --source-url "${AWS_S3_BUCKET_URI}${PROJECT_NAME}.${CI_ENVIRONMENT_SLUG}.${BUILD_TAG}.zip"
 
 
 
