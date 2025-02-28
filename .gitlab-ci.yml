@@ -48,13 +48,13 @@ before_script:
 build_inte:
   extends: .build_template
   environment:
-    name: inte
+    name: Inte
     deployment_tier: staging
 
 #build_prod:
 #  extends: .build_template
 #  environment:
-#    name: production
+#    name: Production
 #    deployment_tier: production
 
 
@@ -81,7 +81,6 @@ build_inte:
     - aws configure set region $AWS_REGION
 
     # Aquí tiene que ir la logica de subida a s3
-    - env
     - echo "${PROJECT_NAME}.${CI_ENVIRONMENT_SLUG}.${BUILD_TAG}.zip"
     - echo "AWS S3 Bucket URI $AWS_S3_BUCKET_URI"
 
@@ -94,7 +93,7 @@ build_inte:
 deploy_inte:
   extends: .deploy_template
   environment:
-    name: inte
+    name: Inte
     deployment_tier: staging
   needs:
     - build_inte
@@ -104,7 +103,7 @@ deploy_inte:
 #deploy_prod:
 #  extends: .deploy_template
 #  environment:
-#    name: production
+#    name: Production
 #    deployment_tier: production
 #  needs:
 #    - deploy_inte
