@@ -82,7 +82,7 @@ build_prod:
 
     # Aquí tiene que ir la logica de subida a s3
     - echo ${PROJECT_NAME}.${CI_ENVIRONMENT_SLUG}.${BUILD_TAG}.zip
-    - echo $AWS_S3_BUCKET_URI
+    - echo s3 bucket -> $AWS_S3_BUCKET_URI
 
     - aws s3 cp ${PROJECT_NAME}.${CI_ENVIRONMENT_SLUG}.${BUILD_TAG}.zip $AWS_S3_BUCKET_URI # ex: s3://amplify-dpos-panel-cliente/staging/
 
