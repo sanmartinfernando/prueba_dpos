@@ -79,9 +79,10 @@ build_prod:
     - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
     - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
     - aws configure set region $AWS_REGION
-    - aws --version
+
     # Aquí tiene que ir la logica de subida a s3
     - aws s3 cp ${PROJECT_NAME}.${CI_ENVIRONMENT_SLUG}.${BUILD_TAG}.zip $AWS_S3_BUCKET_URI # ex: s3://amplify-dpos-panel-cliente/staging/
+    
     # Después de subirlo a s3 hay que notificarlo a Amplify para que lance una implementación utilizando el nuevo compilado.
 
 
