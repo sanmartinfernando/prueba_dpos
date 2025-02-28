@@ -12,11 +12,11 @@ stages:
 
 
 variables:
-  PROJECT_NAME: DPOS.Web.Client
-  ENVIRONMENT_TPL: src/environments/environment.tpl.ts
-  ENVIRONMENT_FILE: src/environments/environment.ts
-  CONTENT_TO_COMPRESS: dist/diu.pos.webc.angular/browser/
-  BUILD_TAG: latest
+  PROJECT_NAME: "DPOS.Web.Client"
+  ENVIRONMENT_TPL: "src/environments/environment.tpl.ts"
+  ENVIRONMENT_FILE: "src/environments/environment.ts"
+  CONTENT_TO_COMPRESS: "dist/diu.pos.webc.angular/browser/"
+  BUILD_TAG: "latest"
 
 before_script:
   - |
