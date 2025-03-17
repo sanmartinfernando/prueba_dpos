@@ -8,7 +8,7 @@ export class EvolutionCMFilter {
   private fromDate: number;
   private toDate: number;
 
-  constructor(terminalsId: string[], commerceId: number, fromDate?: number, toDate?: number) {
+  constructor(commerceId: number, terminalsId?: string[], fromDate?: number, toDate?: number) {
 
     this.terminalsId = terminalsId;
     this.commerceId = commerceId;

@@ -169,14 +169,14 @@ export class DashboardComponent implements OnInit {
                 this.terminalsNumber.unshift('Todos');
                 this.terminalSelected = this.terminalsNumber[0];
                 //inicializamos los filtros de las llamadas a la API
-                this.idOrders = new OrdersFilter(this.terminalsNumber, this.commerceId).idOrders;
-                this.idCM = new CashMovementsFilter(this.terminalsNumber, this.commerceId).idCashMovement;
-                this.idEvo = new EvolutionFilter(this.terminalsNumber, this.commerceId).idEvo;
-                this.idEvoCM = new EvolutionCMFilter(this.terminalsNumber, this.commerceId).idEvoCashMovement;
-                this.idEvoResults = new EvolutionResultsFilter(this.terminalsNumber, this.commerceId).idEvoResults;
-                this.idPM = new PaymentMethodsFilter(this.terminalsNumber, this.commerceId).idPaymentMethods;
-                this.idT3 = new Top3Filter(this.terminalsNumber, this.commerceId).idTop3;
-                this.idTP = new TopProductsFilter(this.terminalsNumber, this.commerceId).idTopProducts;
+                this.idOrders = new OrdersFilter(this.commerceId, this.terminalsNumber.slice(1)).idOrders;
+                this.idCM = new CashMovementsFilter(this.commerceId, this.terminalsNumber.slice(1)).idCashMovement;
+                this.idEvo = new EvolutionFilter(this.commerceId, this.terminalsNumber.slice(1)).idEvo;
+                this.idEvoCM = new EvolutionCMFilter(this.commerceId, this.terminalsNumber.slice(1)).idEvoCashMovement;
+                this.idEvoResults = new EvolutionResultsFilter(this.commerceId, this.terminalsNumber.slice(1)).idEvoResults;
+                this.idPM = new PaymentMethodsFilter(this.commerceId, this.terminalsNumber.slice(1)).idPaymentMethods;
+                this.idT3 = new Top3Filter(this.commerceId, this.terminalsNumber.slice(1)).idTop3;
+                this.idTP = new TopProductsFilter(this.commerceId, this.terminalsNumber.slice(1)).idTopProducts;
                 
                 this.getKPIs();
                 this.getTop3Chart();
@@ -270,19 +270,20 @@ export class DashboardComponent implements OnInit {
 
     //Si se selecciona el valor "Todos", se establece con todos los números de terminal
     if (this.terminalSelected == 'Todos') {
-      terminalsSelected = this.terminalsNumber;
+      terminalsSelected = this.terminalsNumber.slice(1);
     } else {
       terminalsSelected = this.terminalSelected;
     }
 
-    this.idOrders = new OrdersFilter(terminalsSelected, this.commerceId, fromDate, toDate).idOrders;
-    this.idCM = new CashMovementsFilter(terminalsSelected, this.commerceId, fromDate, toDate).idCashMovement;
-    this.idEvo = new EvolutionFilter(terminalsSelected, this.commerceId, fromDate, toDate).idEvo;
-    this.idEvoCM = new EvolutionCMFilter(terminalsSelected, this.commerceId, fromDate, toDate).idEvoCashMovement;
-    this.idEvoResults = new EvolutionResultsFilter(terminalsSelected, this.commerceId, fromDate, toDate).idEvoResults;
-    this.idPM = new PaymentMethodsFilter(terminalsSelected, this.commerceId, fromDate, toDate).idPaymentMethods;
-    this.idT3 = new Top3Filter(terminalsSelected, this.commerceId, fromDate, toDate).idTop3;
-    this.idTP = new TopProductsFilter(terminalsSelected, this.commerceId, fromDate, toDate).idTopProducts;
+    
+    this.idOrders = new OrdersFilter(this.commerceId, terminalsSelected, fromDate, toDate).idOrders;
+    this.idCM = new CashMovementsFilter(this.commerceId, terminalsSelected, fromDate, toDate).idCashMovement;
+    this.idEvo = new EvolutionFilter(this.commerceId, terminalsSelected, fromDate, toDate).idEvo;
+    this.idEvoCM = new EvolutionCMFilter(this.commerceId, terminalsSelected, fromDate, toDate).idEvoCashMovement;
+    this.idEvoResults = new EvolutionResultsFilter(this.commerceId, terminalsSelected, fromDate, toDate).idEvoResults;
+    this.idPM = new PaymentMethodsFilter(this.commerceId, terminalsSelected, fromDate, toDate).idPaymentMethods;
+    this.idT3 = new Top3Filter(this.commerceId, terminalsSelected, fromDate, toDate).idTop3;
+    this.idTP = new TopProductsFilter(this.commerceId, terminalsSelected, fromDate, toDate).idTopProducts;
 
     this.getKPIs();
     this.getTop3Chart();
@@ -362,21 +363,16 @@ export class DashboardComponent implements OnInit {
     for (let i = 0; i < this.colorsKPI.length; i++) {
       this.colorsKPI[i].value = this.colors[0];
     }
-    //Se inicializan los valores
-    for (let i = 0; i < this.kpiDataset.length; i++) {
-        this.kpiDataset[i].value = 0;
-    }
+    //Se inicializan los valore
+    this.resetKpiDataset();
 
     //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
     this.ordersService.getOrderAggregate(this.idEvo).subscribe((aggregationsEvo) => {
-
         //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
         for (let i = 0; i < aggregationsEvo.length; i++) {
-          console.log(this.kpiDataset[aggregationsEvo[i]._id - 1]);
-          console.log(this.kpiDataset[aggregationsEvo[i]._id - 1].value);
-          console.log(aggregationsEvo[i].total / 100);
           this.kpiDataset[aggregationsEvo[i]._id - 1].value = aggregationsEvo[i].total / 100;
         }
+
         //Se actualiza el array de datos del gráfico para que se dibujen los nuevos datos introducidos
         this.kpiDataset = [...this.kpiDataset];
 
@@ -399,9 +395,8 @@ export class DashboardComponent implements OnInit {
           this.colorsKPI[i].value = this.colors[2];
         }
         //Se inicializan los valores del array
-        for (let i = 0; i < this.kpiDataset.length; i++) {
-            this.kpiDataset[i].value = 0;
-        }
+        this.resetKpiDataset();
+
         //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
         for (let i = 0; i < aggregationsEvo.length; i++) {
           this.kpiDataset[aggregationsEvo[i]._id - 1].value = aggregationsEvo[i].total / 100;
@@ -427,9 +422,8 @@ export class DashboardComponent implements OnInit {
           this.colorsKPI[i].value = this.colors[1];
         }
         //Se inicializan los valores
-        for (let i = 0; i < this.kpiDataset.length; i++) {
-            this.kpiDataset[i].value = 0;
-        }
+        this.resetKpiDataset();
+
         //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
         for (let i = 0; i < aggregationsEvo.length; i++) {
           this.kpiDataset[aggregationsEvo[i]._id - 1].value = aggregationsEvo[i].avg / 100;
@@ -456,10 +450,11 @@ export class DashboardComponent implements OnInit {
         this.colorsKPI[i].value = this.colors[3];
       }
       //Se inicializan los arrays
+      this.resetKpiDataset();
       for (let i = 0; i < this.kpiDataset.length; i++) {
           valueGraphArrayIn[i] = 0;
           valueGraphArrayOut[i] = 0;
-          this.kpiDataset[i].value = 0;
+          //this.kpiDataset[i].value = 0;
       }
       //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
       for (let i = 0; i < aggregationsEvoIn.length; i++) {
@@ -495,11 +490,11 @@ export class DashboardComponent implements OnInit {
         this.colorsKPI[i].value = this.colors[4];
       }
       //Inicializamos los arrays
+      this.resetKpiDataset();
       for (let i = 0; i < this.kpiDataset.length; i++) {
           valueGraphArraySales[i] = 0;
           valueGraphArrayRefunds[i] = 0;
           valueGraphArrayRect[i] = 0;
-          this.kpiDataset[i].value = 0;
       }
       let totalSales = 0;
       let totalRefunds = 0;

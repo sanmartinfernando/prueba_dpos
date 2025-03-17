@@ -22,7 +22,7 @@ import { BalancesComponent } from './balances/balances.component';
 import { DetailsComponent } from './sales/details/details.component';
 import {NgxPaginationModule} from 'ngx-pagination';
 import { BalancesDetailsComponent } from './balances/balances-details/balances-details.component';
-import { DatePipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { NgxChartsModule }from '@swimlane/ngx-charts';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -79,6 +79,7 @@ registerLocaleData(localeEs);
         providers: [
         httpInterceptorProviders,
         DatePipe,
+        CurrencyPipe,
         provideHttpClient(withInterceptorsFromDi()),
         NgxChartsModule,
         BrowserAnimationsModule,

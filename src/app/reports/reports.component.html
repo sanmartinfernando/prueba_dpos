@@ -29,7 +29,7 @@
         <button type="reset" class="btn btn-outline-danger align-self-end">
           <a type="button"><i class="fas fa-eraser"></i> </a>
         </button>
-        <a type="button" class="btn btn-primary align-self-end" (click)="searchSales()">
+        <a type="button" class="btn btn-primary align-self-end" (click)="searchReports()">
           <i class="fas fa-search"></i>&nbsp;&nbsp;{{'dpos.action.search' | translate}}
         </a>
       </div>
@@ -61,7 +61,7 @@
         <b>{{'dpos.reports.selectreport.label' | translate}}</b>
       </div>
       <!-- Tabla impuestos-->
-      <div class="row" *ngIf="reportVarSearch == 'Impuestos' && loadCompleted">
+      <div class="row" *ngIf="reportVarSearch == translate.instant('dpos.reports.taxes.label') && loadCompleted">
         <div class="col">
           <div class="table-responsive">
             <table class="table table-hover order-table" data-pagination="true" data-page-size="10">
@@ -104,7 +104,7 @@
         </div>
       </div>
       <!-- Tabla productos -->
-      <div class="row" *ngIf="reportVarSearch == 'Productos' && loadCompleted">
+      <div class="row" *ngIf="reportVarSearch == translate.instant('dpos.reports.products.label') && loadCompleted">
         <div class="col">
           <div class="table-responsive">
             <table class="table table-hover order-table" data-pagination="true" data-page-size="10">
@@ -145,7 +145,7 @@
         </div>
       </div>
       <!-- Tabla métodos de pago -->
-      <div class="row" *ngIf="reportVarSearch == 'Métodos de pago' && loadCompleted">
+      <div class="row" *ngIf="reportVarSearch == translate.instant('dpos.reports.paymentmethods.label') && loadCompleted">
         <div class="col">
           <div class="table-responsive">
             <table class="table table-hover order-table" data-pagination="true" data-page-size="10">

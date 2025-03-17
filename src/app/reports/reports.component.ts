@@ -10,6 +10,8 @@ import { PortalUsersService } from '../_services/portal-users.service';
 import { TerminalsService } from '../_services/terminals.service';
 import { CommercesService } from '../_services/commerces.service';
 import { AuthService } from '../_services/auth.service';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
   selector: 'DPOSW-clients',
@@ -27,8 +29,18 @@ export class ReportsComponent implements OnInit {
     private portalUsersService: PortalUsersService,
     private terminalsService: TerminalsService,
     private commercesService: CommercesService,
+    public translate: TranslateService,
     private authService: AuthService
-  ) {}
+  ) {
+    this.currentLang = this.translate.currentLang || 'es';
+    this.langSubscription = this.translate.onLangChange.subscribe(event => {
+      this.currentLang = event.lang;
+      this.terminalsNumber[0] = this.translate.instant('dpos.filter.all');
+      this.terminalSelected = this.translate.instant('dpos.filter.all');
+      this.reportVarSearch = this.translate.instant('dpos.reports.taxes.label');
+    });
+
+  }
 
   size: number = 2147483647;
   sales: Balance;
@@ -47,8 +59,8 @@ export class ReportsComponent implements OnInit {
 
   //Parámetros de búsqueda
   terminalsNumber: string[];
-  terminalSelected: string = 'Todos';
-  reportVarSearch: string = 'Impuestos';
+  terminalSelected: string;
+  reportVarSearch: string = this.translate.instant('dpos.reports.taxes.label');;
   searchCounter: boolean = false;
   sinceDate: string;
   sinceDateMilli: number = 0;
@@ -57,6 +69,13 @@ export class ReportsComponent implements OnInit {
   today: Date = new Date();
   todayMilli = this.today.getTime();
   emptySearch: boolean = false;
+
+  currentLang: string;
+  langSubscription: Subscription;
+
+  ngOnDestroy() {
+    this.langSubscription.unsubscribe();
+  }
 
   ngOnInit(): void {
     this.loadCompleted = false;
@@ -71,7 +90,7 @@ export class ReportsComponent implements OnInit {
                 if(terminals.length != 0) {
                   this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
                 }
-                this.terminalsNumber.unshift('Todos');
+                this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
                 this.terminalSelected = this.terminalsNumber[0];
                 this.getArqueoX();
                 this.getSalesReport();
@@ -91,8 +110,8 @@ export class ReportsComponent implements OnInit {
   }
 
   //Método de búsqueda
-  searchSales() {
-    if (this.terminalSelected == 'Todos') {
+  searchReports() {
+    if (this.terminalSelected == this.translate.instant('dpos.filter.all')) {
       this.terminalSelected = null;
     }
     this.loadCompleted = false;
@@ -113,7 +132,7 @@ export class ReportsComponent implements OnInit {
       if (this.searchCounter == false) {
         this.searchCounter = true;
       }
-      if (this.terminalSelected == 'Todos') {
+      if (this.terminalSelected == this.translate.instant('dpos.filter.all')) {
         varSearch += "{'or':[";
         for (let i = 0; i < this.terminalsNumber.length; i++) {
           if (i == 0) {
@@ -152,9 +171,9 @@ export class ReportsComponent implements OnInit {
     varSearch += ']}';
     this.searchCounter = false;
     //Llamada API
-    if (this.reportVarSearch == 'Impuestos' || this.reportVarSearch == 'Métodos de pago') {
+    if (this.reportVarSearch == this.translate.instant('dpos.reports.taxes.label') || this.reportVarSearch == this.translate.instant('dpos.reports.paymentmethods.label')) { 
       this.getArqueoX();
-    } else {
+    } else {//Productos
       this.getSalesReport();
     }
   }
@@ -197,6 +216,7 @@ export class ReportsComponent implements OnInit {
     this.loadCompleted = false;
     this.salesReportService.getSalesReport(this.sinceDateMilli, this.tilDateMilli).subscribe({
       next: (salesReport) => {
+        this.salesReports = salesReport;
         this.indexProduct = Object.values(salesReport.aggregations);
         //Calculo indices totales productos
         for (let i = 0; i < this.indexProduct.length; i++) {
@@ -225,12 +245,12 @@ export class ReportsComponent implements OnInit {
 
   //Boton Descargar
   downloadReports(){
-    if(this.reportVarSearch == 'Impuestos') {
-      this.downloadCsvService.downloadArqueoXFile(this.sales, 'ArqueoX', "es-ES");
-    } else if(this.reportVarSearch == 'Productos') {
-      this.downloadCsvService.downloadSalesReportFile(this.salesReports, 'SalesReport', "es-ES");
-    } else if(this.reportVarSearch == 'Métodos de pago') {
-      this.downloadCsvService.downloadPaymentMethodsFile(this.sales, 'PaymentMethods', "es-ES");
+    if(this.reportVarSearch == this.translate.instant('dpos.reports.taxes.label')) {
+      this.downloadCsvService.downloadArqueoXFile(this.sales, 'ArqueoX', this.currentLang);
+    } else if(this.reportVarSearch == this.translate.instant('dpos.reports.products.label')) {
+      this.downloadCsvService.downloadSalesReportFile(this.salesReports, 'SalesReport', this.currentLang);
+    } else if(this.reportVarSearch == this.translate.instant('dpos.reports.paymentmethods.label')) {
+      this.downloadCsvService.downloadPaymentMethodsFile(this.sales, 'PaymentMethods', this.currentLang);
     }
   }
 }

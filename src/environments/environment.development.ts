@@ -1,6 +1,6 @@
 export const environment = {
     production: false,
-    urlWS:'https://dposdev.diusframi.tech:39443/wstickets/',
-    urlAuth:'https://dposdev.diusframi.tech:39443/wsauth/',
-    urlWE:'https://dposdev.diusframi.tech:39443/wsenrollment/'
+    urlWS:'http://dpos-inte-alb-1829415705.eu-central-1.elb.amazonaws.com/wstickets/',
+    urlAuth:'https://dpos.diusframi.tech:39443/wsauth/',
+    urlWE:'https://dpos.diusframi.tech:39443/wsenrollment/'
 };

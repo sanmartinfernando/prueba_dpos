@@ -8,6 +8,8 @@ import { CommercesService } from '../_services/commerces.service';
 import { AuthService } from '../_services/auth.service';
 import { Balance } from '../_models/balance.model';
 import { BalancesService } from '../_services/balances.service';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
   selector: 'DPOSW-balances',
@@ -23,8 +25,13 @@ export class BalancesComponent implements OnInit {
     private portalUsersService: PortalUsersService,
     private terminalsService: TerminalsService,
     private commercesService: CommercesService,
+    private translate: TranslateService,
     private authService: AuthService) {
-    
+      this.currentLang = this.translate.currentLang || 'es';
+      this.langSubscription = this.translate.onLangChange.subscribe(event => {
+        this.currentLang = event.lang;
+        this.terminalsNumber[0] = this.translate.instant('dpos.filter.all');
+      });
     }
     
   Math = Math;
@@ -43,13 +50,20 @@ export class BalancesComponent implements OnInit {
   tilDateMilli: number;
   today: Date = new Date();
   todayMilli = this.today.getTime();
-  varSearch: string = null;
+  varSearch: string = '';
   emptySearch: boolean = false;
 
   selectedIndices: number[] = [];
   isAllSelected: boolean = false;
   counter = 0;
 
+  currentLang: string;
+  langSubscription: Subscription;
+
+  ngOnDestroy() {
+    this.langSubscription.unsubscribe();
+  }
+  
   ngOnInit(): void {
     this.storageService.userInfo.subscribe((user) =>{
       this.commercesService.commerceId$.subscribe((commerceId) => {
@@ -62,7 +76,7 @@ export class BalancesComponent implements OnInit {
                 if(terminals.length != 0) {
                   this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
                 }
-                this.terminalsNumber.unshift('Todos');
+                this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
                 this.terminalSelected = this.terminalsNumber[0];
                 this.getBalanceInfo();
                 this.loadCompleted = true;
@@ -81,9 +95,9 @@ export class BalancesComponent implements OnInit {
   }
 
   //Método de búsqueda
-  searchSales() {
-    if( this.terminalSelected == ""){
-      this.terminalSelected=null;
+  searchBalances() {
+    if (this.terminalSelected == '') {
+      this.terminalSelected = null;
     }
 
     //Obtención variables fechas
@@ -101,8 +115,21 @@ export class BalancesComponent implements OnInit {
       if (this.searchCounter == false) {
         this.searchCounter = true;
       }
-      this.emptySearch = false;
-      this.varSearch = this.varSearch + "{'field':'terminal_number','op':'=','value':'" + this.terminalSelected + "'}";
+
+      if (this.terminalSelected == this.translate.instant('dpos.filter.all')) {
+        this.varSearch = this.varSearch + "{'or':[";
+        for (let i = 1; i < this.terminalsNumber.length; i++) {
+          if(i == this.terminalsNumber.length - 1)  {
+            this.varSearch = this.varSearch +"{'field':'terminal_number','op':'=','value':'" +this.terminalsNumber[i] +"'}";
+          } else {
+            this.varSearch = this.varSearch +"{'field':'terminal_number','op':'=','value':'" +this.terminalsNumber[i] +"'},";
+          }
+        }
+        this.varSearch = this.varSearch + ']}';
+      } else {
+        this.emptySearch = false;
+        this.varSearch = this.varSearch + "{'field':'terminal_number','op':'=','value':'" + this.terminalSelected + "'}";
+      }
     }
 
     //Desde fecha
@@ -145,8 +172,7 @@ export class BalancesComponent implements OnInit {
     this.loadCompleted=false;
     let size: number = 2147483647;
     let selectSales = new Array(3);
-    let searchParams0: string = '';
-    this.balancesService.getBalanceInfo(size, searchParams0).subscribe({
+    this.balancesService.getBalanceInfo(size, this.varSearch).subscribe({
       next: (balanceInfo) => {
         this.balances = balanceInfo.data;
         for (let i = 0; i < 3; i++) {
@@ -214,6 +240,6 @@ export class BalancesComponent implements OnInit {
 
   //Boton Descargar CSV
   downloadCSV(){
-    this.downloadCsvService.downloadBalancesFile(this.balances, 'Balances', "es-ES");
+    this.downloadCsvService.downloadBalancesFile(this.balances, 'Balances', this.currentLang);
   }
 }

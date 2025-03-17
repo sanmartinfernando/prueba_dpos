@@ -8,6 +8,8 @@ import { TerminalsService } from '../_services/terminals.service';
 import { CommercesService } from '../_services/commerces.service';
 import { AuthService } from '../_services/auth.service';
 import { OrdersService } from '../_services/orders.service';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
   selector: 'DPOSW-sales',
@@ -24,7 +26,6 @@ export class SalesComponent implements OnInit {
   totalSales: number = 0;
   totalSalesString: string;
   page: number = 0;
-  searchParams0: string = '';
   code: string;
   loadCompleted: boolean = false;
   isLoggedIn: boolean = true;
@@ -45,13 +46,16 @@ export class SalesComponent implements OnInit {
   translatedTypeVarSearch = new Array(3);
   selTransTypeVarSearch: number = null;
   documentVarSearch: string = null;
-  varSearch: string = null;
+  varSearch: string = '';
   emptySearch: boolean = false;
 
   // Checkboxes
   selectedIndices: number[] = [];
   isAllSelected: boolean = false;
   counter = 0;
+
+  currentLang: string;
+  langSubscription: Subscription;
 
   constructor(
     private encryptionService: EncryptionService,
@@ -61,8 +65,19 @@ export class SalesComponent implements OnInit {
     private portalUsersService: PortalUsersService,
     private terminalsService: TerminalsService,
     private commercesService: CommercesService,
+    private translate: TranslateService,
     private authService: AuthService
-  ) {  }
+  ) {  
+    this.currentLang = this.translate.currentLang || 'es';
+      this.langSubscription = this.translate.onLangChange.subscribe(event => {
+        this.currentLang = event.lang;
+        this.terminalsNumber[0] = this.translate.instant('dpos.filter.all');
+      });
+  }
+
+  ngOnDestroy() {
+    this.langSubscription.unsubscribe();
+  }
 
   ngOnInit(): void {
     this.loadCompleted = false;
@@ -77,10 +92,9 @@ export class SalesComponent implements OnInit {
                 if(terminals.length != 0) {
                   this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
                 }
-                this.terminalsNumber.unshift('Todos');
+                this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
                 this.terminalSelected = this.terminalsNumber[0];
                 this.getOrderInfo();
-                this.loadCompleted = true;
               },
               error: (error) => {
                 console.error("Error Commerces: ", error);
@@ -120,7 +134,8 @@ export class SalesComponent implements OnInit {
       if (this.searchCounter == false) {
         this.searchCounter = true;
       }
-      if (this.terminalSelected == 'Todos') {
+
+      if (this.terminalSelected == this.translate.instant('dpos.filter.all')) {
         this.varSearch = this.varSearch + "{'or':[";
         for (let i = 0; i < this.selectSales[0].length; i++) {
           if (i == 0) {
@@ -182,7 +197,7 @@ export class SalesComponent implements OnInit {
       } else {
         this.varSearch = this.varSearch + ',';
       }
-      if (this.typeVarSearch == 'Todos') {
+      if (this.typeVarSearch == this.translate.instant('dpos.filter.all')) {
         this.varSearch = this.varSearch + "{'or':[";
         for (let i = 0; i < this.selectSales[1].length; i++) {
           if (i == 0) {
@@ -202,13 +217,13 @@ export class SalesComponent implements OnInit {
         this.varSearch = this.varSearch + ']}';
       } else {
         switch (this.typeVarSearch) {
-          case 'Venta':
+          case this.translate.instant('dpos.sales.operation.order.label'):
             this.selTransTypeVarSearch = 0;
             break;
-          case 'Devolución':
+          case this.translate.instant('dpos.sales.operation.refund.label'):
             this.selTransTypeVarSearch = 2;
             break;
-          case 'Rectificación':
+          case this.translate.instant('dpos.sales.operation.rectification.label'):
             this.selTransTypeVarSearch = 5;
         }
         this.emptySearch = false;
@@ -248,7 +263,7 @@ export class SalesComponent implements OnInit {
   }
 
   getOrderInfo() {
-    this.ordersService.getOrderInfo(this.size, this.searchParams0).subscribe(
+    this.ordersService.getOrderInfo(this.size, this.varSearch).subscribe(
       (sale) => {
         this.sales = sale;
         this.operationN = this.sales.data.length;
@@ -332,17 +347,15 @@ export class SalesComponent implements OnInit {
           this.translatedTypeVarSearch[i] = this.selectSales[1][i];
           switch (this.selectSales[1][i]) {
             case 0:
-              this.selectSales[1][i] = 'Venta';
+              this.selectSales[1][i] = this.translate.instant('dpos.sales.operation.order.label');
               break;
             case 2:
-              this.selectSales[1][i] = 'Devolución';
+              this.selectSales[1][i] = this.translate.instant('dpos.sales.operation.refund.label');
               break;
             case 5:
-              this.selectSales[1][i] = 'Rectificación';
+              this.selectSales[1][i] = this.translate.instant('dpos.sales.operation.rectification.label');
           }
         }
-
-        this.loadCompleted = true;
 
         this.salesTicketBai = []
         for( let i=0; i<= this.sales.data.length; i++){
@@ -358,6 +371,8 @@ export class SalesComponent implements OnInit {
             }
           }
         }
+
+        this.loadCompleted = true;
       },
       (error) => {
         if (error.status == 401) {
@@ -393,6 +408,6 @@ export class SalesComponent implements OnInit {
 
   //Boton Descargar
   downloadCSV(){
-    this.downloadCsvService.downloadSalesFile(this.sales, 'Sales', "es-ES");
+    this.downloadCsvService.downloadSalesFile(this.sales, 'Sales', this.currentLang);
   }
 }
