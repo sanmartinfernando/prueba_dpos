@@ -126,7 +126,7 @@ build_prod:
    name: production
    deployment_tier: production
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main" && $CI_COMMIT_TAG'
+    - if: '$CI_COMMIT_BRANCH == "main"'
       when: manual
     - when: never
 
@@ -142,6 +142,6 @@ deploy_prod:
   dependencies:
    - build_prod
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main" && $CI_COMMIT_TAG'
+    - if: '$CI_COMMIT_BRANCH == "main"'
       when: manual
     - when: never
