@@ -16,6 +16,8 @@ import { PaymentMethodsFilter } from '../_models/_filters/payment-methods.filter
 import { Top3Filter } from '../_models/_filters/top3.filter';
 import { TopProductsFilter } from '../_models/_filters/top-products.filter';
 import { StorageService } from '../_services/storage.service';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
   selector: 'DPOSW-dashboard',
@@ -28,7 +30,7 @@ export class DashboardComponent implements OnInit {
   public loadedPMChart:boolean = false;
   public loadedTPChart:boolean = false;
   
-  public terminalSelected: string = 'Todos';
+  public terminalSelected: string;
   
   public ordersResult = { total: 0, count: 0 };
   public refundsResult = { total: 0, count: 0 };
@@ -137,16 +139,25 @@ export class DashboardComponent implements OnInit {
 
   public colorsTop3 = [];
 
+  currentLang: string;
+  langSubscription: Subscription;
+
   constructor(
     private ordersService: OrdersService,
     private cashMovementsService: CashMovementsService,
     private portalUsersService: PortalUsersService,
     private terminalsService: TerminalsService,
     private commercesService: CommercesService,
+    public translate: TranslateService,
     private storageService: StorageService,
     private authService: AuthService
   ) {
     this.formatCurrencyLabel = this.formatCurrencyLabel.bind(this);
+    this.currentLang = this.translate.currentLang || 'es';
+    this.langSubscription = this.translate.onLangChange.subscribe(event => {
+      this.currentLang = event.lang;
+      this.terminalsNumber[0] = this.translate.instant('dpos.filter.all');
+    });
   }
 
   /**
@@ -166,7 +177,7 @@ export class DashboardComponent implements OnInit {
                 if(this.terminals.length != 0) {
                   this.terminalsNumber = this.terminals.map(terminal => terminal.terminalNumber);
                 }
-                this.terminalsNumber.unshift('Todos');
+                this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
                 this.terminalSelected = this.terminalsNumber[0];
                 //inicializamos los filtros de las llamadas a la API
                 this.idOrders = new OrdersFilter(this.commerceId, this.terminalsNumber.slice(1)).idOrders;
@@ -208,7 +219,7 @@ export class DashboardComponent implements OnInit {
    */
   public formatCurrencyLabel = (value:any) => {
     this.monthVarSearch = (<HTMLInputElement>(document.getElementById('monthDate'))).value;
-    if (this.monthVarSearch != 'Todos') {
+    if (this.monthVarSearch != this.translate.instant('dpos.filter.all')) {
       if (this.kpiDataset[+this.monthVarSearch - 1].value == value && value !=0) {
         value = value.toFixed(1) + '€';
       } else {
@@ -231,7 +242,7 @@ export class DashboardComponent implements OnInit {
   public barCustomColors() {
     this.colorsKPI = [];
     this.monthVarSearch = (<HTMLInputElement>(document.getElementById('monthDate'))).value;
-    if (this.monthVarSearch != 'Todos') {
+    if (this.monthVarSearch != this.translate.instant('dpos.filter.all')) {
       for (let i = 0; i < this.kpiDataset.length; i++) {
         this.colorsKPI.push({ name: this.kpiDataset[i].name, value: this.colors[0] });
       }
@@ -249,16 +260,24 @@ export class DashboardComponent implements OnInit {
     let toDate:number = 0;
     let terminalsSelected: any;
 
+    //Si se selecciona el valor "Todos", se establece con todos los números de terminal
+    if (this.terminalSelected == this.translate.instant('dpos.filter.all')) {
+      terminalsSelected = this.terminalsNumber.slice(1);
+    } else {
+      terminalsSelected = this.terminalSelected;
+    }
+
+
     //Obtención de variables de búsqueda de año y mes
     this.yearVarSearch = (<HTMLInputElement>(document.getElementById('yearDate'))).value;
     this.monthVarSearch = (<HTMLInputElement>(document.getElementById('monthDate'))).value;
 
     //Se comprueba si es necesario filtrar por solo año o por año+mes, el if es el caso de solo año
-    if (this.monthVarSearch.length == 0 || this.monthVarSearch == 'Todos') {
+    if (this.monthVarSearch.length == 0 || this.monthVarSearch == this.translate.instant('dpos.filter.all')) {
       //Se obtiene el año inicial (yearMilli) y el año máximo (yearMaxMilli) y se transforma a unicode
       this.yearDate = new Date(parseInt(this.yearVarSearch), 0);
       fromDate = this.yearDate.getTime();
-      toDate = this.yearMilli + 31536000000;
+      toDate = this.yearDate.getTime() + 31536000000;
     //En el else se contempla el caso de que la búsqueda se realice con año+mes
     } else {
       //Se obtienen las variables de fechas (inicial (dateMilli) y max (dateMaxMilli)) teniendo en cuenta la variable de búsqueda de año y mes, se pasan a unicode
@@ -267,14 +286,6 @@ export class DashboardComponent implements OnInit {
       this.yearMaxDate = new Date(parseInt(this.yearVarSearch), parseInt(this.monthVarSearch));
       toDate = this.yearMaxDate.getTime();
     }
-
-    //Si se selecciona el valor "Todos", se establece con todos los números de terminal
-    if (this.terminalSelected == 'Todos') {
-      terminalsSelected = this.terminalsNumber.slice(1);
-    } else {
-      terminalsSelected = this.terminalSelected;
-    }
-
     
     this.idOrders = new OrdersFilter(this.commerceId, terminalsSelected, fromDate, toDate).idOrders;
     this.idCM = new CashMovementsFilter(this.commerceId, terminalsSelected, fromDate, toDate).idCashMovement;
@@ -454,7 +465,6 @@ export class DashboardComponent implements OnInit {
       for (let i = 0; i < this.kpiDataset.length; i++) {
           valueGraphArrayIn[i] = 0;
           valueGraphArrayOut[i] = 0;
-          //this.kpiDataset[i].value = 0;
       }
       //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
       for (let i = 0; i < aggregationsEvoIn.length; i++) {
