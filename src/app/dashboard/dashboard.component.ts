@@ -29,6 +29,9 @@ export class DashboardComponent implements OnInit {
   public loadedKPIChart:boolean = false;
   public loadedPMChart:boolean = false;
   public loadedTPChart:boolean = false;
+  public emptyKPIChart:boolean = false;
+  public emptyPMChart:boolean = false;
+  public emptyTPChart:boolean = false;
   
   public terminalSelected: string;
   
@@ -306,6 +309,7 @@ export class DashboardComponent implements OnInit {
   public fillCharKPIs(event: any) {
 
     this.loadedKPIChart = false;
+    this.emptyKPIChart = true;
 
     //Se captura el nombre del KPI en el que se clicka para mostrar el gráfico
     let idElement:string = 'sales'; 
@@ -379,6 +383,7 @@ export class DashboardComponent implements OnInit {
 
     //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
     this.ordersService.getOrderAggregate(this.idEvo).subscribe((aggregationsEvo) => {
+      if(aggregationsEvo.length != 0) {
         //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
         for (let i = 0; i < aggregationsEvo.length; i++) {
           this.kpiDataset[aggregationsEvo[i]._id - 1].value = aggregationsEvo[i].total / 100;
@@ -389,8 +394,12 @@ export class DashboardComponent implements OnInit {
 
         //Variables de carga de gráficos se ponen en true
         this.loadedKPIChart = true;
+        this.emptyKPIChart = false;
+      } else {
+        this.loadedKPIChart = true;
+        this.emptyKPIChart = true;
       }
-    );
+    });
   }
 
   /**
@@ -401,6 +410,7 @@ export class DashboardComponent implements OnInit {
     this.idEvo[1].$match.type = 2;
     //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
     this.ordersService.getOrderAggregate(this.idEvo).subscribe((aggregationsEvo) => {
+      if(aggregationsEvo.length != 0) {
         //Actualzamos los colores de las barras
         for (let i = 0; i < this.colorsKPI.length; i++) {
           this.colorsKPI[i].value = this.colors[2];
@@ -416,8 +426,12 @@ export class DashboardComponent implements OnInit {
         this.kpiDataset = [...this.kpiDataset];
         //Variables de carga de gráficos se ponen en true
         this.loadedKPIChart = true;
+        this.emptyKPIChart = false;
+      } else {
+        this.loadedKPIChart = true;
+        this.emptyKPIChart = true;
       }
-    );
+    });
   }
 
   /**
@@ -428,7 +442,8 @@ export class DashboardComponent implements OnInit {
     this.idEvo[1].$match.type = 0;
     //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
     this.ordersService.getOrderAggregate(this.idEvo).subscribe((aggregationsEvo) => { 
-      //Actualzamos los colores de las barras
+      if(aggregationsEvo.length != 0) {
+        //Actualzamos los colores de las barras
         for (let i = 0; i < this.colorsKPI.length; i++) {
           this.colorsKPI[i].value = this.colors[1];
         }
@@ -443,8 +458,12 @@ export class DashboardComponent implements OnInit {
         this.kpiDataset = [...this.kpiDataset];
         //Variables de carga de gráficos se ponen en true
         this.loadedKPIChart = true;
+        this.emptyKPIChart = false;
+      } else {
+        this.loadedKPIChart = true;
+        this.emptyKPIChart = true;
       }
-    );
+    });
   }
 
   /**
@@ -456,33 +475,39 @@ export class DashboardComponent implements OnInit {
     let valueGraphArrayOut = new Array(12);
     //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal y intervalo de tiempo)
     this.cashMovementsService.getCashMovementsAggregate(this.idEvoCM).subscribe((aggregationsEvoIn) => {
-      //Actualzamos los colores de las barras
-      for (let i = 0; i < this.colorsKPI.length; i++) {
-        this.colorsKPI[i].value = this.colors[3];
-      }
-      //Se inicializan los arrays
-      this.resetKpiDataset();
-      for (let i = 0; i < this.kpiDataset.length; i++) {
-          valueGraphArrayIn[i] = 0;
-          valueGraphArrayOut[i] = 0;
-      }
-      //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
-      for (let i = 0; i < aggregationsEvoIn.length; i++) {
-        //Se separan los datos dependiendo de su id (0 movimiento in en el if y 1 movimiento out en el else)
-        if (aggregationsEvoIn[i]._id.type == 0) {
-          valueGraphArrayIn[aggregationsEvoIn[i]._id.month - 1] = aggregationsEvoIn[i].total / 100;
-        } else {
-          valueGraphArrayOut[aggregationsEvoIn[i]._id.month - 1] = aggregationsEvoIn[i].total / 100;
+      if(aggregationsEvoIn.length != 0) {
+        //Actualzamos los colores de las barras
+        for (let i = 0; i < this.colorsKPI.length; i++) {
+          this.colorsKPI[i].value = this.colors[3];
         }
+        //Se inicializan los arrays
+        this.resetKpiDataset();
+        for (let i = 0; i < this.kpiDataset.length; i++) {
+            valueGraphArrayIn[i] = 0;
+            valueGraphArrayOut[i] = 0;
+        }
+        //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
+        for (let i = 0; i < aggregationsEvoIn.length; i++) {
+          //Se separan los datos dependiendo de su id (0 movimiento in en el if y 1 movimiento out en el else)
+          if (aggregationsEvoIn[i]._id.type == 0) {
+            valueGraphArrayIn[aggregationsEvoIn[i]._id.month - 1] = aggregationsEvoIn[i].total / 100;
+          } else {
+            valueGraphArrayOut[aggregationsEvoIn[i]._id.month - 1] = aggregationsEvoIn[i].total / 100;
+          }
+        }
+        //Se rellena el array de datos del gráfico en el apartado value de cada elemento con la diferencia entre movimientos in y out
+        for (let i = 0; i < this.kpiDataset.length; i++) {
+          this.kpiDataset[i].value = valueGraphArrayIn[i] - valueGraphArrayOut[i];
+        }
+        //Se actualiza el array de datos del gráfico para que se dibujen los nuevos datos introducidos
+        this.kpiDataset = [...this.kpiDataset];
+        //Variables de carga de gráficos se ponen en true
+        this.loadedKPIChart = true;
+        this.emptyKPIChart = false;
+      } else {
+        this.loadedKPIChart = true;
+        this.emptyKPIChart = true;
       }
-      //Se rellena el array de datos del gráfico en el apartado value de cada elemento con la diferencia entre movimientos in y out
-      for (let i = 0; i < this.kpiDataset.length; i++) {
-        this.kpiDataset[i].value = valueGraphArrayIn[i] - valueGraphArrayOut[i];
-      }
-      //Se actualiza el array de datos del gráfico para que se dibujen los nuevos datos introducidos
-      this.kpiDataset = [...this.kpiDataset];
-      //Variables de carga de gráficos se ponen en true
-      this.loadedKPIChart = true;
     });
   }
 
@@ -495,46 +520,52 @@ export class DashboardComponent implements OnInit {
     let valueGraphArrayRefunds = new Array(12);
     //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
     this.ordersService.getOrderAggregate(this.idEvoResults).subscribe((aggregationsEvoOrder) => {
-      //Actualzamos los colores de las barras
-      for (let i = 0; i < this.colorsKPI.length; i++) {
-        this.colorsKPI[i].value = this.colors[4];
-      }
-      //Inicializamos los arrays
-      this.resetKpiDataset();
-      for (let i = 0; i < this.kpiDataset.length; i++) {
-          valueGraphArraySales[i] = 0;
-          valueGraphArrayRefunds[i] = 0;
-          valueGraphArrayRect[i] = 0;
-      }
-      let totalSales = 0;
-      let totalRefunds = 0;
-      let totalRectifications = 0;
-      //Se clasifican los datos obtenidos según el tipo ( 0 ventas, 2 devoluciones y 5 rectificaciones) en el array de resultados
-      for (let i = 0; i < aggregationsEvoOrder.length; i++) {
-        switch (aggregationsEvoOrder[i]._id.type) {
-          case 0:
-            valueGraphArraySales[aggregationsEvoOrder[i]._id.month - 1] = aggregationsEvoOrder[i].total / 100;
-            totalSales += aggregationsEvoOrder[i].total / 100;
-            break;
-          case 2:
-            valueGraphArrayRefunds[aggregationsEvoOrder[i]._id.month - 1] = aggregationsEvoOrder[i].total / 100;
-            totalRefunds += aggregationsEvoOrder[i].total / 100;
-            break;
-          case 5:
-            valueGraphArrayRect[aggregationsEvoOrder[i]._id.month - 1] = aggregationsEvoOrder[i].total / 100;
-            totalRectifications += aggregationsEvoOrder[i].total / 100;
-            break;
+      if(aggregationsEvoOrder.length != 0) {
+        //Actualzamos los colores de las barras
+        for (let i = 0; i < this.colorsKPI.length; i++) {
+          this.colorsKPI[i].value = this.colors[4];
         }
+        //Inicializamos los arrays
+        this.resetKpiDataset();
+        for (let i = 0; i < this.kpiDataset.length; i++) {
+            valueGraphArraySales[i] = 0;
+            valueGraphArrayRefunds[i] = 0;
+            valueGraphArrayRect[i] = 0;
+        }
+        let totalSales = 0;
+        let totalRefunds = 0;
+        let totalRectifications = 0;
+        //Se clasifican los datos obtenidos según el tipo ( 0 ventas, 2 devoluciones y 5 rectificaciones) en el array de resultados
+        for (let i = 0; i < aggregationsEvoOrder.length; i++) {
+          switch (aggregationsEvoOrder[i]._id.type) {
+            case 0:
+              valueGraphArraySales[aggregationsEvoOrder[i]._id.month - 1] = aggregationsEvoOrder[i].total / 100;
+              totalSales += aggregationsEvoOrder[i].total / 100;
+              break;
+            case 2:
+              valueGraphArrayRefunds[aggregationsEvoOrder[i]._id.month - 1] = aggregationsEvoOrder[i].total / 100;
+              totalRefunds += aggregationsEvoOrder[i].total / 100;
+              break;
+            case 5:
+              valueGraphArrayRect[aggregationsEvoOrder[i]._id.month - 1] = aggregationsEvoOrder[i].total / 100;
+              totalRectifications += aggregationsEvoOrder[i].total / 100;
+              break;
+          }
+        }
+        this.balanceResult = totalSales - (totalRefunds + totalRectifications);
+        //Se actualizan los datos del array de resultados en el array de datos del gráfico para que se muestren los resultados (ventas - (devoluciones+rectificaciones))
+        for (let i = 0; i < this.kpiDataset.length; i++) {
+          this.kpiDataset[i].value = valueGraphArraySales[i] - (valueGraphArrayRefunds[i] + valueGraphArrayRect[i]);
+        }
+        //Se actualiza el array del gráfico para que se dibujen los datos nuevos en el gráfico
+        this.kpiDataset = [...this.kpiDataset];
+        //Las variables de carga de gráfico se ponen en true
+        this.loadedKPIChart = true;
+        this.emptyKPIChart = false;
+      } else {
+        this.loadedKPIChart = true;
+        this.emptyKPIChart = true;
       }
-      this.balanceResult = totalSales - (totalRefunds + totalRectifications);
-      //Se actualizan los datos del array de resultados en el array de datos del gráfico para que se muestren los resultados (ventas - (devoluciones+rectificaciones))
-      for (let i = 0; i < this.kpiDataset.length; i++) {
-        this.kpiDataset[i].value = valueGraphArraySales[i] - (valueGraphArrayRefunds[i] + valueGraphArrayRect[i]);
-      }
-      //Se actualiza el array del gráfico para que se dibujen los datos nuevos en el gráfico
-      this.kpiDataset = [...this.kpiDataset];
-      //Las variables de carga de gráfico se ponen en true
-      this.loadedKPIChart = true;
     });
   }
 
@@ -545,47 +576,51 @@ export class DashboardComponent implements OnInit {
     //Llamada a la API para obtener los datos agregados de que se muestran en la sección KPIs de movimientos de caja
     this.cashMovementsService.getCashMovementsAggregate(this.idCM).subscribe(
       (aggregationsCM) => {
-        this.cashMovementsResult = (aggregationsCM[0].total / Math.pow(10, aggregationsCM[0].decimals)) - (aggregationsCM[1].total / Math.pow(10, aggregationsCM[1].decimals));
-        this.cashMovementsOperationsResult = aggregationsCM[0].count + aggregationsCM[1].count;
+        if(aggregationsCM.length != 0) {
+          this.cashMovementsResult = (aggregationsCM[0].total / Math.pow(10, aggregationsCM[0].decimals)) - (aggregationsCM[1].total / Math.pow(10, aggregationsCM[1].decimals));
+          this.cashMovementsOperationsResult = aggregationsCM[0].count + aggregationsCM[1].count;
+        }
       }
     );
 
     //Comunicación con API para obtener los datos agregados que se muestran como base al iniciar la página en la sección de KPIs
     this.ordersService.getOrderAggregate(this.idOrders).subscribe(
       (aggregation) => {
-        this.aggregations = aggregation;
-        this.ordersResult = {total: 0, count: 0};
-        this.refundsResult = {total: 0, count: 0};
-        this.rectificationsResult = {total: 0, count: 0};
-        this.avTicketResult = 0;
-        this.balanceResult = 0;
-        let countAvg = 0;
-        //Bucle para recorrer el objeto respuesta
-        for (let i = 0; i < this.aggregations.length; i++) {
-          //If para comprobar si existen datos y el objeto no está vacio
-          if (this.aggregations[i].total != null) {
-            this.avTicketResult += this.aggregations[i].avg / 100;
-            countAvg++;
-            //Switch para comprobar si existen datos de ventas (id 0), de devoluciones (id 2) o rectificaciones (id 5)
-            switch (this.aggregations[i]._id) {
-              case 0: //Ventas
-                //Para cada caso se rellena el array de resultados tanto del total con los decimales ya aplicados como del conteo de nº de operaciones
-                this.ordersResult.total += this.aggregations[i].total / this.Math.pow(10, this.aggregations[i].decimals);
-                this.ordersResult.count += this.aggregations[i].count;
-                break;
-              case 2: //Devoluciones
-                this.refundsResult.total += this.aggregations[i].total / this.Math.pow(10, this.aggregations[i].decimals);
-                this.refundsResult.count += this.aggregations[i].count;
-                break;
-              case 5: //Rectificaciones
-                this.rectificationsResult.total += this.aggregations[i].total / this.Math.pow(10, this.aggregations[i].decimals);
-                this.rectificationsResult.count += this.aggregations[i].count;
-                break;
+        if(aggregation.length != 0) {
+          this.aggregations = aggregation;
+          this.ordersResult = {total: 0, count: 0};
+          this.refundsResult = {total: 0, count: 0};
+          this.rectificationsResult = {total: 0, count: 0};
+          this.avTicketResult = 0;
+          this.balanceResult = 0;
+          let countAvg = 0;
+          //Bucle para recorrer el objeto respuesta
+          for (let i = 0; i < this.aggregations.length; i++) {
+            //If para comprobar si existen datos y el objeto no está vacio
+            if (this.aggregations[i].total != null) {
+              this.avTicketResult += this.aggregations[i].avg / 100;
+              countAvg++;
+              //Switch para comprobar si existen datos de ventas (id 0), de devoluciones (id 2) o rectificaciones (id 5)
+              switch (this.aggregations[i]._id) {
+                case 0: //Ventas
+                  //Para cada caso se rellena el array de resultados tanto del total con los decimales ya aplicados como del conteo de nº de operaciones
+                  this.ordersResult.total += this.aggregations[i].total / this.Math.pow(10, this.aggregations[i].decimals);
+                  this.ordersResult.count += this.aggregations[i].count;
+                  break;
+                case 2: //Devoluciones
+                  this.refundsResult.total += this.aggregations[i].total / this.Math.pow(10, this.aggregations[i].decimals);
+                  this.refundsResult.count += this.aggregations[i].count;
+                  break;
+                case 5: //Rectificaciones
+                  this.rectificationsResult.total += this.aggregations[i].total / this.Math.pow(10, this.aggregations[i].decimals);
+                  this.rectificationsResult.count += this.aggregations[i].count;
+                  break;
+              }
             }
           }
+          this.balanceResult = this.ordersResult.total - (this.refundsResult.total + this.rectificationsResult.total);
+          this.avTicketResult = this.avTicketResult / countAvg;
         }
-        this.balanceResult = this.ordersResult.total - (this.refundsResult.total + this.rectificationsResult.total);
-        this.avTicketResult = this.avTicketResult / countAvg;
       }
     );
   }
@@ -596,28 +631,49 @@ export class DashboardComponent implements OnInit {
   private getTop3Chart() {
 
     this.loadedTPChart = false;
+    this.emptyTPChart = true;
+
     //Llamada a la API para obtener el total de productos vendidos
     this.ordersService.getOrderTop3Aggregate(this.idTP).subscribe(
       (aggregationsTP) => {
-        //Llamada a la API para obtener los datos del gráfico de top 3 más vendidos
-        this.ordersService.getOrderTop3Aggregate(this.idT3).subscribe(
-          (aggregationsTop3) => {
-            //Se asocian los datos del objeto respuesta con los campos correspondientes del array de valores del gráfico
-            let sumaTP = 0;
-            this.colorsTop3 = [];
-            for (let i = 0; i < aggregationsTop3.length; i++) {
-              sumaTP = sumaTP + aggregationsTop3[i].quantity;
-              this.datasetTop3[i].name = aggregationsTop3[i].product + ' (' + aggregationsTop3[i].quantity + ' uds)';
-              this.datasetTop3[i].value = Math.round((aggregationsTop3[i].quantity / aggregationsTP[0].quantity) * 100);
-              this.colorsTop3.push({ name: this.datasetTop3[i].name, value: this.colors[i]});
-            }
-            //Se asocia el 4º puesto del array del gráfico correspondiente al apartado "resto de productos"
-            //El dato se obtiene restando el valor total de la consulta de aggregationsTP a la sumaTP
-            this.datasetTop3[3].name = 'Resto (' + (aggregationsTP[0].quantity - sumaTP) +' uds)';
-            this.datasetTop3[3].value = Math.round(((aggregationsTP[0].quantity - sumaTP) / aggregationsTP[0].quantity) * 100);
-            this.loadedTPChart = true;
-          } 
-        );
+        if(aggregationsTP.length != 0) {
+          //Llamada a la API para obtener los datos del gráfico de top 3 más vendidos
+          this.ordersService.getOrderTop3Aggregate(this.idT3).subscribe(
+            (aggregationsTop3) => {
+              //Se asocian los datos del objeto respuesta con los campos correspondientes del array de valores del gráfico
+              let sumaTP = 0;
+              this.colorsTop3 = [];
+              this.resetDatasetTop3();
+              
+              for (let i = 0; i < aggregationsTop3.length; i++) {
+                sumaTP = sumaTP + aggregationsTop3[i].quantity;
+                this.datasetTop3[i].name = aggregationsTop3[i].product + ' (' + aggregationsTop3[i].quantity + ' uds)';
+                this.datasetTop3[i].value = Math.round((aggregationsTop3[i].quantity / aggregationsTP[0].quantity) * 100);
+                this.colorsTop3.push({ name: this.datasetTop3[i].name, value: this.colors[i]});
+              }
+
+              //Se asocia el 4º puesto del array del gráfico correspondiente al apartado "resto de productos"
+              //El dato se obtiene restando el valor total de la consulta de aggregationsTP a la sumaTP
+              if (aggregationsTop3.length >= 3) {
+                this.datasetTop3[3].name = 'Resto (' + (aggregationsTP[0].quantity - sumaTP) +' uds)';
+                this.datasetTop3[3].value = Math.round(((aggregationsTP[0].quantity - sumaTP) / aggregationsTP[0].quantity) * 100);
+              } else {
+                this.datasetTop3[3].name = '';
+                this.datasetTop3[3].value = 0;
+              }
+
+              console.log(this.datasetTop3);
+
+              this.datasetTop3 = [...this.datasetTop3];
+
+              this.loadedTPChart = true;
+              this.emptyTPChart = false;
+            } 
+          );
+        } else {
+          this.loadedTPChart = true;
+          this.emptyTPChart = true;
+        }
       }
     );
   }
@@ -628,8 +684,11 @@ export class DashboardComponent implements OnInit {
   private getPaymentMethodsChart() {
 
     this.loadedPMChart = false;
+    this.emptyPMChart = false;
+
     //Llamada a la API para obtener los métodos de pago
     this.ordersService.getOrderAggregate(this.idPM).subscribe((aggregationsPM) => {
+      if(aggregationsPM.length != 0) {
         //Se reinicia el array de datos del gráfico
         for (let i = 0; i < this.datasetPM.length; i++) {
           this.datasetPM[i].value = 0;
@@ -677,8 +736,21 @@ export class DashboardComponent implements OnInit {
         this.datasetPM = [...this.datasetPM];
         //Variable de carga del gráfico se cambia a true
         this.loadedPMChart = true;
+        this.emptyPMChart = false;
+      } else {
+        this.loadedPMChart = true;
+        this.emptyPMChart = true;
       }
-    );
+    });
+  }
+
+  public resetDatasetTop3() {
+    this.datasetTop3 = [
+      { name: '', value: 0 },
+      { name: '', value: 0 },
+      { name: '', value: 0 },
+      { name: '', value: 0 },
+    ];
   }
 
   public resetKpiDataset() {

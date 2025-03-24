@@ -28,7 +28,7 @@ export class EvolutionFilter {
           terminal_number: { $in: this.terminalsId },
           commerce_id: { $eq: this.commerceId },
           type: 0,
-          created_at: { $gt: this.fromDate, $lt: this.toDate },
+          created_at: { $gte: this.fromDate, $lte: this.toDate },
         },
       },
       {

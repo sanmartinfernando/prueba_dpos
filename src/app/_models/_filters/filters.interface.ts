@@ -15,7 +15,7 @@ interface Match {
     terminal_number: { $in: string[] };
     commerce_id?: { $eq: number };
     type?: number;
-    created_at: { $gt: number; $lt: number };
+    created_at: { $gte: number; $lte: number };
   };
 }
 

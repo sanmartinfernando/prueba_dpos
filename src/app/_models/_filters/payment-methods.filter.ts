@@ -23,7 +23,7 @@ export class PaymentMethodsFilter {
         $match: {
           terminal_number: { $in: this.terminalsId },
           commerce_id: { $eq: this.commerceId },
-          created_at: { $gt: this.fromDate, $lt: this.toDate },
+          created_at: { $gte: this.fromDate, $lte: this.toDate },
         },
       },
       {

@@ -20,7 +20,7 @@ export class Top3Filter {
         $match: {
           terminal_number: { $in: this.terminalsId },
           commerce_id: { $eq: this.commerceId },
-          created_at: { $gt: this.fromDate, $lt: this.toDate },
+          created_at: { $gte: this.fromDate, $lte: this.toDate },
           type: 0,
         },
       },
