@@ -662,8 +662,6 @@ export class DashboardComponent implements OnInit {
                 this.datasetTop3[3].value = 0;
               }
 
-              console.log(this.datasetTop3);
-
               this.datasetTop3 = [...this.datasetTop3];
 
               this.loadedTPChart = true;

@@ -31,6 +31,7 @@ export class SalesComponent implements OnInit {
   isLoggedIn: boolean = true;
   Math = Math;
   validationVariable: boolean = false;
+  commerceId: number = 0;
 
   //Parámetros de búsqueda
   public terminalsNumber: string[];
@@ -83,6 +84,7 @@ export class SalesComponent implements OnInit {
     this.loadCompleted = false;
     this.storageService.userInfo.subscribe((user) =>{
       this.commercesService.commerceId$.subscribe((commerceId) => {
+        this.commerceId = commerceId;
         this.portalUsersService.getToken(user).subscribe({
           next: (portalUserToken)=> {
             this.authService.setPortalUsersToken(portalUserToken.token);
@@ -130,7 +132,6 @@ export class SalesComponent implements OnInit {
 
     //Parámetros de búsqueda activos
     //Terminal
-    /*
     if (this.terminalSelected != null) {
       if (this.searchCounter == false) {
         this.searchCounter = true;
@@ -138,22 +139,30 @@ export class SalesComponent implements OnInit {
       if (this.terminalSelected == this.translate.instant('dpos.filter.all')) {
         this.varSearch = this.varSearch + "{'or':[";
         for (let i = 1; i < this.terminalsNumber.length; i++) {
-            this.varSearch =
-              this.varSearch +
-              ",{'field':'terminal_number','op':'=','value':'" +
-              this.terminalsNumber[i] +
-              "'}";
+            this.varSearch = this.varSearch + "{'field':'terminal_number','op':'=','value':'" + this.terminalsNumber[i] + "'}";
+            if (i+1 < this.terminalsNumber.length) {
+              this.varSearch = this.varSearch + ",";
+            }
         }
         this.varSearch = this.varSearch + ']}';
       } else {
-        this.emptySearch = false;
-        this.varSearch =
-          this.varSearch +
-          "{'field':'terminal_number','op':'=','value':'" +
-          this.terminalSelected +
-          "'}";
+        //this.emptySearch = false;
+        this.varSearch = this.varSearch + "{'field':'terminal_number','op':'=','value':'" + this.terminalSelected + "'}";
       }
-    }*/
+    }
+
+    //Commerce id
+    if (this.commerceId != 0) {
+      if (this.searchCounter == false) {
+        this.searchCounter = true;
+      } else {
+        this.varSearch = this.varSearch + ',';
+      }
+      //this.emptySearch = false;
+      this.varSearch =
+        this.varSearch +"{'field':'CommerceId','op':'=','value':'" +this.commerceId +"'}";
+    }
+    
     //Desde fecha
     if (this.sinceDateMilli > 0) {
       if (this.searchCounter == false) {
@@ -165,6 +174,7 @@ export class SalesComponent implements OnInit {
       this.varSearch =
         this.varSearch + "{'field':'CreatedAt','op':'>','value':'" + this.sinceDateMilli +"'}";
     }
+
     //Hasta fecha
     if (this.tilDateMilli > 0) {
       if (this.searchCounter == false) {

@@ -68,7 +68,9 @@ export class ReportsComponent implements OnInit {
   tilDateMilli: number = 1721599200000;
   today: Date = new Date();
   todayMilli = this.today.getTime();
+  varSearch: string = '';
   emptySearch: boolean = false;
+  commerceId: number = 0;
 
   currentLang: string;
   langSubscription: Subscription;
@@ -81,6 +83,7 @@ export class ReportsComponent implements OnInit {
     this.loadCompleted = false;
     this.storageService.userInfo.subscribe((user) =>{
       this.commercesService.commerceId$.subscribe((commerceId) => {
+        this.commerceId = commerceId;
         this.portalUsersService.getToken(user).subscribe({
           next: (portalUserToken)=> {
             this.authService.setPortalUsersToken(portalUserToken.token);
@@ -92,8 +95,7 @@ export class ReportsComponent implements OnInit {
                 }
                 this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
                 this.terminalSelected = this.terminalsNumber[0];
-                this.getArqueoX();
-                this.getSalesReport();
+                this.searchReports();
                 this.loadCompleted = true;
               },
               error: (error) => {
@@ -125,7 +127,7 @@ export class ReportsComponent implements OnInit {
       this.tilDateMilli = Date.parse(this.tilDate);
     }
     //Comienzo query búsqueda
-    let varSearch: string = "&qs={'and':[";
+    this.varSearch = "&qs={'and':[";
     //Parámetros de búsqueda activos
     //Terminal
     if (this.terminalSelected != null) {
@@ -133,42 +135,54 @@ export class ReportsComponent implements OnInit {
         this.searchCounter = true;
       }
       if (this.terminalSelected == this.translate.instant('dpos.filter.all')) {
-        varSearch += "{'or':[";
-        for (let i = 0; i < this.terminalsNumber.length; i++) {
-          if (i == 0) {
-            varSearch += "{'field':'terminal_number','op':'=','value':'" + this.terminalsNumber[i] + "'}";
-          } else {
-            varSearch += ",{'field':'terminal_number','op':'=','value':'" + this.terminalsNumber[i] + "'}";
-          }
+        this.varSearch = this.varSearch + "{'or':[";
+        for (let i = 1; i < this.terminalsNumber.length; i++) {
+          this.varSearch = this.varSearch + "{'field':'terminal_number','op':'=','value':'" + this.terminalsNumber[i] + "'}";
+            if (i+1 < this.terminalsNumber.length) {
+              this.varSearch = this.varSearch + ",";
+            }
         }
-        varSearch += ']}';
+        this.varSearch = this.varSearch + ']}';
       } else {
-        this.emptySearch = false;
-        varSearch += "{'field':'terminal_number','op':'=','value':'" + this.terminalSelected + "'}";
+        //this.emptySearch = false;
+        this.varSearch = this.varSearch + "{'field':'terminal_number','op':'=','value':'" + this.terminalSelected + "'}";
       }
     }
+
+    //Commerce id
+    if (this.commerceId != 0) {
+      if (this.searchCounter == false) {
+        this.searchCounter = true;
+      } else {
+        this.varSearch = this.varSearch + ',';
+      }
+      //this.emptySearch = false;
+      this.varSearch =
+      this.varSearch +"{'field':'CommerceId','op':'=','value':'" +this.commerceId +"'}";
+    }
+
     //Desde fecha
     if (this.sinceDateMilli != undefined) {
       if (this.searchCounter == false) {
         this.searchCounter = true;
       } else {
-        varSearch += ',';
+        this.varSearch += ',';
       }
-      this.emptySearch = false;
-      varSearch += "{'field':'CreatedAt','op':'>','value':'" + this.sinceDateMilli + "'}";
+      //this.emptySearch = false;
+      this.varSearch += "{'field':'CreatedAt','op':'>','value':'" + this.sinceDateMilli + "'}";
     }
     //Hasta fecha
     if (this.tilDateMilli > 0) {
       if (this.searchCounter == false) {
         this.searchCounter = true;
       } else {
-        varSearch += ',';
+        this.varSearch += ',';
       }
-      this.emptySearch = false;
-      varSearch += "{'field':'CreatedAt','op':'<','value':'" + this.tilDateMilli + "'}";
+      //this.emptySearch = false;
+      this.varSearch += "{'field':'CreatedAt','op':'<','value':'" + this.tilDateMilli + "'}";
     }
     //Cierre y reseteo de parámetros
-    varSearch += ']}';
+    this.varSearch += ']}';
     this.searchCounter = false;
     //Llamada API
     if (this.reportVarSearch == this.translate.instant('dpos.reports.taxes.label') || this.reportVarSearch == this.translate.instant('dpos.reports.paymentmethods.label')) { 
@@ -180,7 +194,7 @@ export class ReportsComponent implements OnInit {
 
   private getArqueoX() {
     this.loadCompleted = false;
-    this.arqueoXService.getArqueoX(this.sinceDateMilli, this.tilDateMilli).subscribe({
+    this.arqueoXService.getArqueoX(this.sinceDateMilli, this.tilDateMilli, this.varSearch).subscribe({
       next: (arqueo) => {
         this.sales = arqueo;
         //Calculo de indicadores totales informes
@@ -214,7 +228,7 @@ export class ReportsComponent implements OnInit {
 
   private getSalesReport() {
     this.loadCompleted = false;
-    this.salesReportService.getSalesReport(this.sinceDateMilli, this.tilDateMilli).subscribe({
+    this.salesReportService.getSalesReport(this.sinceDateMilli, this.tilDateMilli, this.varSearch).subscribe({
       next: (salesReport) => {
         this.salesReports = salesReport;
         this.indexProduct = Object.values(salesReport.aggregations);

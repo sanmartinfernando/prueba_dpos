@@ -20,8 +20,8 @@ export class SalesReportService {
 
   constructor(private http: HttpClient) { }
 
-  getSalesReport(fromDate:number, toDate:number): Observable<SalesReport> {
-    let urlSalesReport: string = `${environment.urlWS}${RestRoutes.SALES_REPORT}${fromDate}${RestRoutes.PARAM_TODATE}${toDate}`;
+  getSalesReport(fromDate:number, toDate:number, searchParams: string): Observable<SalesReport> {
+    let urlSalesReport: string = `${environment.urlWS}${RestRoutes.SALES_REPORT}${fromDate}${RestRoutes.PARAM_TODATE}${toDate}${searchParams}`;
     return this.http.post<SalesReport>(urlSalesReport, this.httpOptions);
   }
 }

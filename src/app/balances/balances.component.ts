@@ -52,6 +52,7 @@ export class BalancesComponent implements OnInit {
   todayMilli = this.today.getTime();
   varSearch: string = '';
   emptySearch: boolean = false;
+  commerceId: number = 0;
 
   selectedIndices: number[] = [];
   isAllSelected: boolean = false;
@@ -67,6 +68,7 @@ export class BalancesComponent implements OnInit {
   ngOnInit(): void {
     this.storageService.userInfo.subscribe((user) =>{
       this.commercesService.commerceId$.subscribe((commerceId) => {
+        this.commerceId = commerceId;
         this.portalUsersService.getToken(user).subscribe({
           next: (portalUserToken)=> {
             this.authService.setPortalUsersToken(portalUserToken.token);
@@ -78,7 +80,7 @@ export class BalancesComponent implements OnInit {
                 }
                 this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
                 this.terminalSelected = this.terminalsNumber[0];
-                this.getBalanceInfo();
+                this.searchBalances();
                 this.loadCompleted = true;
               },
               error: (error) => {
@@ -115,21 +117,31 @@ export class BalancesComponent implements OnInit {
       if (this.searchCounter == false) {
         this.searchCounter = true;
       }
-
       if (this.terminalSelected == this.translate.instant('dpos.filter.all')) {
         this.varSearch = this.varSearch + "{'or':[";
         for (let i = 1; i < this.terminalsNumber.length; i++) {
-          if(i == this.terminalsNumber.length - 1)  {
-            this.varSearch = this.varSearch +"{'field':'terminal_number','op':'=','value':'" +this.terminalsNumber[i] +"'}";
-          } else {
-            this.varSearch = this.varSearch +"{'field':'terminal_number','op':'=','value':'" +this.terminalsNumber[i] +"'},";
-          }
+            this.varSearch = this.varSearch + "{'field':'terminal_number','op':'=','value':'" + this.terminalsNumber[i] + "'}";
+            if (i+1 < this.terminalsNumber.length) {
+              this.varSearch = this.varSearch + ",";
+            }
         }
         this.varSearch = this.varSearch + ']}';
       } else {
-        this.emptySearch = false;
+        //this.emptySearch = false;
         this.varSearch = this.varSearch + "{'field':'terminal_number','op':'=','value':'" + this.terminalSelected + "'}";
       }
+    }
+
+    //Commerce id
+    if (this.commerceId != 0) {
+      if (this.searchCounter == false) {
+        this.searchCounter = true;
+      } else {
+        this.varSearch = this.varSearch + ',';
+      }
+      //this.emptySearch = false;
+      this.varSearch =
+        this.varSearch +"{'field':'CommerceId','op':'=','value':'" +this.commerceId +"'}";
     }
 
     //Desde fecha
@@ -139,7 +151,7 @@ export class BalancesComponent implements OnInit {
       } else {
         this.varSearch = this.varSearch + ',';
       }
-      this.emptySearch = false;
+      //this.emptySearch = false;
       this.varSearch = this.varSearch + "{'field':'StartedAt','op':'>','value':'" + this.sinceDateMilli + "'}";
     }
 
@@ -150,7 +162,7 @@ export class BalancesComponent implements OnInit {
       } else {
         this.varSearch = this.varSearch + ',';
       }
-      this.emptySearch = false;
+      //this.emptySearch = false;
       this.varSearch = this.varSearch + "{'field':'FinishedAt','op':'<','value':'" + this.tilDateMilli + "'}";
     }
 
