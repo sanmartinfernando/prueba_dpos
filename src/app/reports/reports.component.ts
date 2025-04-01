@@ -230,8 +230,8 @@ export class ReportsComponent implements OnInit {
           this.emptySearch = true;
           this.loadCompleted = true;
         }
-        if (error.status == 401){
-          this.storageService.clean();
+        if (error.status == 401 || error.status == 500) {
+          this.loadCompleted = true;
         }
       }
     });

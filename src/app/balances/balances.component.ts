@@ -208,8 +208,8 @@ export class BalancesComponent implements OnInit {
         this.loadCompleted=true;
       },
       error: (error) => {
-        if (error.status == 401) {
-          this.storageService.clean();
+        if (error.status == 401  || error.status == 500) {
+          this.loadCompleted = true;
         };
       }
     });

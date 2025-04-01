@@ -44,9 +44,8 @@ export class BalancesDetailsComponent implements OnInit {
           this.loadCompleted = true;
         },
         error: (error) => {
-          if (error.status == 401) {
-            this.isLoggedIn = false;
-            this.storageService.clean();
+          if (error.status == 401 || error.status == 500) {
+            this.loadCompleted = true;
           };
         }
       });

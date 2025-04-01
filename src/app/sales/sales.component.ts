@@ -18,7 +18,7 @@ import { Subscription } from 'rxjs/internal/Subscription';
 export class SalesComponent implements OnInit {
 
   currentFormats: any;
-  size: number = 2147483647;
+  size: number = 200;
   sales: OrderInfo;
   selectSales = new Array(3);
   salesTicketBai = new Array;
@@ -130,27 +130,19 @@ export class SalesComponent implements OnInit {
 
     //Parámetros de búsqueda activos
     //Terminal
+    /*
     if (this.terminalSelected != null) {
       if (this.searchCounter == false) {
         this.searchCounter = true;
       }
-
       if (this.terminalSelected == this.translate.instant('dpos.filter.all')) {
         this.varSearch = this.varSearch + "{'or':[";
-        for (let i = 0; i < this.selectSales[0].length; i++) {
-          if (i == 0) {
-            this.varSearch =
-              this.varSearch +
-              "{'field':'terminal_number','op':'=','value':'" +
-              this.selectSales[0][i] +
-              "'}";
-          } else {
+        for (let i = 1; i < this.terminalsNumber.length; i++) {
             this.varSearch =
               this.varSearch +
               ",{'field':'terminal_number','op':'=','value':'" +
-              this.selectSales[0][i] +
+              this.terminalsNumber[i] +
               "'}";
-          }
         }
         this.varSearch = this.varSearch + ']}';
       } else {
@@ -161,7 +153,7 @@ export class SalesComponent implements OnInit {
           this.terminalSelected +
           "'}";
       }
-    }
+    }*/
     //Desde fecha
     if (this.sinceDateMilli > 0) {
       if (this.searchCounter == false) {
@@ -171,10 +163,7 @@ export class SalesComponent implements OnInit {
       }
       this.emptySearch = false;
       this.varSearch =
-        this.varSearch +
-        "{'field':'CreatedAt','op':'>','value':'" +
-        this.sinceDateMilli +
-        "'}";
+        this.varSearch + "{'field':'CreatedAt','op':'>','value':'" + this.sinceDateMilli +"'}";
     }
     //Hasta fecha
     if (this.tilDateMilli > 0) {
@@ -185,10 +174,7 @@ export class SalesComponent implements OnInit {
       }
       this.emptySearch = false;
       this.varSearch =
-        this.varSearch +
-        "{'field':'CreatedAt','op':'<','value':'" +
-        this.tilDateMilli +
-        "'}";
+        this.varSearch +"{'field':'CreatedAt','op':'<','value':'" +this.tilDateMilli +"'}";
     }
     //Tipo de operación
     if (this.typeVarSearch != null) {
@@ -375,9 +361,8 @@ export class SalesComponent implements OnInit {
         this.loadCompleted = true;
       },
       (error) => {
-        if (error.status == 401) {
-          this.isLoggedIn = false;
-          this.storageService.clean();
+        if (error.status == 401 || error.status == 500) {
+          this.loadCompleted = true;
         };
       }
     );
