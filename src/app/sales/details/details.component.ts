@@ -37,10 +37,8 @@ export class DetailsComponent implements OnInit {
         this.ticket = ticketVentas;
         this.salesTicketBai = [];
         if (this.ticket.orderTicketBai != null) {
-          if (this.ticket.orderTicketBai.status == '00' && this.ticket.orderTicketBai.warns.length <= 0) {
-            this.salesTicketBai[0] = this.ticket.orderTicketBai.ticketBaiId;
-            this.salesTicketBai[1] = this.ticket.orderTicketBai.url;
-          }
+          this.salesTicketBai[0] = this.ticket.orderTicketBai.ticketBaiId;
+          this.salesTicketBai[1] = this.ticket.orderTicketBai.url;
         }
         this.loadCompleted = true;
       } ,

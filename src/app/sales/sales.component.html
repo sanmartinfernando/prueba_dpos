@@ -122,6 +122,11 @@
                         <i>{{'dpos.sales.operation.tbai.no.label' | translate}}</i>
                       </div>
                     </td>
+                    <td class="text-center align-middle" *ngIf="salesTicketBai[i] != 0 && salesTicketBai[i] != 1 && salesTicketBai[i] != 2">
+                      <div class="badge rounded-pill bg-pending">
+                        <i>{{'dpos.sales.operation.tbai.no.label' | translate}}</i> 
+                      </div>
+                    </td>
                     <td class="text-center align-middle" *ngIf="salesTicketBai[i] == 0">
                       <div class="badge rounded-pill bg-accept">
                         <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.tbai.status.accepted.label' | translate}}
