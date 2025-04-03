@@ -99,7 +99,7 @@ export class SalesComponent implements OnInit {
                 }
                 this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
                 this.terminalSelected = this.terminalsNumber[0];
-                this.getOrderInfo();
+                this.searchSales();
               },
               error: (error) => {
                 console.error("Error Commerces: ", error);
@@ -150,7 +150,6 @@ export class SalesComponent implements OnInit {
         }
         this.varSearch = this.varSearch + ']}';
       } else {
-        //this.emptySearch = false;
         this.varSearch = this.varSearch + "{'field':'terminal_number','op':'=','value':'" + this.terminalSelected + "'}";
       }
     }
@@ -162,7 +161,6 @@ export class SalesComponent implements OnInit {
       } else {
         this.varSearch = this.varSearch + ',';
       }
-      //this.emptySearch = false;
       this.varSearch =
         this.varSearch +"{'field':'CommerceId','op':'=','value':'" +this.commerceId +"'}";
     }
@@ -181,9 +179,7 @@ export class SalesComponent implements OnInit {
         } else {
           this.varSearch = this.varSearch + ',';
         }
-        this.emptySearch = false;
-        this.varSearch =
-          this.varSearch + "{'field':'CreatedAt','op':'>','value':'" + this.sinceDateMilli +"'}";
+        this.varSearch = this.varSearch + "{'field':'CreatedAt','op':'>','value':'" + this.sinceDateMilli +"'}";
       }
     }
 
@@ -201,9 +197,7 @@ export class SalesComponent implements OnInit {
         } else {
           this.varSearch = this.varSearch + ',';
         }
-        this.emptySearch = false;
-        this.varSearch =
-          this.varSearch +"{'field':'CreatedAt','op':'<','value':'" +this.tilDateMilli +"'}";
+        this.varSearch = this.varSearch +"{'field':'CreatedAt','op':'<','value':'" +this.tilDateMilli +"'}";
       }
     }
 
@@ -243,12 +237,7 @@ export class SalesComponent implements OnInit {
           case this.translate.instant('dpos.sales.operation.rectification.label'):
             this.selTransTypeVarSearch = 5;
         }
-        this.emptySearch = false;
-        this.varSearch =
-          this.varSearch +
-          "{'field':'Type','op':'=','value':'" +
-          this.selTransTypeVarSearch +
-          "'}";
+        this.varSearch = this.varSearch + "{'field':'Type','op':'=','value':'" + this.selTransTypeVarSearch + "'}";
       }
     }
     //Nº de Documento
@@ -267,12 +256,7 @@ export class SalesComponent implements OnInit {
       } else {
         this.varSearch = this.varSearch + ',';
       }
-      this.emptySearch = false;
-      this.varSearch =
-        this.varSearch +
-        "{'field':'Reference','op':'=*.*','value':'" +
-        this.documentVarSearch +
-        "'}";
+      this.varSearch = this.varSearch + "{'field':'Reference','op':'=*.*','value':'" + this.documentVarSearch + "'}";
     }
     this.varSearch = this.varSearch + ']}';
     this.searchCounter = false;
@@ -283,116 +267,121 @@ export class SalesComponent implements OnInit {
     this.ordersService.getOrderInfo(this.size, this.varSearch).subscribe(
       (sale) => {
         this.sales = sale;
-        this.operationN = this.sales.data.length;
-        for (let i = 0; i < this.sales.data.length; i++) {
-          this.totalSales = this.totalSales + Number(this.sales.data[i].total);
-        }
-        this.totalSales = this.totalSales / 100;
-        this.totalSalesString = this.totalSales.toString() + ' €';
-        for (let i = 0; i < 3; i++) {
-          this.selectSales[i] = new Array(this.sales.data.length);
-        }
+        if(this.sales.data.length != 0) {
+          this.emptySearch = false;
+          this.operationN = this.sales.data.length;
+          for (let i = 0; i < this.sales.data.length; i++) {
+            this.totalSales = this.totalSales + Number(this.sales.data[i].total);
+          }
+          this.totalSales = this.totalSales / 100;
+          this.totalSalesString = this.totalSales.toString() + ' €';
+          for (let i = 0; i < 3; i++) {
+            this.selectSales[i] = new Array(this.sales.data.length);
+          }
 
-        //Creación de arrays del select del formulario de búsqueda
-        //Terminal
-        for (let i = 0; i < this.sales.data.length; i++) {
-          let counterSelect: boolean = false;
-          if (i == 0) {
-            this.selectSales[0][i] = this.sales.data[i].terminalNumber;
-          } else {
-            for (let z = 0; z <= i; z++) {
-              if (this.selectSales[0][z] == this.sales.data[i].terminalNumber || counterSelect == true) {
-                counterSelect = true;
+          //Creación de arrays del select del formulario de búsqueda
+          //Terminal
+          for (let i = 0; i < this.sales.data.length; i++) {
+            let counterSelect: boolean = false;
+            if (i == 0) {
+              this.selectSales[0][i] = this.sales.data[i].terminalNumber;
+            } else {
+              for (let z = 0; z <= i; z++) {
+                if (this.selectSales[0][z] == this.sales.data[i].terminalNumber || counterSelect == true) {
+                  counterSelect = true;
+                }
+                if (counterSelect == false && z == i) {
+                  this.selectSales[0][i] = this.sales.data[i].terminalNumber;
+                }
               }
-              if (counterSelect == false && z == i) {
-                this.selectSales[0][i] = this.sales.data[i].terminalNumber;
-              }
+              counterSelect = false;
             }
-            counterSelect = false;
+            //Tipo de operación
+            if (i == 0) {
+              this.selectSales[1][i] = this.sales.data[i].type;
+            } else {
+              for (let z = 0; z <= i; z++) {
+                if (this.selectSales[1][z] == this.sales.data[i].type || counterSelect == true) {
+                  counterSelect = true;
+                }
+                if (counterSelect == false && z == i) {
+                  this.selectSales[1][i] = this.sales.data[i].type;
+                }
+              }
+              counterSelect = false;
+            }
+            //Nº de documento
+            if (i == 0) {
+              this.selectSales[2][i] = this.sales.data[i].reference;
+            } else {
+              for (let z = 0; z <= i; z++) {
+                if (this.selectSales[2][z] == this.sales.data[i].reference || counterSelect == true) {
+                  counterSelect = true;
+                }
+
+                if (counterSelect == false && z == i) {
+                  this.selectSales[2][i] = this.sales.data[i].reference;
+                }
+              }
+              counterSelect = false;
+            }
+          }
+          //Eliminación espacios en blanco de arrays
+          //Terminal
+          for (let i = this.sales.data.length - 1; i >= 0; i--) {
+            if (this.selectSales[0][i] == null) {
+              this.selectSales[0].splice(i, 1);
+            }
           }
           //Tipo de operación
-          if (i == 0) {
-            this.selectSales[1][i] = this.sales.data[i].type;
-          } else {
-            for (let z = 0; z <= i; z++) {
-              if (this.selectSales[1][z] == this.sales.data[i].type || counterSelect == true) {
-                counterSelect = true;
-              }
-              if (counterSelect == false && z == i) {
-                this.selectSales[1][i] = this.sales.data[i].type;
-              }
+          for (let i = this.sales.data.length - 1; i >= 0; i--) {
+            if (this.selectSales[1][i] == null) {
+              this.selectSales[1].splice(i, 1);
             }
-            counterSelect = false;
           }
           //Nº de documento
-          if (i == 0) {
-            this.selectSales[2][i] = this.sales.data[i].reference;
-          } else {
-            for (let z = 0; z <= i; z++) {
-              if (this.selectSales[2][z] == this.sales.data[i].reference || counterSelect == true) {
-                counterSelect = true;
+          for (let i = this.sales.data.length - 1; i >= 0; i--) {
+            if (this.selectSales[2][i] == null) {
+              this.selectSales[2].splice(i, 1);
+            }
+          }
+          //Traducción tipo de operación
+          for (let i = this.selectSales[1].length; i >= 0; i--) {
+            this.translatedTypeVarSearch[i] = this.selectSales[1][i];
+            switch (this.selectSales[1][i]) {
+              case 0:
+                this.selectSales[1][i] = this.translate.instant('dpos.sales.operation.order.label');
+                break;
+              case 2:
+                this.selectSales[1][i] = this.translate.instant('dpos.sales.operation.refund.label');
+                break;
+              case 5:
+                this.selectSales[1][i] = this.translate.instant('dpos.sales.operation.rectification.label');
+            }
+          }
+
+          this.salesTicketBai = []
+          for( let i=0; i<= this.sales.data.length; i++){
+            if(this.sales.data[i] != null && this.sales.data[i].orderTicketBai != null ){
+              if (this.sales.data[i].orderTicketBai.status == '00' && this.sales.data[i].orderTicketBai.warns.length <= 0) {
+                this.salesTicketBai[i]=0
               }
-
-              if (counterSelect == false && z == i) {
-                this.selectSales[2][i] = this.sales.data[i].reference;
+              if (this.sales.data[i].orderTicketBai.status == '00' && this.sales.data[i].orderTicketBai.warns.length > 0) {
+                this.salesTicketBai[i]=1
+              }
+              if (this.sales.data[i].orderTicketBai.status == '01') {
+                this.salesTicketBai[i]=2
               }
             }
-            counterSelect = false;
           }
+        } else {
+          this.emptySearch = true;
         }
-        //Eliminación espacios en blanco de arrays
-        //Terminal
-        for (let i = this.sales.data.length - 1; i >= 0; i--) {
-          if (this.selectSales[0][i] == null) {
-            this.selectSales[0].splice(i, 1);
-          }
-        }
-        //Tipo de operación
-        for (let i = this.sales.data.length - 1; i >= 0; i--) {
-          if (this.selectSales[1][i] == null) {
-            this.selectSales[1].splice(i, 1);
-          }
-        }
-        //Nº de documento
-        for (let i = this.sales.data.length - 1; i >= 0; i--) {
-          if (this.selectSales[2][i] == null) {
-            this.selectSales[2].splice(i, 1);
-          }
-        }
-        //Traducción tipo de operación
-        for (let i = this.selectSales[1].length; i >= 0; i--) {
-          this.translatedTypeVarSearch[i] = this.selectSales[1][i];
-          switch (this.selectSales[1][i]) {
-            case 0:
-              this.selectSales[1][i] = this.translate.instant('dpos.sales.operation.order.label');
-              break;
-            case 2:
-              this.selectSales[1][i] = this.translate.instant('dpos.sales.operation.refund.label');
-              break;
-            case 5:
-              this.selectSales[1][i] = this.translate.instant('dpos.sales.operation.rectification.label');
-          }
-        }
-
-        this.salesTicketBai = []
-        for( let i=0; i<= this.sales.data.length; i++){
-          if(this.sales.data[i] != null && this.sales.data[i].orderTicketBai != null ){
-            if (this.sales.data[i].orderTicketBai.status == '00' && this.sales.data[i].orderTicketBai.warns.length <= 0) {
-              this.salesTicketBai[i]=0
-            }
-            if (this.sales.data[i].orderTicketBai.status == '00' && this.sales.data[i].orderTicketBai.warns.length > 0) {
-              this.salesTicketBai[i]=1
-            }
-            if (this.sales.data[i].orderTicketBai.status == '01') {
-              this.salesTicketBai[i]=2
-            }
-          }
-        }
-
         this.loadCompleted = true;
       },
       (error) => {
         if (error.status == 401 || error.status == 500) {
+          this.emptySearch == true;
           this.loadCompleted = true;
         };
       }

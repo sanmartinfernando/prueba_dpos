@@ -85,7 +85,6 @@ export class BalancesComponent implements OnInit {
                 this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
                 this.terminalSelected = this.terminalsNumber[0];
                 this.searchBalances();
-                this.loadCompleted = true;
               },
               error: (error) => {
                 console.error("Error Commerces: ", error);
@@ -204,42 +203,46 @@ export class BalancesComponent implements OnInit {
 
   //Llamada API
   getBalanceInfo() {
-
     this.loadCompleted=false;
     let size: number = 2147483647;
     let selectSales = new Array(3);
     this.balancesService.getBalanceInfo(size, this.varSearch).subscribe({
       next: (balanceInfo) => {
         this.balances = balanceInfo.data;
-        for (let i = 0; i < 3; i++) {
-          selectSales[i] = new Array(this.balances.length);
-        }
-        //Creación de arrays del select del formulario de búsqueda
-        //Terminal
-        for (let i = 0; i < this.balances.length; i++) {
-          let balance: Balance = this.balances[i];
-          this.mismatch[i] = Math.abs(balance.manualCashRecount)-Math.abs(balance.autoCashRecount);
-          let counterSelect: boolean = false;
-          if (i == 0) {
-            selectSales[0][i] = balance.terminalNumber;
-          } else {
-            for (let z = 0; z <= i; z++) {
-              if (selectSales[0][z] == balance.terminalNumber || counterSelect == true) {
-                counterSelect = true;
-              }
-              if (counterSelect == false && z == i) {
-                selectSales[0][i] = balance.terminalNumber;
-              }
-            }
-            counterSelect = false;
+        if(this.balances.length != 0) {
+          this.emptySearch = false;
+          for (let i = 0; i < 3; i++) {
+            selectSales[i] = new Array(this.balances.length);
           }
-          //Eliminación espacios en blanco de arrays
+          //Creación de arrays del select del formulario de búsqueda
           //Terminal
-          for (let i = this.balances.length - 1; i >= 0; i--) {
-            if (selectSales[0][i] == null) {
-              selectSales[0].splice(i, 1);
+          for (let i = 0; i < this.balances.length; i++) {
+            let balance: Balance = this.balances[i];
+            this.mismatch[i] = Math.abs(balance.manualCashRecount)-Math.abs(balance.autoCashRecount);
+            let counterSelect: boolean = false;
+            if (i == 0) {
+              selectSales[0][i] = balance.terminalNumber;
+            } else {
+              for (let z = 0; z <= i; z++) {
+                if (selectSales[0][z] == balance.terminalNumber || counterSelect == true) {
+                  counterSelect = true;
+                }
+                if (counterSelect == false && z == i) {
+                  selectSales[0][i] = balance.terminalNumber;
+                }
+              }
+              counterSelect = false;
+            }
+            //Eliminación espacios en blanco de arrays
+            //Terminal
+            for (let i = this.balances.length - 1; i >= 0; i--) {
+              if (selectSales[0][i] == null) {
+                selectSales[0].splice(i, 1);
+              }
             }
           }
+        } else {
+          this.emptySearch = true;
         }
         this.loadCompleted=true;
       },
