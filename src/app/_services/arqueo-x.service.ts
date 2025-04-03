@@ -21,12 +21,15 @@ export class ArqueoXService {
 
   constructor(private http: HttpClient) { }
 
-  public getArqueoX(fromDate:number, toDate:number, searchParams?: string): Observable<Balance> {
+  public getArqueoX(fromDate:number, toDate:number, terminalNumber?: string, commerceId?: number): Observable<Balance> {
 
     let urlArqueoX: string = `${environment.urlWS}${RestRoutes.BALANCES_ARQUEO_X}${fromDate}${RestRoutes.PARAM_TODATE}${toDate}`;
-    // Si searchParams no es null o undefined, lo agregamos a la URL
-    if (searchParams) {
-      urlArqueoX += `${searchParams}`;
+    
+    if (terminalNumber) {
+      urlArqueoX += `${RestRoutes.PARAM_TERMINALNUMBER}${terminalNumber}`;
+    }
+    if (commerceId) {
+      urlArqueoX += `${RestRoutes.PARAM_COMMERCEID}${commerceId}`;
     }
 
     return this.http.post<Balance>(urlArqueoX, this.httpOptions);

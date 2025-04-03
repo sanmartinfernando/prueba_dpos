@@ -20,13 +20,17 @@ export class SalesReportService {
 
   constructor(private http: HttpClient) { }
 
-  getSalesReport(fromDate:number, toDate:number, searchParams?: string): Observable<SalesReport> {
+  getSalesReport(fromDate:number, toDate:number, terminalNumber?: string, commerceId?: number): Observable<SalesReport> {
 
     let urlSalesReport: string = `${environment.urlWS}${RestRoutes.SALES_REPORT}${fromDate}${RestRoutes.PARAM_TODATE}${toDate}`;
-    // Si searchParams no es null o undefined, lo agregamos a la URL
-    if (searchParams) {
-      urlSalesReport += `${searchParams}`;
+
+    if (terminalNumber) {
+      urlSalesReport += `${RestRoutes.PARAM_TERMINALNUMBER}${terminalNumber}`;
     }
+    if (commerceId) {
+      urlSalesReport += `${RestRoutes.PARAM_COMMERCEID}${commerceId}`;
+    }
+
     return this.http.post<SalesReport>(urlSalesReport, this.httpOptions);
   }
 }

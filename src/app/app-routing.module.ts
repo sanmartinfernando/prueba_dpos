@@ -15,7 +15,7 @@ import { PwrecoveryComponent } from './common/login/pwrecovery/pwrecovery.compon
 import { PwresetComponent } from './common/login/pwreset/pwreset.component';
 
 const routes: Routes = [
-  { path: '', component: HomeComponent, title:"DPOS"    },
+  { path: '', component: DashboardComponent, canActivate: [AuthGuard], title:"DPOS - Dashboard"},
   { path: 'home', component: HomeComponent, title:"DPOS"   },
   { path: 'error', component: ErrorComponent },
   { path: 'unauthorized', component: UnauthorizedComponent },

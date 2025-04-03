@@ -64,7 +64,7 @@ export class LoginComponent implements OnInit {
 
   navigateLoggedIn() {
     var params = {};
-    var page = "/home"
+    var page = "/dashboard" //"home"
     this.route.queryParams.subscribe(routeParams => {
       if (routeParams['callbackUrl']) {
         page = routeParams['callbackUrl'];

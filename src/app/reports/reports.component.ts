@@ -139,38 +139,6 @@ export class ReportsComponent implements OnInit {
       this.tilDate = this.formatDate(this.tilDateMilli);
     }
 
-    //Comienzo query búsqueda
-    this.varSearch = "&qs={'and':[";
-    //Parámetros de búsqueda activos
-    //Terminal
-    if (this.terminalSelected != null) {
-      if (this.searchCounter == false) {
-        this.searchCounter = true;
-      }
-      if (this.terminalSelected == this.translate.instant('dpos.filter.all')) {
-        this.varSearch = this.varSearch + "{'or':[";
-        for (let i = 1; i < this.terminalsNumber.length; i++) {
-          this.varSearch = this.varSearch + "{'field':'terminal_number','op':'=','value':'" + this.terminalsNumber[i] + "'}";
-            if (i+1 < this.terminalsNumber.length) {
-              this.varSearch = this.varSearch + ",";
-            }
-        }
-        this.varSearch = this.varSearch + ']}';
-      } else {
-        this.varSearch = this.varSearch + "{'field':'terminal_number','op':'=','value':'" + this.terminalSelected + "'}";
-      }
-    }
-
-    //Commerce id
-    if (this.commerceId != 0) {
-      if (this.searchCounter == false) {
-        this.searchCounter = true;
-      } else {
-        this.varSearch = this.varSearch + ',';
-      }
-      this.varSearch = this.varSearch +"{'field':'CommerceId','op':'=','value':'" +this.commerceId +"'}";
-    }
-
     //Desde fecha
     if (this.sinceDateMilli > 0) {
       if(this.sinceDateMilli > this.tilDateMilli && this.tilDateMilli > 0) {
@@ -179,14 +147,7 @@ export class ReportsComponent implements OnInit {
         this.openModal();
         this.emptySearch = true;
         return;
-      }/* else {
-        if (this.searchCounter == false) {
-          this.searchCounter = true;
-        } else {
-          this.varSearch += ',';
-        }
-        this.varSearch += "{'field':'CreatedAt','op':'>','value':'" + this.sinceDateMilli + "'}";
-      }*/
+      }
     } 
 
     //Hasta fecha
@@ -197,9 +158,7 @@ export class ReportsComponent implements OnInit {
         this.openModal();
         this.emptySearch = true;
         return;
-      } /*else {
-        this.varSearch += ",{'field':'CreatedAt','op':'<','value':'" + this.tilDateMilli + "'}";
-      }*/
+      } 
     }
 
     //Cierre y reseteo de parámetros
@@ -215,7 +174,8 @@ export class ReportsComponent implements OnInit {
 
   private getArqueoX() {
     this.loadCompleted = false;
-    this.arqueoXService.getArqueoX(this.sinceDateMilli, this.tilDateMilli, this.varSearch).subscribe({
+
+    this.arqueoXService.getArqueoX(this.sinceDateMilli, this.tilDateMilli, this.terminalSelected == this.translate.instant('dpos.filter.all') ? null : this.terminalSelected, this.commerceId).subscribe({
       next: (arqueo) => {
         this.sales = arqueo;
 
@@ -260,7 +220,7 @@ export class ReportsComponent implements OnInit {
 
   private getSalesReport() {
     this.loadCompleted = false;
-    this.salesReportService.getSalesReport(this.sinceDateMilli, this.tilDateMilli, this.varSearch).subscribe({
+    this.salesReportService.getSalesReport(this.sinceDateMilli, this.tilDateMilli, this.terminalSelected == this.translate.instant('dpos.filter.all') ? null : this.terminalSelected, this.commerceId).subscribe({
       next: (salesReport) => {
         this.salesReports = salesReport;
         this.indexProduct = Object.values(salesReport.aggregations);

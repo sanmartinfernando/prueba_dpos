@@ -26,5 +26,7 @@ export const RestRoutes = {
   CASH_MOVEMENTS_AGGREGATE: `${API}/${CASHMOVEMENTS}/aggregate`,
   PARAM_OFFSET: `&offset=0`,
   PARAM_QS: `&qs={"and":`,
-  PARAM_TODATE: `&toDate=`
+  PARAM_TODATE: `&toDate=`,
+  PARAM_TERMINALNUMBER: `&terminalNumber=`,
+  PARAM_COMMERCEID: `&commerceId=`
 }
