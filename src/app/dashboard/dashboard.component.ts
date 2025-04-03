@@ -182,20 +182,7 @@ export class DashboardComponent implements OnInit {
                 }
                 this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
                 this.terminalSelected = this.terminalsNumber[0];
-                //inicializamos los filtros de las llamadas a la API
-                this.idOrders = new OrdersFilter(this.commerceId, this.terminalsNumber.slice(1)).idOrders;
-                this.idCM = new CashMovementsFilter(this.commerceId, this.terminalsNumber.slice(1)).idCashMovement;
-                this.idEvo = new EvolutionFilter(this.commerceId, this.terminalsNumber.slice(1)).idEvo;
-                this.idEvoCM = new EvolutionCMFilter(this.commerceId, this.terminalsNumber.slice(1)).idEvoCashMovement;
-                this.idEvoResults = new EvolutionResultsFilter(this.commerceId, this.terminalsNumber.slice(1)).idEvoResults;
-                this.idPM = new PaymentMethodsFilter(this.commerceId, this.terminalsNumber.slice(1)).idPaymentMethods;
-                this.idT3 = new Top3Filter(this.commerceId, this.terminalsNumber.slice(1)).idTop3;
-                this.idTP = new TopProductsFilter(this.commerceId, this.terminalsNumber.slice(1)).idTopProducts;
-                
-                this.getKPIs();
-                this.getTop3Chart();
-                this.getPaymentMethodsChart();
-                this.fillCharKPIs(undefined);
+                this.searchTerminal();
               },
               error: (error) => {
                 console.error("Error Commerces: ", error);
@@ -269,7 +256,6 @@ export class DashboardComponent implements OnInit {
     } else {
       terminalsSelected = this.terminalSelected;
     }
-
 
     //Obtención de variables de búsqueda de año y mes
     this.yearVarSearch = (<HTMLInputElement>(document.getElementById('yearDate'))).value;
@@ -573,6 +559,10 @@ export class DashboardComponent implements OnInit {
     * Función para mostrar los datos de todos los KPI 
     */
    private getKPIs() {
+    
+    this.cashMovementsResult = 0;
+    this.cashMovementsOperationsResult = 0;
+
     //Llamada a la API para obtener los datos agregados de que se muestran en la sección KPIs de movimientos de caja
     this.cashMovementsService.getCashMovementsAggregate(this.idCM).subscribe(
       (aggregationsCM) => {
@@ -583,21 +573,23 @@ export class DashboardComponent implements OnInit {
       }
     );
 
+    this.ordersResult = {total: 0, count: 0};
+    this.refundsResult = {total: 0, count: 0};
+    this.rectificationsResult = {total: 0, count: 0};
+    this.avTicketResult = 0;
+    this.balanceResult = 0;
+    let countAvg = 0;
+
     //Comunicación con API para obtener los datos agregados que se muestran como base al iniciar la página en la sección de KPIs
     this.ordersService.getOrderAggregate(this.idOrders).subscribe(
       (aggregation) => {
         if(aggregation.length != 0) {
           this.aggregations = aggregation;
-          this.ordersResult = {total: 0, count: 0};
-          this.refundsResult = {total: 0, count: 0};
-          this.rectificationsResult = {total: 0, count: 0};
-          this.avTicketResult = 0;
-          this.balanceResult = 0;
-          let countAvg = 0;
           //Bucle para recorrer el objeto respuesta
           for (let i = 0; i < this.aggregations.length; i++) {
             //If para comprobar si existen datos y el objeto no está vacio
             if (this.aggregations[i].total != null) {
+              //Calculo del ticket medio
               this.avTicketResult += this.aggregations[i].avg / 100;
               countAvg++;
               //Switch para comprobar si existen datos de ventas (id 0), de devoluciones (id 2) o rectificaciones (id 5)

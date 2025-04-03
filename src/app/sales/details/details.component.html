@@ -56,10 +56,10 @@
                 <span><b>{{'dpos.details.order.label' | translate}}</b></span>
               </h6>
               <h6 *ngSwitchCase="1" id="lbltype" class="text-blue">
-                <span>{{ "@@QuickShop.Orders_Bill" | translate }}</span>
+                <span>{{'dpos.details.order.label' | translate}}</span>
               </h6>
               <h6 *ngSwitchCase="2" id="lbltype" class="text-blue">
-                <span>{{ "@@BASE_Return2" | translate }}</span>
+                <span><b>{{'dpos.details.refund.label' | translate}}</b></span> 
               </h6>
             </div>
             <div class="row px-2 pb-1">
@@ -68,7 +68,7 @@
               </div>
               <div class="col-5 col-md-2 text-end">
                 <label *ngIf="ticket.type == 2; else subtotal" class="text-red" id="lblsubtotal">
-                  {{ calculateTotal(ticket.orderLines, "SubTotal") | number : "1.2-2" }}&nbsp;€
+                  {{ ticket.subTotal / Math.pow(10, ticket.decimals) | currency : "Eur" : "€" }}
                 </label>
                 <ng-template #subtotal>
                   <label id="lblsubtotal">
@@ -83,7 +83,7 @@
               </div>
               <div class="col-5 col-md-2 text-end">
                 <label *ngIf="ticket.type == 2; else totalDiscount" class="text-red" id="lbldiscount">
-                  {{ (ticket.totalDiscount / 100).toFixed(2) }}&nbsp;€
+                  {{ ticket.totalDiscount / Math.pow(10, ticket.decimals) | currency : "Eur" : "€" }}
                 </label>
                 <ng-template #totalDiscount>
                   <label id="lbldiscount">{{ ticket.totalDiscount / Math.pow(10, ticket.decimals) | currency : "Eur" : "€" }}</label>
@@ -95,7 +95,7 @@
                 <label id="lbltaxbase_title" class="small">{{'dpos.details.order.base.label' | translate}}</label>
               </div>
               <div class="col-5 col-md-2 text-end">
-                <label *ngIf="ticket.type == 2; else base" class="text-red" id="lbltaxbase">{{calculateTotal(ticket.orderTaxes, "Base") | number : "1.2-2"}}&nbsp;€</label>
+                <label *ngIf="ticket.type == 2; else base" class="text-red" id="lbltaxbase">{{ ticket.orderTaxes[0].base / Math.pow(10, ticket.orderTaxes[0].decimals) | currency : "Eur" : "€" }}</label>
                 <ng-template #base>
                   <label id="lbltaxbase">{{ ticket.orderTaxes[0].base / Math.pow(10, ticket.orderTaxes[0].decimals) | currency : "Eur" : "€" }}</label>
                 </ng-template>

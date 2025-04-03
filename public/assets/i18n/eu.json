@@ -162,5 +162,6 @@
     "dpos.details.order.discount.label": "Deskontua",
     "dpos.details.order.base.label": "Zerga-oinarria",
     "dpos.details.order.total.label": "Guztira",
-    "dpos.details.order.tbai.label": "TicketBAI:"
+    "dpos.details.order.tbai.label": "TicketBAI:",
+    "dpos.details.refund.label": "ITZULERA"
 }

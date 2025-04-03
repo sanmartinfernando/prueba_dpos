@@ -93,8 +93,10 @@ export class ReportsComponent implements OnInit {
                 if(terminals.length != 0) {
                   this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
                 }
-                this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
-                this.terminalSelected = this.terminalsNumber[0];
+                if(this.terminalsNumber != null)  {
+                  this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
+                  this.terminalSelected = this.terminalsNumber[0];
+                }
                 this.searchReports();
                 this.loadCompleted = true;
               },

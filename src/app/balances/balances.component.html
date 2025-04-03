@@ -87,7 +87,7 @@
                       {{ balance.salesCount + balance.refundsCount + balance.rectifyCount}}
                     </td>
                     <td class="text-end align-middle">
-                      {{ mismatch[i]| currency : "Eur" : "€"  }}
+                      {{ mismatch[i] / Math.pow(10, balance.decimals) | currency : "Eur" : "€"  }}
                     </td>
                     <td class="text-end align-middle">
                       {{ balance.total / Math.pow(10, balance.decimals) | currency : "EUR" : "€" }}

@@ -48,8 +48,6 @@ export class BalancesDetailsComponent implements OnInit {
         next: (ticketBalances) => {
           this.balances=ticketBalances;
 
-          console.log(this.balances);
-
           this.base = 0;
           this.cuota = 0;
           this.total = 0;

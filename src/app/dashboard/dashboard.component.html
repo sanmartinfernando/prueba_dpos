@@ -59,7 +59,7 @@
             <div id="salesBorder" class="kpi col d-flex align-items-center flex-column focus ms-3 mx-2" (click)="fillCharKPIs($event)">
               <h6 class="mt-2">{{'dpos.dashboard.orders.label' | translate}}</h6>
               <div id="salesdiv" *ngIf="ordersResult.total != 0; else noresults" >
-                {{ ordersResult.count| currency : "Eur" : "€" }}
+                {{ ordersResult.total| currency : "Eur" : "€" }}
               </div>
               <div id="salesdiv1" *ngIf="ordersResult.count != 0" >
                 <small id="salessmall">{{ ordersResult.count }}
@@ -72,7 +72,7 @@
             <!-- KPI  Ticket Medio -->
             <div id="averageTicketBorder" class="kpi col d-flex align-items-center flex-column focus mx-2" (click)="fillCharKPIs($event)">
               <h6 class="mt-2">{{'dpos.dashboard.average.ticket.label' | translate}}</h6>
-              <p id="averageTicketP2" *ngIf="loadedKPIChart; else noresults">
+              <p id="averageTicketP2" *ngIf="avTicketResult != 0; else noresults">
                 {{ avTicketResult | currency : "Eur" : "€" }}
               </p>
             </div>
@@ -93,10 +93,10 @@
             <!-- KPI  Movimientos Caja -->
             <div id="casmovBorder" class="kpi col d-flex align-items-center flex-column focus mx-2" (click)="fillCharKPIs($event)">
               <h6 class="mt-2">{{'dpos.dashboard.cashmovement.label' | translate}}</h6>
-              <div id="casmovDiv" *ngIf="loadedKPIChart; else noresults">
+              <div id="casmovDiv" *ngIf="cashMovementsResult != 0; else noresults">
                 {{ cashMovementsResult | currency : "Eur" : "€" }}
               </div>
-              <div id="casmovDiv2" *ngIf="loadedKPIChart">
+              <div id="casmovDiv2" *ngIf="cashMovementsResult != 0">
                 <small id="casmovSmall">{{ cashMovementsOperationsResult }}
                   <ng-container *ngIf="cashMovementsOperationsResult > 1; else singular">
                       {{'dpos.dashboard.operations.label' | translate}}

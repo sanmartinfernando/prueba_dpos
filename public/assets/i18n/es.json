@@ -162,5 +162,6 @@
     "dpos.details.order.discount.label": "Descuento",
     "dpos.details.order.base.label": "Base imponible",
     "dpos.details.order.total.label": "Total",
-    "dpos.details.order.tbai.label": "TicketBAI:"
+    "dpos.details.order.tbai.label": "TicketBAI:",
+    "dpos.details.refund.label": "DEVOLUCIÓN"
 }
