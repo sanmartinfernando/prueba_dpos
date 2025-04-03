@@ -64,7 +64,7 @@ export class ReportsComponent implements OnInit {
   sinceDate: string;
   sinceDateMilli: number = 0;
   tilDate: string;
-  tilDateMilli: number = 1721599200000;
+  tilDateMilli: number = 0;
   today: Date = new Date();
   todayMilli = this.today.getTime();
   varSearch: string = '';
@@ -73,6 +73,9 @@ export class ReportsComponent implements OnInit {
 
   currentLang: string;
   langSubscription: Subscription;
+  showModal: boolean = false;
+  modalTitle: string = '';
+  modalMessage: string = '';
 
   ngOnDestroy() {
     this.langSubscription.unsubscribe();
@@ -112,18 +115,30 @@ export class ReportsComponent implements OnInit {
   //Método de búsqueda
   searchReports() {
     this.loadCompleted = false;
+
+    //Seteamos por defecto el año actual
+    let yearDate = new Date(new Date().getFullYear(), 0);
+    
     //Obtención variables fechas
     this.sinceDate = (<HTMLInputElement>(document.getElementById('sinceDate'))).value;
-    if(this.sinceDate.length>0){
+    if(this.sinceDate.length > 0){
       this.sinceDateMilli = Date.parse(this.sinceDate);
+    } else {
+      this.sinceDateMilli = yearDate.getTime();
+      this.sinceDate = this.formatDate(this.sinceDateMilli);
     }
+
     this.tilDate = (<HTMLInputElement>document.getElementById('tilDate')).value;
-    if(this.tilDate.length>0){
+    if(this.tilDate.length > 0){
       let date = new Date(this.tilDate);
       // Establecer la hora a las 23:59
       date.setHours(23, 59, 0, 0);
       this.tilDateMilli = date.getTime();
+    } else {
+      this.tilDateMilli = yearDate.getTime() + 31536000000;
+      this.tilDate = this.formatDate(this.tilDateMilli);
     }
+
     //Comienzo query búsqueda
     this.varSearch = "&qs={'and':[";
     //Parámetros de búsqueda activos
@@ -142,7 +157,6 @@ export class ReportsComponent implements OnInit {
         }
         this.varSearch = this.varSearch + ']}';
       } else {
-        //this.emptySearch = false;
         this.varSearch = this.varSearch + "{'field':'terminal_number','op':'=','value':'" + this.terminalSelected + "'}";
       }
     }
@@ -154,31 +168,40 @@ export class ReportsComponent implements OnInit {
       } else {
         this.varSearch = this.varSearch + ',';
       }
-      //this.emptySearch = false;
-      this.varSearch =
-      this.varSearch +"{'field':'CommerceId','op':'=','value':'" +this.commerceId +"'}";
+      this.varSearch = this.varSearch +"{'field':'CommerceId','op':'=','value':'" +this.commerceId +"'}";
     }
 
     //Desde fecha
-    if (this.sinceDateMilli != undefined) {
-      if (this.searchCounter == false) {
-        this.searchCounter = true;
-      } else {
-        this.varSearch += ',';
-      }
-      //this.emptySearch = false;
-      this.varSearch += "{'field':'CreatedAt','op':'>','value':'" + this.sinceDateMilli + "'}";
-    }
+    if (this.sinceDateMilli > 0) {
+      if(this.sinceDateMilli > this.tilDateMilli && this.tilDateMilli > 0) {
+        this.modalTitle = this.translate.instant('dpos.modal.fromDate.title');
+        this.modalMessage = this.translate.instant('dpos.modal.fromDate.message');
+        this.openModal();
+        this.emptySearch = true;
+        return;
+      }/* else {
+        if (this.searchCounter == false) {
+          this.searchCounter = true;
+        } else {
+          this.varSearch += ',';
+        }
+        this.varSearch += "{'field':'CreatedAt','op':'>','value':'" + this.sinceDateMilli + "'}";
+      }*/
+    } 
+
     //Hasta fecha
     if (this.tilDateMilli > 0) {
-      if (this.searchCounter == false) {
-        this.searchCounter = true;
-      } else {
-        this.varSearch += ',';
-      }
-      //this.emptySearch = false;
-      this.varSearch += "{'field':'CreatedAt','op':'<','value':'" + this.tilDateMilli + "'}";
+      if(this.tilDateMilli < this.sinceDateMilli && this.sinceDateMilli > 0) {
+        this.modalTitle = this.translate.instant('dpos.filter.toDate.title');
+        this.modalMessage = this.translate.instant('dpos.filter.toDate.message');
+        this.openModal();
+        this.emptySearch = true;
+        return;
+      } /*else {
+        this.varSearch += ",{'field':'CreatedAt','op':'<','value':'" + this.tilDateMilli + "'}";
+      }*/
     }
+
     //Cierre y reseteo de parámetros
     this.varSearch += ']}';
     this.searchCounter = false;
@@ -195,29 +218,40 @@ export class ReportsComponent implements OnInit {
     this.arqueoXService.getArqueoX(this.sinceDateMilli, this.tilDateMilli, this.varSearch).subscribe({
       next: (arqueo) => {
         this.sales = arqueo;
-        //Calculo de indicadores totales informes
-        for (let i = 0; this.sales.balanceLines != null && i < this.sales.balanceLines.length; i++) {
-          if (this.sales.balanceLines[i].itemName.substring(0, 3) == 'IVA') {
-            this.totalBase = this.totalBase + this.sales.balanceLines[i].base / Math.pow(10, this.sales.balanceLines[i].decimals);
-            this.totalCuote = this.totalCuote + this.sales.balanceLines[i].total / Math.pow(10, this.sales.balanceLines[i].decimals);
+
+        this.totalBase = 0;
+        this.totalCuote = 0;
+        this.totalPercentage = 0;
+        this.totalValuePercentage = 0;
+        if(this.sales != null && this.sales.balanceLines.length > 0) {
+          //Calculo de indicadores totales informes
+          for (let i = 0; this.sales.balanceLines != null && i < this.sales.balanceLines.length; i++) {
+            if (this.sales.balanceLines[i].itemName.substring(0, 3) == 'IVA') {
+              this.totalBase = this.totalBase + this.sales.balanceLines[i].base / Math.pow(10, this.sales.balanceLines[i].decimals);
+              this.totalCuote = this.totalCuote + this.sales.balanceLines[i].total / Math.pow(10, this.sales.balanceLines[i].decimals);
+            }
+            if (
+              this.sales.balanceLines[i].itemName.substring(0, 3) == 'Efe' ||
+              this.sales.balanceLines[i].itemName.substring(0, 3) == 'Tar' ||
+              this.sales.balanceLines[i].itemName.substring(0, 3) == 'Val' ||
+              this.sales.balanceLines[i].itemName.substring(0, 3) == 'Vir' ||
+              this.sales.balanceLines[i].itemName.substring(0, 3) == 'Otr' ||
+              this.sales.balanceLines[i].itemName.substring(0, 3) == 'Bon' ||
+              this.sales.balanceLines[i].itemName.substring(0, 3) == 'Rec'
+            ) {
+              this.totalPercentage = this.totalPercentage + this.sales.balanceLines[i].percentage;
+              this.totalValuePercentage = this.totalValuePercentage + this.sales.balanceLines[i].total / Math.pow(10, this.sales.balanceLines[i].decimals);
+            }
           }
-          if (
-            this.sales.balanceLines[i].itemName.substring(0, 3) == 'Efe' ||
-            this.sales.balanceLines[i].itemName.substring(0, 3) == 'Tar' ||
-            this.sales.balanceLines[i].itemName.substring(0, 3) == 'Val' ||
-            this.sales.balanceLines[i].itemName.substring(0, 3) == 'Vir' ||
-            this.sales.balanceLines[i].itemName.substring(0, 3) == 'Otr' ||
-            this.sales.balanceLines[i].itemName.substring(0, 3) == 'Bon' ||
-            this.sales.balanceLines[i].itemName.substring(0, 3) == 'Rec'
-          ) {
-            this.totalPercentage = this.totalPercentage + this.sales.balanceLines[i].percentage;
-            this.totalValuePercentage = this.totalValuePercentage + this.sales.balanceLines[i].total / Math.pow(10, this.sales.balanceLines[i].decimals);
-          }
+          this.emptySearch = false;
+        } else {
+          this.emptySearch = true;
         }
         this.loadCompleted = true;
       }, 
       error: (error) => {
-        if (error.status == 404) {
+        if (error.status == 404 || error.status == 401 || error.status == 500) {
+          this.emptySearch = true;
           this.loadCompleted = true;
         }
       }
@@ -230,19 +264,25 @@ export class ReportsComponent implements OnInit {
       next: (salesReport) => {
         this.salesReports = salesReport;
         this.indexProduct = Object.values(salesReport.aggregations);
-        //Calculo indices totales productos
-        for (let i = 0; i < this.indexProduct.length; i++) {
-          this.totalUnits = this.totalUnits + (this.indexProduct[i].units ?? 2) / Math.pow(10, 3);
-          this.totalUnitsValor = this.totalUnitsValor + this.indexProduct[i].total / Math.pow(10, 8);
+
+        this.totalUnits = 0;
+        this.totalUnitsValor = 0;
+
+        if(this.indexProduct != null && this.indexProduct.length > 0){
+          //Calculo indices totales productos
+          for (let i = 0; i < this.indexProduct.length; i++) {
+            this.totalUnits = this.totalUnits + (this.indexProduct[i].units ?? 2) / Math.pow(10, 3);
+            this.totalUnitsValor = this.totalUnitsValor + this.indexProduct[i].total / Math.pow(10, 8);
+          }
+          this.emptySearch = false;
+        } else {
+          this.emptySearch = true;
         }
         this.loadCompleted = true;
       },
       error: (error) => {
-        if (error.status == 404) {
+        if (error.status == 404 || error.status == 401 || error.status == 500) {
           this.emptySearch = true;
-          this.loadCompleted = true;
-        }
-        if (error.status == 401 || error.status == 500) {
           this.loadCompleted = true;
         }
       }
@@ -264,5 +304,23 @@ export class ReportsComponent implements OnInit {
     } else if(this.reportVarSearch == this.translate.instant('dpos.reports.paymentmethods.label')) {
       this.downloadCsvService.downloadPaymentMethodsFile(this.sales, 'PaymentMethods', this.currentLang);
     }
+  }
+
+  openModal() {
+    this.showModal = true;
+  }
+
+  closeModal() {
+    this.showModal = false;
+  }
+
+
+  // Método para convertir timestamp a formato dd/mm/yyyy
+  formatDate(timestamp: number): string {
+    const date = new Date(timestamp);  
+    const day = String(date.getDate()).padStart(2, '0'); // Obtener día (con 2 dígitos)
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Obtener mes (agregar 1 porque getMonth empieza desde 0)
+    const year = date.getFullYear(); // Obtener el año
+    return `${year}-${month}-${day}`;
   }
 }

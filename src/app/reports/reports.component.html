@@ -19,11 +19,11 @@
       </div>
       <div class="mx-3">
         <label class="form-label">{{'dpos.filter.date.from' | translate}}</label>
-        <input type="date" class="form-control" id="sinceDate" />
+        <input type="date" class="form-control" id="sinceDate" name="sinceDate" [value]="sinceDate" />
       </div>
       <div class="mx-3">
         <label class="form-label">{{'dpos.filter.date.to' | translate}}</label>
-        <input type="date" class="form-control" id="tilDate" />
+        <input type="date" class="form-control" id="tilDate" name="tilDate"  [value]="tilDate" />
       </div>
       <div id="searchButtonsDiv" class="ms-5 d-flex overflow-auto">
         <button type="reset" class="btn btn-outline-danger align-self-end">
@@ -47,14 +47,22 @@
           </h5>
         </div>
         <!-- Descarga -->
-         <div class="col-3 text-end">
-          <button class="btn btn-outline-info justify-content-center">
-            <i class="fa-solid fa-file-csv fa-xl" (click)="downloadReports()"></i>
-          </button>
-         </div>
+        <ng-container *ngIf="loadCompleted && emptySearch == false">
+          <div class="col-3 text-end">
+            <button class="btn btn-outline-info justify-content-center">
+              <i class="fa-solid fa-file-csv fa-xl" (click)="downloadReports()"></i>
+            </button>
+          </div>
+         </ng-container>
       </div>
-      <div *ngIf="loadCompleted == false" class="d-flex justify-content-center">
+      <div *ngIf="loadCompleted == false && emptySearch == false" class="d-flex justify-content-center">
         <div class="spinner-border text-danger"></div>
+      </div>
+      <div *ngIf="loadCompleted == false && emptySearch == true" class="d-flex justify-content-center">
+        <b><i>{{'dpos.dashboard.nodata.label' | translate}}</i></b>
+      </div>
+      <div>
+        <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage"  (closeModal)="closeModal()"></app-modal>
       </div>
       <!-- Tabla vacia -->
       <div class="row" *ngIf="reportVarSearch == null">
@@ -88,13 +96,13 @@
                       <td class="text-end align-middle">{{ taxes.total / Math.pow(10, taxes.decimals) | currency : "Eur" : "€" }}</td>
                     </ng-container>
                   </tr>
-                </ng-container>
-                <tr>
-                  <td class="text-start align-middle"></td>
-                  <td class="text-end align-middle"><b>{{'dpos.reports.total.label' | translate}}</b></td>
-                  <td class="text-end align-middle"><b>{{ totalBase | currency : "Eur" : "€"}}</b></td>
-                  <td class="text-end align-middle"><b>{{ totalCuote | currency : "Eur" : "€"}}</b></td>
-                </tr>
+                  <tr>
+                    <td class="text-start align-middle"></td>
+                    <td class="text-end align-middle"><b>{{'dpos.reports.total.label' | translate}}</b></td>
+                    <td class="text-end align-middle"><b>{{ totalBase | currency : "Eur" : "€"}}</b></td>
+                    <td class="text-end align-middle"><b>{{ totalCuote | currency : "Eur" : "€"}}</b></td>
+                  </tr>
+              </ng-container>
               </tbody>
             </table>
             <div class="has-text-centered">
@@ -129,13 +137,13 @@
                     <td class="text-end align-middle">{{ (product.units ?? 2) / 1000 }}</td>
                     <td class="text-end align-middle">{{ product.total / 100000000 | currency : "Eur" : "€" }}</td>
                   </tr>
+                  <tr>
+                    <td class="text-start align-middle"></td>
+                    <td class="text-end align-middle"><b>{{'dpos.reports.total.label' | translate}}</b></td>
+                    <td class="text-end align-middle"><b>{{ totalUnits}}</b></td>
+                    <td class="text-end align-middle"><b>{{ totalUnitsValor | currency : "Eur" : "€"}}</b></td>
+                  </tr>
                 </ng-container>
-                <tr>
-                  <td class="text-start align-middle"></td>
-                  <td class="text-end align-middle"><b>{{'dpos.reports.total.label' | translate}}</b></td>
-                  <td class="text-end align-middle"><b>{{ totalUnits}}</b></td>
-                  <td class="text-end align-middle"><b>{{ totalUnitsValor | currency : "Eur" : "€"}}</b></td>
-                </tr>
               </tbody>
             </table>
             <div class="has-text-centered">
@@ -172,13 +180,13 @@
                       <td class="text-end align-middle">{{ paymentmethod.total / Math.pow(10, paymentmethod.decimals) | currency : "Eur" : "€" }}</td>
                     </ng-container>
                   </tr>
+                  <tr>
+                    <td class="text-start align-middle"> <b>{{'dpos.reports.total.label' | translate}}</b> </td>
+                    <td></td>
+                    <td class="text-end align-middle"><b>{{ totalPercentage + ' %'}}</b></td>
+                    <td class="text-end align-middle"><b>{{ totalValuePercentage | currency : "Eur" : "€"}}</b></td>
+                  </tr>
                 </ng-container>
-                <tr>
-                  <td class="text-start align-middle"> <b>{{'dpos.reports.total.label' | translate}}</b> </td>
-                  <td></td>
-                  <td class="text-end align-middle"><b>{{ totalPercentage + ' %'}}</b></td>
-                  <td class="text-end align-middle"><b>{{ totalValuePercentage | currency : "Eur" : "€"}}</b></td>
-                </tr>
               </tbody>
             </table>
             <div class="has-text-centered">

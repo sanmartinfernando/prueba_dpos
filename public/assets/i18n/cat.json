@@ -167,5 +167,6 @@
     "dpos.modal.fromDate.title": "Error en dates",
     "dpos.modal.fromDate.message": "La Data Des de no pot ser superior a la Data Fins",
     "dpos.modal.toDate.title": "Error en dates",
-    "dpos.modal.toDate.message": "La Data Fins no pot ser inferior a la Data Des de"
+    "dpos.modal.toDate.message": "La Data Fins no pot ser inferior a la Data Des de",
+    "dpos.modal.bothDates.message": "Los camps de Data són obligatoris "
 }

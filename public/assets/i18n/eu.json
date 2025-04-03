@@ -167,5 +167,6 @@
     "dpos.modal.fromDate.title": "Data-errorea",
     "dpos.modal.fromDate.message": "Hasierako data ezin da izan To Date baino handiagoa.",
     "dpos.modal.toDate.title": "Data-errorea",
-    "dpos.modal.toDate.message": "Egunera artekoa ezin da izan Hasierako data baino txikiagoa."
+    "dpos.modal.toDate.message": "Egunera artekoa ezin da izan Hasierako data baino txikiagoa.",
+    "dpos.modal.bothDates.message": "Data eremuak beharrezkoak dira "
 }

@@ -167,5 +167,6 @@
     "dpos.modal.fromDate.title": "Error en fechas",
     "dpos.modal.fromDate.message": "La Fecha Desde no puede ser superior a la Fecha Hasta",
     "dpos.modal.toDate.title": "Error en fechas",
-    "dpos.modal.toDate.message": "La Fecha Hasta no puede ser inferior a la Fecha Desde"
+    "dpos.modal.toDate.message": "La Fecha Hasta no puede ser inferior a la Fecha Desde",
+    "dpos.modal.bothDates.message": "Los campos de Fecha son obligatorios "
 }
