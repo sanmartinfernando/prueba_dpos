@@ -163,5 +163,9 @@
     "dpos.details.order.base.label": "Zerga-oinarria",
     "dpos.details.order.total.label": "Guztira",
     "dpos.details.order.tbai.label": "TicketBAI:",
-    "dpos.details.refund.label": "ITZULERA"
+    "dpos.details.refund.label": "ITZULERA",
+    "dpos.modal.fromDate.title": "Data-errorea",
+    "dpos.modal.fromDate.message": "Hasierako data ezin da izan To Date baino handiagoa.",
+    "dpos.modal.toDate.title": "Data-errorea",
+    "dpos.modal.toDate.message": "Egunera artekoa ezin da izan Hasierako data baino txikiagoa."
 }

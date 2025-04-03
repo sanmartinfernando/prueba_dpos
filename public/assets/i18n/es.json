@@ -163,5 +163,9 @@
     "dpos.details.order.base.label": "Base imponible",
     "dpos.details.order.total.label": "Total",
     "dpos.details.order.tbai.label": "TicketBAI:",
-    "dpos.details.refund.label": "DEVOLUCIÓN"
+    "dpos.details.refund.label": "DEVOLUCIÓN",
+    "dpos.modal.fromDate.title": "Error en fechas",
+    "dpos.modal.fromDate.message": "La Fecha Desde no puede ser superior a la Fecha Hasta",
+    "dpos.modal.toDate.title": "Error en fechas",
+    "dpos.modal.toDate.message": "La Fecha Hasta no puede ser inferior a la Fecha Desde"
 }

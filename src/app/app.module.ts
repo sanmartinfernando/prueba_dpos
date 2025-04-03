@@ -33,11 +33,13 @@ import { PwresetComponent } from './common/login/pwreset/pwreset.component';
 import { CountdownComponent } from 'ngx-countdown';
 import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
+import { ModalComponent } from './modal/modal.component';
 
 registerLocaleData(localeEs);
 
 @NgModule({ declarations: [
         AppComponent,
+        ModalComponent,
         HeaderComponent,
         FooterComponent,
         LangSwitcherComponent,

@@ -49,6 +49,9 @@ export class SalesComponent implements OnInit {
   documentVarSearch: string = null;
   varSearch: string = '';
   emptySearch: boolean = false;
+  showModal: boolean = false;
+  modalTitle: string = '';
+  modalMessage: string = '';
 
   // Checkboxes
   selectedIndices: number[] = [];
@@ -120,13 +123,11 @@ export class SalesComponent implements OnInit {
     }
     //Obtención variables fechas
     this.loadCompleted = false;
-    this.sinceDate = (<HTMLInputElement>(
-      document.getElementById('sinceDate')
-    )).value;
+    this.sinceDate = (<HTMLInputElement>(document.getElementById('sinceDate'))).value;
     this.sinceDateMilli = Date.parse(this.sinceDate);
+
     this.tilDate = (<HTMLInputElement>document.getElementById('tilDate')).value;
     let date = new Date(this.tilDate);
-    // Establecer la hora a las 23:59
     date.setHours(23, 59, 0, 0);
     this.tilDateMilli = date.getTime();
 
@@ -168,27 +169,44 @@ export class SalesComponent implements OnInit {
     
     //Desde fecha
     if (this.sinceDateMilli > 0) {
-      if (this.searchCounter == false) {
-        this.searchCounter = true;
+      if(this.sinceDateMilli > this.tilDateMilli && this.tilDateMilli > 0) {
+        this.modalTitle = this.translate.instant('dpos.modal.fromDate.title');
+        this.modalMessage = this.translate.instant('dpos.modal.fromDate.message');
+        this.openModal();
+        this.emptySearch = true;
+        return;
       } else {
-        this.varSearch = this.varSearch + ',';
+        if (this.searchCounter == false) {
+          this.searchCounter = true;
+        } else {
+          this.varSearch = this.varSearch + ',';
+        }
+        this.emptySearch = false;
+        this.varSearch =
+          this.varSearch + "{'field':'CreatedAt','op':'>','value':'" + this.sinceDateMilli +"'}";
       }
-      this.emptySearch = false;
-      this.varSearch =
-        this.varSearch + "{'field':'CreatedAt','op':'>','value':'" + this.sinceDateMilli +"'}";
     }
 
     //Hasta fecha
     if (this.tilDateMilli > 0) {
-      if (this.searchCounter == false) {
-        this.searchCounter = true;
+      if(this.tilDateMilli < this.sinceDateMilli && this.sinceDateMilli > 0) {
+        this.modalTitle = this.translate.instant('dpos.filter.toDate.title');
+        this.modalMessage = this.translate.instant('dpos.filter.toDate.message');
+        this.openModal();
+        this.emptySearch = true;
+        return;
       } else {
-        this.varSearch = this.varSearch + ',';
+        if (this.searchCounter == false) {
+          this.searchCounter = true;
+        } else {
+          this.varSearch = this.varSearch + ',';
+        }
+        this.emptySearch = false;
+        this.varSearch =
+          this.varSearch +"{'field':'CreatedAt','op':'<','value':'" +this.tilDateMilli +"'}";
       }
-      this.emptySearch = false;
-      this.varSearch =
-        this.varSearch +"{'field':'CreatedAt','op':'<','value':'" +this.tilDateMilli +"'}";
     }
+
     //Tipo de operación
     if (this.typeVarSearch != null) {
       if (this.searchCounter == false) {
@@ -407,5 +425,13 @@ export class SalesComponent implements OnInit {
   //Boton Descargar
   downloadCSV(){
     this.downloadCsvService.downloadSalesFile(this.sales, 'Sales', this.currentLang);
+  }
+
+  openModal() {
+    this.showModal = true;
+  }
+
+  closeModal() {
+    this.showModal = false;
   }
 }

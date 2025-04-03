@@ -47,11 +47,14 @@
   <div class="card">
     <div class="card-body">
       <div class="row mb-4">
+        <div>
+          <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage"  (closeModal)="closeModal()"></app-modal>
+        </div>
         <div class="col">
           <h5><b>{{'dpos.sales.operations.label' | translate}}</b></h5>
         </div>
         <!-- Indicadores -->
-        <div class="col-5 text-end">
+        <div class="col-5 text-end" *ngIf="loadCompleted == true && emptySearch == false">
           <label for="inputHeadSales" class="me-2">{{'dpos.sales.operations.number.label' | translate}}</label>
           <input type="text" id="inputHeadSales" class="text-center me-5 inputHeadSales" [(ngModel)]="operationN" disabled />
           <label for="inputHeadSales1" class="me-2">{{'dpos.sales.operations.total.label' | translate}}</label>
@@ -64,8 +67,11 @@
       <!-- Tabla -->
       <div class="row">
         <div class="col">
-          <div *ngIf="loadCompleted == false" class="d-flex justify-content-center">
+          <div *ngIf="loadCompleted == false  && emptySearch == false" class="d-flex justify-content-center">
             <div class="spinner-border text-danger"></div>
+          </div>
+          <div *ngIf="loadCompleted == false && emptySearch == true" class="d-flex justify-content-center">
+            <b><i>{{'dpos.dashboard.nodata.label' | translate}}</i></b>
           </div>
           <div *ngIf="loadCompleted" class="table-responsive">
             <table class="table table-hover order-table table-borderless" data-pagination="true" data-page-size="10">

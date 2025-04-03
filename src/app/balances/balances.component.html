@@ -30,20 +30,25 @@
   <div class="card">
     <div class="card-body">
       <div class="row mb-4" >
+        <div>
+          <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage"  (closeModal)="closeModal()"></app-modal>
+        </div>
         <div class="col">
           <h5><b>{{'dpos.balances.title.label' | translate}}</b></h5>
         </div>
-        <div class="col-3 text-end">
+        <div class="col-3 text-end" *ngIf="loadCompleted==true && emptySearch == false">
           <button class="btn btn-outline-info justify-content-center">
             <i class="fa-solid fa-file-csv fa-xl" (click)="downloadCSV()"></i>
           </button>
         </div>
       </div>
-
-      <div *ngIf="loadCompleted==false" class="ms-5 d-flex justify-content-center">
+      <div *ngIf="loadCompleted==false  && emptySearch == false" class="ms-5 d-flex justify-content-center">
         <div class="spinner-border  text-danger"></div>
       </div>
-      <div class="row"  *ngIf="loadCompleted">
+      <div *ngIf="loadCompleted && emptySearch == true" class="ms-5 d-flex justify-content-center">
+        <b><i>{{'dpos.dashboard.nodata.label' | translate}}</i></b>
+      </div>
+      <div class="row"  *ngIf="loadCompleted && emptySearch == false">
         <div class="col">
           <div class="table-responsive">
             <table class="table table-hover order-table" data-pagination="true" data-page-size="10">
