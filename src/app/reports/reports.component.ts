@@ -36,7 +36,6 @@ export class ReportsComponent implements OnInit {
     this.langSubscription = this.translate.onLangChange.subscribe(event => {
       this.currentLang = event.lang;
       this.terminalsNumber[0] = this.translate.instant('dpos.filter.all');
-      this.terminalSelected = this.translate.instant('dpos.filter.all');
       this.reportVarSearch = this.translate.instant('dpos.reports.taxes.label');
     });
 
@@ -58,8 +57,8 @@ export class ReportsComponent implements OnInit {
   totalValuePercentage: number = 0;
 
   //Parámetros de búsqueda
-  terminalsNumber: string[];
-  terminalSelected: string;
+  public terminalsNumber: string[];
+  terminalSelected: string = null;
   reportVarSearch: string = this.translate.instant('dpos.reports.taxes.label');;
   searchCounter: boolean = false;
   sinceDate: string;
@@ -93,12 +92,9 @@ export class ReportsComponent implements OnInit {
                 if(terminals.length != 0) {
                   this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
                 }
-                if(this.terminalsNumber != null)  {
-                  this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
-                  this.terminalSelected = this.terminalsNumber[0];
-                }
+                this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
+                this.terminalSelected = this.terminalsNumber[0];
                 this.searchReports();
-                this.loadCompleted = true;
               },
               error: (error) => {
                 console.error("Error Commerces: ", error);
@@ -115,9 +111,6 @@ export class ReportsComponent implements OnInit {
 
   //Método de búsqueda
   searchReports() {
-    if (this.terminalSelected == this.translate.instant('dpos.filter.all')) {
-      this.terminalSelected = null;
-    }
     this.loadCompleted = false;
     //Obtención variables fechas
     this.sinceDate = (<HTMLInputElement>(document.getElementById('sinceDate'))).value;
