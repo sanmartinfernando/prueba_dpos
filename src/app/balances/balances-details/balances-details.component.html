@@ -206,20 +206,17 @@
                   <ng-container *ngIf="taxes.itemName.substring(0, 3) == 'IVA'">
                     <td>{{taxes.itemName}}</td>
                     <td></td>
-                    <td class="text-end">{{taxes.base /
-                      Math.pow(10, taxes.decimals)*(-1) | currency : "Eur" : "€"}}</td>
-                    <td class="text-end">{{taxes.tax /
-                      Math.pow(10, taxes.decimals)*(-1) | currency : "Eur" : "€"}}</td>
-                    <td class="text-end">{{taxes.total /
-                      Math.pow(10, taxes.decimals)*(-1) | currency : "Eur" : "€"}}</td>
+                    <td class="text-end">{{taxes.base / Math.pow(10, taxes.decimals) | currency : "Eur" : "€"}}</td>
+                    <td class="text-end">{{taxes.tax / Math.pow(10, taxes.decimals) | currency : "Eur" : "€"}}</td>
+                    <td class="text-end">{{taxes.total / Math.pow(10, taxes.decimals) | currency : "Eur" : "€"}}</td>
                   </ng-container>
                 </tr>
                 <tr>
                   <td>{{'dpos.balances-details.tax.total.label' | translate}}</td>
                   <td></td>
-                  <td class="text-end">Pendiente suma</td>
-                  <td class="text-end">Pendiente suma</td>
-                  <td class="text-end">Pendiente suma</td>
+                  <td class="text-end">{{base | currency : "Eur" : "€"}}</td>
+                  <td class="text-end">{{cuota | currency : "Eur" : "€"}}</td>
+                  <td class="text-end">{{total | currency : "Eur" : "€"}}</td>
                 </tr>
               </tbody>
             </table>
@@ -253,15 +250,15 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td class="text-end">{{paymentmethod.total / Math.pow(10, paymentmethod.decimals)*(-1) | currency : "Eur" : "€"}}</td>
+                    <td class="text-end">{{paymentmethod.total / Math.pow(10, paymentmethod.decimals) | currency : "Eur" : "€"}}</td>
                   </ng-container>
                 </tr>
                 <tr>
                   <td>{{'dpos.balances-details.paymentmethod.total.label' | translate}}</td>
                   <td></td>
-                  <td class="text-end">Pendiente suma</td>
-                  <td class="text-end">Pendiente suma</td>
-                  <td class="text-end">Pendiente suma</td>
+                  <td></td>
+                  <td></td>
+                  <td class="text-end">{{pmTotal | currency : "Eur" : "€"}}</td>
                 </tr>
               </tbody>
             </table>

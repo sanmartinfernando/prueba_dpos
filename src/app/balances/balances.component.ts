@@ -106,8 +106,11 @@ export class BalancesComponent implements OnInit {
     this.sinceDate = (<HTMLInputElement>(document.getElementById('sinceDate'))).value;
     this.sinceDateMilli = Date.parse(this.sinceDate);
     this.tilDate = (<HTMLInputElement>document.getElementById('tilDate')).value;
-    this.tilDateMilli = Date.parse(this.tilDate);
-
+    let date = new Date(this.tilDate);
+    // Establecer la hora a las 23:59
+    date.setHours(23, 59, 0, 0);
+    this.tilDateMilli = date.getTime();
+    
     //Comienzo query búsqueda
     this.varSearch = "&qs={'and':[";
 
@@ -163,7 +166,7 @@ export class BalancesComponent implements OnInit {
         this.varSearch = this.varSearch + ',';
       }
       //this.emptySearch = false;
-      this.varSearch = this.varSearch + "{'field':'FinishedAt','op':'<','value':'" + this.tilDateMilli + "'}";
+      this.varSearch = this.varSearch + "{'field':'FinishedAt','op':'<=','value':'" + this.tilDateMilli + "'}";
     }
 
     //Búsqueda vacia
