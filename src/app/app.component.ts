@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy  } from '@angular/core';
+import { InactivityService } from './_services/inactivity.service';
 
 @Component({
   selector: 'DPOSW-root',
@@ -7,4 +8,15 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   
+  constructor(private inactivityService: InactivityService) {}
+
+  ngOnInit() {
+    // Comienza a monitorear la inactividad cuando se carga el componente
+    this.inactivityService.startMonitoring();
+  }
+
+  ngOnDestroy() {
+    // Detener el monitoreo si el componente se destruye
+    this.inactivityService.stopMonitoring();
+  }
 }
