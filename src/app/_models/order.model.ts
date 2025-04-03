@@ -5,6 +5,14 @@ import { OrderTax } from "./order-tax.model";
 import { OrderTicketBai } from "./order-ticketbai.model";
 
 export class Order {
+
+  static readonly TYPE_SALE = 0;
+  static readonly TYPE_INVOICE = 1;
+  static readonly TYPE_REFUND = 2;
+  static readonly TYPE_GIFT = 3;
+  static readonly TYPE_PROFORMA = 4;
+  static readonly TYPE_RECTIFY = 5;
+
   orderId: string;
   currency: string;
   reference: string;

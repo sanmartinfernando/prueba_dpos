@@ -21,7 +21,7 @@
         <label class="form-label">{{'dpos.filter.operationtype' | translate}}</label>
         <select class="form-select" name="operation" [(ngModel)]="typeVarSearch">
           <option>{{'dpos.filter.all' | translate}}</option>
-          <option *ngFor="let type of selectSales[1]; index as i">{{ type }}</option>
+          <option *ngFor="let type of opTypes; index as i">{{ type.name }}</option>
         </select>
       </div>
       <div class="mx-3">
@@ -78,8 +78,7 @@
               <thead class="text-customer">
                 <tr>
                   <th class="text-center">
-                    <input class="form-check-input" type="checkbox" [checked]="isAllSelected"
-                      (change)="checkAll($event)" />
+                    <input class="form-check-input" type="checkbox" [checked]="isAllSelected" (change)="checkAll($event)" />
                   </th>
                   <th class="text-start">{{'dpos.sales.operation.document.label' | translate}}</th>
                   <th class="text-center">{{'dpos.sales.operation.type.label' | translate}}</th>

@@ -10,6 +10,8 @@ import { AuthService } from '../_services/auth.service';
 import { OrdersService } from '../_services/orders.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/internal/Subscription';
+import { Order } from '../_models/order.model';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'DPOSW-sales',
@@ -53,6 +55,8 @@ export class SalesComponent implements OnInit {
   modalTitle: string = '';
   modalMessage: string = '';
 
+  public opTypes: any;
+
   // Checkboxes
   selectedIndices: number[] = [];
   isAllSelected: boolean = false;
@@ -70,6 +74,7 @@ export class SalesComponent implements OnInit {
     private terminalsService: TerminalsService,
     private commercesService: CommercesService,
     private translate: TranslateService,
+    private currencyPipe: CurrencyPipe,
     private authService: AuthService
   ) {  
     this.currentLang = this.translate.currentLang || 'es';
@@ -77,6 +82,15 @@ export class SalesComponent implements OnInit {
         this.currentLang = event.lang;
         this.terminalsNumber[0] = this.translate.instant('dpos.filter.all');
       });
+
+      this.opTypes = [
+        { name: this.translate.instant('dpos.sales.operation.order.label'), value: Order.TYPE_SALE },
+        //{ name: this.translate.instant('dpos.filter.all'), value: Order.TYPE_INVOICE },
+        { name: this.translate.instant('dpos.sales.operation.refund.label'), value: Order.TYPE_REFUND },
+        //{ name: this.translate.instant('dpos.filter.all'), value: Order.TYPE_GIFT },
+        //{ name: this.translate.instant('dpos.filter.all'), value: Order.TYPE_PROFORMA },
+        { name: this.translate.instant('dpos.sales.operation.rectification.label'), value: Order.TYPE_RECTIFY }
+      ];
   }
 
   ngOnDestroy() {
@@ -210,18 +224,18 @@ export class SalesComponent implements OnInit {
       }
       if (this.typeVarSearch == this.translate.instant('dpos.filter.all')) {
         this.varSearch = this.varSearch + "{'or':[";
-        for (let i = 0; i < this.selectSales[1].length; i++) {
+        for (let i = 0; i < this.opTypes.length; i++) {
           if (i == 0) {
             this.varSearch =
               this.varSearch +
               "{'field':'Type','op':'=','value':'" +
-              this.translatedTypeVarSearch[i] +
+              this.opTypes[i].value +
               "'}";
           } else {
             this.varSearch =
               this.varSearch +
               ",{'field':'Type','op':'=','value':'" +
-              this.translatedTypeVarSearch[i] +
+              this.opTypes[i].value +
               "'}";
           }
         }
@@ -270,11 +284,13 @@ export class SalesComponent implements OnInit {
         if(this.sales.data.length != 0) {
           this.emptySearch = false;
           this.operationN = this.sales.data.length;
+
+          this.totalSales = 0;
           for (let i = 0; i < this.sales.data.length; i++) {
             this.totalSales = this.totalSales + Number(this.sales.data[i].total);
           }
-          this.totalSales = this.totalSales / 100;
-          this.totalSalesString = this.totalSales.toString() + ' €';
+          this.totalSalesString = (this.currencyPipe.transform(this.totalSales / (Math.pow(10, 2)), 'EUR', '€') || '');
+
           for (let i = 0; i < 3; i++) {
             this.selectSales[i] = new Array(this.sales.data.length);
           }
