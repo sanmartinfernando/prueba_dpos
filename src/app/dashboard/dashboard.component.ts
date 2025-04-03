@@ -18,6 +18,7 @@ import { TopProductsFilter } from '../_models/_filters/top-products.filter';
 import { StorageService } from '../_services/storage.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/internal/Subscription';
+import { DataSetTop3 } from '../_models/dataset-top3.model';
 
 @Component({
   selector: 'DPOSW-dashboard',
@@ -133,12 +134,7 @@ export class DashboardComponent implements OnInit {
     { name: 'Rectificación', value: this.colors[6] },
   ];
 
-  public datasetTop3 = [
-    { name: '', value: 0 },
-    { name: '', value: 0 },
-    { name: '', value: 0 },
-    { name: '', value: 0 },
-  ];
+  public datasetTop3:DataSetTop3[];
 
   public colorsTop3 = [];
 
@@ -635,25 +631,24 @@ export class DashboardComponent implements OnInit {
               //Se asocian los datos del objeto respuesta con los campos correspondientes del array de valores del gráfico
               let sumaTP = 0;
               this.colorsTop3 = [];
-              this.resetDatasetTop3();
               
+              this.datasetTop3 = [];
+
               for (let i = 0; i < aggregationsTop3.length; i++) {
                 sumaTP = sumaTP + aggregationsTop3[i].quantity;
-                this.datasetTop3[i].name = aggregationsTop3[i].product + ' (' + aggregationsTop3[i].quantity + ' uds)';
-                this.datasetTop3[i].value = Math.round((aggregationsTop3[i].quantity / aggregationsTP[0].quantity) * 100);
-                this.colorsTop3.push({ name: this.datasetTop3[i].name, value: this.colors[i]});
+                let dataName: string = aggregationsTop3[i].product + ' (' + aggregationsTop3[i].quantity + ' uds)';
+                let dataValue: number = Math.round((aggregationsTop3[i].quantity / aggregationsTP[0].quantity) * 100);
+                this.colorsTop3.push({ name: dataName, value: this.colors[i]});
+                let data= new DataSetTop3(dataName, dataValue);
+                this.datasetTop3.push(data);
               }
 
               //Se asocia el 4º puesto del array del gráfico correspondiente al apartado "resto de productos"
               //El dato se obtiene restando el valor total de la consulta de aggregationsTP a la sumaTP
-              if (aggregationsTop3.length >= 3) {
+              if (this.datasetTop3.length >= 3) {
                 this.datasetTop3[3].name = 'Resto (' + (aggregationsTP[0].quantity - sumaTP) +' uds)';
                 this.datasetTop3[3].value = Math.round(((aggregationsTP[0].quantity - sumaTP) / aggregationsTP[0].quantity) * 100);
-              } else {
-                this.datasetTop3[3].name = '';
-                this.datasetTop3[3].value = 0;
-              }
-
+              } 
               this.datasetTop3 = [...this.datasetTop3];
 
               this.loadedTPChart = true;
@@ -732,15 +727,6 @@ export class DashboardComponent implements OnInit {
         this.emptyPMChart = true;
       }
     });
-  }
-
-  public resetDatasetTop3() {
-    this.datasetTop3 = [
-      { name: '', value: 0 },
-      { name: '', value: 0 },
-      { name: '', value: 0 },
-      { name: '', value: 0 },
-    ];
   }
 
   public resetKpiDataset() {
