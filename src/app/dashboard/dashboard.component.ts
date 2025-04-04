@@ -177,7 +177,12 @@ export class DashboardComponent implements OnInit {
             this.commercesService.getCommerceList().subscribe({
               next: (commerces) => {
                 this.sessionService.getCommerceId().subscribe((commerceId) => {
+                 if(commerceId != 0) {
                   this.commerceId = commerceId; // Actualizar el valor en el componente
+                 } else {
+                  this.commerceId = commerces[0].commerceId;
+                  this.sessionService.setItem(SessionService.COMMERCE_ID, this.commerceId);
+                 }
                   this.terminalsService.getTerminalList().subscribe({
                     next: (terminals) => {
                       terminals = terminals.filter(terminal => terminal.commerceId == this.commerceId && terminal.terminalNumber != null);

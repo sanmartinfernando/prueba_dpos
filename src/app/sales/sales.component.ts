@@ -120,7 +120,12 @@ export class SalesComponent implements OnInit {
             next: (commerces) => {
               this.commerces = commerces;
               this.sessionService.getCommerceId().subscribe((commerceId) => {
-                this.commerceId = commerceId; // Actualizar el valor en el componente
+                if(commerceId != 0) {
+                  this.commerceId = commerceId; // Actualizar el valor en el componente
+                 } else {
+                  this.commerceId = commerces[0].commerceId;
+                  this.sessionService.setItem(SessionService.COMMERCE_ID, this.commerceId);
+                 }
                 this.commerceSelected = this.getCommerceNumber(this.commerceId);
                 this.terminalsService.getTerminalList().subscribe({
                   next: (terminals) => {

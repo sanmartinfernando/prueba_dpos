@@ -11,7 +11,7 @@ export class SessionService {
   static readonly FROM_DATE:string = "fromDate";
   static readonly TO_DATE:string = "toDate";
 
-  private commerceId: BehaviorSubject<number> = new BehaviorSubject<number>(this.getItem(SessionService.COMMERCE_ID) || '');
+  private commerceId: BehaviorSubject<number> = new BehaviorSubject<number>(this.getItem(SessionService.COMMERCE_ID) || 0);
 
   // Método para guardar un valor en sessionStorage
   setItem(key: string, value: any): void {

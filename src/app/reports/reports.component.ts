@@ -103,7 +103,12 @@ export class ReportsComponent implements OnInit {
           this.commercesService.getCommerceList().subscribe({
             next: (commerces) => {
               this.sessionService.getCommerceId().subscribe((commerceId) => {
-                this.commerceId = commerceId;
+                if(commerceId != 0) {
+                  this.commerceId = commerceId; // Actualizar el valor en el componente
+                 } else {
+                  this.commerceId = commerces[0].commerceId;
+                  this.sessionService.setItem(SessionService.COMMERCE_ID, this.commerceId);
+                 }
                 this.terminalsService.getTerminalList().subscribe({
                   next: (terminals) => {
                     terminals = terminals.filter(terminal => terminal.commerceId == this.commerceId && terminal.terminalNumber != null);
@@ -144,7 +149,7 @@ export class ReportsComponent implements OnInit {
     //Seteamos por defecto el año actual
     let yearDate = new Date(new Date().getFullYear(), 0);
 
-    if(this.sinceDate.length > 0){
+    if(this.sinceDateMilli > 0){
       this.sinceDateMilli = Date.parse(this.sinceDate);
     } else {
       this.sinceDateMilli = yearDate.getTime();
@@ -152,7 +157,7 @@ export class ReportsComponent implements OnInit {
       this.sessionService.setItem(SessionService.TO_DATE, this.sinceDateMilli);
     }
 
-    if(this.tilDate.length > 0){
+    if(this.tilDateMilli > 0){
       let date = new Date(this.tilDate);
       // Establecer la hora a las 23:59
       date.setHours(23, 59, 0, 0);
