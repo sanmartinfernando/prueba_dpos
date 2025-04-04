@@ -13,6 +13,7 @@ import { BalancesDetailsComponent } from './balances/balances-details/balances-d
 import { AuthGuard } from './_guard/auth.guard';
 import { PwrecoveryComponent } from './common/login/pwrecovery/pwrecovery.component';
 import { PwresetComponent } from './common/login/pwreset/pwreset.component';
+import { AuthService } from './_services/auth.service';
 
 const routes: Routes = [
   { path: '', component: DashboardComponent, canActivate: [AuthGuard], title:"DPOS - Dashboard"},
@@ -27,11 +28,21 @@ const routes: Routes = [
   { path: 'details/:id', component:DetailsComponent, canActivate: [AuthGuard], title:"DPOS - Ventas"  },
   { path: 'balances-details/:id',component: BalancesDetailsComponent, canActivate: [AuthGuard], title:"DPOS - Cierres" },
   { path: 'login/password-recovery', component: PwrecoveryComponent, title:"DPOS - Recuperación de contraseña" },
-  { path: 'password-reset', component: PwresetComponent, title:"DPOS - Recuperación de contraseña"  }
+  { path: 'password-reset', component: PwresetComponent, title:"DPOS - Recuperación de contraseña"  },
+  { path: '**', redirectTo: '/login' } //Redirigir a login en caso de ruta no encontrada
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule { 
+
+  constructor(private authService: AuthService) {
+    // En el momento de cargar el módulo, al detectar una ruta incorrecta, hacer logout
+    // Es importante hacer esto en el constructor de AppRoutingModule para asegurarte de que
+    // el logout ocurra cuando se intente acceder a una ruta no válida.
+    this.authService.logOut();
+  }
+
+}

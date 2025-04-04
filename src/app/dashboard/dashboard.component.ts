@@ -169,7 +169,6 @@ export class DashboardComponent implements OnInit {
         this.portalUsersService.getToken(user).subscribe({
           next: (portalUserToken)=> {
             this.authService.setPortalUsersToken(portalUserToken.token);
-
             this.commercesService.getCommerceList().subscribe({
               next: (commerces) => {
                 this.sessionService.getCommerceId().subscribe((commerceId) => {
