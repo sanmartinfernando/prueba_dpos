@@ -105,11 +105,18 @@ export class SalesComponent implements OnInit {
 
     if(this.sessionService.getItem(SessionService.FROM_DATE) != null){
       this.sinceDate = this.formatDate(this.sessionService.getItem(SessionService.FROM_DATE));
-      console.log(this.sinceDate);
     }
 
     if(this.sessionService.getItem(SessionService.TO_DATE) != null){
       this.tilDate = this.formatDate(this.sessionService.getItem(SessionService.TO_DATE));
+    }
+
+    if(this.sessionService.getItem(SessionService.OP_TYPE) != null){
+      this.typeVarSearch = this.sessionService.getItem(SessionService.OP_TYPE);
+    }
+
+    if(this.sessionService.getItem(SessionService.DOC_NUMBER) != null){
+      this.documentVarSearch = this.sessionService.getItem(SessionService.DOC_NUMBER);
     }
 
     this.storageService.userInfo.subscribe((user) =>{
@@ -507,6 +514,14 @@ export class SalesComponent implements OnInit {
       this.tilDateMilli = Date.parse(this.tilDate);
       this.sessionService.setItem(SessionService.TO_DATE, this.tilDateMilli);
     } 
+  }
+
+  onOpTypeChange(): void {
+    this.sessionService.setItem(SessionService.OP_TYPE, this.typeVarSearch);
+  }
+
+  onDocNumberChange(): void {
+    this.sessionService.setItem(SessionService.DOC_NUMBER, this.documentVarSearch);
   }
 
   getCommerceId(): number {

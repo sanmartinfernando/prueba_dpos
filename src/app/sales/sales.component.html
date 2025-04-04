@@ -19,14 +19,14 @@
       </div>
       <div class="mx-3">
         <label class="form-label">{{'dpos.filter.operationtype' | translate}}</label>
-        <select class="form-select" name="operation" [(ngModel)]="typeVarSearch">
+        <select class="form-select" name="operation" [(ngModel)]="typeVarSearch" (change)="onOpTypeChange()">
           <option>{{'dpos.filter.all' | translate}}</option>
           <option *ngFor="let type of opTypes; index as i">{{ type.name }}</option>
         </select>
       </div>
       <div class="mx-3">
         <label class="form-label">{{'dpos.filter.docnumber' | translate}}</label>
-        <input type="text" class="form-control" name="documentN" [(ngModel)]="documentVarSearch">
+        <input type="text" class="form-control" name="documentN" [(ngModel)]="documentVarSearch" (change)="onDocNumberChange()">
       </div>
       <div id="searchButtonsDiv" class="ms-5 d-flex overflow-auto">
         <button type="reset" class="btn btn-outline-danger align-self-end"> 
