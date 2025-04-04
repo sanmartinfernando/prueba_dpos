@@ -339,7 +339,7 @@ export class DownloadCsvService {
         line += (line ? ';' : '') + (this.translate.instant('dpos.sales.operation.order.label') || '');
       }
       //createdAt
-      line += (line ? ';' : '') + (this.datePipe.transform(order.createdAt, 'dd/MM/yyyy hh:mm') || '');
+      line += (line ? ';' : '') + (this.datePipe.transform(order.createdAt, 'dd/MM/yyyy HH:mm') || '');
       //terminalNumber
       line += (line ? ';' : '') + (order.terminalNumber || '');
       //subTotal
@@ -370,9 +370,9 @@ export class DownloadCsvService {
       //terminalNumber
       line += (line ? ';' : '') + (balance.terminalNumber|| '');
       //startedAt
-      line += (line ? ';' : '') + (this.datePipe.transform(balance.startedAt, 'dd/MM/yyyy hh:mm') || '');
+      line += (line ? ';' : '') + (this.datePipe.transform(balance.startedAt, 'dd/MM/yyyy HH:mm') || '');
       //finishedAt 
-      line += (line ? ';' : '') + (this.datePipe.transform(balance.finishedAt, 'dd/MM/yyyy hh:mm') || '');
+      line += (line ? ';' : '') + (this.datePipe.transform(balance.finishedAt, 'dd/MM/yyyy HH:mm') || '');
       //salesCount
       line += (line ? ';' : '') + ((balance.salesCount + balance.refundsCount + balance.rectifyCount) || '');
       //autoCashRecount
