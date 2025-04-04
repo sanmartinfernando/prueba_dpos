@@ -135,10 +135,11 @@
               <b><i>{{'dpos.dashboard.nodata.label' | translate}}</i></b>
             </ng-template>
             <ng-container *ngIf="loadedKPIChart; else spinner">
-              <ngx-charts-bar-vertical [view]="[1000, 350]" [results]="kpiDataset" [xAxis]="true" [yAxis]="true"
+              <ngx-charts-bar-vertical [view]="viewEvo" [results]="kpiDataset" [xAxis]="true" [yAxis]="true"
                 [showDataLabel]="true" [dataLabelFormatting]="formatCurrencyLabel" [customColors]="colorsKPI"
                 [animations]="true" *ngIf="emptyKPIChart == false; else noEvoKPIData">
-              </ngx-charts-bar-vertical></ng-container>
+              </ngx-charts-bar-vertical>
+            </ng-container>
           </div>
         </div>
       </div>
@@ -154,7 +155,7 @@
             <b><i>{{'dpos.dashboard.nodata.label' | translate}}</i></b>
           </ng-template>
           <ng-container *ngIf="loadedTPChart; else spinner">
-            <ngx-charts-bar-horizontal class="chart-horizontal" [view]="[450, 200]" [results]="datasetTop3" [animations]="true"
+            <ngx-charts-bar-horizontal class="chart-horizontal" [view]="viewTop3" [results]="datasetTop3" [animations]="true"
               [showDataLabel]="true" [xAxis]="false" [yAxis]="true" [legend]="false" [roundEdges]="true"
               [showXAxisLabel]="true" [showYAxisLabel]="true" [trimYAxisTicks]="false" [barPadding]="20"
               [tooltipDisabled]="true" [dataLabelFormatting]="formatPercentageLabel" [noBarWhenZero]="true" [customColors]="colorsTop3"
@@ -173,8 +174,8 @@
             <b><i>{{'dpos.dashboard.nodata.label' | translate}}</i></b>
           </ng-template>
           <ng-container *ngIf="loadedPMChart; else spinner">
-            <ngx-charts-pie-chart [view]="[500, 250]" [results]="datasetPM" [doughnut]="true" [animations]="true"
-              [labels]="false" [maxLabelLength]="50" rcWidth [tooltipDisabled]="true" [arcWidth]="0.5" [legend]="true"
+            <ngx-charts-pie-chart [view]="viewPM" [results]="datasetPM" [doughnut]="true" [animations]="true"
+              [labels]="true" [maxLabelLength]="50" rcWidth [tooltipDisabled]="true" [arcWidth]="0.5" [legend]="false"
               [customColors]="colorsPM" [legendTitle]="''" *ngIf="emptyKPIChart == false; else noPMData">
             </ngx-charts-pie-chart></ng-container>
         </div>

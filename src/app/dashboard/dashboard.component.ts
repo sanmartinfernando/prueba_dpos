@@ -1,6 +1,6 @@
 import { CashMovementsService } from '../_services/cash-movements.service';
 import { OrdersService } from '../_services/orders.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { OrderAggregation } from '../_models/order-aggregation.model';
 import { PortalUsersService } from '../_services/portal-users.service';
 import { TerminalsService } from '../_services/terminals.service';
@@ -142,6 +142,10 @@ export class DashboardComponent implements OnInit {
   currentLang: string;
   langSubscription: Subscription;
 
+  viewEvo:[number, number] = [700, 400]; 
+  viewPM:[number, number] = [500, 250]; 
+  viewTop3:[number, number] = [400, 200];
+
   constructor(
     private ordersService: OrdersService,
     private cashMovementsService: CashMovementsService,
@@ -165,6 +169,7 @@ export class DashboardComponent implements OnInit {
    * Función de inicialización al cargar la pantalla
    */
   public ngOnInit(): void {
+    this.updateView();
     this.storageService.userInfo.subscribe((user) =>{
         this.portalUsersService.getToken(user).subscribe({
           next: (portalUserToken)=> {
@@ -199,6 +204,22 @@ export class DashboardComponent implements OnInit {
           }
         });
     });
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.updateView();
+  }
+  
+  private updateView(): void {
+    // Definir el tamaño en función del ancho de la ventana
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    // Ajustar el tamaño según el tamaño de la ventana
+    this.viewEvo = [width * 0.55, height * 0.4];  // Ajusta estos valores según tus necesidades
+    this.viewPM = [width * 0.3, height * 0.4];  // Ajusta estos valores según tus necesidades
+    this.viewTop3 = [width * 0.25, height * 0.4];  // Ajusta estos valores según tus necesidades
   }
 
   /**
