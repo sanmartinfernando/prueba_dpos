@@ -43,7 +43,7 @@ export class ReportsComponent implements OnInit {
 
   }
 
-  size: number = 2147483647;
+  size: number = 10000;
   sales: Balance;
   salesReports: SalesReport;
   indexProduct: SalesReportAggregations[];
@@ -85,6 +85,16 @@ export class ReportsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCompleted = false;
+
+    if(this.sessionService.getItem(SessionService.FROM_DATE) != null){
+      this.sinceDate = this.formatDate(this.sessionService.getItem(SessionService.FROM_DATE));
+      console.log(this.sinceDate);
+    }
+
+    if(this.sessionService.getItem(SessionService.TO_DATE) != null){
+      this.tilDate = this.formatDate(this.sessionService.getItem(SessionService.TO_DATE));
+    }
+
     this.storageService.userInfo.subscribe((user) =>{
       this.portalUsersService.getToken(user).subscribe({
         next: (portalUserToken)=> {
@@ -101,7 +111,12 @@ export class ReportsComponent implements OnInit {
                       this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
                     }
                     this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
-                    this.terminalSelected = this.terminalsNumber[0];
+                    if(this.sessionService.getItem(SessionService.TERMINAL_NUMBER) == null){
+                      this.terminalSelected = this.terminalsNumber[0];
+                      this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
+                    } else {
+                      this.terminalSelected = this.sessionService.getItem(SessionService.TERMINAL_NUMBER);
+                    }
                     this.searchReports();
                   },
                   error: (error) => {
@@ -130,25 +145,13 @@ export class ReportsComponent implements OnInit {
     let yearDate = new Date(new Date().getFullYear(), 0);
     
     //Obtención variables fechas
-    this.sinceDate = (<HTMLInputElement>(document.getElementById('sinceDate'))).value;
-    if(this.sinceDate.length > 0){
-      this.sinceDateMilli = Date.parse(this.sinceDate);
-    } else {
-      this.sinceDateMilli = yearDate.getTime();
-      this.sinceDate = this.formatDate(this.sinceDateMilli);
-    }
-
-    this.tilDate = (<HTMLInputElement>document.getElementById('tilDate')).value;
-    if(this.tilDate.length > 0){
-      let date = new Date(this.tilDate);
-      // Establecer la hora a las 23:59
-      date.setHours(23, 59, 0, 0);
-      this.tilDateMilli = date.getTime();
-    } else {
-      this.tilDateMilli = yearDate.getTime() + 31536000000;
-      this.tilDate = this.formatDate(this.tilDateMilli);
-    }
-
+    this.sinceDateMilli = Date.parse(this.sinceDate);
+   
+    let date = new Date(this.tilDate);
+    // Establecer la hora a las 23:59
+    date.setHours(23, 59, 0, 0);
+    this.tilDateMilli = date.getTime();
+   
     //Desde fecha
     if (this.sinceDateMilli > 0) {
       if(this.sinceDateMilli > this.tilDateMilli && this.tilDateMilli > 0) {
@@ -282,6 +285,28 @@ export class ReportsComponent implements OnInit {
 
   closeModal() {
     this.showModal = false;
+  }
+
+  onTerminalChange(): void {
+    this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
+  }
+
+  onSinceDateChange(): void {
+    this.sessionService.setItem(SessionService.FROM_DATE, this.terminalSelected);
+    this.sinceDate = (<HTMLInputElement>(document.getElementById('sinceDate'))).value;
+    if(this.sinceDate.length > 0){
+      this.sinceDateMilli = Date.parse(this.sinceDate);
+      this.sessionService.setItem(SessionService.FROM_DATE, this.sinceDateMilli);
+    } 
+  }
+
+  onTilDateChange(): void {
+    this.sessionService.setItem(SessionService.TO_DATE, this.terminalSelected);
+    this.tilDate = (<HTMLInputElement>(document.getElementById('tilDate'))).value;
+    if(this.tilDate.length > 0){
+      this.tilDateMilli = Date.parse(this.tilDate);
+      this.sessionService.setItem(SessionService.TO_DATE, this.tilDateMilli);
+    } 
   }
 
   // Método para convertir timestamp a formato dd/mm/yyyy

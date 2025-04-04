@@ -22,7 +22,7 @@ import { SessionService } from '../_services/session.service';
 export class SalesComponent implements OnInit {
 
   currentFormats: any;
-  size: number = 200;
+  size: number = 10000;
   sales: OrderInfo;
   selectSales = new Array(3);
   salesTicketBai = new Array;
@@ -91,10 +91,7 @@ export class SalesComponent implements OnInit {
 
       this.opTypes = [
         { name: this.translate.instant('dpos.sales.operation.order.label'), value: Order.TYPE_SALE },
-        //{ name: this.translate.instant('dpos.filter.all'), value: Order.TYPE_INVOICE },
         { name: this.translate.instant('dpos.sales.operation.refund.label'), value: Order.TYPE_REFUND },
-        //{ name: this.translate.instant('dpos.filter.all'), value: Order.TYPE_GIFT },
-        //{ name: this.translate.instant('dpos.filter.all'), value: Order.TYPE_PROFORMA },
         { name: this.translate.instant('dpos.sales.operation.rectification.label'), value: Order.TYPE_RECTIFY }
       ];
   }
@@ -105,6 +102,16 @@ export class SalesComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCompleted = false;
+
+    if(this.sessionService.getItem(SessionService.FROM_DATE) != null){
+      this.sinceDate = this.formatDate(this.sessionService.getItem(SessionService.FROM_DATE));
+      console.log(this.sinceDate);
+    }
+
+    if(this.sessionService.getItem(SessionService.TO_DATE) != null){
+      this.tilDate = this.formatDate(this.sessionService.getItem(SessionService.TO_DATE));
+    }
+
     this.storageService.userInfo.subscribe((user) =>{
       this.portalUsersService.getToken(user).subscribe({
         next: (portalUserToken)=> {
@@ -122,7 +129,12 @@ export class SalesComponent implements OnInit {
                       this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
                     }
                     this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
-                    this.terminalSelected = this.terminalsNumber[0];
+                    if(this.sessionService.getItem(SessionService.TERMINAL_NUMBER) == null){
+                      this.terminalSelected = this.terminalsNumber[0];
+                      this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
+                    } else {
+                      this.terminalSelected = this.sessionService.getItem(SessionService.TERMINAL_NUMBER);
+                    }
                     this.searchSales();
                   },
                   error: (error) => {
@@ -152,10 +164,8 @@ export class SalesComponent implements OnInit {
     }
     //Obtención variables fechas
     this.loadCompleted = false;
-    this.sinceDate = (<HTMLInputElement>(document.getElementById('sinceDate'))).value;
     this.sinceDateMilli = Date.parse(this.sinceDate);
 
-    this.tilDate = (<HTMLInputElement>document.getElementById('tilDate')).value;
     let date = new Date(this.tilDate);
     date.setHours(23, 59, 0, 0);
     this.tilDateMilli = date.getTime();
@@ -472,6 +482,28 @@ export class SalesComponent implements OnInit {
     });
   }
   
+  onTerminalChange(): void {
+    this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
+  }
+
+  onSinceDateChange(): void {
+    this.sessionService.setItem(SessionService.FROM_DATE, this.terminalSelected);
+    this.sinceDate = (<HTMLInputElement>(document.getElementById('sinceDate'))).value;
+    if(this.sinceDate.length > 0){
+      this.sinceDateMilli = Date.parse(this.sinceDate);
+      this.sessionService.setItem(SessionService.FROM_DATE, this.sinceDateMilli);
+    } 
+  }
+
+  onTilDateChange(): void {
+    this.sessionService.setItem(SessionService.TO_DATE, this.terminalSelected);
+    this.tilDate = (<HTMLInputElement>(document.getElementById('tilDate'))).value;
+    if(this.tilDate.length > 0){
+      this.tilDateMilli = Date.parse(this.tilDate);
+      this.sessionService.setItem(SessionService.TO_DATE, this.tilDateMilli);
+    } 
+  }
+
   getCommerceId(): number {
     const commerce = this.commerces.find(commerce => commerce.commerceNumber == this.commerceSelected);
     if(commerce != undefined) {
@@ -486,5 +518,14 @@ export class SalesComponent implements OnInit {
       return commerce.commerceNumber;
     }
     return "";
+  }
+
+   // Método para convertir timestamp a formato dd/mm/yyyy
+   formatDate(timestamp: number): string {
+    const date = new Date(timestamp);  
+    const day = String(date.getDate()).padStart(2, '0'); // Obtener día (con 2 dígitos)
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Obtener mes (agregar 1 porque getMonth empieza desde 0)
+    const year = date.getFullYear(); // Obtener el año
+    return `${year}-${month}-${day}`;
   }
 }

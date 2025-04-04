@@ -6,7 +6,7 @@
       <div class="d-flex">
         <div class="me-3">
           <label class="form-label">{{'dpos.filter.terminal' | translate}}</label>
-          <select class="form-select" id="searchTer" name="terminal" [(ngModel)]="terminalSelected" >
+          <select class="form-select" id="searchTer" name="terminal" [(ngModel)]="terminalSelected"  (change)="onTerminalChange()">
             <option *ngFor="let terminal of terminalsNumber" [value]="terminal">{{ terminal }}</option>
           </select>
         </div>

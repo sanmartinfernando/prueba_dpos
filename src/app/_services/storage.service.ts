@@ -47,6 +47,7 @@ export class StorageService {
 
   clean(): void {
     window.localStorage.clear();
+    sessionStorage.clear();
     this.userInfo.next(null);
   }
 

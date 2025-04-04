@@ -6,9 +6,13 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class SessionService {
 
-  private commerceId: BehaviorSubject<number> = new BehaviorSubject<number>(this.getItem('commerceId') || '');
+  static readonly COMMERCE_ID:string = "commerceId";
+  static readonly TERMINAL_NUMBER:string = "terminalNumber";
+  static readonly FROM_DATE:string = "fromDate";
+  static readonly TO_DATE:string = "toDate";
 
-  
+  private commerceId: BehaviorSubject<number> = new BehaviorSubject<number>(this.getItem(SessionService.COMMERCE_ID) || '');
+
   // Método para guardar un valor en sessionStorage
   setItem(key: string, value: any): void {
     sessionStorage.setItem(key, JSON.stringify(value)); // Guardar como JSON

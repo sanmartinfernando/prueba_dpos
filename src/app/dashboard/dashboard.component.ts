@@ -185,7 +185,12 @@ export class DashboardComponent implements OnInit {
                         this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
                       }
                       this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
-                      this.terminalSelected = this.terminalsNumber[0];
+                      if(this.sessionService.getItem(SessionService.TERMINAL_NUMBER) == null){
+                        this.terminalSelected = this.terminalsNumber[0];
+                        this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
+                      } else {
+                        this.terminalSelected = this.sessionService.getItem(SessionService.TERMINAL_NUMBER);
+                      }
                       this.searchTerminal();
                     },
                     error: (error) => {
@@ -279,7 +284,7 @@ export class DashboardComponent implements OnInit {
     if (this.terminalSelected == this.translate.instant('dpos.filter.all')) {
       terminalsSelected = this.terminalsNumber.slice(1);
     } else {
-      terminalsSelected = this.terminalSelected;
+      terminalsSelected = [this.terminalSelected];
     }
 
     //Obtención de variables de búsqueda de año y mes
@@ -790,5 +795,9 @@ export class DashboardComponent implements OnInit {
       { name: 'Nov', value: this.colors[0] },
       { name: 'Dic', value: this.colors[0] },
     ];
+  }
+
+  onTerminalChange(): void {
+    this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
   }
 }

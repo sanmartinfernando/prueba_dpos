@@ -5,17 +5,17 @@
     <form class="d-flex flex-wrap mx-1">
       <div class="me-3">
         <label class="form-label">{{'dpos.filter.terminal' | translate}}</label>
-        <select class="form-select" id="searchTer" name="terminal" [(ngModel)]="terminalSelected" >
+        <select class="form-select" id="searchTer" name="terminal" [(ngModel)]="terminalSelected" (change)="onTerminalChange()">
           <option *ngFor="let terminal of terminalsNumber" [value]="terminal">{{ terminal }}</option>
         </select>
       </div>
       <div class="mx-3">
         <label class="form-label">{{'dpos.filter.date.from' | translate}}</label>
-        <input type="date" class="form-control" id="sinceDate" />
+        <input type="date" class="form-control" id="sinceDate" [value]="sinceDate" (change)="onSinceDateChange()" />
       </div>
       <div class="mx-3">
         <label class="form-label">{{'dpos.filter.date.to' | translate}}</label>
-        <input type="date" class="form-control" id="tilDate" />
+        <input type="date" class="form-control" id="tilDate" [value]="tilDate" (change)="onTilDateChange()" />
       </div>
       <div class="mx-3">
         <label class="form-label">{{'dpos.filter.operationtype' | translate}}</label>

@@ -89,6 +89,7 @@ export class AuthService {
 
   logOut() {
     window.localStorage.clear();
+    sessionStorage.clear();
     this.configObservable.next(null);
   }
 

@@ -47,11 +47,11 @@ export class HeaderComponent implements OnInit {
             this.commercesService.getCommerceList().subscribe({
               next: (commerces) => {
                 this.commerces = commerces;
-                if(this.sessionService.getItem('commerceId') == null){
+                if(this.sessionService.getItem(SessionService.COMMERCE_ID) == null){
                   this.commerceSelected = commerces[0].commerceNumber;
-                  this.sessionService.setItem('commerceId', this.getCommerceId());
+                  this.sessionService.setItem(SessionService.COMMERCE_ID, this.getCommerceId());
                 } else {
-                  this.commerceSelected = this.getCommerceNumber(this.sessionService.getItem('commerceId'));
+                  this.commerceSelected = this.getCommerceNumber(this.sessionService.getItem(SessionService.COMMERCE_ID));
                 }
               },
               error: (error) => {
@@ -90,7 +90,7 @@ export class HeaderComponent implements OnInit {
   onCommerceChange(): void {
     this.commerceSelected = this.getCommerceNumber(this.getCommerceId());
     this.commercesService.setCommerceId(this.getCommerceId());
-    this.sessionService.setItem('commerceId', this.getCommerceId());
+    this.sessionService.setItem(SessionService.COMMERCE_ID, this.getCommerceId());
     this.sessionService.setCommerceId(this.getCommerceId());
   }
   
