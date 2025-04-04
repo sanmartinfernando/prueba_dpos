@@ -136,7 +136,7 @@
             </ng-template>
             <ng-container *ngIf="loadedKPIChart; else spinner">
               <ngx-charts-bar-vertical [view]="viewEvo" [results]="kpiDataset" [xAxis]="true" [yAxis]="true"
-                [showDataLabel]="true" [dataLabelFormatting]="formatCurrencyLabel" [customColors]="colorsKPI"
+                [showDataLabel]="true" [dataLabelFormatting]="dataLabelFormatting" [customColors]="colorsKPI"
                 [animations]="true" *ngIf="emptyKPIChart == false; else noEvoKPIData">
               </ngx-charts-bar-vertical>
             </ng-container>

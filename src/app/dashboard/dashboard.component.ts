@@ -601,10 +601,30 @@ export class DashboardComponent implements OnInit {
     //Llamada a la API para obtener los datos agregados de que se muestran en la sección KPIs de movimientos de caja
     this.cashMovementsService.getCashMovementsAggregate(this.idCM).subscribe(
       (aggregationsCM) => {
-        if(aggregationsCM.length != 0) {
-          this.cashMovementsResult = (aggregationsCM[0].total / Math.pow(10, aggregationsCM[0].decimals)) - (aggregationsCM[1].total / Math.pow(10, aggregationsCM[1].decimals));
-          this.cashMovementsOperationsResult = aggregationsCM[0].count + aggregationsCM[1].count;
+
+        let inTotal:number = 0;
+        let inDecimals:number = 0;
+        let inCount:number = 0;
+
+        let ouTotal:number = 0;
+        let outDecimals:number = 0;
+        let outCount:number = 0;
+
+        for(let i=0; i < aggregationsCM.length; i++) {
+          let cashMovement = aggregationsCM[i];
+          if(cashMovement._id == 0) {
+            inTotal = aggregationsCM[0].total;
+            inDecimals = aggregationsCM[0].decimals;
+            inCount = aggregationsCM[0].count;
+          } else if (cashMovement._id == 1) {
+            ouTotal = aggregationsCM[1].total;
+            outDecimals = aggregationsCM[1].decimals;
+            outCount = aggregationsCM[1].count;
+          }
         }
+    
+        this.cashMovementsResult = (inTotal / Math.pow(10, inDecimals)) - (ouTotal / Math.pow(10, outDecimals));
+        this.cashMovementsOperationsResult = inCount + outCount;
       }
     );
 
@@ -613,7 +633,6 @@ export class DashboardComponent implements OnInit {
     this.rectificationsResult = {total: 0, count: 0};
     this.avTicketResult = 0;
     this.balanceResult = 0;
-    let countAvg = 0;
 
     //Comunicación con API para obtener los datos agregados que se muestran como base al iniciar la página en la sección de KPIs
     this.ordersService.getOrderAggregate(this.idOrders).subscribe(
@@ -624,15 +643,14 @@ export class DashboardComponent implements OnInit {
           for (let i = 0; i < this.aggregations.length; i++) {
             //If para comprobar si existen datos y el objeto no está vacio
             if (this.aggregations[i].total != null) {
-              //Calculo del ticket medio
-              this.avTicketResult += this.aggregations[i].avg / 100;
-              countAvg++;
               //Switch para comprobar si existen datos de ventas (id 0), de devoluciones (id 2) o rectificaciones (id 5)
               switch (this.aggregations[i]._id) {
                 case 0: //Ventas
                   //Para cada caso se rellena el array de resultados tanto del total con los decimales ya aplicados como del conteo de nº de operaciones
                   this.ordersResult.total += this.aggregations[i].total / this.Math.pow(10, this.aggregations[i].decimals);
                   this.ordersResult.count += this.aggregations[i].count;
+                  //Calculo del ticket medio
+                  this.avTicketResult += this.aggregations[i].avg / 100;
                   break;
                 case 2: //Devoluciones
                   this.refundsResult.total += this.aggregations[i].total / this.Math.pow(10, this.aggregations[i].decimals);
@@ -646,7 +664,7 @@ export class DashboardComponent implements OnInit {
             }
           }
           this.balanceResult = this.ordersResult.total - (this.refundsResult.total + this.rectificationsResult.total);
-          this.avTicketResult = this.avTicketResult / countAvg;
+          this.avTicketResult = this.avTicketResult;
         }
       }
     );
@@ -804,5 +822,11 @@ export class DashboardComponent implements OnInit {
 
   onTerminalChange(): void {
     this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
+  }
+
+  // Función de formato para las etiquetas de datos
+  dataLabelFormatting(value: any): string {
+    if(value<=0) return "";
+    return value.toFixed(2); // Redondear a 2 decimales
   }
 }

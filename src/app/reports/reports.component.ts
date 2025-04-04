@@ -88,7 +88,6 @@ export class ReportsComponent implements OnInit {
 
     if(this.sessionService.getItem(SessionService.FROM_DATE) != null){
       this.sinceDate = this.formatDate(this.sessionService.getItem(SessionService.FROM_DATE));
-      console.log(this.sinceDate);
     }
 
     if(this.sessionService.getItem(SessionService.TO_DATE) != null){
