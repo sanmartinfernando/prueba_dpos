@@ -10,6 +10,7 @@ import { Balance } from '../_models/balance.model';
 import { BalancesService } from '../_services/balances.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/internal/Subscription';
+import { SessionService } from '../_services/session.service';
 
 @Component({
   selector: 'DPOSW-balances',
@@ -25,6 +26,7 @@ export class BalancesComponent implements OnInit {
     private portalUsersService: PortalUsersService,
     private terminalsService: TerminalsService,
     private commercesService: CommercesService,
+    private sessionService: SessionService,
     private translate: TranslateService,
     private authService: AuthService) {
       this.currentLang = this.translate.currentLang || 'es';
@@ -71,30 +73,37 @@ export class BalancesComponent implements OnInit {
   
   ngOnInit(): void {
     this.storageService.userInfo.subscribe((user) =>{
-      this.commercesService.commerceId$.subscribe((commerceId) => {
-        this.commerceId = commerceId;
-        this.portalUsersService.getToken(user).subscribe({
-          next: (portalUserToken)=> {
-            this.authService.setPortalUsersToken(portalUserToken.token);
-            this.terminalsService.getTerminalList().subscribe({
-              next: (terminals) => {
-                terminals = terminals.filter(terminal => terminal.commerceId == commerceId && terminal.terminalNumber != null);
-                if(terminals.length != 0) {
-                  this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
-                }
-                this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
-                this.terminalSelected = this.terminalsNumber[0];
-                this.searchBalances();
-              },
-              error: (error) => {
-                console.error("Error Commerces: ", error);
-              }
-            });
-          },
-          error: (error) => {
-            console.error("Error Portal user token", error);
-          }
-        });
+      this.portalUsersService.getToken(user).subscribe({
+        next: (portalUserToken)=> {
+          this.authService.setPortalUsersToken(portalUserToken.token);
+          this.commercesService.getCommerceList().subscribe({
+            next: (commerces) => {
+              this.sessionService.getCommerceId().subscribe((commerceId) => {
+                this.commerceId = commerceId;
+                this.terminalsService.getTerminalList().subscribe({
+                  next: (terminals) => {
+                    terminals = terminals.filter(terminal => terminal.commerceId == this.commerceId && terminal.terminalNumber != null);
+                    if(terminals.length != 0) {
+                      this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
+                    }
+                    this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
+                    this.terminalSelected = this.terminalsNumber[0];
+                    this.searchBalances();
+                  },
+                  error: (error) => {
+                    console.error("Error Terminals: ", error);
+                  }
+                });
+              });
+            },
+            error: (error) => {
+              console.error("Error Commerces: ", error);
+            }
+          });
+        },
+        error: (error) => {
+          console.error("Error Portal user token", error);
+        }
       });
     });
   }

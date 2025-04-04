@@ -19,6 +19,7 @@ import { StorageService } from '../_services/storage.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { DataSetTop3 } from '../_models/dataset-top3.model';
+import { SessionService } from '../_services/session.service';
 
 @Component({
   selector: 'DPOSW-dashboard',
@@ -149,6 +150,7 @@ export class DashboardComponent implements OnInit {
     private commercesService: CommercesService,
     public translate: TranslateService,
     private storageService: StorageService,
+    private sessionService: SessionService,
     private authService: AuthService
   ) {
     this.formatCurrencyLabel = this.formatCurrencyLabel.bind(this);
@@ -164,21 +166,29 @@ export class DashboardComponent implements OnInit {
    */
   public ngOnInit(): void {
     this.storageService.userInfo.subscribe((user) =>{
-      this.commercesService.commerceId$.subscribe((commerceId) => {
-        this.commerceId = commerceId;
         this.portalUsersService.getToken(user).subscribe({
           next: (portalUserToken)=> {
             this.authService.setPortalUsersToken(portalUserToken.token);
-            this.terminalsService.getTerminalList().subscribe({
-              next: (terminals) => {
-                this.terminals = [];
-                this.terminals = terminals.filter(terminal => terminal.commerceId == this.commerceId && terminal.terminalNumber != null);
-                if(this.terminals.length != 0) {
-                  this.terminalsNumber = this.terminals.map(terminal => terminal.terminalNumber);
-                }
-                this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
-                this.terminalSelected = this.terminalsNumber[0];
-                this.searchTerminal();
+
+            this.commercesService.getCommerceList().subscribe({
+              next: (commerces) => {
+                this.sessionService.getCommerceId().subscribe((commerceId) => {
+                  this.commerceId = commerceId; // Actualizar el valor en el componente
+                  this.terminalsService.getTerminalList().subscribe({
+                    next: (terminals) => {
+                      terminals = terminals.filter(terminal => terminal.commerceId == this.commerceId && terminal.terminalNumber != null);
+                      if(terminals.length != 0) {
+                        this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
+                      }
+                      this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
+                      this.terminalSelected = this.terminalsNumber[0];
+                      this.searchTerminal();
+                    },
+                    error: (error) => {
+                      console.error("Error Terminals: ", error);
+                    }
+                  });
+                });
               },
               error: (error) => {
                 console.error("Error Commerces: ", error);
@@ -189,7 +199,6 @@ export class DashboardComponent implements OnInit {
             console.error("Error Portal user token", error);
           }
         });
-      });
     });
   }
 

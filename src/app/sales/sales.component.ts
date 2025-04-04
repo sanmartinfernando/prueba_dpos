@@ -12,6 +12,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { Order } from '../_models/order.model';
 import { CurrencyPipe } from '@angular/common';
+import { Commerce } from '../_models/commerce.model';
+import { SessionService } from '../_services/session.service';
 
 @Component({
   selector: 'DPOSW-sales',
@@ -65,6 +67,9 @@ export class SalesComponent implements OnInit {
   currentLang: string;
   langSubscription: Subscription;
 
+  commerceSelected: string;
+  commerces: Commerce[];
+
   constructor(
     private encryptionService: EncryptionService,
     private ordersService: OrdersService,
@@ -75,6 +80,7 @@ export class SalesComponent implements OnInit {
     private commercesService: CommercesService,
     private translate: TranslateService,
     private currencyPipe: CurrencyPipe,
+    private sessionService: SessionService,
     private authService: AuthService
   ) {  
     this.currentLang = this.translate.currentLang || 'es';
@@ -100,30 +106,39 @@ export class SalesComponent implements OnInit {
   ngOnInit(): void {
     this.loadCompleted = false;
     this.storageService.userInfo.subscribe((user) =>{
-      this.commercesService.commerceId$.subscribe((commerceId) => {
-        this.commerceId = commerceId;
-        this.portalUsersService.getToken(user).subscribe({
-          next: (portalUserToken)=> {
-            this.authService.setPortalUsersToken(portalUserToken.token);
-            this.terminalsService.getTerminalList().subscribe({
-              next: (terminals) => {
-                terminals = terminals.filter(terminal => terminal.commerceId == commerceId && terminal.terminalNumber != null);
-                if(terminals.length != 0) {
-                  this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
-                }
-                this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
-                this.terminalSelected = this.terminalsNumber[0];
-                this.searchSales();
-              },
-              error: (error) => {
-                console.error("Error Commerces: ", error);
-              }
-            });
-          },
-          error: (error) => {
-            console.error("Error Portal user token", error);
-          }
-        });
+      this.portalUsersService.getToken(user).subscribe({
+        next: (portalUserToken)=> {
+          this.authService.setPortalUsersToken(portalUserToken.token);
+          this.commercesService.getCommerceList().subscribe({
+            next: (commerces) => {
+              this.commerces = commerces;
+              this.sessionService.getCommerceId().subscribe((commerceId) => {
+                this.commerceId = commerceId; // Actualizar el valor en el componente
+                this.commerceSelected = this.getCommerceNumber(this.commerceId);
+                this.terminalsService.getTerminalList().subscribe({
+                  next: (terminals) => {
+                    terminals = terminals.filter(terminal => terminal.commerceId == this.commerceId && terminal.terminalNumber != null);
+                    if(terminals.length != 0) {
+                      this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
+                    }
+                    this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
+                    this.terminalSelected = this.terminalsNumber[0];
+                    this.searchSales();
+                  },
+                  error: (error) => {
+                    console.error("Error Terminals: ", error);
+                  }
+                });
+              });
+            },
+            error: (error) => {
+              console.error("Error Commerces: ", error);
+            }
+          });
+        },
+        error: (error) => {
+          console.error("Error Portal user token", error);
+        }
       });
     });
   }
@@ -438,5 +453,38 @@ export class SalesComponent implements OnInit {
 
   closeModal() {
     this.showModal = false;
+  }
+
+  onCommerceChange(): void {
+    this.commerceId = this.getCommerceId();
+    this.terminalsService.getTerminalList().subscribe({
+      next: (terminals) => {
+        terminals = terminals.filter(terminal => terminal.commerceId == this.commerceId && terminal.terminalNumber != null);
+        if(terminals.length != 0) {
+          this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
+        }
+        this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
+        this.terminalSelected = this.terminalsNumber[0];
+      },
+      error: (error) => {
+        console.error("Error Terminals: ", error);
+      }
+    });
+  }
+  
+  getCommerceId(): number {
+    const commerce = this.commerces.find(commerce => commerce.commerceNumber == this.commerceSelected);
+    if(commerce != undefined) {
+      return commerce.commerceId;
+    }
+    return 0;
+  }
+
+  getCommerceNumber(commerceId:number): string {
+    const commerce = this.commerces.find(commerce => commerce.commerceId == commerceId);
+    if(commerce != undefined) {
+      return commerce.commerceNumber;
+    }
+    return "";
   }
 }

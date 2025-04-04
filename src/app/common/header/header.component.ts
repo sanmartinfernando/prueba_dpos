@@ -7,6 +7,7 @@ import { AuthService } from 'src/app/_services/auth.service';
 import { Commerce } from 'src/app/_models/commerce.model';
 import { PortalUsersService } from 'src/app/_services/portal-users.service';
 import { CommercesService } from '../../_services/commerces.service';
+import { SessionService } from 'src/app/_services/session.service';
 
 @Component({
   selector: 'DPOSW-header',
@@ -29,6 +30,7 @@ export class HeaderComponent implements OnInit {
     private portalUsersService: PortalUsersService,
     private commercesService: CommercesService,
     private storageService: StorageService,
+    private sessionService: SessionService,
     public router: Router){
     this.pages = pagesService.pages;
     this.authService = _authService;
@@ -45,8 +47,12 @@ export class HeaderComponent implements OnInit {
             this.commercesService.getCommerceList().subscribe({
               next: (commerces) => {
                 this.commerces = commerces;
-                this.commerceSelected = commerces[0].commerceNumber
-                this.commercesService.setCommerceId(this.getCommerceId());
+                if(this.sessionService.getItem('commerceId') == null){
+                  this.commerceSelected = commerces[0].commerceNumber;
+                  this.sessionService.setItem('commerceId', this.getCommerceId());
+                } else {
+                  this.commerceSelected = this.getCommerceNumber(this.sessionService.getItem('commerceId'));
+                }
               },
               error: (error) => {
                 console.error("Error Commerces: ", error);
@@ -82,7 +88,10 @@ export class HeaderComponent implements OnInit {
   }
 
   onCommerceChange(): void {
+    this.commerceSelected = this.getCommerceNumber(this.getCommerceId());
     this.commercesService.setCommerceId(this.getCommerceId());
+    this.sessionService.setItem('commerceId', this.getCommerceId());
+    this.sessionService.setCommerceId(this.getCommerceId());
   }
   
   getCommerceId(): number {
@@ -91,5 +100,13 @@ export class HeaderComponent implements OnInit {
       return commerce.commerceId;
     }
     return 0;
+  }
+
+  getCommerceNumber(commerceId:number): string {
+    const commerce = this.commerces.find(commerce => commerce.commerceId == commerceId);
+    if(commerce != undefined) {
+      return commerce.commerceNumber;
+    }
+    return "";
   }
 }
