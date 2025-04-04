@@ -143,15 +143,26 @@ export class ReportsComponent implements OnInit {
 
     //Seteamos por defecto el año actual
     let yearDate = new Date(new Date().getFullYear(), 0);
-    
-    //Obtención variables fechas
-    this.sinceDateMilli = Date.parse(this.sinceDate);
-   
-    let date = new Date(this.tilDate);
-    // Establecer la hora a las 23:59
-    date.setHours(23, 59, 0, 0);
-    this.tilDateMilli = date.getTime();
-   
+
+    if(this.sinceDate.length > 0){
+      this.sinceDateMilli = Date.parse(this.sinceDate);
+    } else {
+      this.sinceDateMilli = yearDate.getTime();
+      this.sinceDate = this.formatDate(this.sinceDateMilli);
+      this.sessionService.setItem(SessionService.TO_DATE, this.sinceDateMilli);
+    }
+
+    if(this.tilDate.length > 0){
+      let date = new Date(this.tilDate);
+      // Establecer la hora a las 23:59
+      date.setHours(23, 59, 0, 0);
+      this.tilDateMilli = date.getTime();
+    } else {
+      this.tilDateMilli = yearDate.getTime() + 31536000000;
+      this.tilDate = this.formatDate(this.tilDateMilli);
+      this.sessionService.setItem(SessionService.TO_DATE, this.tilDateMilli);
+    }
+
     //Desde fecha
     if (this.sinceDateMilli > 0) {
       if(this.sinceDateMilli > this.tilDateMilli && this.tilDateMilli > 0) {
@@ -223,7 +234,7 @@ export class ReportsComponent implements OnInit {
         this.loadCompleted = true;
       }, 
       error: (error) => {
-        if (error.status == 404 || error.status == 401 || error.status == 500) {
+        if (error.status == 400 || error.status == 404 || error.status == 401 || error.status == 500) {
           this.emptySearch = true;
           this.loadCompleted = true;
         }
@@ -254,7 +265,7 @@ export class ReportsComponent implements OnInit {
         this.loadCompleted = true;
       },
       error: (error) => {
-        if (error.status == 404 || error.status == 401 || error.status == 500) {
+        if (error.status == 400 || error.status == 404 || error.status == 401 || error.status == 500) {
           this.emptySearch = true;
           this.loadCompleted = true;
         }
