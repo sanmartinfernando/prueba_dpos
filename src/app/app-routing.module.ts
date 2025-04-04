@@ -14,6 +14,7 @@ import { AuthGuard } from './_guard/auth.guard';
 import { PwrecoveryComponent } from './common/login/pwrecovery/pwrecovery.component';
 import { PwresetComponent } from './common/login/pwreset/pwreset.component';
 import { AuthService } from './_services/auth.service';
+import { InactivityService } from './_services/inactivity.service';
 
 const routes: Routes = [
   { path: '', component: DashboardComponent, canActivate: [AuthGuard], title:"DPOS - Dashboard"},
@@ -38,11 +39,13 @@ const routes: Routes = [
 })
 export class AppRoutingModule { 
 
-  constructor(private authService: AuthService) {
+  constructor(private authService: AuthService, private inactivity: InactivityService) {
     // En el momento de cargar el módulo, al detectar una ruta incorrecta, hacer logout
     // Es importante hacer esto en el constructor de AppRoutingModule para asegurarte de que
     // el logout ocurra cuando se intente acceder a una ruta no válida.
-    this.authService.logOut();
+    if(!inactivity.isMonitoringActive) {
+      this.authService.logOut();
+    }
   }
 
 }

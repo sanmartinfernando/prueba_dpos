@@ -10,9 +10,12 @@ export class InactivityService {
   private readonly INACTIVITY_TIME = 15 * 60 * 1000; // 15 minutos
   private readonly WARNING_TIME = 10 * 60 * 1000; // Alerta de inactividad después de 14 minutos
 
+  private monitoringActive: boolean = false;
+  
   constructor(private router: Router, private ngZone: NgZone, private storageService: StorageService) {}
 
   startMonitoring() {
+    this.monitoringActive = true;
     // Se escucha por eventos de interacción del usuario
     this.ngZone.runOutsideAngular(() => {
       window.addEventListener('mousemove', this.resetTimer.bind(this));
@@ -52,7 +55,12 @@ export class InactivityService {
     this.router.navigate(['/login']);
   }
 
+  isMonitoringActive(): boolean {
+    return this.monitoringActive;
+  }
+  
   stopMonitoring() {
+    this.monitoringActive = false;
     // Remueve los event listeners para no seguir monitoreando
     window.removeEventListener('mousemove', this.resetTimer.bind(this));
     window.removeEventListener('keydown', this.resetTimer.bind(this));
