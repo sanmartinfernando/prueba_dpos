@@ -227,9 +227,9 @@ export class DashboardComponent implements OnInit {
     const height = window.innerHeight;
 
     // Ajustar el tamaño según el tamaño de la ventana
-    this.viewEvo = [width * 0.55, height * 0.4];  // Ajusta estos valores según tus necesidades
-    this.viewPM = [width * 0.3, height * 0.4];  // Ajusta estos valores según tus necesidades
-    this.viewTop3 = [width * 0.25, height * 0.4];  // Ajusta estos valores según tus necesidades
+    this.viewEvo = [width * 0.55, height * 0.45];  // Ajusta estos valores según tus necesidades
+    this.viewPM = [width * 0.3, height * 0.25];  // Ajusta estos valores según tus necesidades
+    this.viewTop3 = [width * 0.25, height * 0.25];  // Ajusta estos valores según tus necesidades
   }
 
   /**
