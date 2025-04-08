@@ -169,7 +169,7 @@
             <label class="">{{'dpos.balances-details.cashbalance.cashwithdrawal.label' | translate}}</label>
           </div>
           <div class="col text-end">
-            <label>{{ 0 / Math.pow(10, balances.decimals) | currency : "Eur" : "€" }}</label>
+            <label>{{ (balances.manualCashRecount - balances.nextOpening) / Math.pow(10, balances.decimals) | currency : "Eur" : "€" }}</label>
           </div>
         </div>
         <div class="row px-2 pb-1">
