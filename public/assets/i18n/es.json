@@ -46,6 +46,7 @@
     "dpos.login.password.required.label": "La contraseña es obligatoria.",
     "dpos.login.password.minleght.label": "La contraseña debe tener al menos 4 caracteres.",
     "dpos.login.login.btn": "Iniciar sesión",
+    "dpos.login.loading.btn": "Cargando...",
     "dpos.login.login.failed.label": "Inicio de sesión fallido:",
     "dpos.unauthorized.msg.general": "[!] No autorizado.",
     "dpos.balances.title.label": "Cierres de caja",

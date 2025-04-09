@@ -27,7 +27,11 @@
           </div>
         </div>
         <div class="my-3 text-center">
-          <button [disabled]="!loginForm.valid" type="submit" class="btn button">{{'dpos.login.login.btn' | translate}}</button>
+          <button [disabled]="!loginForm.valid" type="submit" class="btn button">
+            
+            <span *ngIf="loading">{{'dpos.login.loading.btn' | translate}}</span>
+            <span *ngIf="!loading">{{'dpos.login.login.btn' | translate}}</span>
+          </button>
         </div>
         <div *ngIf="isLoginFailed" class="alert alert-danger" role="alert">
           {{'dpos.login.login.failed.label' | translate}} {{ errorMessage }}

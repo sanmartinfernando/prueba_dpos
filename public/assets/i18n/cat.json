@@ -46,6 +46,7 @@
     "dpos.login.password.required.label": "La contrasenya és obligatòria.",
     "dpos.login.password.minleght.label": "La contrasenya ha de tenir com a mínim 4 caràcters.",
     "dpos.login.login.btn": "Iniciar sessió",
+    "dpos.login.loading.btn": "Carregant...",
     "dpos.login.login.failed.label": "Inici de sessió fallit:",
     "dpos.unauthorized.msg.general": "[!] No autoritzat.",
     "dpos.balances.title.label": "Tancaments de caixa",

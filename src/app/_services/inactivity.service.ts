@@ -7,8 +7,8 @@ import { StorageService } from './storage.service';
 })
 export class InactivityService {
   private timeout: any;
-  private readonly INACTIVITY_TIME = 15 * 60 * 1000; // 15 minutos
-  private readonly WARNING_TIME = 10 * 60 * 1000; // Alerta de inactividad después de 14 minutos
+  private readonly INACTIVITY_TIME = 30 * 60 * 1000; // 30 minutos
+  private readonly WARNING_TIME = 25 * 60 * 1000; // Alerta de inactividad después de 25 minutos
 
   private monitoringActive: boolean = false;
   

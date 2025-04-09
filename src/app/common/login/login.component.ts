@@ -22,6 +22,7 @@ export class LoginComponent implements OnInit {
   roles: string[] = [];
   token: any = [];
   componentSelected: string;
+  loading: boolean = false;
 
   constructor(private authService: AuthService, 
     private storageService: StorageService,
@@ -47,6 +48,7 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit(): void {
+    this.loading = true;
     const { username, pw } = this.loginForm.value;
     this.isLoginFailed = false;
 
@@ -55,10 +57,12 @@ export class LoginComponent implements OnInit {
         this.isLoginFailed = false;
         this.isLoggedIn = true;
         this.storageService.updateloggin(this.isLoggedIn)
+        this.loading = false;
         this.navigateLoggedIn();
         return;
       }).catch((err) => {
         this.isLoginFailed = true;
+        this.loading = false;
       });
   }
 

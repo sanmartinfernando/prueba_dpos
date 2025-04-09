@@ -46,6 +46,7 @@
     "dpos.login.password.required.label": "Pasahitza beharrezkoa da.",
     "dpos.login.password.minleght.label": "Pasahitzak 4 karaktere izan behar ditu gutxienez.",
     "dpos.login.login.btn": "Saioa hasi",
+    "dpos.login.loading.btn": "Kargatzen...",
     "dpos.login.login.failed.label": "Ezin izan da saioa hasi:",
     "dpos.unauthorized.msg.general": "[!] Baimenik gabe.",
     "dpos.balances.title.label": "Kutxaren itxierak",
