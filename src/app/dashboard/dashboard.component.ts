@@ -536,57 +536,76 @@ export class DashboardComponent implements OnInit {
    * Función para mostrar los datos de la evolución de los cierres de caja
    */
   private printBalancesEvoChart() {
-    let valueGraphArraySales = new Array(12);
-    let valueGraphArrayRect = new Array(12);
-    let valueGraphArrayRefunds = new Array(12);
-    //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
-    this.ordersService.getOrderAggregate(this.idEvoResults).subscribe((aggregationsEvoOrder) => {
-      if(aggregationsEvoOrder.length != 0) {
-        //Actualzamos los colores de las barras
-        for (let i = 0; i < this.colorsKPI.length; i++) {
-          this.colorsKPI[i].value = this.colors[4];
-        }
-        //Inicializamos los arrays
-        this.resetKpiDataset();
-        for (let i = 0; i < this.kpiDataset.length; i++) {
-            valueGraphArraySales[i] = 0;
-            valueGraphArrayRefunds[i] = 0;
-            valueGraphArrayRect[i] = 0;
-        }
-        let totalSales = 0;
-        let totalRefunds = 0;
-        let totalRectifications = 0;
-        //Se clasifican los datos obtenidos según el tipo ( 0 ventas, 2 devoluciones y 5 rectificaciones) en el array de resultados
-        for (let i = 0; i < aggregationsEvoOrder.length; i++) {
-          switch (aggregationsEvoOrder[i]._id.type) {
-            case 0:
-              valueGraphArraySales[aggregationsEvoOrder[i]._id.month - 1] = aggregationsEvoOrder[i].total / 100;
-              totalSales += aggregationsEvoOrder[i].total / 100;
-              break;
-            case 2:
-              valueGraphArrayRefunds[aggregationsEvoOrder[i]._id.month - 1] = aggregationsEvoOrder[i].total / 100;
-              totalRefunds += aggregationsEvoOrder[i].total / 100;
-              break;
-            case 5:
-              valueGraphArrayRect[aggregationsEvoOrder[i]._id.month - 1] = aggregationsEvoOrder[i].total / 100;
-              totalRectifications += aggregationsEvoOrder[i].total / 100;
-              break;
+    
+    //Se inicializan los array de in y out donde se van a poner los datos de los movimientos de caja positivos y negativos
+    let valueGraphArrayIn: number[] = [0,0,0,0,0,0,0,0,0,0,0,0];
+    let valueGraphArrayOut: number[] = [0,0,0,0,0,0,0,0,0,0,0,0];
+    let valueArrayCashMovements: number[] = [0,0,0,0,0,0,0,0,0,0,0,0];
+    
+    //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal y intervalo de tiempo)
+    this.cashMovementsService.getCashMovementsAggregate(this.idEvoCM).subscribe((aggregationsEvoIn) => {
+      if(aggregationsEvoIn.length != 0) {
+        //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
+        for (let i = 0; i < aggregationsEvoIn.length; i++) {
+          //Se separan los datos dependiendo de su id (0 movimiento in en el if y 1 movimiento out en el else)
+          if (aggregationsEvoIn[i]._id.type == 0) {
+            valueGraphArrayIn[aggregationsEvoIn[i]._id.month - 1] = aggregationsEvoIn[i].total / 100;
+          } else {
+            valueGraphArrayOut[aggregationsEvoIn[i]._id.month - 1] = aggregationsEvoIn[i].total / 100;
           }
         }
-        this.balanceResult = totalSales - (totalRefunds + totalRectifications);
-        //Se actualizan los datos del array de resultados en el array de datos del gráfico para que se muestren los resultados (ventas - (devoluciones+rectificaciones))
+        //Se rellena el array de datos del gráfico en el apartado value de cada elemento con la diferencia entre movimientos in y out
         for (let i = 0; i < this.kpiDataset.length; i++) {
-          this.kpiDataset[i].value = valueGraphArraySales[i] - (valueGraphArrayRefunds[i] + valueGraphArrayRect[i]);
+          valueArrayCashMovements[i] = valueGraphArrayIn[i] - valueGraphArrayOut[i];
         }
-        //Se actualiza el array del gráfico para que se dibujen los datos nuevos en el gráfico
-        this.kpiDataset = [...this.kpiDataset];
-        //Las variables de carga de gráfico se ponen en true
-        this.loadedKPIChart = true;
-        this.emptyKPIChart = false;
-      } else {
-        this.loadedKPIChart = true;
-        this.emptyKPIChart = true;
-      }
+      } 
+
+      let valueGraphArraySales = new Array(12);
+      let valueGraphArrayRefunds = new Array(12);
+      //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
+      this.ordersService.getOrderAggregate(this.idEvoResults).subscribe((aggregationsEvoOrder) => {
+        if(aggregationsEvoOrder.length != 0) {
+          //Actualzamos los colores de las barras
+          for (let i = 0; i < this.colorsKPI.length; i++) {
+            this.colorsKPI[i].value = this.colors[4];
+          }
+          //Inicializamos los arrays
+          this.resetKpiDataset();
+          for (let i = 0; i < this.kpiDataset.length; i++) {
+              valueGraphArraySales[i] = 0;
+              valueGraphArrayRefunds[i] = 0;
+          }
+          let totalSales = 0;
+          let totalRefunds = 0;
+  
+          //Se clasifican los datos obtenidos según el tipo ( 0 ventas, 2 devoluciones y 5 rectificaciones) en el array de resultados
+          for (let i = 0; i < aggregationsEvoOrder.length; i++) {
+            switch (aggregationsEvoOrder[i]._id.type) {
+              case 0:
+                valueGraphArraySales[aggregationsEvoOrder[i]._id.month - 1] = aggregationsEvoOrder[i].total / 100;
+                totalSales += aggregationsEvoOrder[i].total / 100;
+                break;
+              case 2:
+                valueGraphArrayRefunds[aggregationsEvoOrder[i]._id.month - 1] = aggregationsEvoOrder[i].total / 100;
+                totalRefunds += aggregationsEvoOrder[i].total / 100;
+                break;
+            }
+          }
+  
+          //Se actualizan los datos del array de resultados en el array de datos del gráfico para que se muestren los resultados (ventas - (devoluciones+rectificaciones))
+          for (let i = 0; i < this.kpiDataset.length; i++) {
+            this.kpiDataset[i].value = valueGraphArraySales[i] - valueGraphArrayRefunds[i] + valueArrayCashMovements[i];
+          }
+          //Se actualiza el array del gráfico para que se dibujen los datos nuevos en el gráfico
+          this.kpiDataset = [...this.kpiDataset];
+          //Las variables de carga de gráfico se ponen en true
+          this.loadedKPIChart = true;
+          this.emptyKPIChart = false;
+        } else {
+          this.loadedKPIChart = true;
+          this.emptyKPIChart = true;
+        }
+      });
     });
   }
 
@@ -597,6 +616,12 @@ export class DashboardComponent implements OnInit {
     
     this.cashMovementsResult = 0;
     this.cashMovementsOperationsResult = 0;
+
+    this.ordersResult = {total: 0, count: 0};
+    this.refundsResult = {total: 0, count: 0};
+    this.rectificationsResult = {total: 0, count: 0};
+    this.avTicketResult = 0;
+    this.balanceResult = 0;
 
     //Llamada a la API para obtener los datos agregados de que se muestran en la sección KPIs de movimientos de caja
     this.cashMovementsService.getCashMovementsAggregate(this.idCM).subscribe(
@@ -622,50 +647,45 @@ export class DashboardComponent implements OnInit {
             outCount = aggregationsCM[1].count;
           }
         }
-    
+
         this.cashMovementsResult = (inTotal / Math.pow(10, inDecimals)) - (ouTotal / Math.pow(10, outDecimals));
         this.cashMovementsOperationsResult = inCount + outCount;
-      }
-    );
 
-    this.ordersResult = {total: 0, count: 0};
-    this.refundsResult = {total: 0, count: 0};
-    this.rectificationsResult = {total: 0, count: 0};
-    this.avTicketResult = 0;
-    this.balanceResult = 0;
-
-    //Comunicación con API para obtener los datos agregados que se muestran como base al iniciar la página en la sección de KPIs
-    this.ordersService.getOrderAggregate(this.idOrders).subscribe(
-      (aggregation) => {
-        if(aggregation.length != 0) {
-          this.aggregations = aggregation;
-          //Bucle para recorrer el objeto respuesta
-          for (let i = 0; i < this.aggregations.length; i++) {
-            //If para comprobar si existen datos y el objeto no está vacio
-            if (this.aggregations[i].total != null) {
-              //Switch para comprobar si existen datos de ventas (id 0), de devoluciones (id 2) o rectificaciones (id 5)
-              switch (this.aggregations[i]._id) {
-                case 0: //Ventas
-                  //Para cada caso se rellena el array de resultados tanto del total con los decimales ya aplicados como del conteo de nº de operaciones
-                  this.ordersResult.total += this.aggregations[i].total / this.Math.pow(10, this.aggregations[i].decimals);
-                  this.ordersResult.count += this.aggregations[i].count;
-                  //Calculo del ticket medio
-                  this.avTicketResult += this.aggregations[i].avg / 100;
-                  break;
-                case 2: //Devoluciones
-                  this.refundsResult.total += this.aggregations[i].total / this.Math.pow(10, this.aggregations[i].decimals);
-                  this.refundsResult.count += this.aggregations[i].count;
-                  break;
-                case 5: //Rectificaciones
-                  this.rectificationsResult.total += this.aggregations[i].total / this.Math.pow(10, this.aggregations[i].decimals);
-                  this.rectificationsResult.count += this.aggregations[i].count;
-                  break;
+        //Comunicación con API para obtener los datos agregados que se muestran como base al iniciar la página en la sección de KPIs
+        this.ordersService.getOrderAggregate(this.idOrders).subscribe(
+          (aggregation) => {
+            if(aggregation.length != 0) {
+              this.aggregations = aggregation;
+              //Bucle para recorrer el objeto respuesta
+              for (let i = 0; i < this.aggregations.length; i++) {
+                //If para comprobar si existen datos y el objeto no está vacio
+                if (this.aggregations[i].total != null) {
+                  //Switch para comprobar si existen datos de ventas (id 0), de devoluciones (id 2) o rectificaciones (id 5)
+                  switch (this.aggregations[i]._id) {
+                    case 0: //Ventas
+                      //Para cada caso se rellena el array de resultados tanto del total con los decimales ya aplicados como del conteo de nº de operaciones
+                      this.ordersResult.total += this.aggregations[i].total / this.Math.pow(10, this.aggregations[i].decimals);
+                      this.ordersResult.count += this.aggregations[i].count;
+                      //Calculo del ticket medio
+                      this.avTicketResult += this.aggregations[i].avg / 100;
+                      break;
+                    case 2: //Devoluciones
+                      this.refundsResult.total += this.aggregations[i].total / this.Math.pow(10, this.aggregations[i].decimals);
+                      this.refundsResult.count += this.aggregations[i].count;
+                      break;
+                    case 5: //Rectificaciones
+                      this.rectificationsResult.total += this.aggregations[i].total / this.Math.pow(10, this.aggregations[i].decimals);
+                      this.rectificationsResult.count += this.aggregations[i].count;
+                      break;
+                  }
+                }
               }
+
+              this.balanceResult = this.ordersResult.total - this.refundsResult.total + this.cashMovementsResult;
+              this.avTicketResult = this.avTicketResult;
             }
           }
-          this.balanceResult = this.ordersResult.total - (this.refundsResult.total + this.rectificationsResult.total);
-          this.avTicketResult = this.avTicketResult;
-        }
+        );
       }
     );
   }

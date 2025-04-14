@@ -1827,11 +1827,9 @@ ul.list-icons li svg {
 
 /* Charts */
 .donut-chart {
-  position: relative;
-	width: 200px;
-  height: 200px;
-	margin: 0 auto 2rem;
-	border-radius: 100%
+  display: flex;
+  justify-content: center; /* Centra horizontalmente */
+  align-items: center;     /* Centra verticalmente */
  }
 p.center {
   background: #fff;

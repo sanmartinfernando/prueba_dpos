@@ -174,10 +174,13 @@
             <b><i>{{'dpos.dashboard.nodata.label' | translate}}</i></b>
           </ng-template>
           <ng-container *ngIf="loadedPMChart; else spinner">
+            <div class="donut-chart">
             <ngx-charts-pie-chart [view]="viewPM" [results]="datasetPM" [doughnut]="true" [animations]="true"
               [labels]="true" [maxLabelLength]="50" rcWidth [tooltipDisabled]="true" [arcWidth]="0.5" [legend]="false"
               [customColors]="colorsPM" [legendTitle]="''" *ngIf="emptyKPIChart == false; else noPMData">
-            </ngx-charts-pie-chart></ng-container>
+            </ngx-charts-pie-chart>
+          </div>
+          </ng-container>
         </div>
       </div>
     </div>
