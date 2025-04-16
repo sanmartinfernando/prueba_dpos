@@ -48,7 +48,7 @@ export class InactivityService {
     // Aquí podemos mostrar un modal o una alerta para notificar al usuario.
   }
 
-  private logout() {
+  public logout() {
     this.storageService.clean();
     window.location.reload();
     this.storageService.updateloggin(false);

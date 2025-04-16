@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Page } from 'src/app/_models/page.model';
 
 @Injectable({
@@ -13,5 +14,12 @@ export class PagesService {
     new Page('1','Informes','reports','fa-solid fa-chart-area')
   ];
   
-  constructor() { }
+  constructor(public translate: TranslateService) {
+    this.translate.onLangChange.subscribe(event => {
+      this.pages[0].text = this.translate.instant('dpos.dashboard.page.title');
+      this.pages[1].text = this.translate.instant('dpos.sales.page.title');
+      this.pages[2].text = this.translate.instant('dpos.balances.page.title');
+      this.pages[3].text = this.translate.instant('dpos.reports.page.title');
+    });
+   }
 }

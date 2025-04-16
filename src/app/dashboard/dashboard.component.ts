@@ -20,6 +20,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { DataSetTop3 } from '../_models/dataset-top3.model';
 import { SessionService } from '../_services/session.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'DPOSW-dashboard',
@@ -54,6 +55,7 @@ export class DashboardComponent implements OnInit {
   public year:number = new Date().getFullYear();
   private yearVarSearch = '';
   private monthVarSearch = '';
+  private selectedMonthIndex = 0;
   private yearDate:Date;
   private yearMilli:number = 0;
   private yearMaxDate:Date;
@@ -85,35 +87,8 @@ export class DashboardComponent implements OnInit {
             '#FFCC4D',
             '#7C77FE'];
 
-  public kpiDataset = [
-    { name: 'Ene', value: 0 },
-    { name: 'Feb', value: 0 },
-    { name: 'Mar', value: 0 },
-    { name: 'Abr', value: 0 },
-    { name: 'May', value: 0 },
-    { name: 'Jun', value: 0 },
-    { name: 'Jul', value: 0 },
-    { name: 'Ago', value: 0 },
-    { name: 'Sep', value: 0 },
-    { name: 'Oct', value: 0 },
-    { name: 'Nov', value: 0 },
-    { name: 'Dic', value: 0 },
-  ];
-
-  public colorsKPI = [
-    { name: 'Ene', value: this.colors[0] },
-    { name: 'Feb', value: this.colors[0] },
-    { name: 'Mar', value: this.colors[0] },
-    { name: 'Abr', value: this.colors[0] },
-    { name: 'May', value: this.colors[0] },
-    { name: 'Jun', value: this.colors[0] },
-    { name: 'Jul', value: this.colors[0] },
-    { name: 'Ago', value: this.colors[0] },
-    { name: 'Sep', value: this.colors[0] },
-    { name: 'Oct', value: this.colors[0] },
-    { name: 'Nov', value: this.colors[0] },
-    { name: 'Dic', value: this.colors[0] },
-  ];
+  public kpiDataset = [];
+  public colorsKPI = [];
 
   public datasetPM = [
     { name: 'Efectivo', value: 0 },
@@ -136,7 +111,6 @@ export class DashboardComponent implements OnInit {
   ];
 
   public datasetTop3:DataSetTop3[];
-
   public colorsTop3 = [];
 
   currentLang: string;
@@ -155,13 +129,21 @@ export class DashboardComponent implements OnInit {
     public translate: TranslateService,
     private storageService: StorageService,
     private sessionService: SessionService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {
     this.formatCurrencyLabel = this.formatCurrencyLabel.bind(this);
     this.currentLang = this.translate.currentLang || 'es';
     this.langSubscription = this.translate.onLangChange.subscribe(event => {
       this.currentLang = event.lang;
+      if(this.terminalSelected === this.terminalsNumber[0]) {
+        this.terminalSelected = this.translate.instant('dpos.filter.all');
+      }
+      if(this.selectedMonthIndex == 0) {
+        this.monthVarSearch = this.translate.instant('dpos.filter.all');
+      }
       this.terminalsNumber[0] = this.translate.instant('dpos.filter.all');
+      this.searchTerminal();
     });
   }
 
@@ -170,6 +152,7 @@ export class DashboardComponent implements OnInit {
    */
   public ngOnInit(): void {
     this.updateView();
+
     this.storageService.userInfo.subscribe((user) =>{
         this.portalUsersService.getToken(user).subscribe({
           next: (portalUserToken)=> {
@@ -190,6 +173,7 @@ export class DashboardComponent implements OnInit {
                         this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
                       }
                       this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
+
                       if(this.sessionService.getItem(SessionService.TERMINAL_NUMBER) == null){
                         this.terminalSelected = this.terminalsNumber[0];
                         this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
@@ -211,6 +195,9 @@ export class DashboardComponent implements OnInit {
           },
           error: (error) => {
             console.error("Error Portal user token", error);
+            if (error.status === 401) {
+              this.router.navigate(['/login']);
+            }
           }
         });
     });
@@ -281,6 +268,9 @@ export class DashboardComponent implements OnInit {
    */
   public searchTerminal() {
 
+    this.resetKpiDataset();
+    this.resetColorsKPI();
+
     let fromDate:number = 0;
     let toDate:number = 0;
     let terminalsSelected: any;
@@ -295,9 +285,9 @@ export class DashboardComponent implements OnInit {
     //Obtención de variables de búsqueda de año y mes
     this.yearVarSearch = (<HTMLInputElement>(document.getElementById('yearDate'))).value;
     this.monthVarSearch = (<HTMLInputElement>(document.getElementById('monthDate'))).value;
-
+    
     //Se comprueba si es necesario filtrar por solo año o por año+mes, el if es el caso de solo año
-    if (this.monthVarSearch.length == 0 || this.monthVarSearch == this.translate.instant('dpos.filter.all')) {
+    if (this.selectedMonthIndex == 0) {
       //Se obtiene el año inicial (yearMilli) y el año máximo (yearMaxMilli) y se transforma a unicode
       this.yearDate = new Date(parseInt(this.yearVarSearch), 0);
       fromDate = this.yearDate.getTime();
@@ -808,40 +798,45 @@ export class DashboardComponent implements OnInit {
 
   public resetKpiDataset() {
     this.kpiDataset = [
-      { name: 'Ene', value: 0 },
-      { name: 'Feb', value: 0 },
-      { name: 'Mar', value: 0 },
-      { name: 'Abr', value: 0 },
-      { name: 'May', value: 0 },
-      { name: 'Jun', value: 0 },
-      { name: 'Jul', value: 0 },
-      { name: 'Ago', value: 0 },
-      { name: 'Sep', value: 0 },
-      { name: 'Oct', value: 0 },
-      { name: 'Nov', value: 0 },
-      { name: 'Dic', value: 0 },
+      { name: this.translate.instant('dpos.month.enero'), value: 0 },
+      { name: this.translate.instant('dpos.month.febrero'), value: 0 },
+      { name: this.translate.instant('dpos.month.marzo'), value: 0 },
+      { name: this.translate.instant('dpos.month.abril'), value: 0 },
+      { name: this.translate.instant('dpos.month.mayo'), value: 0 },
+      { name: this.translate.instant('dpos.month.junio'), value: 0 },
+      { name: this.translate.instant('dpos.month.julio'), value: 0 },
+      { name: this.translate.instant('dpos.month.agosto'), value: 0 },
+      { name: this.translate.instant('dpos.month.septiembre'), value: 0 },
+      { name: this.translate.instant('dpos.month.octubre'), value: 0 },
+      { name: this.translate.instant('dpos.month.noviembre'), value: 0 },
+      { name: this.translate.instant('dpos.month.diciembre'), value: 0 },
     ];
   }
-  
+
   public resetColorsKPI() {
     this.colorsKPI = [
-      { name: 'Ene', value: this.colors[0] },
-      { name: 'Feb', value: this.colors[0] },
-      { name: 'Mar', value: this.colors[0] },
-      { name: 'Abr', value: this.colors[0] },
-      { name: 'May', value: this.colors[0] },
-      { name: 'Jun', value: this.colors[0] },
-      { name: 'Jul', value: this.colors[0] },
-      { name: 'Ago', value: this.colors[0] },
-      { name: 'Sep', value: this.colors[0] },
-      { name: 'Oct', value: this.colors[0] },
-      { name: 'Nov', value: this.colors[0] },
-      { name: 'Dic', value: this.colors[0] },
+      { name: this.translate.instant('dpos.month.enero'), value: this.colors[0] },
+      { name: this.translate.instant('dpos.month.febrero'), value: this.colors[0] },
+      { name: this.translate.instant('dpos.month.marzo'), value: this.colors[0] },
+      { name: this.translate.instant('dpos.month.abril'), value: this.colors[0] },
+      { name: this.translate.instant('dpos.month.mayo'), value: this.colors[0] },
+      { name: this.translate.instant('dpos.month.junio'), value: this.colors[0] },
+      { name: this.translate.instant('dpos.month.julio'), value: this.colors[0] },
+      { name: this.translate.instant('dpos.month.agosto'), value: this.colors[0] },
+      { name: this.translate.instant('dpos.month.septiembre'), value: this.colors[0] },
+      { name: this.translate.instant('dpos.month.octubre'), value: this.colors[0] },
+      { name: this.translate.instant('dpos.month.noviembre'), value: this.colors[0] },
+      { name: this.translate.instant('dpos.month.diciembre'), value: this.colors[0] },
     ];
   }
 
   onTerminalChange(): void {
     this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
+  }
+
+  onMonthChange(event: Event): void {
+    let selectElement = event.target as HTMLSelectElement;
+    this.selectedMonthIndex = selectElement.selectedIndex;
   }
 
   // Función de formato para las etiquetas de datos

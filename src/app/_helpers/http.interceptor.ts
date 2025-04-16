@@ -1,15 +1,20 @@
 import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpHandler, HttpRequest, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpInterceptor, HttpHandler, HttpRequest, HTTP_INTERCEPTORS, HttpErrorResponse, HttpEvent } from '@angular/common/http';
 import { AuthService } from '../_services/auth.service';
 import { RestRoutes } from '../_config/rest-routes.config';
 import { SecurityConstants } from '../_config/security-constants.config';
+import { Router } from '@angular/router';
+import { catchError, Observable, throwError } from 'rxjs';
+import { SessionService } from '../_services/session.service';
+import { StorageService } from '../_services/storage.service';
+import { InactivityService } from '../_services/inactivity.service';
 
 @Injectable()
 export class HttpRequestInterceptor implements HttpInterceptor {
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router, private inactivityService: InactivityService) {}
 
-  public intercept(req: HttpRequest<any>, next: HttpHandler) {
+  public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let authReq = req;
     if (req.url.endsWith(RestRoutes.AUTH)) {
       return next.handle(req);
@@ -46,7 +51,18 @@ export class HttpRequestInterceptor implements HttpInterceptor {
       }
     }
 
-    return next.handle(authReq);
+    return next.handle(authReq).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.warn('Error 401 no autorizado, redirigiendo o cerrando sesión...');
+          this.inactivityService.logout();
+          this.router.navigate(['/login']);
+        }
+
+        // Puedes manejar otros errores también si quieres
+        return throwError(() => error);
+      })
+    );
   }
 }
 

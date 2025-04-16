@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import {TranslateService } from '@ngx-translate/core';
+import { SessionService } from 'src/app/_services/session.service';
 
 @Component({
   selector: 'DOPSW-lang-switcher',
@@ -8,13 +9,30 @@ import {TranslateService } from '@ngx-translate/core';
 })
 export class LangSwitcherComponent {
 
-  constructor(private translate: TranslateService) {
-    translate.addLangs(['es', 'eu', 'cat']);
-    translate.setDefaultLang('es');
+  constructor(private translate: TranslateService,
+    private sessionService: SessionService) {
+
+      translate.addLangs(['es', 'eu', 'cat']);
+      translate.setDefaultLang('es');
+
+      this.translate.use('es').subscribe(() => {
+        this.translate.get('dpos.filter.all').subscribe((translation: string) => {
+          this.sessionService.setItem(SessionService.TERMINAL_NUMBER, translation);
+        });
+      });
   }
   
   switchLang(event: Event): void {
     const lang = event.target as HTMLSelectElement;
-    this.translate.use(lang.value);
+
+    let isAllSelected: boolean = this.sessionService.getItem(SessionService.TERMINAL_NUMBER) != null && this.sessionService.getItem(SessionService.TERMINAL_NUMBER) == this.translate.instant('dpos.filter.all');
+
+    this.translate.use(lang.value).subscribe(() => {
+      this.translate.get('dpos.filter.all').subscribe((translation: string) => {
+        if(isAllSelected) {
+          this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.translate.instant('dpos.filter.all'));
+        }
+      });
+    });
   }
 }

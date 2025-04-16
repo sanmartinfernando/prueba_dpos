@@ -16,7 +16,7 @@
         </div>
         <div class="mx-3">
           <label class="form-label">{{'dpos.filter.month' | translate}}</label>
-          <select class="form-select" name="terminal" class="form-select" class="form-select" id="monthDate">
+          <select class="form-select" id="monthDate" name="monthVarSearch" (change)="onMonthChange($event)">
             <option selected>{{'dpos.filter.all' | translate}}</option>
             <option>1</option>
             <option>2</option>
