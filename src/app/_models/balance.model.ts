@@ -3,6 +3,11 @@ import { BalanceLine } from "./balance-line.model";
 
 
 export class Balance {
+
+  static readonly REPORT_TYPE_TAXES = 0;
+  static readonly REPORT_TYPE_PRODUCTS = 1;
+  static readonly REPORT_TYPE_PM = 2;
+
   balanceId: string;
   reference: string;
   sales: number;

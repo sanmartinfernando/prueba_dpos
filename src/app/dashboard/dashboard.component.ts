@@ -709,13 +709,16 @@ export class DashboardComponent implements OnInit {
                 let data= new DataSetTop3(dataName, dataValue);
                 this.datasetTop3.push(data);
               }
-
+              
               //Se asocia el 4º puesto del array del gráfico correspondiente al apartado "resto de productos"
               //El dato se obtiene restando el valor total de la consulta de aggregationsTP a la sumaTP
               if (this.datasetTop3.length >= 3) {
-                this.datasetTop3[3].name = 'Resto (' + (aggregationsTP[0].quantity - sumaTP) +' uds)';
-                this.datasetTop3[3].value = Math.round(((aggregationsTP[0].quantity - sumaTP) / aggregationsTP[0].quantity) * 100);
-              } 
+                let dataName: string = 'Resto (' + (aggregationsTP[0].quantity - sumaTP) +' uds)';
+                let dataValue: number = Math.round(((aggregationsTP[0].quantity - sumaTP) / aggregationsTP[0].quantity) * 100);
+                let data= new DataSetTop3(dataName, dataValue);
+                this.datasetTop3.push();
+              }
+
               this.datasetTop3 = [...this.datasetTop3];
 
               this.loadedTPChart = true;
