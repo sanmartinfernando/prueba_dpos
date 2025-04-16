@@ -112,7 +112,10 @@ export class SalesComponent implements OnInit {
     }
 
     if(this.sessionService.getItem(SessionService.OP_TYPE) != null){
-      this.typeVarSearch = this.sessionService.getItem(SessionService.OP_TYPE);
+      this.typeVarSearch = this.getTypeVarSearch(this.sessionService.getItem(SessionService.OP_TYPE));
+    } else {
+      this.sessionService.setItem(SessionService.OP_TYPE, -1);
+      this.typeVarSearch = this.translate.instant('dpos.filter.all');
     }
 
     if(this.sessionService.getItem(SessionService.DOC_NUMBER) != null){
@@ -519,12 +522,50 @@ export class SalesComponent implements OnInit {
   }
 
   onOpTypeChange(): void {
-    this.sessionService.setItem(SessionService.OP_TYPE, this.typeVarSearch);
+    this.sessionService.setItem(SessionService.OP_TYPE, this.getOpType());
   }
 
   onDocNumberChange(): void {
     this.sessionService.setItem(SessionService.DOC_NUMBER, this.documentVarSearch);
   }
+
+  getTypeVarSearch(opType: number): string {
+    let opTypeValue: string = this.translate.instant('dpos.filter.all');
+    if(opType != null) {
+      switch(opType) {
+        case Order.TYPE_SALE:
+          opTypeValue = this.translate.instant('dpos.sales.operation.order.label');
+          break;
+          case Order.TYPE_REFUND:
+            opTypeValue = this.translate.instant('dpos.sales.operation.refund.label');
+          break;
+          case Order.TYPE_RECTIFY:
+            opTypeValue = this.translate.instant('dpos.sales.operation.rectification.label');
+          break;
+      }
+    }
+    return opTypeValue;
+  }
+
+
+  getOpType(): number {
+    let opType = -1;
+    if(this.typeVarSearch != null) {
+      switch(this.typeVarSearch) {
+        case this.translate.instant('dpos.sales.operation.order.label'):
+          opType = Order.TYPE_SALE;
+          break;
+          case this.translate.instant('dpos.sales.operation.refund.label'):
+            opType = Order.TYPE_REFUND;
+          break;
+          case this.translate.instant('dpos.sales.operation.rectification.label'):
+            opType = Order.TYPE_RECTIFY;
+          break;
+      }
+    }
+    return opType;
+  }
+
 
   getCommerceId(): number {
     const commerce = this.commerces.find(commerce => commerce.commerceNumber == this.commerceSelected);
