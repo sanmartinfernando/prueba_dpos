@@ -160,7 +160,6 @@ export class BalancesComponent implements OnInit {
         }
         this.varSearch = this.varSearch + ']}';
       } else {
-        //this.emptySearch = false;
         this.varSearch = this.varSearch + "{'field':'terminal_number','op':'=','value':'" + this.terminalSelected + "'}";
       }
     }
@@ -172,7 +171,6 @@ export class BalancesComponent implements OnInit {
       } else {
         this.varSearch = this.varSearch + ',';
       }
-      //this.emptySearch = false;
       this.varSearch =
         this.varSearch +"{'field':'CommerceId','op':'=','value':'" +this.commerceId +"'}";
     }
@@ -183,7 +181,6 @@ export class BalancesComponent implements OnInit {
         this.modalTitle = this.translate.instant('dpos.modal.fromDate.title');
         this.modalMessage = this.translate.instant('dpos.modal.fromDate.message');
         this.openModal();
-        this.emptySearch = true;
         return;
       } else {
         if (this.searchCounter == false) {
@@ -191,7 +188,6 @@ export class BalancesComponent implements OnInit {
         } else {
           this.varSearch = this.varSearch + ',';
         }
-        this.emptySearch = false;
         this.varSearch = this.varSearch + "{'field':'StartedAt','op':'>','value':'" + this.sinceDateMilli + "'}";
       }
     }
@@ -202,7 +198,6 @@ export class BalancesComponent implements OnInit {
         this.modalTitle = this.translate.instant('dpos.filter.toDate.title');
         this.modalMessage = this.translate.instant('dpos.filter.toDate.message');
         this.openModal();
-        this.emptySearch = true;
         return;
       } else {
         if (this.searchCounter == false) {
@@ -210,7 +205,6 @@ export class BalancesComponent implements OnInit {
         } else {
           this.varSearch = this.varSearch + ',';
         }
-        this.emptySearch = false;
         this.varSearch = this.varSearch = this.varSearch + "{'field':'FinishedAt','op':'<=','value':'" + this.tilDateMilli + "'}";
       }
     }
@@ -236,7 +230,6 @@ export class BalancesComponent implements OnInit {
       next: (balanceInfo) => {
         this.balances = balanceInfo.data;
         if(this.balances.length != 0) {
-          this.emptySearch = false;
           for (let i = 0; i < 3; i++) {
             selectSales[i] = new Array(this.balances.length);
           }
@@ -267,6 +260,7 @@ export class BalancesComponent implements OnInit {
               }
             }
           }
+          this.emptySearch = false;
         } else {
           this.emptySearch = true;
         }
@@ -274,6 +268,7 @@ export class BalancesComponent implements OnInit {
       },
       error: (error) => {
         if (error.status == 401  || error.status == 500) {
+          this.emptySearch = true;
           this.loadCompleted = true;
         };
       }

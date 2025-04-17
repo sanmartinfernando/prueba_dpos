@@ -155,12 +155,15 @@
             <b><i>{{'dpos.dashboard.nodata.label' | translate}}</i></b>
           </ng-template>
           <ng-container *ngIf="loadedTPChart; else spinner">
-            <ngx-charts-bar-horizontal class="chart-horizontal" [view]="viewTop3" [results]="datasetTop3" [animations]="true"
-              [showDataLabel]="true" [xAxis]="false" [yAxis]="true" [legend]="false" [roundEdges]="true"
-              [showXAxisLabel]="true" [showYAxisLabel]="true" [trimYAxisTicks]="false" [barPadding]="20"
-              [tooltipDisabled]="true" [dataLabelFormatting]="formatPercentageLabel" [noBarWhenZero]="true" [customColors]="colorsTop3"
-              *ngIf="emptyKPIChart == false; else noTop3Data">
-            </ngx-charts-bar-horizontal></ng-container>
+            <div class="inner-chart">
+              <ngx-charts-bar-horizontal class="chart-horizontal" [view]="viewTop3" [results]="datasetTop3" [animations]="true"
+                [showDataLabel]="true" [xAxis]="false" [yAxis]="true" [legend]="false" [roundEdges]="true"
+                [showXAxisLabel]="true" [showYAxisLabel]="true" [trimYAxisTicks]="false" [barPadding]="20"
+                [tooltipDisabled]="true" [dataLabelFormatting]="formatPercentageLabel" [noBarWhenZero]="true" [customColors]="colorsTop3"
+                *ngIf="emptyKPIChart == false; else noTop3Data">
+              </ngx-charts-bar-horizontal>
+            </div>
+          </ng-container>
         </div>
         <br>
       </div>
@@ -174,11 +177,11 @@
             <b><i>{{'dpos.dashboard.nodata.label' | translate}}</i></b>
           </ng-template>
           <ng-container *ngIf="loadedPMChart; else spinner">
-            <div class="donut-chart">
-            <ngx-charts-pie-chart [view]="viewPM" [results]="datasetPM" [doughnut]="true" [animations]="true"
-              [labels]="true" [maxLabelLength]="50" rcWidth [tooltipDisabled]="true" [arcWidth]="0.5" [legend]="false"
-              [customColors]="colorsPM" [legendTitle]="''" *ngIf="emptyKPIChart == false; else noPMData">
-            </ngx-charts-pie-chart>
+            <div class="inner-chart">
+              <ngx-charts-pie-chart [view]="viewPM" [results]="datasetPM" [doughnut]="true" [animations]="true"
+                [labels]="true" [maxLabelLength]="50" rcWidth [tooltipDisabled]="true" [arcWidth]="0.5" [legend]="false"
+                [customColors]="colorsPM" [legendTitle]="''" *ngIf="emptyKPIChart == false; else noPMData">
+              </ngx-charts-pie-chart>
           </div>
           </ng-container>
         </div>

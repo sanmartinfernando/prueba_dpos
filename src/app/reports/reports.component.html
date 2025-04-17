@@ -5,7 +5,7 @@
     <form class="d-flex flex-wrap mx-1">
       <div class="me-3">
         <label class="form-label">{{'dpos.filter.reporttype' | translate}}</label>
-        <select class="form-select" name="report" [(ngModel)]="reportVarSearch">
+        <select class="form-select" name="report" [(ngModel)]="reportVarSearch" (change)="onReportTypeChange()">
           <option selected>{{'dpos.reports.taxes.label' | translate}}</option>
           <option>{{'dpos.reports.products.label' | translate}}</option>
           <option>{{'dpos.reports.paymentmethods.label' | translate}}</option>
@@ -58,7 +58,7 @@
       <div *ngIf="loadCompleted == false && emptySearch == false" class="d-flex justify-content-center">
         <div class="spinner-border text-danger"></div>
       </div>
-      <div *ngIf="loadCompleted == false && emptySearch == true" class="d-flex justify-content-center">
+      <div *ngIf="loadCompleted && emptySearch == true" class="d-flex justify-content-center">
         <b><i>{{'dpos.dashboard.nodata.label' | translate}}</i></b>
       </div>
       <div>
@@ -69,7 +69,7 @@
         <b>{{'dpos.reports.selectreport.label' | translate}}</b>
       </div>
       <!-- Tabla impuestos-->
-      <div class="row" *ngIf="reportVarSearch == translate.instant('dpos.reports.taxes.label') && loadCompleted">
+      <div class="row" *ngIf="reportVarSearch == translate.instant('dpos.reports.taxes.label') && loadCompleted && emptySearch == false">
         <div class="col">
           <div class="table-responsive">
             <table class="table table-hover order-table" data-pagination="true" data-page-size="10">
@@ -112,7 +112,7 @@
         </div>
       </div>
       <!-- Tabla productos -->
-      <div class="row" *ngIf="reportVarSearch == translate.instant('dpos.reports.products.label') && loadCompleted">
+      <div class="row" *ngIf="reportVarSearch == translate.instant('dpos.reports.products.label') && loadCompleted && emptySearch == false">
         <div class="col">
           <div class="table-responsive">
             <table class="table table-hover order-table" data-pagination="true" data-page-size="10">
@@ -153,7 +153,7 @@
         </div>
       </div>
       <!-- Tabla métodos de pago -->
-      <div class="row" *ngIf="reportVarSearch == translate.instant('dpos.reports.paymentmethods.label') && loadCompleted">
+      <div class="row" *ngIf="reportVarSearch == translate.instant('dpos.reports.paymentmethods.label') && loadCompleted && emptySearch == false">
         <div class="col">
           <div class="table-responsive">
             <table class="table table-hover order-table" data-pagination="true" data-page-size="10">

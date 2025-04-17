@@ -94,6 +94,13 @@ export class ReportsComponent implements OnInit {
       this.tilDate = this.formatDate(this.sessionService.getItem(SessionService.TO_DATE));
     }
 
+    if(this.sessionService.getItem(SessionService.REPORT_TYPE) != null){
+      this.reportVarSearch = this.getReportVarSearch(this.sessionService.getItem(SessionService.REPORT_TYPE));
+    } else {
+      this.sessionService.setItem(SessionService.REPORT_TYPE, -1);
+      this.reportVarSearch = this.translate.instant('dpos.reports.taxes.label');
+    }
+    
     this.storageService.userInfo.subscribe((user) =>{
       this.portalUsersService.getToken(user).subscribe({
         next: (portalUserToken)=> {
@@ -173,7 +180,6 @@ export class ReportsComponent implements OnInit {
         this.modalTitle = this.translate.instant('dpos.modal.fromDate.title');
         this.modalMessage = this.translate.instant('dpos.modal.fromDate.message');
         this.openModal();
-        this.emptySearch = true;
         return;
       }
     } 
@@ -184,7 +190,6 @@ export class ReportsComponent implements OnInit {
         this.modalTitle = this.translate.instant('dpos.filter.toDate.title');
         this.modalMessage = this.translate.instant('dpos.filter.toDate.message');
         this.openModal();
-        this.emptySearch = true;
         return;
       } 
     }
@@ -324,6 +329,10 @@ export class ReportsComponent implements OnInit {
     } 
   }
 
+  onReportTypeChange(): void {
+    this.sessionService.setItem(SessionService.REPORT_TYPE, this.getReportType());
+  }
+
   // Método para convertir timestamp a formato dd/mm/yyyy
   formatDate(timestamp: number): string {
     const date = new Date(timestamp);  
@@ -332,4 +341,40 @@ export class ReportsComponent implements OnInit {
     const year = date.getFullYear(); // Obtener el año
     return `${year}-${month}-${day}`;
   }
+
+  getReportVarSearch(reportType: number): string {
+      let reportTypeValue: string = this.translate.instant('dpos.reports.taxes.label');
+      if(reportType != null) {
+        switch(reportType) {
+          case Balance.REPORT_TYPE_TAXES:
+            reportTypeValue = this.translate.instant('dpos.reports.taxes.label');
+            break;
+          case Balance.REPORT_TYPE_PRODUCTS:
+            reportTypeValue = this.translate.instant('dpos.reports.products.label');
+            break;
+          case Balance.REPORT_TYPE_PM:
+            reportTypeValue = this.translate.instant('dpos.reports.paymentmethods.label');
+            break;
+        }
+      }
+      return reportTypeValue;
+    }
+  
+    getReportType(): number {
+      let reportType = -1;
+      if(this.reportVarSearch != null) {
+        switch(this.reportVarSearch) {
+          case this.translate.instant('dpos.reports.taxes.label'):
+            reportType = Balance.REPORT_TYPE_TAXES;
+            break;
+          case this.translate.instant('dpos.reports.products.label'):
+            reportType = Balance.REPORT_TYPE_PRODUCTS;
+            break;
+          case this.translate.instant('dpos.reports.paymentmethods.label'):
+            reportType = Balance.REPORT_TYPE_PM;
+            break;
+        }
+      }
+      return reportType;
+    }
 }

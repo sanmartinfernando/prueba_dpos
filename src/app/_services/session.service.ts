@@ -12,6 +12,7 @@ export class SessionService {
   static readonly TO_DATE:string = "toDate";
   static readonly OP_TYPE:string = "opType";
   static readonly DOC_NUMBER:string = "docNumber";
+  static readonly REPORT_TYPE:string = "reportType";
 
   private commerceId: BehaviorSubject<number> = new BehaviorSubject<number>(this.getItem(SessionService.COMMERCE_ID) || 0);
 

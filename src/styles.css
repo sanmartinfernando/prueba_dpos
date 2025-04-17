@@ -1826,7 +1826,7 @@ ul.list-icons li svg {
 }
 
 /* Charts */
-.donut-chart {
+.inner-chart {
   display: flex;
   justify-content: center; /* Centra horizontalmente */
   align-items: center;     /* Centra verticalmente */

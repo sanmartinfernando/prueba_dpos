@@ -225,7 +225,6 @@ export class SalesComponent implements OnInit {
         this.modalTitle = this.translate.instant('dpos.modal.fromDate.title');
         this.modalMessage = this.translate.instant('dpos.modal.fromDate.message');
         this.openModal();
-        this.emptySearch = true;
         return;
       } else {
         if (this.searchCounter == false) {
@@ -243,7 +242,6 @@ export class SalesComponent implements OnInit {
         this.modalTitle = this.translate.instant('dpos.filter.toDate.title');
         this.modalMessage = this.translate.instant('dpos.filter.toDate.message');
         this.openModal();
-        this.emptySearch = true;
         return;
       } else {
         if (this.searchCounter == false) {
@@ -322,7 +320,6 @@ export class SalesComponent implements OnInit {
       (sale) => {
         this.sales = sale;
         if(this.sales.data.length != 0) {
-          this.emptySearch = false;
           this.operationN = this.sales.data.length;
 
           this.totalSales = 0;
@@ -432,6 +429,7 @@ export class SalesComponent implements OnInit {
               }
             }
           }
+          this.emptySearch = false;
         } else {
           this.emptySearch = true;
         }
@@ -536,11 +534,11 @@ export class SalesComponent implements OnInit {
         case Order.TYPE_SALE:
           opTypeValue = this.translate.instant('dpos.sales.operation.order.label');
           break;
-          case Order.TYPE_REFUND:
-            opTypeValue = this.translate.instant('dpos.sales.operation.refund.label');
+        case Order.TYPE_REFUND:
+          opTypeValue = this.translate.instant('dpos.sales.operation.refund.label');
           break;
-          case Order.TYPE_RECTIFY:
-            opTypeValue = this.translate.instant('dpos.sales.operation.rectification.label');
+        case Order.TYPE_RECTIFY:
+          opTypeValue = this.translate.instant('dpos.sales.operation.rectification.label');
           break;
       }
     }

@@ -64,16 +64,16 @@
           </button>
         </div>
       </div>
+      <div *ngIf="loadCompleted == false  && emptySearch == false" class="d-flex justify-content-center">
+        <div class="spinner-border text-danger"></div>
+      </div>
+      <div *ngIf="loadCompleted && emptySearch == true" class="d-flex justify-content-center">
+        <b><i>{{'dpos.dashboard.nodata.label' | translate}}</i></b>
+      </div>
       <!-- Tabla -->
-      <div class="row">
+      <div class="row" *ngIf="loadCompleted && emptySearch == false">
         <div class="col">
-          <div *ngIf="loadCompleted == false  && emptySearch == false" class="d-flex justify-content-center">
-            <div class="spinner-border text-danger"></div>
-          </div>
-          <div *ngIf="loadCompleted == false && emptySearch == true" class="d-flex justify-content-center">
-            <b><i>{{'dpos.dashboard.nodata.label' | translate}}</i></b>
-          </div>
-          <div *ngIf="loadCompleted" class="table-responsive">
+          <div class="table-responsive">
             <table class="table table-hover order-table table-borderless" data-pagination="true" data-page-size="10">
               <thead class="text-customer">
                 <tr>
@@ -99,7 +99,7 @@
                 </td>
               </ng-template>
               <tbody>
-                <ng-container *ngIf="emptySearch == false; else empty">
+                <ng-container *ngIf="loadCompleted; else empty">
                   <tr *ngFor="let sale of sales.data | paginate : { itemsPerPage: 10, currentPage: page }; index as i">
                     <td class="text-center align-middle">
                       <input class="form-check-input" type="checkbox" [checked]="isAllSelected" />
