@@ -441,7 +441,7 @@ export class DownloadCsvService {
       let paymentMethod:BalanceLine = balance.balanceLines[i];
       let line:string = "";
       
-      if(paymentMethod.itemName.substring(0, 3) == 'Efe') {
+      if(paymentMethod.itemType == 2) {
         //itemName
         line += (line ? ';' : '') + (paymentMethod.itemName|| '');
         //percentage

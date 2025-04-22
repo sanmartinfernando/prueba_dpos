@@ -173,7 +173,7 @@
               <tbody>
                 <ng-container *ngIf="loadCompleted && emptySearch == false; else empty">
                   <tr *ngFor="let paymentmethod of sales.balanceLines; index as i">
-                    <ng-container *ngIf="paymentmethod.itemName.substring(0, 3) == 'Efe'">
+                    <ng-container *ngIf="paymentmethod.itemType == 2">
                       <td class="text-start align-middle">{{ paymentmethod.itemName }}</td>
                       <td></td>
                       <td class="text-end align-middle">{{ paymentmethod.percentage + " %" }}</td>
