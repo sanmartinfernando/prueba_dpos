@@ -55,6 +55,7 @@ export class ReportsComponent implements OnInit {
   totalUnitsValor: number = 0;
   totalBase: number = 0;
   totalCuote: number = 0;
+  totalTax: number = 0;
   totalPercentage: number = 0;
   totalValuePercentage: number = 0;
 
@@ -214,14 +215,16 @@ export class ReportsComponent implements OnInit {
 
         this.totalBase = 0;
         this.totalCuote = 0;
+        this.totalTax = 0;
         this.totalPercentage = 0;
         this.totalValuePercentage = 0;
         if(this.sales != null && this.sales.balanceLines.length > 0) {
           //Calculo de indicadores totales informes
           for (let i = 0; this.sales.balanceLines != null && i < this.sales.balanceLines.length; i++) {
-            if (this.sales.balanceLines[i].itemName.substring(0, 3) == 'IVA') {
+            if (this.sales.balanceLines[i].itemType == 1) {
               this.totalBase = this.totalBase + this.sales.balanceLines[i].base / Math.pow(10, this.sales.balanceLines[i].decimals);
-              this.totalCuote = this.totalCuote + this.sales.balanceLines[i].total / Math.pow(10, this.sales.balanceLines[i].decimals);
+              this.totalCuote = this.totalCuote + this.sales.balanceLines[i].tax / Math.pow(10, this.sales.balanceLines[i].decimals);
+              this.totalTax = this.totalTax + this.sales.balanceLines[i].total / Math.pow(10, this.sales.balanceLines[i].decimals);
             }
             if (
               this.sales.balanceLines[i].itemName.substring(0, 3) == 'Efe' ||

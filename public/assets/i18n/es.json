@@ -140,6 +140,7 @@
     "dpos.reports.taxvalue.label": "Valor (%)",
     "dpos.reports.base.label": "Base",
     "dpos.reports.amount.label": "Cuota",
+    "dpos.reports.tax.total.label": "Total",
     "dpos.reports.total.label": "TOTAL",
     "dpos.reports.product.label": "Producto",
     "dpos.reports.product.price.label": "PVP (IVA inc.)",

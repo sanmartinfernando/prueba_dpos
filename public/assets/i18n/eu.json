@@ -140,6 +140,7 @@
     "dpos.reports.taxvalue.label": "Merezi (%)",
     "dpos.reports.base.label": "Oinarria",
     "dpos.reports.amount.label": "Partekatu",
+    "dpos.reports.tax.total.label": "Guztira",
     "dpos.reports.total.label": "GUZTIRA",
     "dpos.reports.product.label": "Produktua",
     "dpos.reports.product.price.label": "PVP (BEZa barne)",

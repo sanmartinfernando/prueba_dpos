@@ -167,22 +167,22 @@ export class DownloadCsvService {
     // Encabezados en ambos idiomas
     const headersES = [
       'Impuesto',
-      'Valor (%)',
       'Base',
-      'Cuota'
+      'Cuota',
+      'Total'
     ];
 
     const headersCAT = [
       'Impost',
-      'Valor (%)',
       'Base',
-      'Quota'
+      'Quota',
+      'Total'
     ];
     const headersEU = [
         'Zerga',
-        'Merezi (%)',
         'Oinarria',
-        'Partekatu'
+        'Partekatu',
+        'Guztira'
     ];
     
     let headers: string[] = headersES;
@@ -196,10 +196,10 @@ export class DownloadCsvService {
     }
 
     const fields = [
-        'reference', //TODO
-        'sales', //TODO
-        'refunds', //TODO
-        'total' //TODO
+        'name',
+        'base',
+        'tax',
+        'total'
     ];
 
     // Convertir a CSV con solo los datos y encabezados específicos
@@ -394,13 +394,13 @@ export class DownloadCsvService {
       let taxes:BalanceLine = balance.balanceLines[i];
       let line:string = "";
       
-      if(taxes.itemName.substring(0, 3) == 'IVA') {
-        //reference
+      if(taxes.itemType == 1) {
+        //name
         line += (line ? ';' : '') + (taxes.itemName|| '');
-        //sales
-        line += (line ? ';' : '') + (taxes.itemValue / Math.pow(10, taxes.decimals) || '');
-        //refunds
+        //base
         line += (line ? ';' : '') + (this.currencyPipe.transform(taxes.base / Math.pow(10, taxes.decimals), 'EUR', '€') || '');
+        //tax
+        line += (line ? ';' : '') + (this.currencyPipe.transform(taxes.tax / Math.pow(10, taxes.decimals), 'EUR', '€') || '');
         //total 
         line += (line ? ';' : '') + (this.currencyPipe.transform(taxes.total / Math.pow(10, taxes.decimals), 'EUR', '€') || '');
         str += line + '\r\n';

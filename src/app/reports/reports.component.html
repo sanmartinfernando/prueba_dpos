@@ -76,9 +76,9 @@
               <thead class="text-customer">
                 <tr>
                   <th class="text-start">{{'dpos.reports.taxname.label' | translate}}</th>
-                  <th class="text-end">{{'dpos.reports.taxvalue.label' | translate}}</th>
                   <th class="text-end">{{'dpos.reports.base.label' | translate}}</th>
                   <th class="text-end">{{'dpos.reports.amount.label' | translate}}</th>
+                  <th class="text-end">{{'dpos.reports.tax.total.label' | translate}}</th>
                 </tr>
               </thead>
               <ng-template #empty>
@@ -89,18 +89,18 @@
               <tbody>
                 <ng-container *ngIf="loadCompleted && emptySearch == false; else empty">
                   <tr *ngFor="let taxes of sales.balanceLines | paginate : { itemsPerPage: 10, currentPage: page }">
-                    <ng-container *ngIf="taxes.itemName.substring(0, 3) == 'IVA'">
+                    <ng-container *ngIf="taxes.itemType == 1">
                       <td class="text-start align-middle">{{ taxes.itemName }}</td>
-                      <td class="text-end align-middle">{{ taxes.itemValue / Math.pow(10, taxes.decimals) }}</td>
                       <td class="text-end align-middle">{{ taxes.base / Math.pow(10, taxes.decimals) | currency : "Eur" : "€" }}</td>
+                      <td class="text-end align-middle">{{ taxes.tax / Math.pow(10, taxes.decimals) | currency : "Eur" : "€" }}</td>
                       <td class="text-end align-middle">{{ taxes.total / Math.pow(10, taxes.decimals) | currency : "Eur" : "€" }}</td>
                     </ng-container>
                   </tr>
                   <tr>
-                    <td class="text-start align-middle"></td>
-                    <td class="text-end align-middle"><b>{{'dpos.reports.total.label' | translate}}</b></td>
+                    <td class="text-start align-middle"><b>{{'dpos.reports.total.label' | translate}}</b></td>
                     <td class="text-end align-middle"><b>{{ totalBase | currency : "Eur" : "€"}}</b></td>
                     <td class="text-end align-middle"><b>{{ totalCuote | currency : "Eur" : "€"}}</b></td>
+                    <td class="text-end align-middle"><b>{{ totalTax | currency : "Eur" : "€"}}</b></td>
                   </tr>
               </ng-container>
               </tbody>
