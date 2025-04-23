@@ -394,7 +394,7 @@ export class DownloadCsvService {
       let taxes:BalanceLine = balance.balanceLines[i];
       let line:string = "";
       
-      if(taxes.itemType == 1) {
+      if(taxes.itemType == 1 && taxes.itemValue != -1) {
         //name
         line += (line ? ';' : '') + (taxes.itemName|| '');
         //base

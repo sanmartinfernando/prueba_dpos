@@ -89,7 +89,7 @@
               <tbody>
                 <ng-container *ngIf="loadCompleted && emptySearch == false; else empty">
                   <tr *ngFor="let taxes of sales.balanceLines | paginate : { itemsPerPage: 10, currentPage: page }">
-                    <ng-container *ngIf="taxes.itemType == 1">
+                    <ng-container *ngIf="taxes.itemType == 1 && taxes.itemValue != -1 ">
                       <td class="text-start align-middle">{{ taxes.itemName }}</td>
                       <td class="text-end align-middle">{{ taxes.base / Math.pow(10, taxes.decimals) | currency : "Eur" : "€" }}</td>
                       <td class="text-end align-middle">{{ taxes.tax / Math.pow(10, taxes.decimals) | currency : "Eur" : "€" }}</td>

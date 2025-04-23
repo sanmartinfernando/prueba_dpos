@@ -221,7 +221,7 @@ export class ReportsComponent implements OnInit {
         if(this.sales != null && this.sales.balanceLines.length > 0) {
           //Calculo de indicadores totales informes
           for (let i = 0; this.sales.balanceLines != null && i < this.sales.balanceLines.length; i++) {
-            if (this.sales.balanceLines[i].itemType == 1) {
+            if (this.sales.balanceLines[i].itemType == 1 && this.sales.balanceLines[i].itemValue != -1) {
               this.totalBase = this.totalBase + this.sales.balanceLines[i].base / Math.pow(10, this.sales.balanceLines[i].decimals);
               this.totalCuote = this.totalCuote + this.sales.balanceLines[i].tax / Math.pow(10, this.sales.balanceLines[i].decimals);
               this.totalTax = this.totalTax + this.sales.balanceLines[i].total / Math.pow(10, this.sales.balanceLines[i].decimals);
