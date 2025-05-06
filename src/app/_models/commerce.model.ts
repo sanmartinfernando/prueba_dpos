@@ -16,6 +16,7 @@ export class Commerce {
     phone: string;
     email: string;
     resellerId: number;
+    resellerName: number;
     typology: string;
     createdAt: string;
     updatedAt: string;

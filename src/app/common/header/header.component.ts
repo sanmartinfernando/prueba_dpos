@@ -20,7 +20,7 @@ export class HeaderComponent implements OnInit {
   username: string;
   authService: AuthService;
   isLoggedIn: boolean = false;
-  commerceSelected: string;
+  commerceSelected: number;
   commerces: Commerce[];
   title: string= "DPOS";
   title0: string= "DPOS";
@@ -47,11 +47,10 @@ export class HeaderComponent implements OnInit {
             this.commercesService.getCommerceList().subscribe({
               next: (commerces) => {
                 this.commerces = commerces;
-                if(this.sessionService.getItem(SessionService.COMMERCE_ID) == null){
-                  this.commerceSelected = commerces[0].commerceNumber;
+                this.commerceSelected = this.sessionService.getItem(SessionService.COMMERCE_ID);
+                if(this.commerceSelected === null){
+                  this.commerceSelected = commerces[0].commerceId;
                   this.sessionService.setItem(SessionService.COMMERCE_ID, this.getCommerceId());
-                } else {
-                  this.commerceSelected = this.getCommerceNumber(this.sessionService.getItem(SessionService.COMMERCE_ID));
                 }
               },
               error: (error) => {
@@ -88,25 +87,18 @@ export class HeaderComponent implements OnInit {
   }
 
   onCommerceChange(): void {
-    this.commerceSelected = this.getCommerceNumber(this.getCommerceId());
+    this.commerceSelected = this.getCommerceId();
     this.commercesService.setCommerceId(this.getCommerceId());
     this.sessionService.setItem(SessionService.COMMERCE_ID, this.getCommerceId());
     this.sessionService.setCommerceId(this.getCommerceId());
   }
   
   getCommerceId(): number {
-    const commerce = this.commerces.find(commerce => commerce.commerceNumber == this.commerceSelected);
+    const commerce = this.commerces.find(commerce => commerce.commerceId == this.commerceSelected);
     if(commerce != undefined) {
       return commerce.commerceId;
     }
     return 0;
   }
 
-  getCommerceNumber(commerceId:number): string {
-    const commerce = this.commerces.find(commerce => commerce.commerceId == commerceId);
-    if(commerce != undefined) {
-      return commerce.commerceNumber;
-    }
-    return "";
-  }
 }

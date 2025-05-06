@@ -118,7 +118,7 @@ ngx-charts-bar-vertical ngx-charts-chart .ngx-charts-outer .ngx-charts .bar-char
   font-weight: 400;
   height: 36px;
   color: #464646;
-  min-width: 150px;
+  min-width: 190px !important;
 }
 
 select, input[type="date" i], i{
