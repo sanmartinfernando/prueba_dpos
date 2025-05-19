@@ -324,8 +324,12 @@ export class SalesComponent implements OnInit {
 
           this.totalSales = 0;
           for (let i = 0; i < this.sales.data.length; i++) {
-            if(this.sales.data[i].type == 0 || this.sales.data[i].type == 2 ) { //Ventas o devoluciones
+
+            if(this.sales.data[i].type == 0 ) { //Ventas
             this.totalSales = this.totalSales + Number(this.sales.data[i].total);
+            }
+            else if(this.sales.data[i].type == 2 ) { //Devoluciones
+            this.totalSales = this.totalSales - Number(this.sales.data[i].total);
             }
           }
           this.totalSalesString = (this.currencyPipe.transform(this.totalSales / (Math.pow(10, 2)), 'EUR', '€') || '');
