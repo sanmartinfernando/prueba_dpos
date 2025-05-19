@@ -16,9 +16,6 @@ export class OrdersFilter {
     this.toDate = toDate ?? 1735686000000;
 
     this.idOrders = [
-      { 
-        $unwind: '$order_payments' 
-      },
       {
         $match: {
           terminal_number: { $in: this.terminalsId },
