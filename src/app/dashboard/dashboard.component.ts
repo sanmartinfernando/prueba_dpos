@@ -624,7 +624,7 @@ export class DashboardComponent implements OnInit {
         let ouTotal:number = 0;
         let outDecimals:number = 0;
         let outCount:number = 0;
-
+        
         for(let i=0; i < aggregationsCM.length; i++) {
           let cashMovement = aggregationsCM[i];
           if(cashMovement._id == 0) {
@@ -632,9 +632,9 @@ export class DashboardComponent implements OnInit {
             inDecimals = aggregationsCM[0].decimals;
             inCount = aggregationsCM[0].count;
           } else if (cashMovement._id == 1) {
-            ouTotal = aggregationsCM[1].total;
-            outDecimals = aggregationsCM[1].decimals;
-            outCount = aggregationsCM[1].count;
+            ouTotal = aggregationsCM[0].total;
+            outDecimals = aggregationsCM[0].decimals;
+            outCount = aggregationsCM[0].count;
           }
         }
 
