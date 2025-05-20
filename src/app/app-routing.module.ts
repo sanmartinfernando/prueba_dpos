@@ -15,10 +15,16 @@ import { PwrecoveryComponent } from './common/login/pwrecovery/pwrecovery.compon
 import { PwresetComponent } from './common/login/pwreset/pwreset.component';
 import { AuthService } from './_services/auth.service';
 import { InactivityService } from './_services/inactivity.service';
+import { CookiesPolicyComponent } from './common/footer/cookies-policy.component';
+import { UseConditionsComponent } from './common/footer/use-conditions.component';
+import { PrivacyPolicyComponent } from './common/footer/privacy-policy.component';
 
 const routes: Routes = [
   { path: '', component: DashboardComponent, canActivate: [AuthGuard], title:"DPOS - Dashboard"},
   { path: 'home', component: HomeComponent, title:"DPOS"   },
+  { path: 'cookies-policy', component: CookiesPolicyComponent, title:"Política de cookies"   },
+  { path: 'use-conditions', component: UseConditionsComponent, title:"Condiciones de uso"   },
+  { path: 'privacy-policy', component: PrivacyPolicyComponent, title:"Política de privacidad"   },
   { path: 'error', component: ErrorComponent },
   { path: 'unauthorized', component: UnauthorizedComponent },
   { path: 'login', component: LoginComponent, title:"DPOS - Login"    },

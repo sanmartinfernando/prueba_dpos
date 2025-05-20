@@ -34,6 +34,9 @@ import { CountdownComponent } from 'ngx-countdown';
 import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
 import { ModalComponent } from './modal/modal.component';
+import { CookiesPolicyComponent } from './common/footer/cookies-policy.component';
+import { PrivacyPolicyComponent } from './common/footer/privacy-policy.component';
+import { UseConditionsComponent } from './common/footer/use-conditions.component';
 
 registerLocaleData(localeEs);
 
@@ -42,6 +45,9 @@ registerLocaleData(localeEs);
         ModalComponent,
         HeaderComponent,
         FooterComponent,
+        CookiesPolicyComponent,
+        PrivacyPolicyComponent,
+        UseConditionsComponent,
         LangSwitcherComponent,
         HomeComponent,
         DashboardComponent,
