@@ -15,7 +15,10 @@ export class LangSwitcherComponent {
       translate.addLangs(['es', 'eu', 'cat']);
       translate.setDefaultLang('es');
 
-      this.translate.use('es').subscribe(() => {
+      let language: string = sessionService.getItem(SessionService.LANGUAGE);
+      language = language != null ? language : 'es';
+
+      this.translate.use(language).subscribe(() => {
         this.translate.get('dpos.filter.all').subscribe((translation: string) => {
           this.sessionService.setItem(SessionService.TERMINAL_NUMBER, translation);
         });

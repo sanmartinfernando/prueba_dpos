@@ -1,6 +1,6 @@
-import { LOCALE_ID, NgModule } from '@angular/core';
+import { APP_INITIALIZER, LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -37,6 +37,7 @@ import { ModalComponent } from './modal/modal.component';
 import { CookiesPolicyComponent } from './common/footer/cookies-policy.component';
 import { PrivacyPolicyComponent } from './common/footer/privacy-policy.component';
 import { UseConditionsComponent } from './common/footer/use-conditions.component';
+import { SessionService } from './_services/session.service';
 
 registerLocaleData(localeEs);
 
@@ -95,6 +96,12 @@ registerLocaleData(localeEs);
         {
           provide: LOCALE_ID,
           useValue: 'es-ES',
+        },
+        {
+          provide: APP_INITIALIZER,
+          useFactory: setupTranslateFactory,
+          deps: [SessionService, TranslateService],
+          multi: true
         }
 
     ] })
@@ -103,4 +110,11 @@ export class AppModule { }
 // AOT compilation support for ngx-translate loader
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
+}
+
+export function setupTranslateFactory(session: SessionService, translate: TranslateService) {
+
+  let language: string = session.getItem(SessionService.LANGUAGE);
+  language = language != null ? language : 'es';
+  return () => translate.use(language).toPromise();
 }
