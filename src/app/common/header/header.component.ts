@@ -8,6 +8,7 @@ import { Commerce } from 'src/app/_models/commerce.model';
 import { PortalUsersService } from 'src/app/_services/portal-users.service';
 import { CommercesService } from '../../_services/commerces.service';
 import { SessionService } from 'src/app/_services/session.service';
+import { ThemeService } from '../../_services/theme.service';
 
 @Component({
   selector: 'DPOSW-header',
@@ -31,6 +32,7 @@ export class HeaderComponent implements OnInit {
     private commercesService: CommercesService,
     private storageService: StorageService,
     private sessionService: SessionService,
+    private themeService: ThemeService,
     public router: Router){
     this.pages = pagesService.pages;
     this.authService = _authService;
@@ -51,6 +53,7 @@ export class HeaderComponent implements OnInit {
                 if(this.commerceSelected === null){
                   this.commerceSelected = commerces[0].commerceId;
                   this.sessionService.setItem(SessionService.COMMERCE_ID, this.getCommerceId());
+                  this.loadThemeByResellerName();
                 }
               },
               error: (error) => {
@@ -87,10 +90,15 @@ export class HeaderComponent implements OnInit {
   }
 
   onCommerceChange(): void {
-    this.commerceSelected = this.getCommerceId();
-    this.commercesService.setCommerceId(this.getCommerceId());
-    this.sessionService.setItem(SessionService.COMMERCE_ID, this.getCommerceId());
-    this.sessionService.setCommerceId(this.getCommerceId());
+
+    let commerceId: number = this.getCommerceId();
+
+    this.commerceSelected = commerceId;
+    this.commercesService.setCommerceId(commerceId);
+    this.sessionService.setItem(SessionService.COMMERCE_ID, commerceId);
+    this.sessionService.setCommerceId(commerceId);
+
+    this.loadThemeByResellerName();
   }
   
   getCommerceId(): number {
@@ -101,4 +109,15 @@ export class HeaderComponent implements OnInit {
     return 0;
   }
 
+  getCommerceResellerName(): string {
+    const commerce = this.commerces.find(commerce => commerce.commerceId == this.commerceSelected);
+    if(commerce != undefined) {
+      return commerce.resellerName;
+    }
+    return null;
+  }
+
+  private loadThemeByResellerName():void {
+    this.themeService.loadTheme(this.getCommerceResellerName());
+  }
 }

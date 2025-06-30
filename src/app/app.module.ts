@@ -7,7 +7,6 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './common/header/header.component';
 import { FooterComponent } from './common/footer/footer.component';
 import { LangSwitcherComponent } from './common/lang-switcher/lang-switcher.component';
-import { HomeComponent } from './home/home.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SalesComponent } from './sales/sales.component';
 import { ReportsComponent } from './reports/reports.component';
@@ -50,7 +49,6 @@ registerLocaleData(localeEs);
         PrivacyPolicyComponent,
         UseConditionsComponent,
         LangSwitcherComponent,
-        HomeComponent,
         DashboardComponent,
         SalesComponent,
         ErrorComponent,

@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ReportsComponent } from './reports/reports.component';
-import { HomeComponent } from './home/home.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SalesComponent } from './sales/sales.component';
 import { ErrorComponent } from './common/error/error.component';
@@ -21,7 +20,6 @@ import { PrivacyPolicyComponent } from './common/footer/privacy-policy.component
 
 const routes: Routes = [
   { path: '', component: DashboardComponent, canActivate: [AuthGuard], title:"DPOS - Dashboard"},
-  { path: 'home', component: HomeComponent, title:"DPOS"   },
   { path: 'cookies-policy', component: CookiesPolicyComponent, title:"Política de cookies"   },
   { path: 'use-conditions', component: UseConditionsComponent, title:"Condiciones de uso"   },
   { path: 'privacy-policy', component: PrivacyPolicyComponent, title:"Política de privacidad"   },

@@ -26,11 +26,21 @@
                 "input": "public",
                 "output": "/"
               },
+              {
+                "glob": "**/*",
+                "input": "src/assets/themes",
+                "output": "/assets/themes"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets/fonts",
+                "output": "/assets/fonts"
+              },
               "src/web.config"
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "src/styles.css"
+              "src/assets/themes/theme-did.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
@@ -120,10 +130,14 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets/themes"
               }
             ],
             "styles": [
-              "src/styles.css"
+              "src/assets/themes/theme-did.css"
             ],
             "scripts": []
           }
