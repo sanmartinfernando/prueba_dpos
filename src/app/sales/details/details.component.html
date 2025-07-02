@@ -144,6 +144,14 @@
             <qrcode [qrdata]="salesTicketBai[1]" [width]="200" [errorCorrectionLevel]="'M'"></qrcode>
           </div>
         </div>
+        <div class="row px-2 pb-1 pt-3" *ngIf="salesVerifactu.length > 0">
+          <div class="text-start">
+            <label id="ticket_bai"><b>{{'dpos.details.order.verifactu.label' | translate}}</b> {{ salesVerifactu[0] }}</label>
+          </div>
+          <div class="text-start">
+            <qrcode [qrdata]="salesVerifactu[1]" [width]="200" [errorCorrectionLevel]="'M'"></qrcode>
+          </div>
+        </div>
       </div>
     </div>
   </div>

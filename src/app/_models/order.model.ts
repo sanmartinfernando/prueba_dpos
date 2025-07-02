@@ -3,6 +3,7 @@ import { OrderLine } from "./order-line.model";
 import { OrderPayment } from "./order-payment.model";
 import { OrderTax } from "./order-tax.model";
 import { OrderTicketBai } from "./order-ticketbai.model";
+import { OrderVerifactu } from "./order-verifactu.model";
 
 export class Order {
 
@@ -37,6 +38,7 @@ export class Order {
   orderCommerce: OrderCommerce;
   orderCustomer: string;
   orderTicketBai:   OrderTicketBai;
+  orderVerifactu:   OrderVerifactu;
   orderDiscounts: string;
   childs: string;
   hash: string;

@@ -698,12 +698,24 @@ export class DashboardComponent implements OnInit {
               //Se asocian los datos del objeto respuesta con los campos correspondientes del array de valores del gráfico
               let sumaTP = 0;
               this.colorsTop3 = [];
-              
               this.datasetTop3 = [];
 
               for (let i = 0; i < aggregationsTop3.length; i++) {
                 sumaTP = sumaTP + aggregationsTop3[i].quantity;
-                let dataName: string = aggregationsTop3[i].product + ' (' + aggregationsTop3[i].quantity + ' uds)';
+
+                let quantityValue:string = "";
+
+                if(aggregationsTop3[i].unitsMeasurement == 1) {
+                  quantityValue = (aggregationsTop3[i].quantity) + "gr - " + (aggregationsTop3[i].quantity/1000) + "kg";
+                } else if (aggregationsTop3[i].unitsMeasurement == 2) {
+                  quantityValue = (aggregationsTop3[i].quantity) + "mm - " + (aggregationsTop3[i].quantity/1000) + "m";
+                } else if (aggregationsTop3[i].unitsMeasurement == 3) {
+                  quantityValue = (aggregationsTop3[i].quantity) + "ml - " + (aggregationsTop3[i].quantity/1000) + "l";
+                } else {
+                  quantityValue = aggregationsTop3[i].quantity + "uds";
+                }
+
+                let dataName: string = aggregationsTop3[i].product + ' (' + quantityValue + ')';
                 let dataValue: number = Math.round((aggregationsTop3[i].quantity / aggregationsTP[0].quantity) * 100);
                 this.colorsTop3.push({ name: dataName, value: this.colors[i]});
                 let data= new DataSetTop3(dataName, dataValue);

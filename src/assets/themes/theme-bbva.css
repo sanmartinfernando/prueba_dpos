@@ -42,6 +42,7 @@
   --bs-color-yellow-300: #ffd966;
   --bs-color-yellow-200: #fff2cc;
   --bs-color-yellow-100: #fff8f0;
+  --bs-body-font-size: 14px;
 }
 
 /*** GENERAL ***/
@@ -313,7 +314,6 @@ p.center {
 .btn {
   --bs-btn-padding-x: 1rem;
   --bs-btn-padding-y: 0.453rem;
-  --bs-btn-font-family: var(--bs-font-family-main);
   --bs-btn-font-size: .785rem;
   --bs-btn-font-weight: 400;
   --bs-btn-line-height: 1.4;
@@ -324,6 +324,24 @@ p.center {
   --bs-btn-border-radius: var(--bs-border-radius);
   --bs-btn-hover-border-color: var(--bs-btn-hover-border-color);
   --bs-btn-disabled-opacity: 0.70;
+}
+
+.btn,
+.btn-default {
+  --bs-btn-color: var(--bs-color-blue-600);
+  --bs-btn-bg: var(--bs-color-white-100);
+  --bs-btn-border-color: var(--bs-color-blue-600);
+  --bs-btn-hover-color: var(--bs-color-blue-600);
+  --bs-btn-hover-bg: var(--bs-color-white-100);
+  --bs-btn-hover-border-color: var(--bs-color-blue-600);
+  --bs-btn-active-color: var(--bs-color-blue-600);
+  --bs-btn-active-bg: var(--bs-color-white-100);
+  --bs-btn-active-border-color: var(--bs-color-blue-600);
+  --bs-btn-disabled-color: var(--bs-color-blue-500);
+  --bs-btn-disabled-bg: var(--bs-color-white-100);
+  --bs-btn-disabled-border-color: var(--bs-color-blue-500);
+  --bs-btn-padding-y: 0.538rem;
+  margin:.25rem .125rem;
 }
 
 .btn-block {
@@ -409,6 +427,7 @@ p.center {
 
 .btn-outline-danger {
   --bs-btn-color: var(--bs-color-red-300);
+  --bs-btn-bg: var(--bs-color-white-100);
   --bs-btn-border-color: var(--bs-color-red-300);
   --bs-btn-hover-color: var(--bs-color-white-100);
   --bs-btn-hover-bg: var(--bs-color-red-200);

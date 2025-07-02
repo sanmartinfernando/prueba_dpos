@@ -122,29 +122,66 @@
                     <td class="text-center align-middle">
                       {{ sale.terminalNumber }}
                     </td>
-                    <td class="text-center align-middle" *ngIf="sale.orderTicketBai == null">
+                    <td class="text-center align-middle" *ngIf="sale.orderTicketBai == null && sale.orderVerifactu == null">
                       <div class="badge rounded-pill bg-pending">
-                        <i>{{'dpos.sales.operation.tbai.no.label' | translate}}</i>
+                        <i>{{'dpos.sales.operation.verifactu.tbai.no.label' | translate}}</i>
                       </div>
                     </td>
-                    <td class="text-center align-middle" *ngIf="sale.orderTicketBai != null && salesTicketBai[i] != 0 && salesTicketBai[i] != 1 && salesTicketBai[i] != 2">
+                    <!-- Ticketbai status -->
+                    <td class="text-center align-middle" *ngIf="sale.orderVerifactu == null && sale.orderTicketBai != null && salesTicketBai[i] != 0 && salesTicketBai[i] != 1 && salesTicketBai[i] != 2">
                       <div class="badge rounded-pill bg-pending">
                         <i>{{'dpos.sales.operation.tbai.no.label' | translate}}</i> 
                       </div>
                     </td>
-                    <td class="text-center align-middle" *ngIf="sale.orderTicketBai != null && salesTicketBai[i] == 0">
+                    <td class="text-center align-middle" *ngIf="sale.orderVerifactu == null && sale.orderTicketBai != null && salesTicketBai[i] == 0">
                       <div class="badge rounded-pill bg-accept">
                         <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.tbai.status.accepted.label' | translate}}
                       </div>
                     </td>
-                    <td class="text-center align-middle" *ngIf="sale.orderTicketBai != null && salesTicketBai[i] == 1">
+                    <td class="text-center align-middle" *ngIf="sale.orderVerifactu == null && sale.orderTicketBai != null && salesTicketBai[i] == 1">
                       <div class="badge rounded-pill bg-warning">
                         <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.tbai.status.warnings.label' | translate}}
                       </div>
                     </td>
-                    <td class="text-center align-middle" *ngIf="sale.orderTicketBai != null && salesTicketBai[i] == 2">
+                    <td class="text-center align-middle" *ngIf="sale.orderVerifactu == null && sale.orderTicketBai != null && salesTicketBai[i] == 2">
                       <div class="badge rounded-pill bg-rejected">
                         <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.tbai.status.rejected.label' | translate}}
+                      </div>
+                    </td>
+                    <!-- Verifactu status -->
+                    <td class="text-center align-middle" *ngIf="sale.orderVerifactu != null && sale.orderTicketBai == null && sale.orderVerifactu.status != verifactuStatus.Processing && sale.orderVerifactu.status != verifactuStatus.Accepted && sale.orderVerifactu.status != verifactuStatus.Completed && sale.orderVerifactu.status != verifactuStatus.Failed && sale.orderVerifactu.status != verifactuStatus.PartiallyAccepted && sale.orderVerifactu.status != verifactuStatus.Rejected">
+                      <div class="badge rounded-pill bg-pending">
+                        <i>{{'dpos.sales.operation.verifactu.no.label' | translate}}</i> 
+                      </div>
+                    </td>
+                    <td class="text-center align-middle" *ngIf="sale.orderVerifactu != null && sale.orderTicketBai == null && sale.orderVerifactu.status == verifactuStatus.Processing">
+                      <div class="badge rounded-pill bg-pending">
+                        <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.verifactu.status.processing.label' | translate}}
+                      </div>
+                    </td>
+                    <td class="text-center align-middle" *ngIf="sale.orderVerifactu != null && sale.orderTicketBai == null && sale.orderVerifactu.status == verifactuStatus.Accepted">
+                      <div class="badge rounded-pill bg-accept">
+                        <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.verifactu.status.accepted.label' | translate}}
+                      </div>
+                    </td>
+                    <td class="text-center align-middle" *ngIf="sale.orderVerifactu != null && sale.orderTicketBai == null && sale.orderVerifactu.status == verifactuStatus.Completed">
+                      <div class="badge rounded-pill bg-warning">
+                        <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.verifactu.status.completed.label' | translate}}
+                      </div>
+                    </td>
+                    <td class="text-center align-middle" *ngIf="sale.orderVerifactu != null && sale.orderTicketBai == null && sale.orderVerifactu.status == verifactuStatus.Failed">
+                      <div class="badge rounded-pill bg-rejected">
+                        <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.verifactu.status.failed.label' | translate}}
+                      </div>
+                    </td>
+                    <td class="text-center align-middle" *ngIf="sale.orderVerifactu != null && sale.orderTicketBai == null && sale.orderVerifactu.status == verifactuStatus.PartiallyAccepted">
+                      <div class="badge rounded-pill bg-warning">
+                        <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.verifactu.status.partially.accepted.label' | translate}}
+                      </div>
+                    </td>
+                    <td class="text-center align-middle" *ngIf="sale.orderVerifactu != null && sale.orderTicketBai == null && sale.orderVerifactu.status == verifactuStatus.Rejected">
+                      <div class="badge rounded-pill bg-rejected">
+                        <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.verifactu.status.rejected.label' | translate}}
                       </div>
                     </td>
                     <td class="text-end align-middle">

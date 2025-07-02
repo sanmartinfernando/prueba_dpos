@@ -30,6 +30,7 @@ interface Group {
     decimals?: { $first: string };
     created_at?: { $first: string };
     created_at_formatted?: { $first: string };
+    unitsMeasurement?: { $first: string };
   };
 }
 

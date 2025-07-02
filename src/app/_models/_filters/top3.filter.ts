@@ -36,6 +36,9 @@ export class Top3Filter {
           product: {
             $first: '$order_lines.product_name',
           },
+          unitsMeasurement: {
+            $first: '$order_lines.product_unit_measurement',
+          },
         },
       },
       {

@@ -14,6 +14,7 @@ import { Order } from '../_models/order.model';
 import { CurrencyPipe } from '@angular/common';
 import { Commerce } from '../_models/commerce.model';
 import { SessionService } from '../_services/session.service';
+import { VerifactuStatus } from '../_models/order-verifactu.model';
 
 @Component({
   selector: 'DPOSW-sales',
@@ -36,6 +37,7 @@ export class SalesComponent implements OnInit {
   Math = Math;
   validationVariable: boolean = false;
   commerceId: number = 0;
+  verifactuStatus = VerifactuStatus;
 
   //Parámetros de búsqueda
   public terminalsNumber: string[];
@@ -433,6 +435,7 @@ export class SalesComponent implements OnInit {
               }
             }
           }
+          console.log(this.salesTicketBai);
           this.emptySearch = false;
         } else {
           this.emptySearch = true;

@@ -18,6 +18,7 @@ export class DetailsComponent implements OnInit {
   isLoggedIn: boolean = true;
   Math = Math;
   salesTicketBai;
+  salesVerifactu;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -39,6 +40,11 @@ export class DetailsComponent implements OnInit {
         if (this.ticket.orderTicketBai != null) {
           this.salesTicketBai[0] = this.ticket.orderTicketBai.ticketBaiId;
           this.salesTicketBai[1] = this.ticket.orderTicketBai.url;
+        }
+        this.salesVerifactu = [];
+        if (this.ticket.orderVerifactu != null) {
+          this.salesVerifactu[0] = this.ticket.orderVerifactu.orderVerifactuId;
+          this.salesVerifactu[1] = this.ticket.orderVerifactu.url;
         }
         this.loadCompleted = true;
       } ,
