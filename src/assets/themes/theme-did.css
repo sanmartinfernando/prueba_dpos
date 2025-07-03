@@ -9,7 +9,7 @@
 
 :root,
 [data-bs-theme=light] {
-  --bs-font-family-main:"Roboto", "Poppins";
+  --bs-font-family-main: "Poppins", "Roboto";
   --bs-color-black-200: #00000020;
   --bs-color-black-100: #000000;
   --bs-color-grey-700: #cee9ea00;

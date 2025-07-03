@@ -21,6 +21,7 @@ import { Subscription } from 'rxjs/internal/Subscription';
 import { DataSetTop3 } from '../_models/dataset-top3.model';
 import { SessionService } from '../_services/session.service';
 import { Router } from '@angular/router';
+import { Top3Aggregation } from '../_models/top3-aggregation.model';
 
 @Component({
   selector: 'DPOSW-dashboard',
@@ -700,23 +701,40 @@ export class DashboardComponent implements OnInit {
               this.colorsTop3 = [];
               this.datasetTop3 = [];
 
-              for (let i = 0; i < aggregationsTop3.length; i++) {
-                sumaTP = sumaTP + aggregationsTop3[i].quantity;
+              let top3:Top3Aggregation[] = [];
+              let totalQuantity = 0;
+
+              if(aggregationsTop3 != null) {
+                //Multiplicamos por 1000 la cantidad de productos cuya unidad de medida son "unidades" para normalizarlo con los pesos
+                aggregationsTop3.forEach(item => {
+                  if (item.unitsMeasurement === 0) {
+                    item.quantity = item.quantity * 1000;
+                  }
+                  totalQuantity += item.quantity;
+                });
+
+                //ordenamos descendentemente y nos quedamos con los 3 primeros
+                top3 = aggregationsTop3.sort((a, b) => b.quantity - a.quantity).slice(0, 3); 
+              }
+              
+              for (let i = 0; i < top3.length; i++) {
+                sumaTP = sumaTP + top3[i].quantity;
 
                 let quantityValue:string = "";
+                let quantity:number = top3[i].quantity/1000;
 
-                if(aggregationsTop3[i].unitsMeasurement == 1) {
-                  quantityValue = (aggregationsTop3[i].quantity) + "gr - " + (aggregationsTop3[i].quantity/1000) + "kg";
-                } else if (aggregationsTop3[i].unitsMeasurement == 2) {
-                  quantityValue = (aggregationsTop3[i].quantity) + "mm - " + (aggregationsTop3[i].quantity/1000) + "m";
-                } else if (aggregationsTop3[i].unitsMeasurement == 3) {
-                  quantityValue = (aggregationsTop3[i].quantity) + "ml - " + (aggregationsTop3[i].quantity/1000) + "l";
+                if(top3[i].unitsMeasurement == 1) {
+                  quantityValue = quantity + "kg";
+                } else if (top3[i].unitsMeasurement == 2) {
+                  quantityValue = quantity + "m";
+                } else if (top3[i].unitsMeasurement == 3) {
+                  quantityValue = quantity + "l";
                 } else {
-                  quantityValue = aggregationsTop3[i].quantity + "uds";
+                  quantityValue = quantity + "uds";
                 }
 
-                let dataName: string = aggregationsTop3[i].product + ' (' + quantityValue + ')';
-                let dataValue: number = Math.round((aggregationsTop3[i].quantity / aggregationsTP[0].quantity) * 100);
+                let dataName: string = top3[i].product + ' (' + quantityValue + ')';
+                let dataValue: number = Math.round((top3[i].quantity / totalQuantity) * 100);
                 this.colorsTop3.push({ name: dataName, value: this.colors[i]});
                 let data= new DataSetTop3(dataName, dataValue);
                 this.datasetTop3.push(data);
@@ -725,8 +743,8 @@ export class DashboardComponent implements OnInit {
               //Se asocia el 4º puesto del array del gráfico correspondiente al apartado "resto de productos"
               //El dato se obtiene restando el valor total de la consulta de aggregationsTP a la sumaTP
               if (this.datasetTop3.length >= 3) {
-                let dataName: string = 'Resto (' + (aggregationsTP[0].quantity - sumaTP) +' uds)';
-                let dataValue: number = Math.round(((aggregationsTP[0].quantity - sumaTP) / aggregationsTP[0].quantity) * 100);
+                let dataName: string = 'Resto (' + (totalQuantity - sumaTP) +' uds)';
+                let dataValue: number = Math.round(((totalQuantity - sumaTP) / totalQuantity) * 100);
                 let data= new DataSetTop3(dataName, dataValue);
                 this.datasetTop3.push();
               }
