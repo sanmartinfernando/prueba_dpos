@@ -43,7 +43,7 @@ export class DetailsComponent implements OnInit {
         }
         this.salesVerifactu = [];
         if (this.ticket.orderVerifactu != null) {
-          this.salesVerifactu[0] = this.ticket.orderVerifactu.orderVerifactuId;
+          this.salesVerifactu[0] = this.ticket.orderVerifactu.url;
           this.salesVerifactu[1] = this.ticket.orderVerifactu.url;
         }
         this.loadCompleted = true;
