@@ -9,6 +9,7 @@ export default class Helper {
         return response;
     }
 
+    /*
     static getDate(date: string): { dateFormatted: string, timeFormatted: string } {
         const dateToday = moment(Date.now()).format("yyyy-MM-DD");
         let dateFormatted = moment(date).format("yyyy-MM-DD");
@@ -28,4 +29,5 @@ export default class Helper {
         }
         return queryStringParams.join("&");
     }
+    */
 }

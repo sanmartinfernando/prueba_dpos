@@ -58,10 +58,10 @@
             <!-- KPI  Ventas -->
             <div id="salesBorder" class="kpi col d-flex align-items-center flex-column focus ms-3 mx-2" (click)="fillCharKPIs($event)">
               <h6 class="mt-2">{{'dpos.dashboard.orders.label' | translate}}</h6>
-              <div id="salesdiv" *ngIf="ordersResult.total != 0; else noresults" >
+              <div *ngIf="ordersResult.total != 0; else noresults" >
                 {{ ordersResult.total| currency : "Eur" : "€" }}
               </div>
-              <div id="salesdiv1" *ngIf="ordersResult.count != 0" >
+              <div *ngIf="ordersResult.count != 0" >
                 <small id="salessmall">{{ ordersResult.count }}
                   <ng-container id="salesngcontainer" *ngIf="ordersResult.count > 1; else singular">
                     {{'dpos.dashboard.operations.label' | translate}}
@@ -79,10 +79,10 @@
             <!-- KPI  Devoluciones -->
             <div id="refundsBorder" class="kpi col d-flex align-items-center flex-column focus mx-2" (click)="fillCharKPIs($event)">
               <h6 class="mt-2">{{'dpos.dashboard.refunds.label' | translate}}</h6>
-              <div id="refundsDiv" *ngIf="refundsResult.total != 0; else noresults">
+              <div *ngIf="refundsResult.total != 0; else noresults">
                 {{ refundsResult.total | currency : "Eur" : "€" }}
               </div>
-              <div id="refundsDiv2" *ngIf="refundsResult.count != 0">
+              <div *ngIf="refundsResult.count != 0">
                 <small id="refundsSmall">{{ refundsResult.count }}
                   <ng-container id="refundsNgcontainer"*ngIf="refundsResult.count > 1; else singular">
                     {{'dpos.dashboard.operations.label' | translate}}
