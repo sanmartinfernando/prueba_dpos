@@ -15,6 +15,7 @@ import { CurrencyPipe } from '@angular/common';
 import { Commerce } from '../_models/commerce.model';
 import { SessionService } from '../_services/session.service';
 import { VerifactuStatus } from '../_models/order-verifactu.model';
+import { OrderTax } from '../_models/order-tax.model';
 
 @Component({
   selector: 'DPOSW-sales',
@@ -576,6 +577,29 @@ export class SalesComponent implements OnInit {
     const commerce = this.commerces.find(commerce => commerce.commerceNumber == this.commerceSelected);
     if(commerce != undefined) {
       return commerce.commerceId;
+    }
+    return 0;
+  }
+
+  getTotalBase(orderTaxes:OrderTax[]): number {
+    if(orderTaxes != undefined) {
+      let totalBase:number = 0;
+      for(let i = 0; i < orderTaxes.length ; i++) {
+        totalBase += orderTaxes[i].base / Math.pow(10, orderTaxes[i].decimals);
+      }
+      return totalBase;
+    }
+    return 0;
+  }
+
+
+  getTotalTaxes(orderTaxes:OrderTax[]): number {
+    if(orderTaxes != undefined) {
+      let totalTaxes:number = 0;
+      for(let i = 0; i < orderTaxes.length ; i++) {
+        totalTaxes += orderTaxes[i].total / Math.pow(10, orderTaxes[i].decimals);
+      }
+      return totalTaxes;
     }
     return 0;
   }

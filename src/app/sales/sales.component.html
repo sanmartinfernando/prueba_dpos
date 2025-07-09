@@ -191,10 +191,10 @@
                       {{ sale.totalDiscount / (Math.pow(10, sale.decimals)) | currency : "Eur" : "€" }}
                     </td>
                     <td class="text-end align-middle">
-                      {{ sale.orderTaxes[0].base / (Math.pow(10, sale.orderTaxes[0].decimals)) | currency : "Eur" : "€" }}
+                      {{ getTotalBase(sale.orderTaxes) | currency : "Eur" : "€" }}
                     </td>
                     <td class="text-end align-middle">
-                      {{ sale.orderTaxes[0].total / (Math.pow(10, sale.orderTaxes[0].decimals)) | currency : "Eur" : "€" }}
+                      {{ getTotalTaxes(sale.orderTaxes)  | currency : "Eur" : "€" }}
                     </td>
                     <td class="text-end align-middle">
                       {{ sale.total / (Math.pow(10, sale.decimals)) | currency : "Eur" : "€" }}
