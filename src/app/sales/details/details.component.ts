@@ -19,6 +19,7 @@ export class DetailsComponent implements OnInit {
   Math = Math;
   salesTicketBai;
   salesVerifactu;
+  totalBase: number;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -46,6 +47,12 @@ export class DetailsComponent implements OnInit {
           this.salesVerifactu[0] = this.ticket.orderVerifactu.url;
           this.salesVerifactu[1] = this.ticket.orderVerifactu.url;
         }
+        
+        this.totalBase = 0;
+        for(let i = 0; i < this.ticket.orderTaxes.length ; i++) {
+          this.totalBase += this.ticket.orderTaxes[i].base / Math.pow(10, this.ticket.orderTaxes[i].decimals);
+        }
+
         this.loadCompleted = true;
       } ,
       error: (error) => {
