@@ -28,6 +28,9 @@
       <div class="card-body">
         <div class="d-flex">
           <div class="flex-fill">
+            <div class="text-end">
+              <label *ngIf="ticket"><b>{{ ticket.reference }}&nbsp;</b></label><br /><br />
+            </div>
             <div class="table-responsive">
               <table class="table table-hover order-table">
                 <thead>
@@ -62,6 +65,7 @@
                 <span><b>{{'dpos.details.refund.label' | translate}}</b></span> 
               </h6>
             </div>
+            <!-- Subtotal -->
             <div class="row px-2 pb-1">
               <div class="col-7 col-md-10 text-end">
                 <label id="lblsubtotal_title" class="small">{{'dpos.details.order.subtotal.label' | translate}}</label>
@@ -77,6 +81,7 @@
                 </ng-template>
               </div>
             </div>
+            <!-- Discount -->
             <div class="row px-2 pb-1" *ngIf="ticket.totalDiscount > 0">
               <div class="col-7 col-md-10 text-end">
                 <label id="lbldiscount_title" class="small">{{'dpos.details.order.discount.label' | translate}}</label>
@@ -90,6 +95,7 @@
                 </ng-template>
               </div>
             </div>
+            <!-- Base imponible -->
             <div class="row px-2 pb-1">
               <div class="col-7 col-md-10 text-end">
                 <label id="lbltaxbase_title" class="small">{{'dpos.details.order.base.label' | translate}}</label>
@@ -101,6 +107,7 @@
                 </ng-template>
               </div>
             </div>
+            <!-- IVA -->
             <div class="row px-2 pb-1" *ngFor="let orders of ticket.orderTaxes">
               <div class="col-7 col-md-10 text-end">
                 <label id="lblIVA_title" class="small">{{ orders.name }}</label>
