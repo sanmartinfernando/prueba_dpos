@@ -118,6 +118,11 @@ div.logo {
   padding-top: 8px !important;
 }
 
+.logoLaCaixa {
+  width: 60px;
+  padding-top: 8px !important;
+}
+
 label.me-2 {
   color: var(--bs-color-white-100);
 }
@@ -326,7 +331,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 /*** PAGINACION ***/
 
-.ngx-pagination {
+.ngx-pagination, .ngx-pagination a  {
   padding: 0;
   font-size: 0.8rem;
   color: var(--bs-color-grey-300);
@@ -796,45 +801,52 @@ ul.list-icons li i, ul.list-icons li span, ul.list-icons li svg {
   font-weight: 400;
 }
 
-.bg-accept {
-  background: var(--bs-color-green-100)FF;
-  color: var(--bs-color-green-600);
-}
-
-.bg-pending {
-  background: var(--bs-color-blue-100)FF;
-  color: var(--bs-color-grey-400);
-}
-
-.bg-warning {
-  background: var(--bs-color-yellow-200)FF;
-  color: var(--bs-color-yellow-200);
-}
-
-.bg-rejected{
-  background: var(--bs-color-red-400)FF;
-  color: var(--bs-color-blue-300);
-  border: 1px solid var(--bs-color-red-400);
-  padding: 6px 10px;
-}
-
 .bg-sale{
-  background: var(--bs-color-blue-200)FF;
-  color: var(--bs-color-blue-300);
-  border: 1px solid var(--bs-color-green-200);
+  background: var(--bs-color-blue-300);
+  color: var(--bs-color-black-100);
+  border: 1px solid transparent;
   padding: 6px 10px;
 }
 
 .bg-refund{
-  background: var(--bs-color-yellow-100)FF;
-  color: var(--bs-color-orange-300);
-  border: 1px solid var(--bs-color-orange-200);
+  background: var(--bs-color-orange-200);
+  color: var(--bs-color-black-100);
+  border: 1px solid transparent;
   padding: 6px 10px;
 }
 
 .bg-edits{
-  background: var(--bs-color-white-200)FF;
-  color: var(--bs-color-purple-100);
-  border: 1px solid var(--bs-color-pink-100);
+  background: var(--bs-color-purple-100);
+  color: var(--bs-color-black-100);
+  border: 1px solid transparent;
   padding: 6px 10px;
 }
+
+.bg-pending {
+  background: transparent;
+  color: var(--bs-color-grey-200);
+  border: 1px solid var(--bs-color-grey-200);
+  padding: 6px 10px;
+}
+
+.bg-accept {
+  background: transparent;
+  color: var(--bs-color-green-light);
+  border: 1px solid var(--bs-color-green-light);
+  padding: 6px 10px;
+}
+
+.bg-warning {
+  background: transparent;
+  color: var(--bs-color-orange-200);
+  border: 1px solid var(--bs-color-orange-200);
+  padding: 6px 10px;
+}
+
+.bg-rejected{
+  background: transparent;
+  color: var(--bs-color-red-300);
+  border: 1px solid var(--bs-color-red-300);
+  padding: 6px 10px;
+}
+
