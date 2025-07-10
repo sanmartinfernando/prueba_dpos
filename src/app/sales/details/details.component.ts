@@ -5,6 +5,8 @@ import { ActivatedRoute } from '@angular/router';
 import { Order } from 'src/app/_models/order.model';
 import { DownloadPDFService } from 'src/app/_services/download-pdf.service';
 import { OrdersService } from '../../_services/orders.service';
+import { SessionService } from 'src/app/_services/session.service';
+import { ThemeService } from 'src/app/_services/theme.service';
 
 @Component({
   selector: 'DPOSW-details',
@@ -26,8 +28,12 @@ export class DetailsComponent implements OnInit {
     private downloadPDFService: DownloadPDFService,
     private ordersService: OrdersService,
     private encryptionService: EncryptionService,
+    private sessionService: SessionService,
+    private themeService: ThemeService,
     private storageService: StorageService
-  ) {}
+  ) {
+    this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
+  }
 
   ngOnInit(): void {
     let iddecode = this.encryptionService.decode(

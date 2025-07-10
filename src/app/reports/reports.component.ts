@@ -13,7 +13,6 @@ import { AuthService } from '../_services/auth.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { SessionService } from '../_services/session.service';
-import { Commerce } from '../_models/commerce.model';
 import { ThemeService } from '../_services/theme.service';
 
 @Component({
@@ -37,6 +36,9 @@ export class ReportsComponent implements OnInit {
     public translate: TranslateService,
     private authService: AuthService
   ) {
+
+    this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
+
     this.currentLang = this.translate.currentLang || 'es';
     this.langSubscription = this.translate.onLangChange.subscribe(event => {
       this.currentLang = event.lang;
@@ -119,7 +121,6 @@ export class ReportsComponent implements OnInit {
                   this.commerceId = commerces[0].commerceId;
                   this.sessionService.setItem(SessionService.COMMERCE_ID, this.commerceId);
                 }
-                this.themeService.loadTheme(this.getCommerceResellerName(commerces));
                 this.terminalsService.getTerminalList().subscribe({
                   next: (terminals) => {
                     terminals = terminals.filter(terminal => terminal.commerceId == this.commerceId && terminal.terminalNumber != null);
@@ -350,46 +351,38 @@ export class ReportsComponent implements OnInit {
   }
 
   getReportVarSearch(reportType: number): string {
-      let reportTypeValue: string = this.translate.instant('dpos.reports.taxes.label');
-      if(reportType != null) {
-        switch(reportType) {
-          case Balance.REPORT_TYPE_TAXES:
-            reportTypeValue = this.translate.instant('dpos.reports.taxes.label');
-            break;
-          case Balance.REPORT_TYPE_PRODUCTS:
-            reportTypeValue = this.translate.instant('dpos.reports.products.label');
-            break;
-          case Balance.REPORT_TYPE_PM:
-            reportTypeValue = this.translate.instant('dpos.reports.paymentmethods.label');
-            break;
-        }
+    let reportTypeValue: string = this.translate.instant('dpos.reports.taxes.label');
+    if(reportType != null) {
+      switch(reportType) {
+        case Balance.REPORT_TYPE_TAXES:
+          reportTypeValue = this.translate.instant('dpos.reports.taxes.label');
+          break;
+        case Balance.REPORT_TYPE_PRODUCTS:
+          reportTypeValue = this.translate.instant('dpos.reports.products.label');
+          break;
+        case Balance.REPORT_TYPE_PM:
+          reportTypeValue = this.translate.instant('dpos.reports.paymentmethods.label');
+          break;
       }
-      return reportTypeValue;
     }
+    return reportTypeValue;
+  }
   
-    getReportType(): number {
-      let reportType = -1;
-      if(this.reportVarSearch != null) {
-        switch(this.reportVarSearch) {
-          case this.translate.instant('dpos.reports.taxes.label'):
-            reportType = Balance.REPORT_TYPE_TAXES;
-            break;
-          case this.translate.instant('dpos.reports.products.label'):
-            reportType = Balance.REPORT_TYPE_PRODUCTS;
-            break;
-          case this.translate.instant('dpos.reports.paymentmethods.label'):
-            reportType = Balance.REPORT_TYPE_PM;
-            break;
-        }
+  getReportType(): number {
+    let reportType = -1;
+    if(this.reportVarSearch != null) {
+      switch(this.reportVarSearch) {
+        case this.translate.instant('dpos.reports.taxes.label'):
+          reportType = Balance.REPORT_TYPE_TAXES;
+          break;
+        case this.translate.instant('dpos.reports.products.label'):
+          reportType = Balance.REPORT_TYPE_PRODUCTS;
+          break;
+        case this.translate.instant('dpos.reports.paymentmethods.label'):
+          reportType = Balance.REPORT_TYPE_PM;
+          break;
       }
-      return reportType;
     }
-
-    private getCommerceResellerName(commerces: Commerce[]): string {
-      const commerce = commerces.find(commerce => commerce.commerceId == this.commerceId);
-      if(commerce != undefined) {
-        return commerce.resellerName;
-      }
-      return null;
-    }
+    return reportType;
+  }
 }

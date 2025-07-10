@@ -6,6 +6,8 @@ import { ActivatedRoute } from '@angular/router';
 import { StorageService } from 'src/app/_services/storage.service';
 import { Balance } from 'src/app/_models/balance.model';
 import { BalanceLine } from 'src/app/_models/balance-line.model';
+import { SessionService } from 'src/app/_services/session.service';
+import { ThemeService } from 'src/app/_services/theme.service';
 
 @Component({
   selector: 'DPOSW-balances-details',
@@ -36,8 +38,12 @@ export class BalancesDetailsComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private balancesService: BalancesService,
     private downloadPDFService: DownloadPDFService,
+    private sessionService: SessionService,
+    private themeService: ThemeService,
     private storageService: StorageService) {
 
+      this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
+      
   }
   
   ngOnInit(): void {

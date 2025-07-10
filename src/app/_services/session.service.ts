@@ -7,6 +7,7 @@ import { BehaviorSubject } from 'rxjs';
 export class SessionService {
 
   static readonly COMMERCE_ID:string = "commerceId";
+  static readonly RESELLER_NAME:string = "resellerName";
   static readonly TERMINAL_NUMBER:string = "terminalNumber";
   static readonly FROM_DATE:string = "fromDate";
   static readonly TO_DATE:string = "toDate";

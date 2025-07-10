@@ -88,17 +88,20 @@ export class SalesComponent implements OnInit {
     private themeService: ThemeService,
     private authService: AuthService
   ) {  
-    this.currentLang = this.translate.currentLang || 'es';
-      this.langSubscription = this.translate.onLangChange.subscribe(event => {
-        this.currentLang = event.lang;
-        this.terminalsNumber[0] = this.translate.instant('dpos.filter.all');
-      });
 
-      this.opTypes = [
-        { name: this.translate.instant('dpos.sales.operation.order.label'), value: Order.TYPE_SALE },
-        { name: this.translate.instant('dpos.sales.operation.refund.label'), value: Order.TYPE_REFUND },
-        { name: this.translate.instant('dpos.sales.operation.rectification.label'), value: Order.TYPE_RECTIFY }
-      ];
+    this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
+
+    this.currentLang = this.translate.currentLang || 'es';
+    this.langSubscription = this.translate.onLangChange.subscribe(event => {
+      this.currentLang = event.lang;
+      this.terminalsNumber[0] = this.translate.instant('dpos.filter.all');
+    });
+
+    this.opTypes = [
+      { name: this.translate.instant('dpos.sales.operation.order.label'), value: Order.TYPE_SALE },
+      { name: this.translate.instant('dpos.sales.operation.refund.label'), value: Order.TYPE_REFUND },
+      { name: this.translate.instant('dpos.sales.operation.rectification.label'), value: Order.TYPE_RECTIFY }
+    ];
   }
 
   ngOnDestroy() {
@@ -141,7 +144,6 @@ export class SalesComponent implements OnInit {
                   this.commerceId = commerces[0].commerceId;
                   this.sessionService.setItem(SessionService.COMMERCE_ID, this.commerceId);
                 }
-                this.themeService.loadTheme(this.getCommerceResellerName(commerces));
                 this.commerceSelected = this.getCommerceNumber(this.commerceId);
                 this.terminalsService.getTerminalList().subscribe({
                   next: (terminals) => {
@@ -622,13 +624,5 @@ export class SalesComponent implements OnInit {
     const month = String(date.getMonth() + 1).padStart(2, '0'); // Obtener mes (agregar 1 porque getMonth empieza desde 0)
     const year = date.getFullYear(); // Obtener el año
     return `${year}-${month}-${day}`;
-  }
-
-  private getCommerceResellerName(commerces: Commerce[]): string {
-    const commerce = commerces.find(commerce => commerce.commerceId == this.commerceId);
-    if(commerce != undefined) {
-      return commerce.resellerName;
-    }
-    return null;
   }
 }

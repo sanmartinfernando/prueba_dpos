@@ -121,8 +121,10 @@ export class HeaderComponent implements OnInit {
   getCommerceResellerName(): string {
     const commerce = this.commerces.find(commerce => commerce.commerceId == this.commerceSelected);
     if(commerce != undefined) {
+      this.sessionService.setItem(SessionService.RESELLER_NAME, commerce.resellerName);
       return commerce.resellerName;
     }
+
     return null;
   }
 
