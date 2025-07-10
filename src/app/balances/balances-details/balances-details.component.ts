@@ -8,6 +8,7 @@ import { Balance } from 'src/app/_models/balance.model';
 import { BalanceLine } from 'src/app/_models/balance-line.model';
 import { SessionService } from 'src/app/_services/session.service';
 import { ThemeService } from 'src/app/_services/theme.service';
+import { UIStateService } from 'src/app/_services/ui-state.service';
 
 @Component({
   selector: 'DPOSW-balances-details',
@@ -38,12 +39,15 @@ export class BalancesDetailsComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private balancesService: BalancesService,
     private downloadPDFService: DownloadPDFService,
+    private storageService: StorageService,
+    private uiStateService: UIStateService,
     private sessionService: SessionService,
-    private themeService: ThemeService,
-    private storageService: StorageService) {
-
+    private themeService: ThemeService) {
+      
       this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
       
+      //Bloqueamos el selector de comercio;
+      this.uiStateService.setFormSelectEnabled(false);
   }
   
   ngOnInit(): void {

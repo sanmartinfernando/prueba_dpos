@@ -23,6 +23,7 @@ import { SessionService } from '../_services/session.service';
 import { Router } from '@angular/router';
 import { Top3Aggregation } from '../_models/top3-aggregation.model';
 import { ThemeService } from '../_services/theme.service';
+import { UIStateService } from '../_services/ui-state.service';
 
 @Component({
   selector: 'DPOSW-dashboard',
@@ -133,13 +134,18 @@ export class DashboardComponent implements OnInit {
     private sessionService: SessionService,
     private authService: AuthService,
     private themeService: ThemeService,
+    private uiStateService: UIStateService,
     private router: Router
   ) {
-    this.formatCurrencyLabel = this.formatCurrencyLabel.bind(this);
-    this.currentLang = this.translate.currentLang || 'es';
 
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
 
+    //Desbloqueamos el selector de comercio;
+    this.uiStateService.setFormSelectEnabled(true);
+
+    this.formatCurrencyLabel = this.formatCurrencyLabel.bind(this);
+    this.currentLang = this.translate.currentLang || 'es';
+    
     this.langSubscription = this.translate.onLangChange.subscribe(event => {
       this.currentLang = event.lang;
       if(this.terminalSelected === this.terminalsNumber[0]) {

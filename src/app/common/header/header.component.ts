@@ -9,6 +9,7 @@ import { PortalUsersService } from 'src/app/_services/portal-users.service';
 import { CommercesService } from '../../_services/commerces.service';
 import { SessionService } from 'src/app/_services/session.service';
 import { ThemeService } from '../../_services/theme.service';
+import { UIStateService } from 'src/app/_services/ui-state.service';
 
 @Component({
   selector: 'DPOSW-header',
@@ -26,6 +27,7 @@ export class HeaderComponent implements OnInit {
   title: string= "DPOS";
   title0: string= "DPOS";
   isComercia:boolean = false;
+  formSelectEnabled = true;
 
   constructor(private pagesService: PagesService,
     private _authService : AuthService,
@@ -34,9 +36,16 @@ export class HeaderComponent implements OnInit {
     private storageService: StorageService,
     private sessionService: SessionService,
     private themeService: ThemeService,
+    private uiStateService: UIStateService,
     public router: Router){
+
     this.pages = pagesService.pages;
     this.authService = _authService;
+
+    this.uiStateService.formSelectEnabled$.subscribe(enabled => {
+      this.formSelectEnabled = enabled;
+    });
+
   }
 
   ngOnInit(): void {

@@ -7,6 +7,7 @@ import { DownloadPDFService } from 'src/app/_services/download-pdf.service';
 import { OrdersService } from '../../_services/orders.service';
 import { SessionService } from 'src/app/_services/session.service';
 import { ThemeService } from 'src/app/_services/theme.service';
+import { UIStateService } from 'src/app/_services/ui-state.service';
 
 @Component({
   selector: 'DPOSW-details',
@@ -30,9 +31,12 @@ export class DetailsComponent implements OnInit {
     private encryptionService: EncryptionService,
     private sessionService: SessionService,
     private themeService: ThemeService,
+    private uiStateService: UIStateService,
     private storageService: StorageService
   ) {
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
+    //Bloqueamos el selector de comercio;
+    this.uiStateService.setFormSelectEnabled(false);
   }
 
   ngOnInit(): void {

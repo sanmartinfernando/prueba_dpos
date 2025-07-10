@@ -11,8 +11,8 @@ import { BalancesService } from '../_services/balances.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { SessionService } from '../_services/session.service';
-import { Commerce } from '../_models/commerce.model';
 import { ThemeService } from '../_services/theme.service';
+import { UIStateService } from '../_services/ui-state.service';
 
 @Component({
   selector: 'DPOSW-balances',
@@ -31,9 +31,13 @@ export class BalancesComponent implements OnInit {
     private sessionService: SessionService,
     private themeService: ThemeService,
     private translate: TranslateService,
+    private uiStateService: UIStateService,
     private authService: AuthService) {
-
+      
       this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
+
+      //Desbloqueamos el selector de comercio;
+      this.uiStateService.setFormSelectEnabled(true);
 
       this.currentLang = this.translate.currentLang || 'es';
       this.langSubscription = this.translate.onLangChange.subscribe(event => {
