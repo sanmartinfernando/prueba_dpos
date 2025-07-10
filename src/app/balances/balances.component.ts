@@ -11,6 +11,8 @@ import { BalancesService } from '../_services/balances.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { SessionService } from '../_services/session.service';
+import { Commerce } from '../_models/commerce.model';
+import { ThemeService } from '../_services/theme.service';
 
 @Component({
   selector: 'DPOSW-balances',
@@ -27,6 +29,7 @@ export class BalancesComponent implements OnInit {
     private terminalsService: TerminalsService,
     private commercesService: CommercesService,
     private sessionService: SessionService,
+    private themeService: ThemeService,
     private translate: TranslateService,
     private authService: AuthService) {
       this.currentLang = this.translate.currentLang || 'es';
@@ -94,6 +97,7 @@ export class BalancesComponent implements OnInit {
                   this.commerceId = commerces[0].commerceId;
                   this.sessionService.setItem(SessionService.COMMERCE_ID, this.commerceId);
                  }
+                 this.themeService.loadTheme(this.getCommerceResellerName(commerces));
                 this.terminalsService.getTerminalList().subscribe({
                   next: (terminals) => {
                     terminals = terminals.filter(terminal => terminal.commerceId == this.commerceId && terminal.terminalNumber != null);
@@ -340,5 +344,13 @@ export class BalancesComponent implements OnInit {
     const month = String(date.getMonth() + 1).padStart(2, '0'); // Obtener mes (agregar 1 porque getMonth empieza desde 0)
     const year = date.getFullYear(); // Obtener el año
     return `${year}-${month}-${day}`;
+  }
+
+  private getCommerceResellerName(commerces: Commerce[]): string {
+    const commerce = commerces.find(commerce => commerce.commerceId == this.commerceId);
+    if(commerce != undefined) {
+      return commerce.resellerName;
+    }
+    return null;
   }
 }

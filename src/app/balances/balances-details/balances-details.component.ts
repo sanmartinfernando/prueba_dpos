@@ -37,6 +37,7 @@ export class BalancesDetailsComponent implements OnInit {
     private balancesService: BalancesService,
     private downloadPDFService: DownloadPDFService,
     private storageService: StorageService) {
+
   }
   
   ngOnInit(): void {

@@ -13,6 +13,8 @@ import { AuthService } from '../_services/auth.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { SessionService } from '../_services/session.service';
+import { Commerce } from '../_models/commerce.model';
+import { ThemeService } from '../_services/theme.service';
 
 @Component({
   selector: 'DPOSW-clients',
@@ -31,6 +33,7 @@ export class ReportsComponent implements OnInit {
     private terminalsService: TerminalsService,
     private commercesService: CommercesService,
     private sessionService: SessionService,
+    private themeService: ThemeService,
     public translate: TranslateService,
     private authService: AuthService
   ) {
@@ -112,10 +115,11 @@ export class ReportsComponent implements OnInit {
               this.sessionService.getCommerceId().subscribe((commerceId) => {
                 if(commerceId != 0) {
                   this.commerceId = commerceId; // Actualizar el valor en el componente
-                 } else {
+                } else {
                   this.commerceId = commerces[0].commerceId;
                   this.sessionService.setItem(SessionService.COMMERCE_ID, this.commerceId);
-                 }
+                }
+                this.themeService.loadTheme(this.getCommerceResellerName(commerces));
                 this.terminalsService.getTerminalList().subscribe({
                   next: (terminals) => {
                     terminals = terminals.filter(terminal => terminal.commerceId == this.commerceId && terminal.terminalNumber != null);
@@ -379,5 +383,13 @@ export class ReportsComponent implements OnInit {
         }
       }
       return reportType;
+    }
+
+    private getCommerceResellerName(commerces: Commerce[]): string {
+      const commerce = commerces.find(commerce => commerce.commerceId == this.commerceId);
+      if(commerce != undefined) {
+        return commerce.resellerName;
+      }
+      return null;
     }
 }

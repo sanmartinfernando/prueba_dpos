@@ -22,6 +22,8 @@ import { DataSetTop3 } from '../_models/dataset-top3.model';
 import { SessionService } from '../_services/session.service';
 import { Router } from '@angular/router';
 import { Top3Aggregation } from '../_models/top3-aggregation.model';
+import { Commerce } from '../_models/commerce.model';
+import { ThemeService } from '../_services/theme.service';
 
 @Component({
   selector: 'DPOSW-dashboard',
@@ -131,6 +133,7 @@ export class DashboardComponent implements OnInit {
     private storageService: StorageService,
     private sessionService: SessionService,
     private authService: AuthService,
+    private themeService: ThemeService,
     private router: Router
   ) {
     this.formatCurrencyLabel = this.formatCurrencyLabel.bind(this);
@@ -167,7 +170,8 @@ export class DashboardComponent implements OnInit {
                   this.commerceId = commerces[0].commerceId;
                   this.sessionService.setItem(SessionService.COMMERCE_ID, this.commerceId);
                  }
-                  this.terminalsService.getTerminalList().subscribe({
+                 this.themeService.loadTheme(this.getCommerceResellerName(commerces));
+                 this.terminalsService.getTerminalList().subscribe({
                     next: (terminals) => {
                       terminals = terminals.filter(terminal => terminal.commerceId == this.commerceId && terminal.terminalNumber != null);
                       if(terminals.length != 0) {
@@ -876,5 +880,14 @@ export class DashboardComponent implements OnInit {
   dataLabelFormatting(value: any): string {
     if(value<=0) return "";
     return value.toFixed(2); // Redondear a 2 decimales
+  }
+
+
+  getCommerceResellerName(commerces: Commerce[]): string {
+    const commerce = commerces.find(commerce => commerce.commerceId == this.commerceId);
+    if(commerce != undefined) {
+      return commerce.resellerName;
+    }
+    return null;
   }
 }

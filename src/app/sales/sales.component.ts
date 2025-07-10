@@ -16,6 +16,7 @@ import { Commerce } from '../_models/commerce.model';
 import { SessionService } from '../_services/session.service';
 import { VerifactuStatus } from '../_models/order-verifactu.model';
 import { OrderTax } from '../_models/order-tax.model';
+import { ThemeService } from '../_services/theme.service';
 
 @Component({
   selector: 'DPOSW-sales',
@@ -84,6 +85,7 @@ export class SalesComponent implements OnInit {
     private translate: TranslateService,
     private currencyPipe: CurrencyPipe,
     private sessionService: SessionService,
+    private themeService: ThemeService,
     private authService: AuthService
   ) {  
     this.currentLang = this.translate.currentLang || 'es';
@@ -135,10 +137,11 @@ export class SalesComponent implements OnInit {
               this.sessionService.getCommerceId().subscribe((commerceId) => {
                 if(commerceId != 0) {
                   this.commerceId = commerceId; // Actualizar el valor en el componente
-                 } else {
+                } else {
                   this.commerceId = commerces[0].commerceId;
                   this.sessionService.setItem(SessionService.COMMERCE_ID, this.commerceId);
-                 }
+                }
+                this.themeService.loadTheme(this.getCommerceResellerName(commerces));
                 this.commerceSelected = this.getCommerceNumber(this.commerceId);
                 this.terminalsService.getTerminalList().subscribe({
                   next: (terminals) => {
@@ -612,12 +615,20 @@ export class SalesComponent implements OnInit {
     return "";
   }
 
-   // Método para convertir timestamp a formato dd/mm/yyyy
-   formatDate(timestamp: number): string {
+  // Método para convertir timestamp a formato dd/mm/yyyy
+  formatDate(timestamp: number): string {
     const date = new Date(timestamp);  
     const day = String(date.getDate()).padStart(2, '0'); // Obtener día (con 2 dígitos)
     const month = String(date.getMonth() + 1).padStart(2, '0'); // Obtener mes (agregar 1 porque getMonth empieza desde 0)
     const year = date.getFullYear(); // Obtener el año
     return `${year}-${month}-${day}`;
+  }
+
+  private getCommerceResellerName(commerces: Commerce[]): string {
+    const commerce = commerces.find(commerce => commerce.commerceId == this.commerceId);
+    if(commerce != undefined) {
+      return commerce.resellerName;
+    }
+    return null;
   }
 }
