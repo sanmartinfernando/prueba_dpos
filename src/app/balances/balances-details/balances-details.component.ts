@@ -6,6 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { StorageService } from 'src/app/_services/storage.service';
 import { Balance } from 'src/app/_models/balance.model';
 import { BalanceLine } from 'src/app/_models/balance-line.model';
+import { UIStateService } from 'src/app/_services/ui-state.service';
 
 @Component({
   selector: 'DPOSW-balances-details',
@@ -36,7 +37,11 @@ export class BalancesDetailsComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private balancesService: BalancesService,
     private downloadPDFService: DownloadPDFService,
-    private storageService: StorageService) {
+    private storageService: StorageService,
+    private uiStateService: UIStateService) {
+    
+    //Bloqueamos el selector de comercio;
+    this.uiStateService.setFormSelectEnabled(false);
   }
   
   ngOnInit(): void {

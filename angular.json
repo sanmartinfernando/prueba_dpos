@@ -17,7 +17,8 @@
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
-              "zone.js"
+              "zone.js",
+              "src/polyfills.ts"
             ],
             "tsConfig": "tsconfig.app.json",
             "assets": [
@@ -35,6 +36,11 @@
                 "glob": "**/*",
                 "input": "src/assets/fonts",
                 "output": "/assets/fonts"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets/img",
+                "output": "/assets/img"
               },
               "src/web.config"
             ],
@@ -110,7 +116,7 @@
               "buildTarget": "diu.pos.webc.angular:build:development"
             },
             "inte": {
-              "browserTarget": "diu.pos.webc.angular:build:inte"
+              "buildTarget": "diu.pos.webc.angular:build:inte"
             }
           },
           "defaultConfiguration": "development"
@@ -123,7 +129,8 @@
           "options": {
             "polyfills": [
               "zone.js",
-              "zone.js/testing"
+              "zone.js/testing",
+              "src/polyfills.ts"
             ],
             "tsConfig": "tsconfig.spec.json",
             "assets": [

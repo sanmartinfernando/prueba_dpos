@@ -56,9 +56,9 @@
         <!-- Indicadores -->
         <div class="col-5 text-end" *ngIf="loadCompleted == true && emptySearch == false">
           <label for="inputHeadSales" class="me-2">{{'dpos.sales.operations.number.label' | translate}}</label>
-          <input type="text" id="inputHeadSales" class="text-center me-5 inputHeadSales" [(ngModel)]="operationN" disabled />
+          <input type="text" id="inputHeadSales" class="text-center me-5" [(ngModel)]="operationN" disabled />
           <label for="inputHeadSales1" class="me-2">{{'dpos.sales.operations.total.label' | translate}}</label>
-          <input type="text" id="inputHeadSales1" class="text-center me-5 inputHeadSales" [(ngModel)]="totalSalesString" disabled />
+          <input type="text" id="inputHeadSales1" class="text-center me-5" [(ngModel)]="totalSalesString" disabled />
           <button class="btn btn-outline-info justify-content-center">
             <i class="fa-solid fa-file-csv fa-xl" (click)="downloadCSV()"></i>
           </button>
