@@ -15,6 +15,7 @@ import { Subscription } from 'rxjs/internal/Subscription';
 import { SessionService } from '../_services/session.service';
 import { Commerce } from '../_models/commerce.model';
 import { ThemeService } from '../_services/theme.service';
+import { UIStateService } from '../_services/ui-state.service';
 
 @Component({
   selector: 'DPOSW-clients',
@@ -35,8 +36,12 @@ export class ReportsComponent implements OnInit {
     private sessionService: SessionService,
     private themeService: ThemeService,
     public translate: TranslateService,
+    private uiStateService: UIStateService,
     private authService: AuthService
   ) {
+
+    //Desbloqueamos el selector de comercio;
+    this.uiStateService.setFormSelectEnabled(true);
     this.currentLang = this.translate.currentLang || 'es';
     this.langSubscription = this.translate.onLangChange.subscribe(event => {
       this.currentLang = event.lang;

@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Order } from 'src/app/_models/order.model';
 import { DownloadPDFService } from 'src/app/_services/download-pdf.service';
 import { OrdersService } from '../../_services/orders.service';
+import { UIStateService } from 'src/app/_services/ui-state.service';
 
 @Component({
   selector: 'DPOSW-details',
@@ -26,8 +27,12 @@ export class DetailsComponent implements OnInit {
     private downloadPDFService: DownloadPDFService,
     private ordersService: OrdersService,
     private encryptionService: EncryptionService,
-    private storageService: StorageService
-  ) {}
+    private storageService: StorageService,
+    private uiStateService: UIStateService
+  ) {
+    //Bloqueamos el selector de comercio;
+    this.uiStateService.setFormSelectEnabled(false);
+  }
 
   ngOnInit(): void {
     let iddecode = this.encryptionService.decode(

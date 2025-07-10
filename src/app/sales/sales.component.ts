@@ -17,6 +17,7 @@ import { SessionService } from '../_services/session.service';
 import { VerifactuStatus } from '../_models/order-verifactu.model';
 import { OrderTax } from '../_models/order-tax.model';
 import { ThemeService } from '../_services/theme.service';
+import { UIStateService } from '../_services/ui-state.service';
 
 @Component({
   selector: 'DPOSW-sales',
@@ -86,8 +87,13 @@ export class SalesComponent implements OnInit {
     private currencyPipe: CurrencyPipe,
     private sessionService: SessionService,
     private themeService: ThemeService,
+    private uiStateService: UIStateService,
     private authService: AuthService
   ) {  
+
+    //Desbloqueamos el selector de comercio;
+    this.uiStateService.setFormSelectEnabled(true);
+    
     this.currentLang = this.translate.currentLang || 'es';
       this.langSubscription = this.translate.onLangChange.subscribe(event => {
         this.currentLang = event.lang;
