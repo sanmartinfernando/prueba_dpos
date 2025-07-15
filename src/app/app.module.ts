@@ -1,4 +1,4 @@
-import { APP_INITIALIZER, LOCALE_ID, NgModule } from '@angular/core';
+import { APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA, LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -83,7 +83,7 @@ registerLocaleData(localeEs);
            }
         }),
       ],
-        providers: [
+      providers: [
         httpInterceptorProviders,
         DatePipe,
         CurrencyPipe,
@@ -101,8 +101,9 @@ registerLocaleData(localeEs);
           deps: [SessionService, TranslateService],
           multi: true
         }
-
-    ] })
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    })
 export class AppModule { }
 
 // AOT compilation support for ngx-translate loader
