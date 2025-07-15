@@ -17,6 +17,8 @@ import { InactivityService } from './_services/inactivity.service';
 import { CookiesPolicyComponent } from './common/footer/cookies-policy.component';
 import { UseConditionsComponent } from './common/footer/use-conditions.component';
 import { PrivacyPolicyComponent } from './common/footer/privacy-policy.component';
+import { CustomersComponent } from './customers/customers.component';
+import { CustomerDetailsComponent } from './customers/details/customer-details.component';
 
 const routes: Routes = [
   { path: '', component: DashboardComponent, canActivate: [AuthGuard], title:"DPOS - Dashboard"},
@@ -28,10 +30,12 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent, title:"DPOS - Login"    },
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard], title:"DPOS - Dashboard"},
   { path: 'sales', component: SalesComponent, canActivate: [AuthGuard], title:"DPOS - Ventas"},
+  { path: 'customers', component: CustomersComponent, canActivate: [AuthGuard], title:"DPOS - Clientes"},
   { path: 'reports', component: ReportsComponent, canActivate: [AuthGuard], title:"DPOS - Informes"  },
   { path: 'balances', component: BalancesComponent, canActivate: [AuthGuard], title:"DPOS - Cierres"  },
   { path: 'details/:id', component:DetailsComponent, canActivate: [AuthGuard], title:"DPOS - Ventas"  },
   { path: 'balances-details/:id',component: BalancesDetailsComponent, canActivate: [AuthGuard], title:"DPOS - Cierres" },
+  { path: 'customer-details/:id',component: CustomerDetailsComponent, canActivate: [AuthGuard], title:"DPOS - Clientes" },
   { path: 'login/password-recovery', component: PwrecoveryComponent, title:"DPOS - Recuperación de contraseña" },
   { path: 'password-reset', component: PwresetComponent, title:"DPOS - Recuperación de contraseña"  },
   { path: '**', redirectTo: '/login' } //Redirigir a login en caso de ruta no encontrada
