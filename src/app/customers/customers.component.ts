@@ -1,7 +1,7 @@
 import { StorageService } from 'src/app/_services/storage.service';
 import { EncryptionService } from '../_services/encryption.service';
 import { DownloadCsvService } from '../_services/download-csv.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { PortalUsersService } from '../_services/portal-users.service';
 import { CommercesService } from '../_services/commerces.service';
 import { AuthService } from '../_services/auth.service';
@@ -9,11 +9,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { Commerce } from '../_models/commerce.model';
 import { SessionService } from '../_services/session.service';
-import { VerifactuStatus } from '../_models/order-verifactu.model';
 import { ThemeService } from '../_services/theme.service';
 import { UIStateService } from '../_services/ui-state.service';
 import { CustomersService } from '../_services/customers.service';
-import { CustomerInfo } from '../_models/customer-info.model';
+import { Customer } from '../_models/customer.model';
 
 @Component({
   selector: 'DPOSW-customers',
@@ -21,49 +20,33 @@ import { CustomerInfo } from '../_models/customer-info.model';
 })
 export class CustomersComponent implements OnInit {
 
-  currentFormats: any;
   size: number = 10000;
-  customers: CustomerInfo;
-  selectSales = new Array(3);
-  salesTicketBai = new Array;
-  operationN: number;
-  totalSales: number = 0;
-  totalSalesString: string;
+  customers: Customer[] = [];
   page: number = 0;
   code: string;
   loadCompleted: boolean = false;
-  isLoggedIn: boolean = true;
-  Math = Math;
   validationVariable: boolean = false;
   commerceId: number = 0;
-  verifactuStatus = VerifactuStatus;
+
+  masterSelected: boolean = false;
 
   //Parámetros de búsqueda
   public terminalsNumber: string[];
   terminalSelected: string = null;
   searchCounter: boolean = false;
-  sinceDate: string;
-  sinceDateMilli: number;
-  tilDate: string;
-  tilDateMilli: number;
-  today: Date = new Date();
-  todayMilli = this.today.getTime();
-  typeVarSearch: string = null;
-  translatedTypeVarSearch = new Array(3);
-  selTransTypeVarSearch: number = null;
+  varSearch: string = null;
   customerNifVarSearch: string = null;
   customerNameVarSearch: string = null;
   customerLastNameVarSearch: string = null;
   customerPhoneVarSearch: string = null;
   customerEmailVarSearch: string = null;
-  
-  varSearch: string = '';
+
   emptySearch: boolean = false;
   showModal: boolean = false;
   modalTitle: string = '';
   modalMessage: string = '';
 
-  public opTypes: any;
+  @ViewChild('customerFileInput') customerFileInput!: ElementRef<HTMLInputElement>;
 
   // Checkboxes
   selectedIndices: number[] = [];
@@ -161,7 +144,6 @@ export class CustomersComponent implements OnInit {
     //Comienzo query búsqueda
     this.varSearch = "&qs={'and':[";
 
-    //Parámetros de búsqueda activos
     //Commerce id
     if (this.commerceId != 0) {
       if (this.searchCounter == false) {
@@ -174,7 +156,7 @@ export class CustomersComponent implements OnInit {
     }
     
     //NIF
-    if (this.customerNifVarSearch != null) {
+    if (this.customerNifVarSearch != null && this.customerNifVarSearch !== "") {
       if (this.searchCounter == false) {
         this.searchCounter = true;
       } else {
@@ -184,7 +166,7 @@ export class CustomersComponent implements OnInit {
     }
 
     //Nombre
-    if (this.customerNameVarSearch != null) {
+    if (this.customerNameVarSearch != null && this.customerNameVarSearch !== "") {
       if (this.searchCounter == false) {
         this.searchCounter = true;
       } else {
@@ -194,7 +176,7 @@ export class CustomersComponent implements OnInit {
     }
 
     //Apellidos
-    if (this.customerLastNameVarSearch != null) {
+    if (this.customerLastNameVarSearch != null && this.customerLastNameVarSearch !== "") {
       if (this.searchCounter == false) {
         this.searchCounter = true;
       } else {
@@ -204,7 +186,7 @@ export class CustomersComponent implements OnInit {
     }
 
     //Telefono
-    if (this.customerPhoneVarSearch != null) {
+    if (this.customerPhoneVarSearch != null && this.customerPhoneVarSearch !== "") {
       if (this.searchCounter == false) {
         this.searchCounter = true;
       } else {
@@ -214,7 +196,7 @@ export class CustomersComponent implements OnInit {
     }
 
     //Email
-    if (this.customerEmailVarSearch != null) {
+    if (this.customerEmailVarSearch != null && this.customerEmailVarSearch !== "") {
       if (this.searchCounter == false) {
         this.searchCounter = true;
       } else {
@@ -228,11 +210,11 @@ export class CustomersComponent implements OnInit {
     this.getCustomers();
   }
 
-  getCustomers() {
+  private getCustomers() {
     this.customersService.getCustomers(this.size, this.varSearch).subscribe(
       (customers) => {
-        this.customers = customers;
-        if(this.customers.data.length != 0) {
+        this.customers = customers.data;
+        if(this.customers.length != 0) {
           this.emptySearch = false;
         } else {
           this.emptySearch = true;
@@ -240,8 +222,9 @@ export class CustomersComponent implements OnInit {
         this.loadCompleted = true;
       },
       (error) => {
-        if (error.status == 401 || error.status == 500) {
-          this.emptySearch == true;
+        this.customers = null;
+        if (error.status == 401 || error.status == 404 ||  error.status == 500) {
+          this.emptySearch = true;
           this.loadCompleted = true;
         };
       }
@@ -249,44 +232,97 @@ export class CustomersComponent implements OnInit {
   }
 
   //Checkboxes
-  checkAll(event: any) {
-    if (event.target.checked) {
-      this.selectedIndices = [];
-      for (let i = 0; i < this.customers.data.length; i++) {
-        let globalIndex = i;
-        this.selectedIndices.push(globalIndex);
-      }
-      this.counter = this.selectedIndices.length;
-      this.isAllSelected = true;
-    } else {
-      this.selectedIndices = [];
-      this.counter = 0;
-      this.isAllSelected = false;
+  selectAllCustomers() {
+  for (const customer of this.customers) {
+      customer.selected = this.masterSelected;
     }
+  }
+
+  checkIfAllSelected() {
+    this.masterSelected = this.customers.every(c => c.selected);
   }
 
   //Encriptación
   sendCustomerDetails(id: string) {
-    this.code = this.encryptionService.encryptData(id);
-    this.code = '/details/' + this.encryptionService.encode(this.code);
+    if (!id) {
+      this.code = '/customer-details'
+    } else {
+      this.code = this.encryptionService.encryptData(id);
+      this.code = '/customer-details/' + this.encryptionService.encode(this.code);
+    }
   }
-
-    //Boton Descargar
-  uncheckCustomers(){
-    //this.downloadCsvService.downloadSalesFile(this.sales, 'Sales', this.currentLang);
+  
+  //Eliminar clientes
+  deleteCustomers(){
+    for(let i= 0; i < this.customers.length; i++){
+      if(this.customers[i].selected) {
+        this.customers.splice(i, 1);
+      }
+    }
   }
-    //Boton Descargar
+  
+  //Añadir cliente
   addCustomer(){
-    //this.downloadCsvService.downloadSalesFile(this.sales, 'Sales', this.currentLang);
+    this.sendCustomerDetails(null);
   }
-    //Boton Descargar
+  
+  //Importar clientes
   importCustomers(){
-    //this.downloadCsvService.downloadSalesFile(this.sales, 'Sales', this.currentLang);
+    this.customerFileInput.nativeElement.click();
   }
 
-  //Boton Descargar
+  onCustomerFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
+
+    const file = input.files[0];
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const text = reader.result as string;
+      
+      const { rows, errors } = this.parseCSV(text);
+
+      if (errors.length > 0) {
+        console.log('Errores de validación:', errors);
+      } 
+      else {
+        let customers: Customer[] = [];
+        for(let i= 0; i < rows.length; i++){
+          let customer: Customer = new Customer();
+          customer.nif = rows[i][0];
+          customer.name = rows[i][1];
+          customer.lastName = rows[i][2];
+          customer.email = rows[i][3];
+          customer.phone = rows[i][4];
+          customer.address = rows[i][5];
+          customer.city = rows[i][6];
+          customer.postcode = rows[i][7];
+          customer.country = rows[i][8];
+          customer.state = rows[i][9];
+          customers.push(customer);
+        }
+
+        this.showModal = true;
+        this.modalTitle = 'Importación de clientes';
+        this.modalMessage = 'Clientes importados correctamente';
+
+        if(!this.customers)
+          this.customers = [];
+
+        this.customers.push(...customers);
+
+        if(this.customers.length > 0)
+          this.emptySearch = false;
+      }
+    };
+
+    reader.readAsText(file);
+  }
+
+  //Descargar clientes
   downloadCSV(){
-    //this.downloadCsvService.downloadSalesFile(this.sales, 'Sales', this.currentLang);
+    this.downloadCsvService.downloadCustomersFile(this.customers, 'Customers', this.currentLang);
   }
 
   openModal() {
@@ -338,11 +374,74 @@ export class CustomersComponent implements OnInit {
     return "";
   }
 
+  cleanFormFields(): void {
+    this.customerNifVarSearch="";
+    this.customerNameVarSearch="";
+    this.customerLastNameVarSearch="";
+    this.customerPhoneVarSearch="";
+    this.customerEmailVarSearch="";
+    this.sessionService.setItem(SessionService.CUSTOMER_NIF, this.customerNifVarSearch);
+    this.sessionService.setItem(SessionService.CUSTOMER_NAME, this.customerNameVarSearch);
+    this.sessionService.setItem(SessionService.CUSTOMER_LASTNAME, this.customerLastNameVarSearch);
+    this.sessionService.setItem(SessionService.CUSTOMER_PHONE, this.customerPhoneVarSearch);
+    this.sessionService.setItem(SessionService.CUSTOMER_EMAIL, this.customerEmailVarSearch);
+  }
+
   private getCommerceResellerName(commerces: Commerce[]): string {
     const commerce = commerces.find(commerce => commerce.commerceId == this.commerceId);
     if(commerce != undefined) {
       return commerce.resellerName;
     }
     return null;
+  }
+
+  private parseCSV(csv: string): { rows: string[][], errors: string[] } {
+    const rows: string[][] = [];
+    const errors: string[] = [];
+    let currentRow: string[] = [];
+    let currentValue = '';
+    let insideQuotes = false;
+
+    for (let i = 0; i < csv.length; i++) {
+      const char = csv[i];
+
+      if (char === '"') {
+        if (insideQuotes && csv[i + 1] === '"') {
+          currentValue += '"';
+          i++;
+        } else {
+          insideQuotes = !insideQuotes;
+        }
+      } else if (char === ',' && !insideQuotes) {
+        currentRow.push(currentValue);
+        currentValue = '';
+      } else if ((char === '\n' || char === '\r') && !insideQuotes) {
+        if (char === '\r' && csv[i + 1] === '\n') i++;
+        currentRow.push(currentValue);
+        rows.push(currentRow);
+        currentRow = [];
+        currentValue = '';
+      } else {
+        currentValue += char;
+      }
+    }
+
+    if (currentValue !== '' || currentRow.length > 0) {
+      currentRow.push(currentValue);
+      rows.push(currentRow);
+    }
+
+    // Validación de filas incompletas
+    const expectedLength = rows[0]?.length ?? 0;
+
+    rows.forEach((row, index) => {
+      if (row.length !== expectedLength) {
+        errors.push(
+          `Error en la fila ${index + 1}: se esperaban ${expectedLength} columnas pero hay ${row.length}.`
+        );
+      }
+    });
+
+    return { rows, errors };
   }
 }

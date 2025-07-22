@@ -25,7 +25,7 @@
       </div>
       <div id="searchButtonsDiv" class="ms-5 d-flex overflow-auto">
         <button type="reset" class="btn btn-outline-danger align-self-end"> 
-          <a type="button"><i class="fas fa-eraser"></i></a>
+          <a type="button" (click)="cleanFormFields()"><i class="fas fa-eraser"></i></a>
         </button>
         <a type="button" class="btn btn-primary align-self-end" (click)="searchCustomers()">
           <i class="fas fa-search"></i>&nbsp;&nbsp;{{'dpos.action.search' | translate}}
@@ -49,16 +49,11 @@
           <h5><b>{{'dpos.customers.page.title' | translate}}</b></h5>
         </div>
         <!-- Indicadores -->
-        <div class="col-5 text-end" *ngIf="loadCompleted == true && emptySearch == false">
-          <a type="button" class="btn btn-primary align-self-end" (click)="uncheckCustomers()">
-            <i class="fas fa-search"></i>&nbsp;&nbsp;{{'dpos.customers.uncheck.label' | translate}}
-          </a>
-          <a type="button" class="btn btn-primary align-self-end" (click)="addCustomer()">
-            <i class="fas fa-search"></i>&nbsp;&nbsp;{{'dpos.customers.add.label' | translate}}
-          </a>
-          <a type="button" class="btn btn-primary align-self-end" (click)="importCustomers()">
-            <i class="fas fa-search"></i>&nbsp;&nbsp;{{'dpos.customers.import.label' | translate}}
-          </a>
+        <div class="col-5 text-end">
+          <a type="button" class="btn btn-outline-danger align-self-end" (click)="deleteCustomers()">&nbsp;{{'dpos.customers.uncheck.label' | translate}}</a>
+          <a type="button" class="btn btn-primary align-self-end" [routerLink]="code" (click)="addCustomer()">&nbsp;{{'dpos.customers.add.label' | translate}}</a>
+          <button class="btn btn-primary align-self-end" (click)="importCustomers()">&nbsp;{{'dpos.customers.import.label' | translate}}</button>
+          <input type="file" #customerFileInput style="display: none" accept=".csv" (change)="onCustomerFileSelected($event)"/>
           <button class="btn btn-outline-info justify-content-center">
             <i class="fa-solid fa-file-csv fa-xl" (click)="downloadCSV()"></i>
           </button>
@@ -77,15 +72,15 @@
             <table class="table table-hover order-table table-borderless" data-pagination="true" data-page-size="10">
               <thead class="text-customer">
                 <tr>
-                  <th class="text-center">
-                    <input class="form-check-input" type="checkbox" [checked]="isAllSelected" (change)="checkAll($event)" />
+                  <th style="width: 50px;" class="text-center">
+                    <!--<input class="form-check-input" type="checkbox" [(ngModel)]="masterSelected" (change)="selectAllCustomers()" />-->
                   </th>
-                  <th class="text-start">{{'dpos.customers.nif.label' | translate}}</th>
+                  <th class="text-center">{{'dpos.customers.nif.label' | translate}}</th>
                   <th class="text-center">{{'dpos.customers.name.label' | translate}}</th>
-                  <th class="text-start">{{'dpos.customers.lastname.label' | translate}}</th>
+                  <th class="text-center">{{'dpos.customers.lastname.label' | translate}}</th>
                   <th class="text-center">{{'dpos.customers.phone.label' | translate}}</th>
                   <th class="text-center">{{'dpos.customers.mail.label' | translate}}</th>
-                  <th class="text-end">{{'dpos.customers.balance.label' | translate}}</th>
+                  <th class="text-center">{{'dpos.customers.balance.label' | translate}}</th>
                   <th></th>
                 </tr>
               </thead>
@@ -95,10 +90,10 @@
                 </td>
               </ng-template>
               <tbody>
-                <ng-container *ngIf="loadCompleted; else empty">
-                  <tr *ngFor="let customer of customers.data | paginate : { itemsPerPage: 10, currentPage: page }; index as i">
-                    <td class="text-center align-middle">
-                      <input class="form-check-input" type="checkbox" [checked]="isAllSelected" />
+                <ng-container *ngIf="loadCompleted && customers; else empty">
+                  <tr *ngFor="let customer of customers | paginate : { itemsPerPage: 10, currentPage: page }; index as i">
+                    <td style="width: 50px;" class="text-center align-middle">
+                      <input class="form-check-input" type="checkbox" [(ngModel)]="customer.selected" (change)="checkIfAllSelected()"/>
                     </td>
                     <td class="text-center align-middle">
                       {{ customer.nif }}
@@ -127,7 +122,7 @@
                 </ng-container>
               </tbody>
             </table>
-            <div class="has-text-centered">
+            <div  *ngIf="loadCompleted && emptySearch == false" class="has-text-centered">
               <pagination-controls (pageChange)="page = $event"></pagination-controls>
             </div>
           </div>

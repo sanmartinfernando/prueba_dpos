@@ -1,165 +1,69 @@
 <div class="container-fluid header-main mt-4">
   <div class="d-flex justify-content-between mb-2">
-    <a [routerLink]="['/sales']" type="button" class="" style="text-decoration: none;">
-      <i class="fa-solid fa-angle-left"></i> {{'dpos.details.back.button.label' | translate}}
+    <a [routerLink]="['/customers']" type="button" class="" style="text-decoration: none;">
+      <i class="fa-solid fa-angle-left"></i> {{'dpos.customers.page.back' | translate}}
     </a>
-    <button class="btn btn-sm btn-danger" (click)="downloadPDF()">
-      <i class="fa-solid fa-file-pdf fa-xl"></i>
-    </button>
   </div>
   <!-- Load -->
   <div *ngIf="!loadCompleted" class="d-flex justify-content-center">
     <div class="spinner-border text-danger"></div>
   </div>
   <!-- Detalles -->
-  <div class="col-12 col-sm-8 offset-sm-2 col-lg-4 offset-lg-4">
-    <div class="card card-customer">
-      <div class="card-header d-flex">
-        <div class="d-flex flex-column justify-content-between">
-          <h4 class="card-title" *ngIf="ticket">{{ ticket.orderCommerce.name }}</h4>
-          <span id="lblterminal_number" class="text-amber" *ngIf="ticket">{{'dpos.filter.terminal' | translate}} {{ ticket.terminalNumber }}</span>
+  <form>
+    <div class="row g-3">
+      <!-- Columna izquierda -->
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label for="nif" class="form-label">{{'dpos.customers.nif.column' | translate}}</label>
+          <input type="text" class="form-control" id="nif" />
         </div>
-        <div class="flex-fill text-end">
-          <label id="lblcomercial_cif" class="small" *ngIf="ticket"><span>{{ ticket.orderCommerce.nif }}</span></label><br />
-          <label id="lblcomercial_address" class="small" *ngIf="ticket"><span>{{ ticket.orderCommerce.address }}</span></label><br />
-          <label id="lbldate" type="date" class="small text-customer" *ngIf="ticket"><span>{{ ticket.finishedAt | date : "yyyy-MM-dd HH:mm" }}</span></label>
+        <div class="mb-3">
+          <label for="name" class="form-label">{{'dpos.customers.name.column' | translate}}</label>
+          <input type="text" class="form-control" id="nombre" />
         </div>
-      </div>
-      <div class="card-body">
-        <div class="d-flex">
-          <div class="flex-fill">
-            <div class="text-end">
-              <label *ngIf="ticket"><b>{{ ticket.reference }}&nbsp;</b></label><br /><br />
-            </div>
-            <div class="table-responsive">
-              <table class="table table-hover order-table">
-                <thead>
-                  <tr>
-                    <th class="text-start">{{'dpos.details.order.product.label' | translate}}</th>
-                    <th class="text-end">{{'dpos.details.order.product.uds.label' | translate}}</th>
-                    <th class="text-end">{{'dpos.details.order.product.price.label' | translate}}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let orders of ticket.orderLines">
-                    <td class="text-start">{{ orders.productName }}</td>
-                    <td class="text-end">{{ orders.quantity }}</td>
-                    <td *ngIf="ticket.type == 2; else unitPrice" class="text-end text-nowrap text-red">{{ (orders.unitPrice / 100).toFixed(2) }}&nbsp;€</td>
-                    <ng-template #unitPrice>
-                      <td class="text-end text-nowrap">
-                        {{ (orders.unitPrice / 100).toFixed(2) }}&nbsp;€
-                      </td>
-                    </ng-template>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div [ngSwitch]="ticket.type" class="flex-fill text-end">
-              <h6 *ngSwitchCase="0" id="lbltype" class="text-blue">
-                <span><b>{{'dpos.details.order.label' | translate}}</b></span>
-              </h6>
-              <h6 *ngSwitchCase="1" id="lbltype" class="text-blue">
-                <span>{{'dpos.details.order.label' | translate}}</span>
-              </h6>
-              <h6 *ngSwitchCase="2" id="lbltype" class="text-blue">
-                <span><b>{{'dpos.details.refund.label' | translate}}</b></span> 
-              </h6>
-            </div>
-            <!-- Subtotal -->
-            <div class="row px-2 pb-1">
-              <div class="col-7 col-md-10 text-end">
-                <label id="lblsubtotal_title" class="small">{{'dpos.details.order.subtotal.label' | translate}}</label>
-              </div>
-              <div class="col-5 col-md-2 text-end">
-                <label *ngIf="ticket.type == 2; else subtotal" class="text-red" id="lblsubtotal">
-                  {{ ticket.subTotal / Math.pow(10, ticket.decimals) | currency : "Eur" : "€" }}
-                </label>
-                <ng-template #subtotal>
-                  <label id="lblsubtotal">
-                    {{ ticket.subTotal / Math.pow(10, ticket.decimals) | currency : "Eur" : "€" }}
-                  </label>
-                </ng-template>
-              </div>
-            </div>
-            <!-- Discount -->
-            <div class="row px-2 pb-1" *ngIf="ticket.totalDiscount > 0">
-              <div class="col-7 col-md-10 text-end">
-                <label id="lbldiscount_title" class="small">{{'dpos.details.order.discount.label' | translate}}</label>
-              </div>
-              <div class="col-5 col-md-2 text-end">
-                <label *ngIf="ticket.type == 2; else totalDiscount" class="text-red" id="lbldiscount">
-                  {{ ticket.totalDiscount / Math.pow(10, ticket.decimals) | currency : "Eur" : "€" }}
-                </label>
-                <ng-template #totalDiscount>
-                  <label id="lbldiscount">{{ ticket.totalDiscount / Math.pow(10, ticket.decimals) | currency : "Eur" : "€" }}</label>
-                </ng-template>
-              </div>
-            </div>
-            <!-- Base imponible -->
-            <div class="row px-2 pb-1">
-              <div class="col-7 col-md-10 text-end">
-                <label id="lbltaxbase_title" class="small">{{'dpos.details.order.base.label' | translate}}</label>
-              </div>
-              <div class="col-5 col-md-2 text-end">
-                <label *ngIf="ticket.type == 2; else base" class="text-red" id="lbltaxbase">{{ totalBase | currency : "Eur" : "€" }}</label>
-                <ng-template #base>
-                  <label id="lbltaxbase">{{ totalBase | currency : "Eur" : "€" }}</label>
-                </ng-template>
-              </div>
-            </div>
-            <!-- IVA -->
-            <div class="row px-2 pb-1" *ngFor="let orders of ticket.orderTaxes">
-              <div class="col-7 col-md-10 text-end">
-                <label id="lblIVA_title" class="small">{{ orders.name }}</label>
-              </div>
-              <div class="col-5 col-md-2 text-end">
-                <label *ngIf="ticket.type == 2; else totalIVA" class="text-red" id="lblIVA">{{ (orders.total / 100).toFixed(2) }}&nbsp;€</label>
-                <ng-template #totalIVA>
-                  <label id="lblIVA">{{ orders.total / Math.pow(10, orders.decimals) | currency : "Eur" : "€" }}</label>
-                </ng-template>
-              </div>
-            </div>
-          </div>
+        <div class="mb-3">
+          <label for="lastname" class="form-label">{{'dpos.customers.lastname.column' | translate}}</label>
+          <input type="text" class="form-control" id="apellidos" />
+        </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">{{'dpos.customers.email.column' | translate}}</label>
+          <input type="email" class="form-control" id="email" />
+        </div>
+        <div class="mb-3">
+          <label for="phone" class="form-label">{{'dpos.customers.phone.column' | translate}}</label>
+          <input type="text" class="form-control" id="telefono" />
         </div>
       </div>
-      <div class="card-footer pb-2">
-        <div class="row px-2 pb-1">
-          <div class="col-7 col-md-10 text-end">
-            <label id="lbltotal_title"><b>{{'dpos.details.order.total.label' | translate}}</b></label>
-          </div>
-          <div class="col-5 col-md-2 text-end">
-            <label *ngIf="ticket.type == 2; else total" id="lbltotal" class="text-red text-bold text-lg">{{ (ticket.total / 100).toFixed(2) }}&nbsp;€</label>
-            <ng-template #total>
-              <label id="lbltotal"><b>{{ ticket.total / Math.pow(10, ticket.decimals) | currency : "Eur" : "€" }}</b></label>
-            </ng-template>
-          </div>
+      <!-- Columna derecha -->
+      <div class="col-md-6">
+        <div class="mb-3">
+          <label for="address" class="form-label">{{'dpos.customers.address.column' | translate}}</label>
+          <input type="text" class="form-control" id="direccion" />
         </div>
-        <div class="row px-2 pb-1" *ngFor="let orderPayment of ticket.orderPayments">
-          <div class="col-7 col-md-10 text-end">
-            <label id="lblcash_title" class="small">{{ orderPayment.name }}</label>
-          </div>
-          <div class="col-5 col-md-2 text-end small">
-            <label *ngIf="ticket.type == 2; else amount" class="text-red" id="lblcash">{{(orderPayment.amount / 100).toFixed(2) }}&nbsp;€</label>
-            <ng-template #amount><label id="lblcash">{{ orderPayment.amount / Math.pow(10, orderPayment.decimals) | currency : "Eur" : "€" }}</label></ng-template>
-          </div>
+        <div class="mb-3">
+          <label for="city" class="form-label">{{'dpos.customers.city.column' | translate}}</label>
+          <input type="text" class="form-control" id="ciudad" />
         </div>
-        <div class="row px-2 pb-1 pt-3" *ngIf="salesTicketBai.length > 0">
-          <div class="text-start">
-            <label id="ticket_bai"><b>{{'dpos.details.order.tbai.label' | translate}}</b> {{ salesTicketBai[0] }}</label>
-          </div>
-          <div class="text-start">
-            <qrcode [qrdata]="salesTicketBai[1]" [width]="200" [errorCorrectionLevel]="'M'"></qrcode>
-          </div>
+        <div class="mb-3">
+          <label for="postcode" class="form-label">{{'dpos.customers.postcode.column' | translate}}</label>
+          <input type="text" class="form-control" id="cp" />
         </div>
-        <div class="row px-2 pb-1 pt-3" *ngIf="salesVerifactu.length > 0">
-          <div class="text-start">
-            <label id="ticket_bai"><b>{{'dpos.details.order.verifactu.label' | translate}}</b>&nbsp;<a href="{{ salesVerifactu[0] }}" target="_blank" rel="noopener">{{ salesVerifactu[0] }}</a></label>
-          </div>
-          <div class="text-start">
-            <qrcode [qrdata]="salesVerifactu[1]" [width]="200" [errorCorrectionLevel]="'M'"></qrcode>
-          </div>
+        <div class="mb-3">
+          <label for="country" class="form-label">{{'dpos.customers.country.column' | translate}}</label>
+          <input type="text" class="form-control" id="provincia" />
+        </div>
+        <div class="mb-3">
+          <label for="state" class="form-label">{{'dpos.customers.state.column' | translate}}</label>
+          <input type="text" class="form-control" id="pais" />
         </div>
       </div>
     </div>
-  </div>
+    <!-- Botones -->
+    <div class="d-flex justify-content-end mt-4">
+      <a [routerLink]="['/customers']" type="button" class="" style="text-decoration: none;">
+        <button type="button" class="btn btn-outline-danger me-2">{{'dpos.action.cancel' | translate}}</button>
+      </a>
+      <button type="submit" class="btn btn-primary">{{'dpos.action.save' | translate}}</button>
+    </div>
+  </form>
 </div>

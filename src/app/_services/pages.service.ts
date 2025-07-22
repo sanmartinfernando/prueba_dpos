@@ -12,7 +12,7 @@ export class PagesService {
     new Page('1','Ventas','sales','fa-solid fa-chart-line'),
     new Page('1','Cierres','balances','fa-regular fa-chart-bar'),
     new Page('1','Informes','reports','fa-solid fa-chart-area'),
-    new Page('1','Clientes','customers','fa-solid fa-users')
+    //new Page('1','Clientes','customers','fa-solid fa-users')
   ];
   
   constructor(public translate: TranslateService) {
@@ -21,7 +21,7 @@ export class PagesService {
       this.pages[1].text = this.translate.instant('dpos.sales.page.title');
       this.pages[2].text = this.translate.instant('dpos.balances.page.title');
       this.pages[3].text = this.translate.instant('dpos.reports.page.title');
-      this.pages[4].text = this.translate.instant('dpos.customer.page.title');
+      //this.pages[4].text = this.translate.instant('dpos.customer.page.title');
     });
    }
 }

@@ -39,7 +39,7 @@ export class BalancesDetailsComponent implements OnInit {
     private downloadPDFService: DownloadPDFService,
     private storageService: StorageService,
     private uiStateService: UIStateService) {
-    
+      
     //Bloqueamos el selector de comercio;
     this.uiStateService.setFormSelectEnabled(false);
   }

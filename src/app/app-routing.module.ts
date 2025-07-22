@@ -35,6 +35,7 @@ const routes: Routes = [
   { path: 'balances', component: BalancesComponent, canActivate: [AuthGuard], title:"DPOS - Cierres"  },
   { path: 'details/:id', component:DetailsComponent, canActivate: [AuthGuard], title:"DPOS - Ventas"  },
   { path: 'balances-details/:id',component: BalancesDetailsComponent, canActivate: [AuthGuard], title:"DPOS - Cierres" },
+  { path: 'customer-details',component: CustomerDetailsComponent, canActivate: [AuthGuard], title:"DPOS - Clientes" },
   { path: 'customer-details/:id',component: CustomerDetailsComponent, canActivate: [AuthGuard], title:"DPOS - Clientes" },
   { path: 'login/password-recovery', component: PwrecoveryComponent, title:"DPOS - Recuperación de contraseña" },
   { path: 'password-reset', component: PwresetComponent, title:"DPOS - Recuperación de contraseña"  },
@@ -55,5 +56,4 @@ export class AppRoutingModule {
       this.authService.logOut();
     }
   }
-
 }
