@@ -206,5 +206,6 @@
     "dpos.customers.city.column": "Ciutat",
     "dpos.customers.postcode.column": "Codi postal",
     "dpos.customers.country.column": "Provincia",
-    "dpos.customers.state.column": "Pais"
+    "dpos.customers.state.column": "Pais",
+    "dpos.products.page.title": "Productes"
 }

@@ -206,5 +206,6 @@
     "dpos.customers.city.column": "Hiria",
     "dpos.customers.postcode.column": "Posta kodea",
     "dpos.customers.country.column": "Probintzia",
-    "dpos.customers.state.column": "Herrialdea"
+    "dpos.customers.state.column": "Herrialdea",
+    "dpos.products.page.title": "Produktuak"
 }

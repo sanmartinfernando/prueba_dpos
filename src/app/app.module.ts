@@ -39,6 +39,8 @@ import { UseConditionsComponent } from './common/footer/use-conditions.component
 import { SessionService } from './_services/session.service';
 import { CustomersComponent } from './customers/customers.component';
 import { CustomerDetailsComponent } from './customers/details/customer-details.component';
+import { ProductsComponent } from './products/products.component';
+import { ProductDetailsComponent } from './products/details/product-details.component';
 
 registerLocaleData(localeEs);
 
@@ -55,6 +57,8 @@ registerLocaleData(localeEs);
         SalesComponent,
         CustomersComponent,
         CustomerDetailsComponent,
+        ProductsComponent,
+        ProductDetailsComponent,
         ErrorComponent,
         LoginComponent,
         BaseComponent,

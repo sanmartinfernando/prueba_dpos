@@ -19,6 +19,8 @@ import { UseConditionsComponent } from './common/footer/use-conditions.component
 import { PrivacyPolicyComponent } from './common/footer/privacy-policy.component';
 import { CustomersComponent } from './customers/customers.component';
 import { CustomerDetailsComponent } from './customers/details/customer-details.component';
+import { ProductsComponent } from './products/products.component';
+import { ProductDetailsComponent } from './products/details/product-details.component';
 
 const routes: Routes = [
   { path: '', component: DashboardComponent, canActivate: [AuthGuard], title:"DPOS - Dashboard"},
@@ -37,6 +39,9 @@ const routes: Routes = [
   { path: 'balances-details/:id',component: BalancesDetailsComponent, canActivate: [AuthGuard], title:"DPOS - Cierres" },
   { path: 'customer-details',component: CustomerDetailsComponent, canActivate: [AuthGuard], title:"DPOS - Clientes" },
   { path: 'customer-details/:id',component: CustomerDetailsComponent, canActivate: [AuthGuard], title:"DPOS - Clientes" },
+  { path: 'products', component: ProductsComponent, canActivate: [AuthGuard], title:"DPOS - Productos"},
+  { path: 'product-details',component: ProductDetailsComponent, canActivate: [AuthGuard], title:"DPOS - Productos" },
+  { path: 'product-details/:id',component: ProductDetailsComponent, canActivate: [AuthGuard], title:"DPOS - Productos" },
   { path: 'login/password-recovery', component: PwrecoveryComponent, title:"DPOS - Recuperación de contraseña" },
   { path: 'password-reset', component: PwresetComponent, title:"DPOS - Recuperación de contraseña"  },
   { path: '**', redirectTo: '/login' } //Redirigir a login en caso de ruta no encontrada
