@@ -37,6 +37,8 @@ import { CookiesPolicyComponent } from './common/footer/cookies-policy.component
 import { PrivacyPolicyComponent } from './common/footer/privacy-policy.component';
 import { UseConditionsComponent } from './common/footer/use-conditions.component';
 import { SessionService } from './_services/session.service';
+import { CustomersComponent } from './customers/customers.component';
+import { CustomerDetailsComponent } from './customers/details/customer-details.component';
 
 registerLocaleData(localeEs);
 
@@ -51,6 +53,8 @@ registerLocaleData(localeEs);
         LangSwitcherComponent,
         DashboardComponent,
         SalesComponent,
+        CustomersComponent,
+        CustomerDetailsComponent,
         ErrorComponent,
         LoginComponent,
         BaseComponent,

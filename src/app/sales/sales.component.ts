@@ -446,7 +446,6 @@ export class SalesComponent implements OnInit {
               }
             }
           }
-          console.log(this.salesTicketBai);
           this.emptySearch = false;
         } else {
           this.emptySearch = true;

@@ -39,6 +39,7 @@
     "ngx-pagination": "^6.0.3",
     "npm": "^10.8.2",
     "os-browserify": "^0.3.0",
+    "papaparse": "^5.5.3",
     "rxjs": "~7.8.0",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
@@ -51,6 +52,8 @@
     "@angular/cli": "~18.0.6",
     "@angular/compiler-cli": "^18.1.2",
     "@angular/localize": "^18.1.2",
+    "@ngx-translate/core": "^16.0.3",
+    "@ngx-translate/http-loader": "^16.0.0",
     "@types/d3-scale": "^4.0.8",
     "@types/d3-selection": "^3.0.10",
     "@types/d3-shape": "^3.1.6",
@@ -61,8 +64,6 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.0.0",
-    "typescript": "~5.4.5",
-    "@ngx-translate/core": "^16.0.3",
-    "@ngx-translate/http-loader": "^16.0.0"
+    "typescript": "~5.4.5"
   }
 }

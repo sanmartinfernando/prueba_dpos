@@ -1,4 +1,5 @@
 export enum VerifactuStatus {
+  Pending = "PENDING",
   Processing = "PROCESSING",
   Completed = "COMPLETED",
   Accepted = "ACCEPTED_BY_AEAT",

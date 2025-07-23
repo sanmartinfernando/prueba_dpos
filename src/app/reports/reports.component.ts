@@ -17,7 +17,7 @@ import { ThemeService } from '../_services/theme.service';
 import { UIStateService } from '../_services/ui-state.service';
 
 @Component({
-  selector: 'DPOSW-clients',
+  selector: 'DPOSW-reports',
   templateUrl: './reports.component.html',
   styleUrls: [],
 })

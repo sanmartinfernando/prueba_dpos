@@ -5,6 +5,8 @@ const PORTALUSERS = 'PortalUsers';
 const ORDERS = 'Orders';
 const BALANCES = 'Balances';
 const CASHMOVEMENTS = 'CashMovements';
+const CUSTOMERS = 'Customers';
+
 
 export const RestRoutes = {
   USER: `${API}/${USER}`,
@@ -24,6 +26,7 @@ export const RestRoutes = {
   BALANCES_INFO: `${API}/${BALANCES}?size=`,
   BALANCES_ARQUEO_X: `${API}/${BALANCES}/generate/arqueo-x?fromDate=`,
   CASH_MOVEMENTS_AGGREGATE: `${API}/${CASHMOVEMENTS}/aggregate`,
+  CUSTOMERS_INFO: `${API}/${CUSTOMERS}?size=`,
   PARAM_OFFSET: `&offset=0`,
   PARAM_QS: `&qs={"and":`,
   PARAM_TODATE: `&toDate=`,
