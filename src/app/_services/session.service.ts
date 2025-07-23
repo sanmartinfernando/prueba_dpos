@@ -7,6 +7,7 @@ import { BehaviorSubject } from 'rxjs';
 export class SessionService {
 
   static readonly COMMERCE_ID:string = "commerceId";
+  static readonly RESELLER_NAME:string = "resellerName";
   static readonly TERMINAL_NUMBER:string = "terminalNumber";
   static readonly FROM_DATE:string = "fromDate";
   static readonly TO_DATE:string = "toDate";
@@ -14,6 +15,11 @@ export class SessionService {
   static readonly DOC_NUMBER:string = "docNumber";
   static readonly REPORT_TYPE:string = "reportType";
   static readonly LANGUAGE:string = "language";
+  static readonly CUSTOMER_NIF:string = "customerNif";
+  static readonly CUSTOMER_NAME:string = "customerName";
+  static readonly CUSTOMER_LASTNAME:string = "customerLastName";
+  static readonly CUSTOMER_PHONE:string = "customerPhone";
+  static readonly CUSTOMER_EMAIL:string = "customerEmail";
 
   private commerceId: BehaviorSubject<number> = new BehaviorSubject<number>(this.getItem(SessionService.COMMERCE_ID) || 0);
 

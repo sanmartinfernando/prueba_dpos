@@ -5,6 +5,8 @@ import { ActivatedRoute } from '@angular/router';
 import { Order } from 'src/app/_models/order.model';
 import { DownloadPDFService } from 'src/app/_services/download-pdf.service';
 import { OrdersService } from '../../_services/orders.service';
+import { SessionService } from 'src/app/_services/session.service';
+import { ThemeService } from 'src/app/_services/theme.service';
 import { UIStateService } from 'src/app/_services/ui-state.service';
 
 @Component({
@@ -27,9 +29,12 @@ export class DetailsComponent implements OnInit {
     private downloadPDFService: DownloadPDFService,
     private ordersService: OrdersService,
     private encryptionService: EncryptionService,
-    private storageService: StorageService,
-    private uiStateService: UIStateService
+    private sessionService: SessionService,
+    private themeService: ThemeService,
+    private uiStateService: UIStateService,
+    private storageService: StorageService
   ) {
+    this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
     //Bloqueamos el selector de comercio;
     this.uiStateService.setFormSelectEnabled(false);
   }
