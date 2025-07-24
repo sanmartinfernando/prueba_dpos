@@ -3,8 +3,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.dev-inte';
 import { RestRoutes } from '../_config/rest-routes.config';
-import { OrderInfo } from '../_models/order-info.model';
-import { Order } from '../_models/order.model';
 import { CustomerInfo } from '../_models/customer-info.model';
 import { Customer } from '../_models/customer.model';
 
@@ -30,7 +28,7 @@ export class CustomersService {
   }
 
   public getCustomerDetails(id:string): Observable<Customer> {
-    let urlCustomers: string = `${environment.urlWS}${RestRoutes.CUSTOMERS_INFO}${id}`;
+    let urlCustomers: string = `${environment.urlWS}${RestRoutes.CUSTOMERS}${id}`;
     return this.http.get<Customer>(urlCustomers, this.httpOptions);
   }
 }

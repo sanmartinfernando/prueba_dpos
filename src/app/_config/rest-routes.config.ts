@@ -6,7 +6,7 @@ const ORDERS = 'Orders';
 const BALANCES = 'Balances';
 const CASHMOVEMENTS = 'CashMovements';
 const CUSTOMERS = 'Customers';
-
+const PRODUCTS = 'Products';
 
 export const RestRoutes = {
   USER: `${API}/${USER}`,
@@ -27,6 +27,9 @@ export const RestRoutes = {
   BALANCES_ARQUEO_X: `${API}/${BALANCES}/generate/arqueo-x?fromDate=`,
   CASH_MOVEMENTS_AGGREGATE: `${API}/${CASHMOVEMENTS}/aggregate`,
   CUSTOMERS_INFO: `${API}/${CUSTOMERS}?size=`,
+  CUSTOMERS: `${API}/${CUSTOMERS}/`,
+  PRODUCTS_INFO: `${API}/${PRODUCTS}?size=`,
+  PRODUCTS: `${API}/${PRODUCTS}/`,
   PARAM_OFFSET: `&offset=0`,
   PARAM_QS: `&qs={"and":`,
   PARAM_TODATE: `&toDate=`,

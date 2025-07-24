@@ -20,6 +20,9 @@ export class SessionService {
   static readonly CUSTOMER_LASTNAME:string = "customerLastName";
   static readonly CUSTOMER_PHONE:string = "customerPhone";
   static readonly CUSTOMER_EMAIL:string = "customerEmail";
+  static readonly PRODUCT_NAME:string = "productName";
+  static readonly PRODUCT_REFERENCE:string = "productReference";
+  static readonly PRODUCT_BARCODE:string = "productBarcode";
 
   private commerceId: BehaviorSubject<number> = new BehaviorSubject<number>(this.getItem(SessionService.COMMERCE_ID) || 0);
 

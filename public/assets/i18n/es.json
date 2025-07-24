@@ -207,5 +207,8 @@
     "dpos.customers.postcode.column": "Código postal",
     "dpos.customers.country.column": "Provincia",
     "dpos.customers.state.column": "País",
-    "dpos.products.page.title": "Productos"
+    "dpos.products.page.title": "Productos",
+    "dpos.products.name.form.label": "Nombre",
+    "dpos.products.reference.form.label": "Referencia",
+    "dpos.products.barcode.form.label": "Código de barras"
 }

@@ -2,38 +2,28 @@
 <div class="container-fluid header-main">
   <div>
     <!-- Formulario de búsqueda -->
-     <!--
     <form class="d-flex flex-wrap mx-1">
       <div class="mx-3">
-        <label class="form-label">{{'dpos.customers.nif.label' | translate}}</label>
-        <input type="text" class="form-control" name="customerNif" [(ngModel)]="customerNifVarSearch" (change)="onCustomerNifChange()">
+        <label class="form-label">{{'dpos.products.name.form.label' | translate}}</label>
+        <input type="text" class="form-control" name="productName" [(ngModel)]="productNameVarSearch" (change)="onProductNameChange()">
       </div>
       <div class="mx-3">
-        <label class="form-label">{{'dpos.customers.name.label' | translate}}</label>
-        <input type="text" class="form-control" name="customerName" [(ngModel)]="customerNameVarSearch" (change)="onCustomerNameChange()">
+        <label class="form-label">{{'dpos.products.reference.form.label' | translate}}</label>
+        <input type="text" class="form-control" name="productReference" [(ngModel)]="productReferenceVarSearch" (change)="onProductReferenceChange()">
       </div>
       <div class="mx-3">
-        <label class="form-label">{{'dpos.customers.lastname.label' | translate}}</label>
-        <input type="text" class="form-control" name="customerLastName" [(ngModel)]="customerLastNameVarSearch" (change)="onCustomerLastNameChange()">
-      </div>
-      <div class="mx-3">
-        <label class="form-label">{{'dpos.customers.phone.label' | translate}}</label>
-        <input type="text" class="form-control" name="customerPhone" [(ngModel)]="customerPhoneVarSearch" (change)="onCustomerPhoneChange()">
-      </div>
-      <div class="mx-3">
-        <label class="form-label">{{'dpos.customers.mail.label' | translate}}</label>
-        <input type="text" class="form-control" name="customerEmail" [(ngModel)]="customerEmailVarSearch" (change)="onCustomerEmailChange()">
+        <label class="form-label">{{'dpos.products.barcode.form.label' | translate}}</label>
+        <input type="text" class="form-control" name="productBarcode" [(ngModel)]="productBarcodeVarSearch" (change)="onProductBarcodeChange()">
       </div>
       <div id="searchButtonsDiv" class="ms-5 d-flex overflow-auto">
         <button type="reset" class="btn btn-outline-danger align-self-end"> 
           <a type="button" (click)="cleanFormFields()"><i class="fas fa-eraser"></i></a>
         </button>
-        <a type="button" class="btn btn-primary align-self-end" (click)="searchCustomers()">
+        <a type="button" class="btn btn-primary align-self-end" (click)="searchProducts()">
           <i class="fas fa-search"></i>&nbsp;&nbsp;{{'dpos.action.search' | translate}}
         </a>
       </div>
     </form>
-    -->
   </div>
   <br />
 </div>

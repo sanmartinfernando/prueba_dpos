@@ -11,8 +11,13 @@ export class Product {
   id: string;
   name: string;
   price: number;
+  salePrice: number;
   type: number;
   favourite: boolean;
+  stock: number;
+  barcode: string;
+  reference: string;
+  description: string;
   tax: Tax;
   taxExemptCode: string;
   categories: Category[];
@@ -21,6 +26,8 @@ export class Product {
   epigraph: string;
   noticeKitchen: boolean;
   unitMeasurement: number;
+  startSalesPrice: number;
+  endSalesPrice: number;
   decorationCategory: string;
   decorationElement: string;
   selected:boolean = false;

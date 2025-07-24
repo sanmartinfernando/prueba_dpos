@@ -77,10 +77,10 @@ export class CustomersComponent implements OnInit {
     this.uiStateService.setFormSelectEnabled(true);
 
     this.currentLang = this.translate.currentLang || 'es';
-      this.langSubscription = this.translate.onLangChange.subscribe(event => {
-        this.currentLang = event.lang;
-        this.terminalsNumber[0] = this.translate.instant('dpos.filter.all');
-      });
+    this.langSubscription = this.translate.onLangChange.subscribe(event => {
+      this.currentLang = event.lang;
+      this.terminalsNumber[0] = this.translate.instant('dpos.filter.all');
+    });
   }
 
   ngOnDestroy() {

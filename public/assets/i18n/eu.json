@@ -207,5 +207,8 @@
     "dpos.customers.postcode.column": "Posta kodea",
     "dpos.customers.country.column": "Probintzia",
     "dpos.customers.state.column": "Herrialdea",
-    "dpos.products.page.title": "Produktuak"
+    "dpos.products.page.title": "Produktuak",
+    "dpos.products.name.form.label": "Izena",
+    "dpos.products.reference.form.label": "Erreferentzia",
+    "dpos.products.barcode.form.label": "Barra-kodea"
 }

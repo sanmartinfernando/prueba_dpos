@@ -207,5 +207,8 @@
     "dpos.customers.postcode.column": "Codi postal",
     "dpos.customers.country.column": "Provincia",
     "dpos.customers.state.column": "Pais",
-    "dpos.products.page.title": "Productes"
+    "dpos.products.page.title": "Productes",
+    "dpos.products.name.form.label": "Nom",
+    "dpos.products.reference.form.label": "Referència",
+    "dpos.products.barcode.form.label": "Codi de barres"
 }
