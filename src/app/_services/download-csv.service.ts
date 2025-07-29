@@ -6,8 +6,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Order } from '../_models/order.model';
 import { BalanceLine } from '../_models/balance-line.model';
-import { CustomerInfo } from '../_models/customer-info.model';
 import { Customer } from '../_models/customer.model';
+import { Tax } from '../_models/tax.model';
 
 @Injectable({
   providedIn: 'root'
@@ -530,6 +530,78 @@ export class DownloadCsvService {
       line += (line ? ';' : '') + (customer.lastName || '');
       line += (line ? ';' : '') + (customer.phone || '');
       line += (line ? ';' : '') + (customer.email || '');
+
+      str += line + '\r\n';
+    }
+    return str;
+  }
+
+
+
+
+  public downloadTaxesFile(taxes: Tax[], filename = 'data', language: string) {
+
+    if(!taxes) return;
+    
+    // Encabezados en ambos idiomas
+    const headersES = [
+      'ID',
+      'Nombre',
+      'Valor'
+    ];
+
+    const headersCAT = [
+      'ID',
+      'Nom',
+      'Valor'
+    ];
+
+    const headersEU = [
+        'IFZ',
+        'Izena',
+        'Balio'
+    ];
+    
+    let headers: string[] = headersES;
+
+    if(language === 'es'){
+        headers = headersES;
+    } else if (language === 'eu'){
+        headers = headersEU;
+    } else if (language === 'cat'){
+      headers = headersCAT;
+    }
+
+    const fields = [
+        'id',
+        'value',
+        'name'
+    ];
+
+    // Convertir a CSV con solo los datos y encabezados específicos
+    let csvData = this.convertTaxesToCSV(taxes, fields, headers);
+    
+    let blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
+    let dwldLink = document.createElement("a");
+    let url = URL.createObjectURL(blob);
+    dwldLink.setAttribute("href", url);
+    dwldLink.setAttribute("download", filename + ".csv");
+    dwldLink.style.visibility = "hidden";
+    document.body.appendChild(dwldLink);
+    dwldLink.click();
+    document.body.removeChild(dwldLink);
+  }
+
+   public convertTaxesToCSV(taxes:Tax[], fields:string[], headers: string[]) {
+
+    let str = headers.join(';') + '\r\n'; 
+    for (let i = 0; i < taxes.length; i++) {
+      let tax: Tax = taxes[i]
+      let line:string = "";
+
+      line += (line ? ';' : '') + (tax.id || '');
+      line += (line ? ';' : '') + ((tax.value / 100).toFixed(2)+' %' || '');
+      line += (line ? ';' : '') + (tax.name || '');
 
       str += line + '\r\n';
     }

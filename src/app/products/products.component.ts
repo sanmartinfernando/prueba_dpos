@@ -15,6 +15,7 @@ import { AuthService } from '../_services/auth.service';
 import { Commerce } from '../_models/commerce.model';
 import { Product } from '../_models/product.model';
 import { ProductsService } from '../_services/products.service';
+import { Category } from '../_models/category.model';
 
 @Component({
   selector: 'DPOSW-products',
@@ -33,7 +34,15 @@ export class ProductsComponent implements OnInit {
   commerceId: number = 0;
   commerceSelected: string;
 
-  products: Product[] = [];
+  currentCategoryPage: number = 1;
+  categorySelected:Category;
+  categories: Category[] = [{id: "1", name: "Categoria 1"}, {id: "2", name: "Categoria 2"}];
+
+  currentProductsPage: number = 1;
+  products: Product[] = [{id: "1", name: "Producto 1", price: 10, reference: "Referencia 1", barcode: "Codigo de barras 1", stock: 10 },
+                        {id: "2", name: "Producto 2", price: 20, reference: "Referencia 2", barcode: "Codigo de barras 2", stock: 20 },
+                        {id: "3", name: "Producto 3", price: 30, reference: "Referencia 3", barcode: "Codigo de barras 3", stock: 30 }
+  ];
 
   currentLang: string;
   langSubscription: Subscription;
@@ -97,6 +106,8 @@ export class ProductsComponent implements OnInit {
                 }
                 this.themeService.loadTheme(this.getCommerceResellerName(commerces));
                 this.commerceSelected = this.getCommerceNumber(this.commerceId);
+              
+                this.categorySelected = this.categories[0];
                 this.searchProducts();
               });
             },
@@ -199,6 +210,38 @@ export class ProductsComponent implements OnInit {
     this.getProducts();
   }
 
+
+  public openCategoriesModal(): void {
+  //  const dialogRef = this.dialog.open(ManufacturersModalComponent);
+  //  dialogRef.afterClosed().subscribe(result => {
+
+  //  });
+  }
+
+  public onCategoryChange(): void {
+  //  this.getModels();
+  }
+
+  public openProductsModal(): void {
+  //  const dialogRef = this.dialog.open(ManufacturersModelModalComponent);
+  //  dialogRef.afterClosed().subscribe(result => {
+
+  //  });
+  }
+
+  downloadCSV(){
+  //  this.downloadCsvService.downloadCustomersFile(this.customers, 'Customers', this.currentLang);
+  }
+
+  //Importar clientes
+  importCustomers(){
+  //  this.customerFileInput.nativeElement.click();
+  }
+
+  onCustomerFileSelected(event: Event) {
+  
+  }
+
   private getCommerceResellerName(commerces: Commerce[]): string {
     const commerce = commerces.find(commerce => commerce.commerceId == this.commerceId);
     if(commerce != undefined) {
@@ -208,6 +251,7 @@ export class ProductsComponent implements OnInit {
   }
 
   private getProducts() {
+    /*
     this.productsService.getProducts(this.size, this.varSearch).subscribe(
       (products) => {
         this.products = products.data;
@@ -226,6 +270,7 @@ export class ProductsComponent implements OnInit {
         };
       }
     );
+    */
   }
 
 }

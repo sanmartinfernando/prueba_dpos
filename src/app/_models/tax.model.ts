@@ -16,8 +16,8 @@ export class Tax {
   id: number;
   value: number;
   name: string;
-  type: number;
-  isDefault: boolean;
-  deleted: boolean;
-  selected:boolean = false;
+  type?: number;
+  isDefault?: boolean;
+  deleted?: boolean;
+  selected?:boolean = false;
 }

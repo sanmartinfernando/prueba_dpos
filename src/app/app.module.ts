@@ -41,6 +41,7 @@ import { CustomersComponent } from './customers/customers.component';
 import { CustomerDetailsComponent } from './customers/details/customer-details.component';
 import { ProductsComponent } from './products/products.component';
 import { ProductDetailsComponent } from './products/details/product-details.component';
+import { TaxesComponent } from './taxes/taxes.component';
 
 registerLocaleData(localeEs);
 
@@ -57,6 +58,7 @@ registerLocaleData(localeEs);
         SalesComponent,
         CustomersComponent,
         CustomerDetailsComponent,
+        TaxesComponent,
         ProductsComponent,
         ProductDetailsComponent,
         ErrorComponent,

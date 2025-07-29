@@ -7,6 +7,7 @@ const BALANCES = 'Balances';
 const CASHMOVEMENTS = 'CashMovements';
 const CUSTOMERS = 'Customers';
 const PRODUCTS = 'Products';
+const TAXES = 'Taxes';
 
 export const RestRoutes = {
   USER: `${API}/${USER}`,
@@ -28,6 +29,8 @@ export const RestRoutes = {
   CASH_MOVEMENTS_AGGREGATE: `${API}/${CASHMOVEMENTS}/aggregate`,
   CUSTOMERS_INFO: `${API}/${CUSTOMERS}?size=`,
   CUSTOMERS: `${API}/${CUSTOMERS}/`,
+  TAXES_INFO: `${API}/${TAXES}?size=`,
+  TAXES: `${API}/${TAXES}/`,
   PRODUCTS_INFO: `${API}/${PRODUCTS}?size=`,
   PRODUCTS: `${API}/${PRODUCTS}/`,
   PARAM_OFFSET: `&offset=0`,

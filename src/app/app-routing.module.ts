@@ -21,6 +21,7 @@ import { CustomersComponent } from './customers/customers.component';
 import { CustomerDetailsComponent } from './customers/details/customer-details.component';
 import { ProductsComponent } from './products/products.component';
 import { ProductDetailsComponent } from './products/details/product-details.component';
+import { TaxesComponent } from './taxes/taxes.component';
 
 const routes: Routes = [
   { path: '', component: DashboardComponent, canActivate: [AuthGuard], title:"DPOS - Dashboard"},
@@ -42,6 +43,7 @@ const routes: Routes = [
   { path: 'products', component: ProductsComponent, canActivate: [AuthGuard], title:"DPOS - Productos"},
   { path: 'product-details',component: ProductDetailsComponent, canActivate: [AuthGuard], title:"DPOS - Productos" },
   { path: 'product-details/:id',component: ProductDetailsComponent, canActivate: [AuthGuard], title:"DPOS - Productos" },
+  { path: 'taxes', component: TaxesComponent, canActivate: [AuthGuard], title:"DPOS - Impuestos"},
   { path: 'login/password-recovery', component: PwrecoveryComponent, title:"DPOS - Recuperación de contraseña" },
   { path: 'password-reset', component: PwresetComponent, title:"DPOS - Recuperación de contraseña"  },
   { path: '**', redirectTo: '/login' } //Redirigir a login en caso de ruta no encontrada

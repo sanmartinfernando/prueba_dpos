@@ -254,10 +254,9 @@ export class CustomersComponent implements OnInit {
   
   //Eliminar clientes
   deleteCustomers(){
-    for(let i= 0; i < this.customers.length; i++){
-      if(this.customers[i].selected) {
-        this.customers.splice(i, 1);
-      }
+    this.customers = this.customers.filter(customer => !customer.selected);
+    if(this.customers.length == 0) {
+      this.emptySearch = true;
     }
   }
   
