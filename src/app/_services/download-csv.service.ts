@@ -24,6 +24,8 @@ export class DownloadCsvService {
   
   public downloadSalesFile(sales: OrderInfo, filename = 'data', language: string) {
 
+    if(!sales) return;
+
     // Encabezados en ambos idiomas
     const headersES = [
       'Documento',
@@ -99,6 +101,8 @@ export class DownloadCsvService {
 
   public downloadBalancesFile(balances: Balance[], filename = 'data', language: string) {
     
+    if(!balances) return;
+
     // Encabezados en ambos idiomas
     const headersES = [
       'Documento',
@@ -166,6 +170,8 @@ export class DownloadCsvService {
 
   public downloadArqueoXFile(arqueoX: Balance, filename = 'data', language: string) {
 
+    if(!arqueoX) return;
+
     // Encabezados en ambos idiomas
     const headersES = [
       'Impuesto',
@@ -219,6 +225,8 @@ export class DownloadCsvService {
   }
 
   public downloadSalesReportFile(salesReport: SalesReport, filename = 'data', language: string) {
+
+    if(!salesReport) return;
 
     // Encabezados en ambos idiomas
     const headersES = [
@@ -274,6 +282,8 @@ export class DownloadCsvService {
   }
 
   public downloadPaymentMethodsFile(arqueoX: Balance, filename = 'data', language: string) {
+
+    if(!arqueoX) return;
 
     // Encabezados en ambos idiomas
     const headersES = [

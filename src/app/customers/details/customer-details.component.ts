@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { UIStateService } from 'src/app/_services/ui-state.service';
 import { SessionService } from 'src/app/_services/session.service';
 import { ThemeService } from 'src/app/_services/theme.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'DPOSW-customer-details',
@@ -13,6 +14,8 @@ import { ThemeService } from 'src/app/_services/theme.service';
 export class CustomerDetailsComponent implements OnInit {
 
   loadCompleted: boolean = false;
+  idCustomer: string = null;
+  titlePage: string;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -20,6 +23,7 @@ export class CustomerDetailsComponent implements OnInit {
     private storageService: StorageService,
     private uiStateService: UIStateService,
     private sessionService: SessionService,
+    private translate: TranslateService,
     private themeService: ThemeService
   ) {
 
@@ -30,10 +34,17 @@ export class CustomerDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const idCustomer = this.activatedRoute.snapshot.params['id'];
-    if (idCustomer) {
-      const iddecode = this.encryptionService.decode(idCustomer);
+    const idParam = this.activatedRoute.snapshot.params['id'];
+
+    console.log("--: " + idParam);
+
+    if (idParam) {
+      this.idCustomer = this.encryptionService.decode(idParam);
+      this.titlePage = this.translate.instant('dpos.customer.details.page.edit.title');
+    } else {
+      this.titlePage = this.translate.instant('dpos.customer.details.page.add.title');
     }
+
     this.loadCompleted = true;
   }
 }

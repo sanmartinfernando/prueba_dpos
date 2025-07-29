@@ -28,6 +28,8 @@ export class CustomersComponent implements OnInit {
   validationVariable: boolean = false;
   commerceId: number = 0;
 
+  Math = Math;
+
   masterSelected: boolean = false;
 
   //Parámetros de búsqueda
@@ -289,6 +291,7 @@ export class CustomersComponent implements OnInit {
         let customers: Customer[] = [];
         for(let i= 0; i < rows.length; i++){
           let customer: Customer = new Customer();
+          customer.id = "i";
           customer.nif = rows[i][0];
           customer.name = rows[i][1];
           customer.lastName = rows[i][2];

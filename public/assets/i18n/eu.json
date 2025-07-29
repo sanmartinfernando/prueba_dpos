@@ -207,6 +207,8 @@
     "dpos.customers.postcode.column": "Posta kodea",
     "dpos.customers.country.column": "Probintzia",
     "dpos.customers.state.column": "Herrialdea",
+    "dpos.customer.details.page.add.title": "Gehitu bezeroa",
+    "dpos.customer.details.page.edit.title": "Editatu bezeroa",
     "dpos.products.page.title": "Produktuak",
     "dpos.products.nodata.label": "Ez dago daturik bistaratzeko",
     "dpos.products.name.form.label": "Izena",

@@ -207,6 +207,8 @@
     "dpos.customers.postcode.column": "Codi postal",
     "dpos.customers.country.column": "Provincia",
     "dpos.customers.state.column": "Pais",
+    "dpos.customer.details.page.add.title": "Afegir client",
+    "dpos.customer.details.page.edit.title": "Editar client",
     "dpos.products.page.title": "Productes",
     "dpos.products.nodata.label": "No hi ha dades per mostrar",
     "dpos.products.name.form.label": "Nom",
