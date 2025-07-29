@@ -321,7 +321,7 @@ export class CustomersComponent implements OnInit {
 
   //Descargar clientes
   downloadCSV(){
-    this.downloadCsvService.downloadCustomersFile(this.customers, 'Customers', this.currentLang);
+    this.downloadCsvService.downloadCustomersFile(this.customers, this.translate.instant('dpos.customers.page.title'), this.currentLang);
   }
 
   openModal() {

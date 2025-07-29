@@ -304,11 +304,11 @@ export class ReportsComponent implements OnInit {
   //Boton Descargar
   downloadReports(){
     if(this.reportVarSearch == this.translate.instant('dpos.reports.taxes.label')) {
-      this.downloadCsvService.downloadArqueoXFile(this.sales, 'ArqueoX', this.currentLang);
+      this.downloadCsvService.downloadArqueoXFile(this.sales, this.translate.instant('dpos.reports.taxes.label'), this.currentLang);
     } else if(this.reportVarSearch == this.translate.instant('dpos.reports.products.label')) {
-      this.downloadCsvService.downloadSalesReportFile(this.salesReports, 'SalesReport', this.currentLang);
+      this.downloadCsvService.downloadSalesReportFile(this.salesReports, this.translate.instant('dpos.reports.products.label'), this.currentLang);
     } else if(this.reportVarSearch == this.translate.instant('dpos.reports.paymentmethods.label')) {
-      this.downloadCsvService.downloadPaymentMethodsFile(this.sales, 'PaymentMethods', this.currentLang);
+      this.downloadCsvService.downloadPaymentMethodsFile(this.sales, this.translate.instant('dpos.reports.paymentmethods.label'), this.currentLang);
     }
   }
 

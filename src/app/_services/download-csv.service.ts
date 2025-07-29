@@ -90,7 +90,7 @@ export class DownloadCsvService {
     let dwldLink = document.createElement("a");
     let url = URL.createObjectURL(blob);
     dwldLink.setAttribute("href", url);
-    dwldLink.setAttribute("download", filename + ".csv");
+    dwldLink.setAttribute("download", filename + " " + this.formatDate(Date.now()) + ".csv");
     dwldLink.style.visibility = "hidden";
     document.body.appendChild(dwldLink);
     dwldLink.click();
@@ -157,7 +157,7 @@ export class DownloadCsvService {
     let dwldLink = document.createElement("a");
     let url = URL.createObjectURL(blob);
     dwldLink.setAttribute("href", url);
-    dwldLink.setAttribute("download", filename + ".csv");
+    dwldLink.setAttribute("download", filename + " " + this.formatDate(Date.now()) + ".csv");
     dwldLink.style.visibility = "hidden";
     document.body.appendChild(dwldLink);
     dwldLink.click();
@@ -211,7 +211,7 @@ export class DownloadCsvService {
     let dwldLink = document.createElement("a");
     let url = URL.createObjectURL(blob);
     dwldLink.setAttribute("href", url);
-    dwldLink.setAttribute("download", filename + ".csv");
+    dwldLink.setAttribute("download", filename + " " + this.formatDate(Date.now()) + ".csv");
     dwldLink.style.visibility = "hidden";
     document.body.appendChild(dwldLink);
     dwldLink.click();
@@ -266,7 +266,7 @@ export class DownloadCsvService {
     let dwldLink = document.createElement("a");
     let url = URL.createObjectURL(blob);
     dwldLink.setAttribute("href", url);
-    dwldLink.setAttribute("download", filename + ".csv");
+    dwldLink.setAttribute("download", filename + " " + this.formatDate(Date.now()) + ".csv");
     dwldLink.style.visibility = "hidden";
     document.body.appendChild(dwldLink);
     dwldLink.click();
@@ -317,7 +317,121 @@ export class DownloadCsvService {
     let dwldLink = document.createElement("a");
     let url = URL.createObjectURL(blob);
     dwldLink.setAttribute("href", url);
-    dwldLink.setAttribute("download", filename + ".csv");
+    dwldLink.setAttribute("download", filename + " " + this.formatDate(Date.now()) + ".csv");
+    dwldLink.style.visibility = "hidden";
+    document.body.appendChild(dwldLink);
+    dwldLink.click();
+    document.body.removeChild(dwldLink);
+  }
+
+  public downloadCustomersFile(customers: Customer[], filename = 'data', language: string) {
+
+    if(!customers) return;
+    
+    // Encabezados en ambos idiomas
+    const headersES = [
+      'NIF',
+      'Nombre',
+      'Appellidos',
+      'Teléfono',
+      'Email'
+    ];
+
+    const headersCAT = [
+      'NIF',
+      'Nom',
+      'Cognoms',
+      'Telèfon',
+      'Email'
+    ];
+
+    const headersEU = [
+        'IFZ',
+        'Izena',
+        'Abizenak',
+        'Telefonoa',
+        'Posta elektronikoa'
+    ];
+    
+    let headers: string[] = headersES;
+
+    if(language === 'es'){
+        headers = headersES;
+    } else if (language === 'eu'){
+        headers = headersEU;
+    } else if (language === 'cat'){
+      headers = headersCAT;
+    }
+
+    const fields = [
+        'nif',
+        'name',
+        'lastname',
+        'phone',
+        'email'
+    ];
+
+    // Convertir a CSV con solo los datos y encabezados específicos
+    let csvData = this.convertCustomersToCSV(customers, fields, headers);
+    
+    let blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
+    let dwldLink = document.createElement("a");
+    let url = URL.createObjectURL(blob);
+    dwldLink.setAttribute("href", url);
+    dwldLink.setAttribute("download", filename + " " + this.formatDate(Date.now()) + ".csv");
+    dwldLink.style.visibility = "hidden";
+    document.body.appendChild(dwldLink);
+    dwldLink.click();
+    document.body.removeChild(dwldLink);
+  }
+
+  public downloadTaxesFile(taxes: Tax[], filename = 'data', language: string) {
+
+    if(!taxes) return;
+    
+    // Encabezados en ambos idiomas
+    const headersES = [
+      'ID',
+      'Nombre',
+      'Valor'
+    ];
+
+    const headersCAT = [
+      'ID',
+      'Nom',
+      'Valor'
+    ];
+
+    const headersEU = [
+        'IFZ',
+        'Izena',
+        'Balio'
+    ];
+    
+    let headers: string[] = headersES;
+
+    if(language === 'es'){
+        headers = headersES;
+    } else if (language === 'eu'){
+        headers = headersEU;
+    } else if (language === 'cat'){
+      headers = headersCAT;
+    }
+
+    const fields = [
+        'id',
+        'value',
+        'name'
+    ];
+
+    // Convertir a CSV con solo los datos y encabezados específicos
+    let csvData = this.convertTaxesToCSV(taxes, fields, headers);
+    
+    let blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
+    let dwldLink = document.createElement("a");
+    let url = URL.createObjectURL(blob);
+    dwldLink.setAttribute("href", url);
+    dwldLink.setAttribute("download", filename + " " + this.formatDate(Date.now()) + ".csv");
     dwldLink.style.visibility = "hidden";
     document.body.appendChild(dwldLink);
     dwldLink.click();
@@ -386,7 +500,6 @@ export class DownloadCsvService {
 
     return str;
   }
-
 
   public convertArqueoXToCSV(balance:Balance, fields:string[], headers: string[]) {
 
@@ -457,68 +570,7 @@ export class DownloadCsvService {
     return str;
   }
 
-  public downloadCustomersFile(customers: Customer[], filename = 'data', language: string) {
-
-    if(!customers) return;
-    
-    // Encabezados en ambos idiomas
-    const headersES = [
-      'NIF',
-      'Nombre',
-      'Appellidos',
-      'Teléfono',
-      'Email'
-    ];
-
-    const headersCAT = [
-      'NIF',
-      'Nom',
-      'Cognoms',
-      'Telèfon',
-      'Email'
-    ];
-
-    const headersEU = [
-        'IFZ',
-        'Izena',
-        'Abizenak',
-        'Telefonoa',
-        'Posta elektronikoa'
-    ];
-    
-    let headers: string[] = headersES;
-
-    if(language === 'es'){
-        headers = headersES;
-    } else if (language === 'eu'){
-        headers = headersEU;
-    } else if (language === 'cat'){
-      headers = headersCAT;
-    }
-
-    const fields = [
-        'nif',
-        'name',
-        'lastname',
-        'phone',
-        'email'
-    ];
-
-    // Convertir a CSV con solo los datos y encabezados específicos
-    let csvData = this.convertCustomersToCSV(customers, fields, headers);
-    
-    let blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
-    let dwldLink = document.createElement("a");
-    let url = URL.createObjectURL(blob);
-    dwldLink.setAttribute("href", url);
-    dwldLink.setAttribute("download", filename + ".csv");
-    dwldLink.style.visibility = "hidden";
-    document.body.appendChild(dwldLink);
-    dwldLink.click();
-    document.body.removeChild(dwldLink);
-  }
-
-   public convertCustomersToCSV(customers:Customer[], fields:string[], headers: string[]) {
+  public convertCustomersToCSV(customers:Customer[], fields:string[], headers: string[]) {
 
     let str = headers.join(';') + '\r\n'; 
     for (let i = 0; i < customers.length; i++) {
@@ -536,63 +588,7 @@ export class DownloadCsvService {
     return str;
   }
 
-
-
-
-  public downloadTaxesFile(taxes: Tax[], filename = 'data', language: string) {
-
-    if(!taxes) return;
-    
-    // Encabezados en ambos idiomas
-    const headersES = [
-      'ID',
-      'Nombre',
-      'Valor'
-    ];
-
-    const headersCAT = [
-      'ID',
-      'Nom',
-      'Valor'
-    ];
-
-    const headersEU = [
-        'IFZ',
-        'Izena',
-        'Balio'
-    ];
-    
-    let headers: string[] = headersES;
-
-    if(language === 'es'){
-        headers = headersES;
-    } else if (language === 'eu'){
-        headers = headersEU;
-    } else if (language === 'cat'){
-      headers = headersCAT;
-    }
-
-    const fields = [
-        'id',
-        'value',
-        'name'
-    ];
-
-    // Convertir a CSV con solo los datos y encabezados específicos
-    let csvData = this.convertTaxesToCSV(taxes, fields, headers);
-    
-    let blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
-    let dwldLink = document.createElement("a");
-    let url = URL.createObjectURL(blob);
-    dwldLink.setAttribute("href", url);
-    dwldLink.setAttribute("download", filename + ".csv");
-    dwldLink.style.visibility = "hidden";
-    document.body.appendChild(dwldLink);
-    dwldLink.click();
-    document.body.removeChild(dwldLink);
-  }
-
-   public convertTaxesToCSV(taxes:Tax[], fields:string[], headers: string[]) {
+  public convertTaxesToCSV(taxes:Tax[], fields:string[], headers: string[]) {
 
     let str = headers.join(';') + '\r\n'; 
     for (let i = 0; i < taxes.length; i++) {
@@ -606,5 +602,14 @@ export class DownloadCsvService {
       str += line + '\r\n';
     }
     return str;
+  }
+
+
+  private formatDate(timestamp: number): string {
+    const date = new Date(timestamp);  
+    const day = String(date.getDate()).padStart(2, '0'); // Obtener día (con 2 dígitos)
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Obtener mes (agregar 1 porque getMonth empieza desde 0)
+    const year = date.getFullYear(); // Obtener el año
+    return `${day}-${month}-${year}`;
   }
 }

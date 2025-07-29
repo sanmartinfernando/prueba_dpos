@@ -486,7 +486,7 @@ export class SalesComponent implements OnInit {
 
   //Boton Descargar
   downloadCSV(){
-    this.downloadCsvService.downloadSalesFile(this.sales, 'Sales', this.currentLang);
+    this.downloadCsvService.downloadSalesFile(this.sales, this.translate.instant('dpos.sales.page.title'), this.currentLang);
   }
 
   openModal() {

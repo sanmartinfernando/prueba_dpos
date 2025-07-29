@@ -186,7 +186,7 @@ export class TaxesComponent implements OnInit {
 
   //Descargar impuestos
   downloadCSV(){
-    this.downloadCsvService.downloadTaxesFile(this.taxes, 'Taxes', this.currentLang);
+    this.downloadCsvService.downloadTaxesFile(this.taxes, this.translate.instant('dpos.taxes.page.title'), this.currentLang);
   }
 
   openModal() {

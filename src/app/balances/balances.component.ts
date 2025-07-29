@@ -310,7 +310,7 @@ export class BalancesComponent implements OnInit {
 
   //Boton Descargar CSV
   downloadCSV(){
-    this.downloadCsvService.downloadBalancesFile(this.balances, 'Balances', this.currentLang);
+    this.downloadCsvService.downloadBalancesFile(this.balances, this.translate.instant('dpos.balances.page.title'), this.currentLang);
   }
 
   openModal() {
