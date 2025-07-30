@@ -862,6 +862,7 @@ ul.list-icons li i, ul.list-icons li span, ul.list-icons li svg {
   font-size: 22px;
   background: none;
   border: none;
+  outline: none;
   cursor: pointer;
 }
 

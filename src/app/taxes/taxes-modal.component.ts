@@ -1,5 +1,14 @@
-import { Component, EventEmitter, Output } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { AuthService } from '../_services/auth.service';
+import { PortalUsersService } from '../_services/portal-users.service';
+import { SessionService } from '../_services/session.service';
+import { StorageService } from '../_services/storage.service';
+import { ThemeService } from '../_services/theme.service';
+import { ActivatedRoute } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { EncryptionService } from '../_services/encryption.service';
+import { Tax } from '../_models/tax.model';
 
 @Component({
   selector: 'DPOSW-taxes-modal',
@@ -8,9 +17,104 @@ import { MatDialogRef } from '@angular/material/dialog';
 })
 export class TaxesModalComponent {
 
-  constructor(public dialogRef: MatDialogRef<TaxesModalComponent>) { }
+  titlePage: string;
+  idTax: number;
+  taxFormData = {
+    taxType: '-1',
+    name: 'EXENTO',
+    value: '0'
+  };
+  
+  Tax: Tax;
+  isTaxNameDisabled:boolean = true;
+  isTaxValueDisabled:boolean = true;
+
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private encryptionService: EncryptionService,
+    public dialogRef: MatDialogRef<TaxesModalComponent>,
+    private portalUsersService: PortalUsersService,
+    private storageService: StorageService,
+    private themeService: ThemeService,
+    private sessionService: SessionService,
+    private translate: TranslateService,
+    private authService: AuthService,
+    @Inject(MAT_DIALOG_DATA) public data: { id?: number },
+  ) { 
+    this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
+    this.idTax = data.id;
+  }
+
+  ngOnInit(): void {
+
+    this.storageService.userInfo.subscribe((user) =>{
+      this.portalUsersService.getToken(user).subscribe({
+        next: (portalUserToken)=> {
+          this.authService.setPortalUsersToken(portalUserToken.token);
+          
+          if (this.idTax) {
+            this.titlePage = this.translate.instant('dpos.taxes.modal.title.edit');
+            this.getTax();
+          } else {
+            this.titlePage = this.translate.instant('dpos.taxes.modal.title.add');
+          }
+        },
+        error: (error) => {
+          console.error("Error Portal user token", error);
+        }
+      });
+    });
+  }
+
+  public updateTaxForm() {
+
+    if(this.taxFormData.taxType === '-1' ) {
+      this.taxFormData = {
+          taxType: '-1',
+          name: 'EXENTO',
+          value: '0'
+        };
+      this.isTaxNameDisabled = true;
+      this.isTaxValueDisabled = true;
+    } else if(this.taxFormData.taxType === '-2' ) {
+      this.taxFormData = {
+          taxType: '-2',
+          name: 'NO SUJETO',
+          value: '0'
+        };
+      this.isTaxNameDisabled = true;
+      this.isTaxValueDisabled = true;
+    } else {
+      this.taxFormData = {
+          taxType: this.taxFormData.taxType,
+          name: '',
+          value: ''
+        };
+      this.isTaxNameDisabled = false;
+      this.isTaxValueDisabled = false;
+    }
+  }
+
+  public onSubmit() {
+    console.log('Valores del formulario:', this.taxFormData);
+    this.dialogRef.close();
+  }
 
   public close(): void {
     this.dialogRef.close();
+  }
+
+  private getTax() {
+    this.loadTaxData();
+  }
+
+  private loadTaxData() {
+    this.taxFormData = {
+      taxType: '0',
+      name: 'IVA 10%',
+      value: '1000'
+    };
+    this.isTaxNameDisabled = false;
+    this.isTaxValueDisabled = false;
   }
 }

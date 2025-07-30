@@ -1,50 +1,64 @@
 <div class="modal-backdrop"></div>
 <div class="modal-small-content">
   <div class="modal-header">
-    <h2>{{'dpos.taxes.modal.title.add' | translate}}</h2>
+    <h2>{{ titlePage }}</h2>
     <button class="modal-close-button" (click)="close()">×</button>
   </div>
   <div class="modal-body">
     <div class="container my-3">
-      <div class="row mb-3">
-        <div class="col-md-12">
-          <div class="row">
-            <div class="col-12">
-              <label class="form-label">{{'dpos.taxes.modal.form.type' | translate}}</label>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-12">
-              <div class="form-check form-check-inline">
-                <input class="form-check-input square-check" type="radio" name="taxType" id="exent" value="1">
-                <label class="form-check-label" for="exent">{{'dpos.taxes.modal.form.type.exent' | translate}}</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input square-check" type="radio" name="taxType" id="noSubject" value="-1">
-                <label class="form-check-label" for="noSubject">{{'dpos.taxes.modal.form.type.noSubject' | translate}}</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input square-check" type="radio" name="taxType" id="others" value="0">
-                <label class="form-check-label" for="others">{{'dpos.taxes.modal.form.type.others' | translate}}</label>
+      <form (ngSubmit)="onSubmit()">
+        <div class="row mb-3">
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-12">
+                <label class="form-label">{{'dpos.taxes.modal.form.type' | translate}}</label>
               </div>
             </div>
+            <div class="row">
+              <div class="col-12">
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input square-check" type="radio" name="taxType" id="exent" value="-1" (change)="updateTaxForm()" [(ngModel)]="taxFormData.taxType">
+                  <label class="form-check-label" for="exent">{{'dpos.taxes.modal.form.type.exent' | translate}}</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input square-check" type="radio" name="taxType" id="noSubject" value="-2" (change)="updateTaxForm()" [(ngModel)]="taxFormData.taxType">
+                  <label class="form-check-label" for="noSubject">{{'dpos.taxes.modal.form.type.noSubject' | translate}}</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input square-check" type="radio" name="taxType" id="IVA" value="0" (change)="updateTaxForm()" [(ngModel)]="taxFormData.taxType">
+                  <label class="form-check-label" for="IVA">{{'dpos.taxes.modal.form.type.iva' | translate}}</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input square-check" type="radio" name="taxType" id="IGIC" value="1" (change)="updateTaxForm()" [(ngModel)]="taxFormData.taxType">
+                  <label class="form-check-label" for="IGIC">{{'dpos.taxes.modal.form.type.igic' | translate}}</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input square-check" type="radio" name="taxType" id="IPSI" value="2" (change)="updateTaxForm()" [(ngModel)]="taxFormData.taxType">
+                  <label class="form-check-label" for="IPSI">{{'dpos.taxes.modal.form.type.ipsi' | translate}}</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input square-check" type="radio" name="taxType" id="others" value="10" (change)="updateTaxForm()" [(ngModel)]="taxFormData.taxType">
+                  <label class="form-check-label" for="others">{{'dpos.taxes.modal.form.type.others' | translate}}</label>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="form-label">{{'dpos.taxes.modal.form.name' | translate}}</label>
-          <input type="text" class="form-control">
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label">{{'dpos.taxes.modal.form.name' | translate}}</label>
+            <input type="text" class="form-control" name="name" [(ngModel)]="taxFormData.name" [disabled]="isTaxNameDisabled">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">{{'dpos.taxes.modal.form.value' | translate}}</label>
+            <input type="text" class="form-control" name="value" [(ngModel)]="taxFormData.value" [disabled]="isTaxValueDisabled">
+          </div>
         </div>
-        <div class="col-md-6">
-          <label class="form-label">{{'dpos.taxes.modal.form.value' | translate}}</label>
-          <input type="text" class="form-control">
-        </div>
-      </div>
+      </form>
     </div>
   </div>
   <div class="modal-footer">
     <button class="btn btn-outline-danger" (click)="close()">{{'dpos.action.cancel' | translate}}</button>
-    <button class="btn btn-primary" (click)="close()">{{'dpos.action.create' | translate}}</button>
+    <button type="submit" class="btn btn-primary">{{'dpos.action.create' | translate}}</button>
   </div>
 </div>

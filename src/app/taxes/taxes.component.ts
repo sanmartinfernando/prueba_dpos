@@ -183,8 +183,8 @@ export class TaxesComponent implements OnInit {
   }
   
   //Añadir impuesto
-  public openTaxesModal(): void {
-    const dialogRef = this.dialog.open(TaxesModalComponent);
+  public openTaxesModal(id?: number): void {
+    const dialogRef = this.dialog.open(TaxesModalComponent, {data: { id }});
     dialogRef.afterClosed().subscribe(result => {
 
     });

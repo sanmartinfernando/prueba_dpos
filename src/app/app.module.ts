@@ -84,6 +84,7 @@ registerLocaleData(localeEs);
         ReactiveFormsModule,
         RouterModule,
         MatDialogModule,
+        FormsModule,
         NgxChartsModule,
         BrowserAnimationsModule,
         QRCodeModule,

@@ -242,7 +242,10 @@
     "dpos.taxes.modal.form.type":"Mutila",
     "dpos.taxes.modal.form.type.exent":"Salbuetsita",
     "dpos.taxes.modal.form.type.noSubject":"Ez da gaia",
+    "dpos.taxes.modal.form.type.iva":"IVA",
+    "dpos.taxes.modal.form.type.ipsi":"IPSI",
+    "dpos.taxes.modal.form.type.igic":"IGIC",
     "dpos.taxes.modal.form.type.others":"Beste batzuk",
     "dpos.taxes.modal.form.name":"Zergaren izena*",
-    "dpos.taxes.modal.form.value":"Zerga-balioa*"
+    "dpos.taxes.modal.form.value":"Zerga-balioa (%)*"
 }

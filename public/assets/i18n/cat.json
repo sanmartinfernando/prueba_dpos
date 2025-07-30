@@ -242,7 +242,10 @@
     "dpos.taxes.modal.form.type":"Tipus",
     "dpos.taxes.modal.form.type.exent":"Exent",
     "dpos.taxes.modal.form.type.noSubject":"No subjecte",
+    "dpos.taxes.modal.form.type.iva":"IVA",
+    "dpos.taxes.modal.form.type.ipsi":"IPSI",
+    "dpos.taxes.modal.form.type.igic":"IGIC",
     "dpos.taxes.modal.form.type.others":"Altres",
     "dpos.taxes.modal.form.name":"Nom de l'impost*",
-    "dpos.taxes.modal.form.value":"Valor de l'impost*"
+    "dpos.taxes.modal.form.value":"Valor de l'impost (%)*"
 }
