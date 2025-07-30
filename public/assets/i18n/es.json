@@ -31,6 +31,7 @@
     "dpos.filter.registers": "registros >>",
     "dpos.filter.registersselected": "registros están seleccionados",
     "dpos.filter.novalid": "El parámetro de búsqueda no es válido",
+    "dpos.action.create": "Crear",
     "dpos.action.accept": "Aceptar",
     "dpos.action.search": "Buscar",
     "dpos.action.clean": "Limpiar",
@@ -40,6 +41,7 @@
     "dpos.action.save": "Guardar",
     "dpos.action.advancedsearch": "Busqueda Avanzada",
     "dpos.error.msg.general": "[!] Mensaje de error",
+    "dpos.error.msg.params": "Datu batzuk baliogabeak dira (undefined o null)",
     "dpos.footer.msg.privacy": "Política de privacidad",
     "dpos.footer.msg.cookies": "Política de cookies",
     "dpos.footer.msg.uses": "Condiciones de uso",
@@ -234,5 +236,13 @@
     "dpos.taxes.value.label": "Valor del impuesto",
     "dpos.taxes.import.label": "Importar",
     "dpos.taxes.add.label": "+ Nuevo",
-    "dpos.taxes.uncheck.label": "Eliminar selección"
+    "dpos.taxes.uncheck.label": "Eliminar selección",
+    "dpos.taxes.modal.title.add":"Crear impuesto",
+    "dpos.taxes.modal.title.edit":"Editar impuesto",
+    "dpos.taxes.modal.form.type":"Tipo",
+    "dpos.taxes.modal.form.type.exent":"Exento",
+    "dpos.taxes.modal.form.type.noSubject":"No sujeto",
+    "dpos.taxes.modal.form.type.others":"Otros",
+    "dpos.taxes.modal.form.name":"Nombre del impuesto*",
+    "dpos.taxes.modal.form.value":"Valor del impuesto*"
 }

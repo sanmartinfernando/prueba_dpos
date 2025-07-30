@@ -13,7 +13,7 @@
         <!-- Indicadores -->
         <div class="col-5 text-end">
           <a type="button" class="btn btn-outline-danger align-self-end" (click)="deleteTaxes()">&nbsp;{{'dpos.taxes.uncheck.label' | translate}}</a>
-          <a type="button" class="btn btn-primary align-self-end" [routerLink]="code" (click)="addTax()">&nbsp;{{'dpos.taxes.add.label' | translate}}</a>
+          <a type="button" class="btn btn-primary align-self-end" [routerLink]="code" (click)="openTaxesModal()">&nbsp;{{'dpos.taxes.add.label' | translate}}</a>
           <button class="btn btn-outline-info justify-content-center">
             <i class="fa-solid fa-file-csv fa-xl" (click)="downloadCSV()"></i>
           </button>
@@ -63,7 +63,7 @@
                     </td>
                     <td class="text-end align-middle">
                       <span id="detailsticket" class="align-center">
-                        <a [routerLink]="code"><i class="fa-solid fa-arrow-right" style="color: #74c0fc"></i></a>
+                        <a (click)="openTaxesModal()"><i class="fa-solid fa-arrow-right" style="color: #74c0fc"></i></a>
                       </span>
                     </td>
                   </tr>

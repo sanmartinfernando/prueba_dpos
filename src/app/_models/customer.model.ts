@@ -8,10 +8,10 @@ export class Customer {
   static readonly ID_TYPE_OTHER_RESIDENCE = "05";
   static readonly ID_TYPE_OTHER_OTHER = "06";
   
-  id: string;
+  clientId: string;
   name: string;
   idType: string;
-  nif: string;
+  identityDocument: string;
   lastName: string;
   address: string;
   city: string;

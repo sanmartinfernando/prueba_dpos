@@ -5,7 +5,7 @@ const PORTALUSERS = 'PortalUsers';
 const ORDERS = 'Orders';
 const BALANCES = 'Balances';
 const CASHMOVEMENTS = 'CashMovements';
-const CUSTOMERS = 'Customers';
+const CUSTOMERS = 'client';
 const PRODUCTS = 'Products';
 const TAXES = 'Taxes';
 

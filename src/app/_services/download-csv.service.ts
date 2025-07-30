@@ -587,7 +587,7 @@ export class DownloadCsvService {
       let customer: Customer = customers[i]
       let line:string = "";
 
-      line += (line ? ';' : '') + (customer.nif || '');
+      line += (line ? ';' : '') + (customer.identityDocument || '');
       line += (line ? ';' : '') + (customer.name || '');
       line += (line ? ';' : '') + (customer.lastName || '');
       line += (line ? ';' : '') + (customer.phone || '');

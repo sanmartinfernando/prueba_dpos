@@ -291,8 +291,8 @@ export class CustomersComponent implements OnInit {
         let customers: Customer[] = [];
         for(let i= 0; i < rows.length; i++){
           let customer: Customer = new Customer();
-          customer.id = "i";
-          customer.nif = rows[i][0];
+          customer.clientId = i.toString();
+          customer.identityDocument = rows[i][0];
           customer.name = rows[i][1];
           customer.lastName = rows[i][2];
           customer.email = rows[i][3];

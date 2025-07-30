@@ -42,6 +42,8 @@ import { CustomerDetailsComponent } from './customers/details/customer-details.c
 import { ProductsComponent } from './products/products.component';
 import { ProductDetailsComponent } from './products/details/product-details.component';
 import { TaxesComponent } from './taxes/taxes.component';
+import { TaxesModalComponent } from './taxes/taxes-modal.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 registerLocaleData(localeEs);
 
@@ -59,6 +61,7 @@ registerLocaleData(localeEs);
         CustomersComponent,
         CustomerDetailsComponent,
         TaxesComponent,
+        TaxesModalComponent,
         ProductsComponent,
         ProductDetailsComponent,
         ErrorComponent,
@@ -80,6 +83,7 @@ registerLocaleData(localeEs);
         NgxPaginationModule,
         ReactiveFormsModule,
         RouterModule,
+        MatDialogModule,
         NgxChartsModule,
         BrowserAnimationsModule,
         QRCodeModule,
