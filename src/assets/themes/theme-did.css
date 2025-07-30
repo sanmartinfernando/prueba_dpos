@@ -808,6 +808,19 @@ ul.list-icons li i, ul.list-icons li span, ul.list-icons li svg {
   z-index: 1001;
 }
 
+.modal-info-content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 90vw;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
+  z-index: 1001;
+}
+
 .modal-small-content {
   position: fixed;
   top: 50%;
