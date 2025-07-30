@@ -1,9 +1,8 @@
-<nav class="sidenav d-flex flex-column vh-100" style="background-color: #001B61;">
+<nav class="sidenav d-flex flex-column vh-100">
   <div class="logo flex-shrink-0 p-2 text-white">
     <a class="d-flex align-items-center justify-content-center mb-0 text-white text-decoration-none" (click)="getTitle()" routerLink="/dashboard">
-      <i class="fa-solid fa-box py-2 logo"></i>
-      <!--<i *ngIf="!isComercia" class="fa-solid fa-box py-2 logo"></i>
-      <img *ngIf="isComercia" src="assets/img/logo-lacaixa.png" alt="Logotipo La Caixa" class="logoLaCaixa">-->
+      <i *ngIf="!isComercia" class="fa-solid fa-box py-2 logo"></i>
+      <img *ngIf="isComercia" src="assets/img/logo-lacaixa.png" alt="Logotipo La Caixa" class="logoLaCaixa">
     </a>
   </div>
   <div id="navBar1" class="flex-shrink-0">

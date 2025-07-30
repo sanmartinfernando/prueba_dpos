@@ -82,11 +82,11 @@ export class HeaderComponent implements OnInit {
   }
   
   getTitle() {
-    //if(this.isComercia) {
-    //  this.title = "TPV&GO";
-    //} else {
+    if(this.isComercia) {
+      this.title = "TPV&GO";
+    } else {
       this.title = "DPOS";
-    //}
+    }
   }
 
   titleHeader(name: string){

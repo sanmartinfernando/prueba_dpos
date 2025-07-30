@@ -29,7 +29,7 @@
       <div class="row" *ngIf="loadCompleted && emptySearch == false">
         <div class="col">
           <div class="table-responsive">
-            <table class="table table-hover order-table table-borderless" data-pagination="true" data-page-size="10">
+            <table class="table table-hover order-table" data-pagination="true" data-page-size="10">
               <thead class="text-customer">
                 <tr>
                   <th style="width: 50px;" class="text-center">
@@ -63,7 +63,7 @@
                     </td>
                     <td class="text-end align-middle">
                       <span id="detailsticket" class="align-center">
-                        <a (click)="openTaxesModal()"><i class="fa-solid fa-arrow-right" style="color: #74c0fc"></i></a>
+                        <a (click)="openTaxesModal()"><i class="fa-solid fa-pen" style="color: #74c0fc"></i></a>
                       </span>
                     </td>
                   </tr>
