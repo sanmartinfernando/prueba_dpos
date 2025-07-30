@@ -63,6 +63,10 @@ h6 {
   color: var(--bs-color-white-100);
 }
 
+h5 {
+  color: var(--bs-color-white-100);
+}
+
 h4 {
   color: var(--bs-color-white-100);
 }
@@ -572,6 +576,10 @@ div.ng-star-inserted {
   border-top: 1px solid var(--bs-color-grey-400);
 }
 
+.pencil {
+  color: var(--bs-color-white-100);
+}
+
 /*** TEXT COLORS ***/
 
 .text-red, .hover-text-red:hover {
@@ -849,15 +857,18 @@ ul.list-icons li i, ul.list-icons li span, ul.list-icons li svg {
 
 .list-items {
   padding: 0.75rem 1rem;
-  background-color: var(--bs-color-white-100);
+  background-color: var(--bs-color-black-200);
+  color: var(--bs-color-white-100);
   margin-bottom: 4px;
   cursor: pointer;
+  border-radius: 15px;
 }
 
 .list-item-active {
-  background-color: var(--bs-color-blue-200);
-  color: var(--bs-color-blue-600);
+  background-color: var(--bs-color-grey-400);
+  color: var(--bs-color-white-100);
   font-weight: 600;
+  border-radius: 15px;
 }
 
 /* BADGES */

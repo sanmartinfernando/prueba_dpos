@@ -477,6 +477,10 @@ p.center {
   border-top:2px solid #ededed;
 }
 
+.pencil {
+  color: #74c0fc;
+}
+
 /*** TEXT COLORS ***/
 
 .text-red, .hover-text-red:hover {

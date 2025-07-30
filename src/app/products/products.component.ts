@@ -41,7 +41,12 @@ export class ProductsComponent implements OnInit {
   currentProductsPage: number = 1;
   products: Product[] = [{id: "1", name: "Producto 1", price: 10, reference: "Referencia 1", barcode: "Codigo de barras 1", stock: 10 },
                         {id: "2", name: "Producto 2", price: 20, reference: "Referencia 2", barcode: "Codigo de barras 2", stock: 20 },
-                        {id: "3", name: "Producto 3", price: 30, reference: "Referencia 3", barcode: "Codigo de barras 3", stock: 30 }
+                        {id: "3", name: "Producto 3", price: 30, reference: "Referencia 3", barcode: "Codigo de barras 3", stock: 30 },
+                        {id: "4", name: "Producto 4", price: 40, reference: "Referencia 4", barcode: "Codigo de barras 4", stock: 40 },
+                        {id: "5", name: "Producto 5", price: 50, reference: "Referencia 5", barcode: "Codigo de barras 5", stock: 50 },
+                        {id: "6", name: "Producto 6", price: 60, reference: "Referencia 6", barcode: "Codigo de barras 6", stock: 60 },
+                        {id: "7", name: "Producto 7", price: 70, reference: "Referencia 7", barcode: "Codigo de barras 7", stock: 70 },
+                        {id: "8", name: "Producto 8", price: 80, reference: "Referencia 8", barcode: "Codigo de barras 8", stock: 80 }
   ];
 
   currentLang: string;
