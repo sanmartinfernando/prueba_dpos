@@ -22,7 +22,7 @@ export class TaxesModalComponent {
   taxFormData = {
     taxType: '-1',
     name: 'EXENTO',
-    value: '0'
+    value: 0
   };
   
   Tax: Tax;
@@ -72,7 +72,7 @@ export class TaxesModalComponent {
       this.taxFormData = {
           taxType: '-1',
           name: 'EXENTO',
-          value: '0'
+          value: 0
         };
       this.isTaxNameDisabled = true;
       this.isTaxValueDisabled = true;
@@ -80,7 +80,7 @@ export class TaxesModalComponent {
       this.taxFormData = {
           taxType: '-2',
           name: 'NO SUJETO',
-          value: '0'
+          value: 0
         };
       this.isTaxNameDisabled = true;
       this.isTaxValueDisabled = true;
@@ -88,7 +88,7 @@ export class TaxesModalComponent {
       this.taxFormData = {
           taxType: this.taxFormData.taxType,
           name: '',
-          value: ''
+          value: 0
         };
       this.isTaxNameDisabled = false;
       this.isTaxValueDisabled = false;
@@ -112,9 +112,21 @@ export class TaxesModalComponent {
     this.taxFormData = {
       taxType: '0',
       name: 'IVA 10%',
-      value: '1000'
+      value: 1000
     };
     this.isTaxNameDisabled = false;
     this.isTaxValueDisabled = false;
+  }
+
+  get taxValueDisplay(): string {
+    return (this.taxFormData.value / 100).toFixed(2) + '%';
+  }
+
+  set taxValueDisplay(displayValue: string) {
+    const clean = displayValue.replace('%', '').replace(',', '.');
+    const parsed = parseFloat(clean);
+    if (!isNaN(parsed)) {
+      this.taxFormData.value = parsed * 100;
+    }
   }
 }
