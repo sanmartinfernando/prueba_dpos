@@ -31,6 +31,7 @@
     "dpos.filter.registers": "erregistroak >>",
     "dpos.filter.registersselected": "erregistroak aukeratzen dira",
     "dpos.filter.novalid": "Bilaketa-parametroa baliogabea da",
+    "dpos.action.create": "Sortu",
     "dpos.action.accept": "Onartu",
     "dpos.action.search": "Bilatu",
     "dpos.action.clean": "Garbitu",
@@ -234,5 +235,13 @@
     "dpos.taxes.value.label": "Zerga-balioa",
     "dpos.taxes.import.label": "Materia",
     "dpos.taxes.add.label": "+ Berria",
-    "dpos.taxes.uncheck.label": "Ezabatu hautaketa"
+    "dpos.taxes.uncheck.label": "Ezabatu hautaketa",
+    "dpos.taxes.modal.title.add":"Sortu zerga",
+    "dpos.taxes.modal.title.edit":"Editatu zerga",
+    "dpos.taxes.modal.form.type":"Mutila",
+    "dpos.taxes.modal.form.type.exent":"Salbuetsita",
+    "dpos.taxes.modal.form.type.noSubject":"Ez da gaia",
+    "dpos.taxes.modal.form.type.others":"Beste batzuk",
+    "dpos.taxes.modal.form.name":"Zergaren izena*",
+    "dpos.taxes.modal.form.value":"Zerga-balioa*"
 }

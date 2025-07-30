@@ -13,6 +13,8 @@ import { ThemeService } from '../_services/theme.service';
 import { UIStateService } from '../_services/ui-state.service';
 import { TaxesService } from '../_services/taxes.service';
 import { Tax } from '../_models/tax.model';
+import { TaxesModalComponent } from './taxes-modal.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'DPOSW-taxes',
@@ -57,6 +59,7 @@ export class TaxesComponent implements OnInit {
     private storageService: StorageService,
     private portalUsersService: PortalUsersService,
     private taxesService: TaxesService,
+    private dialog: MatDialog,
     private commercesService: CommercesService,
     private translate: TranslateService,
     private sessionService: SessionService,
@@ -180,8 +183,11 @@ export class TaxesComponent implements OnInit {
   }
   
   //Añadir impuesto
-  addTax(){
-    
+  public openTaxesModal(): void {
+    const dialogRef = this.dialog.open(TaxesModalComponent);
+    dialogRef.afterClosed().subscribe(result => {
+
+    });
   }
 
   //Descargar impuestos

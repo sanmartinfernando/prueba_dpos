@@ -31,6 +31,7 @@
     "dpos.filter.registers": "registres >>",
     "dpos.filter.registersselected": "registres estan seleccionats",
     "dpos.filter.novalid": "El paràmetre de cerca no és vàlid",
+    "dpos.action.create": "Crear",
     "dpos.action.accept": "Acceptar",
     "dpos.action.search": "Cercar",
     "dpos.action.clean": "Netejar",
@@ -234,5 +235,13 @@
     "dpos.taxes.value.label": "Valor de l'impost",
     "dpos.taxes.import.label": "Importar",
     "dpos.taxes.add.label": "+ Nou",
-    "dpos.taxes.uncheck.label": "Eliminar selecció"
+    "dpos.taxes.uncheck.label": "Eliminar selecció",
+    "dpos.taxes.modal.title.add":"Crear impost",
+    "dpos.taxes.modal.title.edit":"Editar impost",
+    "dpos.taxes.modal.form.type":"Tipus",
+    "dpos.taxes.modal.form.type.exent":"Exent",
+    "dpos.taxes.modal.form.type.noSubject":"No subjecte",
+    "dpos.taxes.modal.form.type.others":"Altres",
+    "dpos.taxes.modal.form.name":"Nom de l'impost*",
+    "dpos.taxes.modal.form.value":"Valor de l'impost*"
 }
