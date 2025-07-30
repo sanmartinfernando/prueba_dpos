@@ -21,47 +21,47 @@
               <!-- Columna izquierda -->
               <div class="col-md-6">
                 <div class="mb-3">
-                  <label for="nif" class="form-label">{{'dpos.customers.nif.column' | translate}}</label>
-                  <input type="text" class="form-control" id="nif" />
+                  <label for="identityDocument" class="form-label">{{'dpos.customers.nif.column' | translate}}</label>
+                  <input type="text" class="form-control" id="identityDocument"  [(ngModel)]="identityDocument" name="identityDocument" />
                 </div>
                 <div class="mb-3">
                   <label for="name" class="form-label">{{'dpos.customers.name.column' | translate}}</label>
-                  <input type="text" class="form-control" id="nombre" />
+                  <input type="text" class="form-control" id="name" [(ngModel)]="name" name="name" />
                 </div>
                 <div class="mb-3">
                   <label for="lastname" class="form-label">{{'dpos.customers.lastname.column' | translate}}</label>
-                  <input type="text" class="form-control" id="apellidos" />
+                  <input type="text" class="form-control" id="lastname" [(ngModel)]="lastname" name="lastname"  />
                 </div>
                 <div class="mb-3">
                   <label for="email" class="form-label">{{'dpos.customers.email.column' | translate}}</label>
-                  <input type="email" class="form-control" id="email" />
+                  <input type="email" class="form-control" id="email" [(ngModel)]="email" name="email" />
                 </div>
                 <div class="mb-3">
                   <label for="phone" class="form-label">{{'dpos.customers.phone.column' | translate}}</label>
-                  <input type="text" class="form-control" id="telefono" />
+                  <input type="text" class="form-control" id="phone" [(ngModel)]="phone" name="phone"  />
                 </div>
               </div>
               <!-- Columna derecha -->
               <div class="col-md-6">
                 <div class="mb-3">
                   <label for="address" class="form-label">{{'dpos.customers.address.column' | translate}}</label>
-                  <input type="text" class="form-control" id="direccion" />
+                  <input type="text" class="form-control" id="address" [(ngModel)]="address" name="address" />
                 </div>
                 <div class="mb-3">
                   <label for="city" class="form-label">{{'dpos.customers.city.column' | translate}}</label>
-                  <input type="text" class="form-control" id="ciudad" />
+                  <input type="text" class="form-control" id="city" [(ngModel)]="city" name="city"  />
                 </div>
                 <div class="mb-3">
                   <label for="postcode" class="form-label">{{'dpos.customers.postcode.column' | translate}}</label>
-                  <input type="text" class="form-control" id="cp" />
+                  <input type="text" class="form-control" id="postcode" [(ngModel)]="postcode" name="postcode"  />
                 </div>
                 <div class="mb-3">
                   <label for="country" class="form-label">{{'dpos.customers.country.column' | translate}}</label>
-                  <input type="text" class="form-control" id="provincia" />
+                  <input type="text" class="form-control" id="country" [(ngModel)]="country" name="country"  />
                 </div>
                 <div class="mb-3">
                   <label for="state" class="form-label">{{'dpos.customers.state.column' | translate}}</label>
-                  <input type="text" class="form-control" id="pais" />
+                  <input type="text" class="form-control" id="state" [(ngModel)]="state" name="state"  />
                 </div>
               </div>
             </div>
@@ -70,7 +70,7 @@
               <a [routerLink]="['/customers']" type="button" class="" style="text-decoration: none;">
                 <button type="button" class="btn btn-outline-danger me-2">{{'dpos.action.cancel' | translate}}</button>
               </a>
-              <button type="submit" class="btn btn-primary">{{'dpos.action.save' | translate}}</button>
+              <button type="submit" class="btn btn-primary" [routerLink]="code" (click)="saveCustomer()">{{'dpos.action.save' | translate}}</button>
             </div>
           </form>
         </div>

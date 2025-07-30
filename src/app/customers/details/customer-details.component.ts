@@ -23,6 +23,18 @@ export class CustomerDetailsComponent implements OnInit {
   titlePage: string;
 
   customer: Customer;
+  code: string;
+
+  identityDocument: string;
+  name: string;
+  lastname: string;
+  email: string; 
+  phone: string;
+  address: string;
+  city: string;
+  postcode: string;
+  country: string;
+  state: string;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -74,10 +86,72 @@ export class CustomerDetailsComponent implements OnInit {
     this.customersService.getCustomer(idClient).subscribe({
       next: (customerResponse) => {
         this.customer = customerResponse.client;
+        this.identityDocument = this.customer.identityDocument;
+        this.name = this.customer.name;
+        this.lastname = this.customer.lastName;
+        this.email = this.customer.email; 
+        this.phone = this.customer.phone;
+        this.address = this.customer.address;
+        this.city = this.customer.city;
+        this.postcode = this.customer.postcode;
+        this.country = this.customer.country;
+        this.state = this.customer.state;
       },
       error: (error) => {
         //TODO: Control de errores
       }
     });
+  }
+
+  public saveCustomer(): void {
+    if(this.customer) {
+      this.updateCustomer();
+    } else {
+      this.createCustomer();
+    }
+  }
+
+  private updateCustomer() {
+
+    this.setCustomerFields();
+
+    this.customersService.updateCustomer(this.customer.clientId, this.customer).subscribe({
+      next: (customerResponse) => {
+        this.code = '/customers';
+      },
+      error: (error) => {
+        //TODO: Control de errores
+        this.code = '/customers';
+      }
+    });
+  }
+
+  private createCustomer() {
+
+    this.customer = new Customer();
+    this.setCustomerFields();
+
+    this.customersService.createCustomer(this.customer).subscribe({
+      next: (customerResponse) => {
+        this.code = '/customers';
+      },
+      error: (error) => {
+        //TODO: Control de errores
+        this.code = '/customers';
+      }
+    });
+  }
+
+  private setCustomerFields() {
+    this.customer.identityDocument = this.identityDocument;
+    this.customer.name = this.name;
+    this.customer.lastName = this.lastname;
+    this.customer.email = this.email; 
+    this.customer.phone = this.phone;
+    this.customer.address = this.address;
+    this.customer.city = this.city;
+    this.customer.postcode = this.postcode;
+    this.customer.country = this.country;
+    this.customer.state = this.state;
   }
 }
