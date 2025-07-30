@@ -1,9 +1,8 @@
 <nav class="sidenav d-flex flex-column vh-100">
   <div class="logo flex-shrink-0 p-2 text-white">
     <a class="d-flex align-items-center justify-content-center mb-0 text-white text-decoration-none" (click)="getTitle()" routerLink="/dashboard">
-      <i class="fa-solid fa-box py-2 logo"></i>
-      <!-- <i *ngIf="!isComercia" class="fa-solid fa-box py-2 logo"></i>
-      <img *ngIf="isComercia" src="assets/img/logo-lacaixa.png" alt="Logotipo La Caixa" class="logoLaCaixa"> -->
+      <i *ngIf="!isComercia" class="fa-solid fa-box py-2 logo"></i>
+      <img *ngIf="isComercia" src="assets/img/logo-lacaixa.png" alt="Logotipo La Caixa" class="logoLaCaixa">
     </a>
   </div>
   <div id="navBar1" class="flex-shrink-0">
@@ -12,13 +11,13 @@
         <li *ngFor="let page of pages">
           <a class="nav-link m-3 d-flex flex-column align-items-center" (click)="titleHeader(page.text)"
           routerLink="/{{ page.code }}" routerLinkActive="active-link" (click)="component(page.code)">
-          <i class="{{ page.icon }}  fa-2xl MT-3"></i>{{page.text}}</a>
+          <i class="{{ page.icon }} active-icon-link fa-2xl MT-3"></i>{{page.text}}</a>
         </li>
       </ng-container>
     </ul>
   </div>
 </nav>
-<header class="bg-customer" style="border-bottom:2px solid #ededed;">
+<header class="bg-customer">
   <div class="clearfix header-main">
     <h3 class="float-start p-3 pb-2"><b>{{ title }}</b></h3>
     <ul class="navbar-nav float-end">

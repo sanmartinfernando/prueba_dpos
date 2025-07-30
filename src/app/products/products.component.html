@@ -64,7 +64,7 @@
                 </div>
                 <div class="d-flex gap-2">
                   <button class="btn btn-primary" (click)="openProductsModal()">{{'dpos.products.create.btn' | translate}}</button>
-                  <button class="btn btn-secondary align-self-end" (click)="importCustomers()">&nbsp;{{'dpos.customers.import.label' | translate}}</button>
+                  <button class="btn btn-primary align-self-end" (click)="importCustomers()">&nbsp;{{'dpos.customers.import.label' | translate}}</button>
                   <input type="file" #customerFileInput style="display: none" accept=".csv" (change)="onCustomerFileSelected($event)"/>
                   <button class="btn btn-outline-info justify-content-center">
                     <i class="fa-solid fa-file-csv fa-xl" (click)="downloadCSV()"></i>

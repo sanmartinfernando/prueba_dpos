@@ -44,7 +44,6 @@ export class ThemeService {
 
     let themeName = ThemeService.THEME_DID;
 
-    /*
     switch (resellerName) {
       case Commerce.RESELLER_DID:
         themeName = ThemeService.THEME_DID;
@@ -83,7 +82,6 @@ export class ThemeService {
         themeName = ThemeService.THEME_SABADELL;
         break;
     }
-    */
     
     return themeName;
   }

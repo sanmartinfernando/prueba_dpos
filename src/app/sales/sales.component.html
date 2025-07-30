@@ -77,9 +77,7 @@
             <table class="table table-hover order-table table-borderless" data-pagination="true" data-page-size="10">
               <thead class="text-customer">
                 <tr>
-                  <th class="text-center">
-                    <input class="form-check-input" type="checkbox" [checked]="isAllSelected" (change)="checkAll($event)" />
-                  </th>
+                  <th class="text-center"></th>
                   <th class="text-start">{{'dpos.sales.operation.document.label' | translate}}</th>
                   <th class="text-center">{{'dpos.sales.operation.type.label' | translate}}</th>
                   <th class="text-start">{{'dpos.sales.operation.data.label' | translate}}</th>
@@ -90,7 +88,6 @@
                   <th class="text-end">{{'dpos.sales.operation.base.label' | translate}}</th>
                   <th class="text-end">{{'dpos.sales.operation.tax.label' | translate}}</th>
                   <th class="text-end">{{'dpos.sales.operation.total.label' | translate}}</th>
-                  <th></th>
                 </tr>
               </thead>
               <ng-template #empty>
@@ -100,12 +97,12 @@
               </ng-template>
               <tbody>
                 <ng-container *ngIf="loadCompleted; else empty">
-                  <tr *ngFor="let sale of sales.data | paginate : { itemsPerPage: 10, currentPage: page }; index as i">
+                  <tr *ngFor="let sale of sales.data | paginate : { itemsPerPage: 10, currentPage: page }; index as i" [routerLink]="code" (click)="sendSalesDetails(sale.orderId)">
                     <td class="text-center align-middle">
-                      <input class="form-check-input" type="checkbox" [checked]="isAllSelected" />
+                      <input class="form-check-input" type="checkbox" [checked]="isAllSelected" (click)="$event.stopPropagation()" />
                     </td>
                     <td class="text-start align-middle">
-                      <span style="font-weight: 500;color:grey;">{{ sale.reference }}</span>
+                      <span class="table-title">{{ sale.reference }}</span>
                     </td>
                     <td class="text-center align-middle" *ngIf="sale.type == 0">
                       <div class="badge rounded-pill bg-sale">{{'dpos.sales.operation.order.label' | translate}}</div>
@@ -203,11 +200,6 @@
                     </td>
                     <td class="text-end align-middle">
                       {{ sale.total / (Math.pow(10, sale.decimals)) | currency : "Eur" : "€" }}
-                    </td>
-                    <td class="text-end align-middle">
-                      <span id="detailsticket" class="align-center">
-                        <a [routerLink]="code" (click)="sendSalesDetails(sale.orderId)"><i class="fa-solid fa-arrow-right" style="color: #74c0fc"></i></a>
-                      </span>
                     </td>
                   </tr>
                 </ng-container>

@@ -152,6 +152,10 @@ footer{
   background-color: var(--bs-color-blue-700);
 }
 
+.sidenav .active-icon-link {
+  color: var(--bs-color-white-100) !important;
+}
+
 .sidenav .active-link {
   color: var(--bs-color-white-100) !important;
 }
@@ -229,6 +233,14 @@ footer{
   height: 38px;
   color: var(--bs-color-grey-400);
   min-width: 150px;
+}
+
+.form-control:disabled {
+  background-color: #e9ecef;
+  color: #6c757d;
+  opacity: 1;
+  cursor: not-allowed;
+  border-color: #ced4da;
 }
 
 .form-check-label {
@@ -458,6 +470,11 @@ p.center {
 
 .bg-customer {
   background-color: var(--bs-color-white-100);
+  border-bottom:2px solid #ededed;
+}
+
+.bg-footer {
+  border-top:2px solid #ededed;
 }
 
 /*** TEXT COLORS ***/
@@ -717,6 +734,11 @@ ul.list-icons li i, ul.list-icons li span, ul.list-icons li svg {
 .inner-table-title {
   font-size: 16px;
   color: #333;
+}
+
+.table-title {
+  font-weight: 500;
+  color: grey;
 }
 
 /* LISTS AND ITEMS */

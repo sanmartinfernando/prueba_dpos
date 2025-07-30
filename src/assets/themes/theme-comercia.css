@@ -184,6 +184,11 @@ label.me-2 {
 }
 
 .sidenav .active-link {
+  color: var(--bs-color-blue-600) !important;
+  font-weight: bold;
+}
+
+.sidenav .active-icon-link {
   color: var(--bs-color-white-100) !important;
 }
 
@@ -276,6 +281,15 @@ label.me-2 {
   height: 38px;
   color: var(--bs-color-white-100);
   min-width: 150px;
+}
+
+.form-control:disabled {
+  background-color: var(--bs-color-black-200);
+  color: #6c757d;
+  opacity: 1;
+  font-style: italic;
+  cursor: not-allowed;
+  border-color: #ced4da;
 }
 
 .form-check-label {
@@ -427,7 +441,7 @@ div.ng-star-inserted {
   --bs-btn-color: var(--bs-body-color);
   --bs-btn-bg: var(--bs-btn-bg);
   --bs-btn-border-color: var(--bs-color-white-100);
-  --bs-btn-border-radius: 5px;
+  --bs-btn-border-radius: 20px;
   --bs-btn-hover-border-color: var(--bs-color-white-100);
   --bs-btn-disabled-opacity: 0.70;
 }
@@ -507,25 +521,29 @@ div.ng-star-inserted {
 .btn-light {
   --bs-btn-color: var(--bs-color-white-100);
   --bs-btn-bg: var(--bs-color-grey-700);
-  --bs-btn-border-color: var(--bs-color-grey-300);
+  --bs-btn-border-color: var(--bs-color-white-100);
   --bs-btn-active-color: var(--bs-color-grey-400);
   --bs-btn-active-bg: var(--bs-color-green-100);
   --bs-btn-active-border-color: var(--bs-color-grey-400);
   --bs-btn-disabled-color: var(--bs-color-blue-600);
   --bs-btn-disabled-bg: var(--bs-color-green-100);
   --bs-btn-disabled-border-color: var(--bs-color-blue-600);
+  box-shadow: none;
+  border: none;
+  border-bottom: 2px solid var(--bs-color-white-100);
+  border-radius: 0;
 }
 
 .btn-outline-info {
-  --bs-btn-color: var(--bs-color-blue-600);
-  --bs-btn-border-color: var(--bs-color-blue-600);
+  --bs-btn-color: var(--bs-color-green-light);
+  --bs-btn-border-color: var(--bs-color-green-light);
   --bs-btn-hover-color: var(--bs-color-black-100);
-  --bs-btn-hover-bg: var(--bs-color-blue-600);
+  --bs-btn-hover-bg: var(--bs-color-green-light);
   --bs-btn-hover-border-color: var(--bs-color-black-100);
-  --bs-btn-active-color: var(--bs-color-blue-600);
-  --bs-btn-active-border-color: var(--bs-color-blue-600);
-  --bs-btn-disabled-color: var(--bs-color-blue-600);
-  --bs-btn-disabled-border-color: var(--bs-color-blue-600);
+  --bs-btn-active-color: var(--bs-color-green-light);
+  --bs-btn-active-border-color: var(--bs-color-green-light);
+  --bs-btn-disabled-color: var(--bs-color-green-light);
+  --bs-btn-disabled-border-color: var(--bs-color-green-light);
 }
 
 .btn-outline-danger {
@@ -547,6 +565,11 @@ div.ng-star-inserted {
 
 .bg-customer {
   background-color: var(--bs-color-white-100);
+  border-bottom: 1px solid var(--bs-color-grey-400);
+}
+
+.bg-footer {
+  border-top: 1px solid var(--bs-color-grey-400);
 }
 
 /*** TEXT COLORS ***/
@@ -765,6 +788,7 @@ ul.list-icons li i, ul.list-icons li span, ul.list-icons li svg {
   padding: 0.65rem;
   vertical-align: middle;
   border-top: 1px solid #0000000f;
+  border-bottom: 1px solid var(--bs-color-grey-500);
   background-color: var(--bs-color-black-200);
   color: var(--bs-color-white-100);
 }
@@ -775,7 +799,7 @@ ul.list-icons li i, ul.list-icons li span, ul.list-icons li svg {
   font-weight: 500;
   color: var(--bs-color-white-100);
   border-top-width: 0;
-  border-bottom: 1px solid #0000000f;
+  border-bottom: 1px solid var(--bs-color-grey-300);
   text-transform: uppercase;
   padding: 12px 10px;
 }
@@ -814,6 +838,11 @@ ul.list-icons li i, ul.list-icons li span, ul.list-icons li svg {
 .inner-table-title {
   font-size: 16px;
   color: #333;
+}
+
+.table-title {
+  font-weight: 500;
+  color: var(--bs-color-blue-600);
 }
 
 /* LISTS AND ITEMS */
@@ -1004,4 +1033,28 @@ ul.list-icons li i, ul.list-icons li span, ul.list-icons li svg {
   padding: 12px 16px;
   font-weight: 600;
   border-radius: 4px;
+}
+
+/* Contenedor del scrollbar */
+::-webkit-scrollbar {
+  width: 12px; /* ancho del scrollbar vertical */
+  height: 12px; /* alto del scrollbar horizontal */
+}
+
+/* Fondo del scrollbar (área por donde se mueve la barra) */
+::-webkit-scrollbar-track {
+  background: var(--bs-color-black-100);
+  border-radius: 10px;
+}
+
+/* Barra (el "thumb" que se arrastra) */
+::-webkit-scrollbar-thumb {
+  background-color: var(--bs-color-grey-200);
+  border-radius: 10px;
+  border: 3px solid var(--bs-color-black-100); /* para crear espacio alrededor del thumb */
+}
+
+/* Hover en la barra */
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--bs-color-grey-300);
 }
