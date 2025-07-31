@@ -44,6 +44,7 @@ import { ProductDetailsComponent } from './products/details/product-details.comp
 import { TaxesComponent } from './taxes/taxes.component';
 import { TaxesModalComponent } from './taxes/taxes-modal.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { CategoryModalComponent } from './categories/category-modal.component';
 
 registerLocaleData(localeEs);
 
@@ -62,6 +63,7 @@ registerLocaleData(localeEs);
         CustomerDetailsComponent,
         TaxesComponent,
         TaxesModalComponent,
+        CategoryModalComponent,
         ProductsComponent,
         ProductDetailsComponent,
         ErrorComponent,

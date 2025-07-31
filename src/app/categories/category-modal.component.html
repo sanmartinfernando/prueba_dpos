@@ -1,0 +1,23 @@
+<div class="modal-backdrop"></div>
+<div class="modal-small-content">
+  <div class="modal-header">
+    <h2>{{ titlePage }}</h2>
+    <button class="modal-close-button" (click)="close()">×</button>
+  </div>
+  <div class="modal-body">
+    <div class="container my-3">
+      <form (ngSubmit)="onSubmit()">
+        <div class="row mb-12">
+          <div class="col-md-12">
+            <label class="form-label">{{'dpos.category.modal.form.name' | translate}}</label>
+            <input type="text" class="form-control" name="name" [(ngModel)]="categoryFormData.name">
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-outline-danger" (click)="close()">{{'dpos.action.cancel' | translate}}</button>
+    <button type="submit" class="btn btn-primary">{{'dpos.action.create' | translate}}</button>
+  </div>
+</div>

@@ -83,7 +83,7 @@ export class BalancesDetailsComponent implements OnInit {
       });
   }
   
-  donwloadPDF(){
+  downloadPDF(){
     this.downloadPDFService.downloadBalancesFile(this.balancesId);
   }
 

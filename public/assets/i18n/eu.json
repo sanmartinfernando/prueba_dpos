@@ -247,5 +247,8 @@
     "dpos.taxes.modal.form.type.igic":"IGIC",
     "dpos.taxes.modal.form.type.others":"Beste batzuk",
     "dpos.taxes.modal.form.name":"Zergaren izena*",
-    "dpos.taxes.modal.form.value":"Zerga-balioa (%)*"
+    "dpos.taxes.modal.form.value":"Zerga-balioa (%)*",
+    "dpos.category.modal.title.add":"Sortu kategoria",
+    "dpos.category.modal.title.edit":"Editatu kategoria",
+    "dpos.category.modal.form.name":"Kategoriaren izena*"
 }

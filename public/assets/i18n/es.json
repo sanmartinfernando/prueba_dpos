@@ -247,5 +247,8 @@
     "dpos.taxes.modal.form.type.igic":"IGIC",
     "dpos.taxes.modal.form.type.others":"Otros",
     "dpos.taxes.modal.form.name":"Nombre del impuesto*",
-    "dpos.taxes.modal.form.value":"Valor del impuesto (%)*"
+    "dpos.taxes.modal.form.value":"Valor del impuesto (%)*",
+    "dpos.category.modal.title.add":"Crear categoría",
+    "dpos.category.modal.title.edit":"Editar categoría",
+    "dpos.category.modal.form.name":"Nombre de la categoría*"
 }

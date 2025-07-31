@@ -16,6 +16,8 @@ import { Commerce } from '../_models/commerce.model';
 import { Product } from '../_models/product.model';
 import { ProductsService } from '../_services/products.service';
 import { Category } from '../_models/category.model';
+import { CategoryModalComponent } from '../categories/category-modal.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'DPOSW-products',
@@ -60,12 +62,10 @@ export class ProductsComponent implements OnInit {
 
   constructor(private encryptionService: EncryptionService,
       private activatedRoute: ActivatedRoute,
-      private balancesService: BalancesService,
-      private downloadPDFService: DownloadPDFService,
       private portalUsersService: PortalUsersService,
       private commercesService: CommercesService,
       private storageService: StorageService,
-      private productsService: ProductsService,
+      private dialog: MatDialog,
       private translate: TranslateService,
       private uiStateService: UIStateService,
       private sessionService: SessionService,
@@ -216,11 +216,11 @@ export class ProductsComponent implements OnInit {
   }
 
 
-  public openCategoriesModal(): void {
-  //  const dialogRef = this.dialog.open(ManufacturersModalComponent);
-  //  dialogRef.afterClosed().subscribe(result => {
+  public openCategoriesModal(id?: string): void {
+    const dialogRef = this.dialog.open(CategoryModalComponent, {data: { id }});
+    dialogRef.afterClosed().subscribe(result => {
 
-  //  });
+    });
   }
 
   public onCategoryChange(): void {
@@ -239,7 +239,7 @@ export class ProductsComponent implements OnInit {
   }
 
   //Importar clientes
-  importCustomers(){
+  importProducts(){
   //  this.customerFileInput.nativeElement.click();
   }
 

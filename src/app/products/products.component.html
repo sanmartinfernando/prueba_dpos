@@ -49,7 +49,7 @@
               class="list-items" [ngClass]="{'list-item-active': categorySelected === category}" (click)="categorySelected = category" (click)="onCategoryChange()">
                 <div class="d-flex justify-content-between align-items-center">
                   {{ category.name }}
-                  <a (click)="openCategoriesModal()"><i class="fa-solid fa-pen pencil"></i></a>
+                  <a (click)="openCategoriesModal(category.id)"><i class="fa-solid fa-pen pencil"></i></a>
                 </div>
               </div>
               <pagination-controls (pageChange)="currentCategoryPage = $event" id="categoriesList" previousLabel="" nextLabel="" class="mt-3 d-flex justify-content-center"></pagination-controls>
@@ -64,7 +64,7 @@
                 </div>
                 <div class="d-flex gap-2">
                   <button class="btn btn-primary" (click)="openProductsModal()">{{'dpos.products.create.btn' | translate}}</button>
-                  <button class="btn btn-primary align-self-end" (click)="importCustomers()">&nbsp;{{'dpos.customers.import.label' | translate}}</button>
+                  <button class="btn btn-primary align-self-end" (click)="importProducts()">&nbsp;{{'dpos.customers.import.label' | translate}}</button>
                   <input type="file" #customerFileInput style="display: none" accept=".csv" (change)="onCustomerFileSelected($event)"/>
                   <button class="btn btn-outline-info justify-content-center">
                     <i class="fa-solid fa-file-csv fa-xl" (click)="downloadCSV()"></i>
