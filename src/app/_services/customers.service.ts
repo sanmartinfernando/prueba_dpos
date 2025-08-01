@@ -30,7 +30,7 @@ export class CustomersService {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
     }
 
-    let urlCustomers: string = `${environment.urlWS}${RestRoutes.CUSTOMERS}`;
+    let urlCustomers: string = `${environment.urlClients}${RestRoutes.CUSTOMERS}`;
     return this.http.post<CustomerResponse>(urlCustomers, customer, this.httpOptions);
   }
 
@@ -40,7 +40,7 @@ export class CustomersService {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
     }
 
-    let urlCustomers: string = `${environment.urlWS}${RestRoutes.CUSTOMERS}${id}`;
+    let urlCustomers: string = `${environment.urlClients}${RestRoutes.CUSTOMERS}${id}`;
     return this.http.put<CustomerResponse>(urlCustomers, customer, this.httpOptions);
   }
   
@@ -50,13 +50,13 @@ export class CustomersService {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
     }
 
-    let urlCustomers: string = `${environment.urlWS}${RestRoutes.CUSTOMERS}${id}`;
+    let urlCustomers: string = `${environment.urlClients}${RestRoutes.CUSTOMERS}${id}`;
     return this.http.get<CustomerResponse>(urlCustomers, this.httpOptions);
   }
 
   //TODO
   public getCustomers(size:number, searchParams: string): Observable<CustomerInfo> {
-    let urlCustomers: string = `${environment.urlWS}${RestRoutes.CUSTOMERS_INFO}${size}${RestRoutes.PARAM_OFFSET}${searchParams}`;
+    let urlCustomers: string = `${environment.urlClients}${RestRoutes.CUSTOMERS_INFO}${size}${RestRoutes.PARAM_OFFSET}${searchParams}`;
     return this.http.get<CustomerInfo>(urlCustomers, this.httpOptions);
   }
 }

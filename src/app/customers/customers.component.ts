@@ -213,6 +213,9 @@ export class CustomersComponent implements OnInit {
   }
 
   private getCustomers() {
+    this.emptySearch = true;
+    this.loadCompleted = true;
+    /*
     this.customersService.getCustomers(this.size, this.varSearch).subscribe(
       (customers) => {
         this.customers = customers.data;
@@ -231,6 +234,7 @@ export class CustomersComponent implements OnInit {
         };
       }
     );
+    */
   }
 
   //Checkboxes
