@@ -42,7 +42,7 @@ export class ProductsComponent implements OnInit {
 
   currentCategoryPage: number = 1;
   categorySelected:Category;
-  categories: Category[] = [{id: "1", name: "Categoria 1"}, {id: "2", name: "Categoria 2"}];
+  categories: Category[] = [{id: "0", name: "Todas las categorías"}, {id: "1", name: "Categoria 1"}, {id: "2", name: "Categoria 2"}];
 
   currentProductsPage: number = 1;
   products: Product[] = [{id: "1", name: "Producto 1", price: 1000, reference: "Referencia 1", barcode: "Codigo de barras 1", stock: 10 },

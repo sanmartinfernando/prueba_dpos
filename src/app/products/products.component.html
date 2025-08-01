@@ -48,11 +48,11 @@
                 <h5>{{'dpos.products.category.title' | translate}}</h5>
                 <button class="btn btn-primary" (click)="openCategoriesModal()">{{'dpos.products.category.create.btn' | translate}}</button>
               </div>
-              <div *ngFor="let category of categories | paginate: { id: 'categoriesList', itemsPerPage: 10, currentPage: currentCategoryPage }" 
+              <div *ngFor="let category of categories | paginate: { id: 'categoriesList', itemsPerPage: 10, currentPage: currentCategoryPage }; let i = index" 
               class="list-items" [ngClass]="{'list-item-active': categorySelected === category}" (click)="categorySelected = category" (click)="onCategoryChange()">
                 <div class="d-flex justify-content-between align-items-center">
                   {{ category.name }}
-                  <a (click)="openCategoriesModal(category.id)"><i class="fa-solid fa-pen pencil"></i></a>
+                  <a *ngIf="i !== 0" (click)="openCategoriesModal(category.id)"><i class="fa-solid fa-pen pencil"></i></a>
                 </div>
               </div>
               <pagination-controls (pageChange)="currentCategoryPage = $event" id="categoriesList" previousLabel="" nextLabel="" class="mt-3 d-flex justify-content-center"></pagination-controls>
