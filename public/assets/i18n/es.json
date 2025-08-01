@@ -213,6 +213,7 @@
     "dpos.customer.details.page.edit.title": "Editar cliente",
     "dpos.products.page.title": "Productos",
     "dpos.products.nodata.label": "No hay datos que mostrar",
+    "dpos.products.import.label": "Importar",
     "dpos.products.name.form.label": "Nombre",
     "dpos.products.reference.form.label": "Referencia",
     "dpos.products.barcode.form.label": "Código de barras",

@@ -213,6 +213,7 @@
     "dpos.customer.details.page.edit.title": "Editatu bezeroa",
     "dpos.products.page.title": "Produktuak",
     "dpos.products.nodata.label": "Ez dago daturik bistaratzeko",
+    "dpos.products.import.label": "Inportatu bezeroak",
     "dpos.products.name.form.label": "Izena",
     "dpos.products.reference.form.label": "Erreferentzia",
     "dpos.products.barcode.form.label": "Barra-kodea",

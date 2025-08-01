@@ -8,6 +8,7 @@ import { Order } from '../_models/order.model';
 import { BalanceLine } from '../_models/balance-line.model';
 import { Customer } from '../_models/customer.model';
 import { Tax } from '../_models/tax.model';
+import { Product } from '../_models/product.model';
 
 @Injectable({
   providedIn: 'root'
@@ -395,6 +396,67 @@ export class DownloadCsvService {
     document.body.removeChild(dwldLink);
   }
 
+  public downloadProductsFile(products: Product[], filename = 'data', language: string) {
+
+    if(!products) return;
+    
+    // Encabezados en ambos idiomas
+    const headersES = [
+      'Referencia',
+      'Código de barras',
+      'Nombre',
+      'Precio',
+      'Stock'
+    ];
+
+    const headersCAT = [
+      'Referència',
+      'Codi de barres',
+      'Nom',
+      'Preu',
+      'Stock'
+    ];
+
+    const headersEU = [
+        'Erreferentzia',
+        'Barra-kodea',
+        'Izena',
+        'Prezioa',
+        'Stocka'
+    ];
+    
+    let headers: string[] = headersES;
+
+    if(language === 'es'){
+        headers = headersES;
+    } else if (language === 'eu'){
+        headers = headersEU;
+    } else if (language === 'cat'){
+      headers = headersCAT;
+    }
+
+    const fields = [
+        'reference',
+        'barcode',
+        'name',
+        'price',
+        'stock'
+    ];
+
+    // Convertir a CSV con solo los datos y encabezados específicos
+    let csvData = this.convertProductsToCSV(products, fields, headers);
+    
+    let blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
+    let dwldLink = document.createElement("a");
+    let url = URL.createObjectURL(blob);
+    dwldLink.setAttribute("href", url);
+    dwldLink.setAttribute("download", filename + " " + this.formatDate(Date.now()) + ".csv");
+    dwldLink.style.visibility = "hidden";
+    document.body.appendChild(dwldLink);
+    dwldLink.click();
+    document.body.removeChild(dwldLink);
+  }
+
   public downloadTaxesFile(taxes: Tax[], filename = 'data', language: string) {
 
     if(!taxes) return;
@@ -592,6 +654,24 @@ export class DownloadCsvService {
       line += (line ? ';' : '') + (customer.lastName || '');
       line += (line ? ';' : '') + (customer.phone || '');
       line += (line ? ';' : '') + (customer.email || '');
+
+      str += line + '\r\n';
+    }
+    return str;
+  }
+
+  public convertProductsToCSV(products:Product[], fields:string[], headers: string[]) {
+
+    let str = headers.join(';') + '\r\n'; 
+    for (let i = 0; i < products.length; i++) {
+      let product: Product = products[i]
+      let line:string = "";
+
+      line += (line ? ';' : '') + (product.reference || '');
+      line += (line ? ';' : '') + (product.barcode || '');
+      line += (line ? ';' : '') + (product.name || '');
+      line += (line ? ';' : '') + (this.currencyPipe.transform(product.price / (Math.pow(10, product.price)), 'EUR', '€') || '');
+      line += (line ? ';' : '') + (product.stock || '');
 
       str += line + '\r\n';
     }

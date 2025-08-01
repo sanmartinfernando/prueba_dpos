@@ -1,7 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { BalancesService } from '../_services/balances.service';
-import { DownloadPDFService } from '../_services/download-pdf.service';
 import { EncryptionService } from '../_services/encryption.service';
 import { SessionService } from '../_services/session.service';
 import { StorageService } from '../_services/storage.service';
@@ -14,10 +12,10 @@ import { PortalUsersService } from '../_services/portal-users.service';
 import { AuthService } from '../_services/auth.service';
 import { Commerce } from '../_models/commerce.model';
 import { Product } from '../_models/product.model';
-import { ProductsService } from '../_services/products.service';
 import { Category } from '../_models/category.model';
 import { CategoryModalComponent } from '../categories/category-modal.component';
 import { MatDialog } from '@angular/material/dialog';
+import { DownloadCsvService } from '../_services/download-csv.service';
 
 @Component({
   selector: 'DPOSW-products',
@@ -25,8 +23,14 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class ProductsComponent implements OnInit {
 
+  @ViewChild('productFileInput') productFileInput!: ElementRef<HTMLInputElement>;
+
   loadCompleted: boolean = false;
   size: number = 10000;
+
+  code: string;
+
+  Math = Math
 
   productNameVarSearch: string = null;
   productReferenceVarSearch: string = null;
@@ -41,14 +45,14 @@ export class ProductsComponent implements OnInit {
   categories: Category[] = [{id: "1", name: "Categoria 1"}, {id: "2", name: "Categoria 2"}];
 
   currentProductsPage: number = 1;
-  products: Product[] = [{id: "1", name: "Producto 1", price: 10, reference: "Referencia 1", barcode: "Codigo de barras 1", stock: 10 },
-                        {id: "2", name: "Producto 2", price: 20, reference: "Referencia 2", barcode: "Codigo de barras 2", stock: 20 },
-                        {id: "3", name: "Producto 3", price: 30, reference: "Referencia 3", barcode: "Codigo de barras 3", stock: 30 },
-                        {id: "4", name: "Producto 4", price: 40, reference: "Referencia 4", barcode: "Codigo de barras 4", stock: 40 },
-                        {id: "5", name: "Producto 5", price: 50, reference: "Referencia 5", barcode: "Codigo de barras 5", stock: 50 },
-                        {id: "6", name: "Producto 6", price: 60, reference: "Referencia 6", barcode: "Codigo de barras 6", stock: 60 },
-                        {id: "7", name: "Producto 7", price: 70, reference: "Referencia 7", barcode: "Codigo de barras 7", stock: 70 },
-                        {id: "8", name: "Producto 8", price: 80, reference: "Referencia 8", barcode: "Codigo de barras 8", stock: 80 }
+  products: Product[] = [{id: "1", name: "Producto 1", price: 1000, reference: "Referencia 1", barcode: "Codigo de barras 1", stock: 10 },
+                        {id: "2", name: "Producto 2", price: 2000, reference: "Referencia 2", barcode: "Codigo de barras 2", stock: 20 },
+                        {id: "3", name: "Producto 3", price: 3000, reference: "Referencia 3", barcode: "Codigo de barras 3", stock: 30 },
+                        {id: "4", name: "Producto 4", price: 4000, reference: "Referencia 4", barcode: "Codigo de barras 4", stock: 40 },
+                        {id: "5", name: "Producto 5", price: 5000, reference: "Referencia 5", barcode: "Codigo de barras 5", stock: 50 },
+                        {id: "6", name: "Producto 6", price: 6000, reference: "Referencia 6", barcode: "Codigo de barras 6", stock: 60 },
+                        {id: "7", name: "Producto 7", price: 7000, reference: "Referencia 7", barcode: "Codigo de barras 7", stock: 70 },
+                        {id: "8", name: "Producto 8", price: 8000, reference: "Referencia 8", barcode: "Codigo de barras 8", stock: 80 }
   ];
 
   currentLang: string;
@@ -60,9 +64,14 @@ export class ProductsComponent implements OnInit {
 
   emptySearch: boolean = false;
 
+  showModal: boolean = false;
+  modalTitle: string = '';
+  modalMessage: string = '';
+
   constructor(private encryptionService: EncryptionService,
       private activatedRoute: ActivatedRoute,
       private portalUsersService: PortalUsersService,
+      private downloadCsvService: DownloadCsvService,
       private commercesService: CommercesService,
       private storageService: StorageService,
       private dialog: MatDialog,
@@ -227,24 +236,86 @@ export class ProductsComponent implements OnInit {
   //  this.getModels();
   }
 
-  public openProductsModal(): void {
-  //  const dialogRef = this.dialog.open(ManufacturersModelModalComponent);
-  //  dialogRef.afterClosed().subscribe(result => {
+  //Añadir product
+  addProduct(){
+    this.sendProductDetails(null);
+  }
 
-  //  });
+  //Encriptación
+  sendProductDetails(id: string) {
+    if (!id) {
+      this.code = '/product-details'
+    } else {
+      this.code = this.encryptionService.encryptData(id);
+      this.code = '/product-details/' + this.encryptionService.encode(this.code);
+    }
+  }
+
+  //Eliminar productos
+  deleteProduct(productId: string){
+    this.products = this.products.filter(product => product.id != productId);
+    if(this.products.length == 0) {
+      this.emptySearch = true;
+    }
   }
 
   downloadCSV(){
-  //  this.downloadCsvService.downloadCustomersFile(this.customers, 'Customers', this.currentLang);
+    this.downloadCsvService.downloadProductsFile(this.products, this.translate.instant('dpos.products.page.title'), this.currentLang);
   }
 
   //Importar clientes
   importProducts(){
-  //  this.customerFileInput.nativeElement.click();
+    this.productFileInput.nativeElement.click();
   }
 
-  onCustomerFileSelected(event: Event) {
-  
+  onProductFileSelected(event: Event) {
+
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
+
+    const file = input.files[0];
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const text = reader.result as string;
+      
+      const { rows, errors } = this.parseCSV(text);
+
+      if (errors.length > 0) {
+        console.log('Errores de validación:', errors);
+      } 
+      else {
+        let products: Product[] = [];
+        for(let i= 0; i < rows.length; i++){
+          let product: Product = new Product();
+          product.id = i.toString();
+          product.reference = rows[i][0];
+          product.barcode = rows[i][1];
+          product.name = rows[i][2];
+          product.price = Number(rows[i][3]);
+          product.stock = Number(rows[i][4]);
+          
+          products.push(product);
+        }
+
+        this.showModal = true;
+        this.modalTitle = 'Importación de productos';
+        this.modalMessage = 'Productos importados correctamente';
+
+        if(!this.products)
+          this.products = [];
+
+        this.products.push(...products);
+
+        if(this.products.length > 0)
+          this.emptySearch = false;
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  closeModal() {
+    this.showModal = false;
   }
 
   private getCommerceResellerName(commerces: Commerce[]): string {
@@ -276,6 +347,56 @@ export class ProductsComponent implements OnInit {
       }
     );
     */
+  }
+
+  private parseCSV(csv: string): { rows: string[][], errors: string[] } {
+    const rows: string[][] = [];
+    const errors: string[] = [];
+    let currentRow: string[] = [];
+    let currentValue = '';
+    let insideQuotes = false;
+
+    for (let i = 0; i < csv.length; i++) {
+      const char = csv[i];
+
+      if (char === '"') {
+        if (insideQuotes && csv[i + 1] === '"') {
+          currentValue += '"';
+          i++;
+        } else {
+          insideQuotes = !insideQuotes;
+        }
+      } else if (char === ',' && !insideQuotes) {
+        currentRow.push(currentValue);
+        currentValue = '';
+      } else if ((char === '\n' || char === '\r') && !insideQuotes) {
+        if (char === '\r' && csv[i + 1] === '\n') i++;
+        currentRow.push(currentValue);
+        rows.push(currentRow);
+        currentRow = [];
+        currentValue = '';
+      } else {
+        currentValue += char;
+      }
+    }
+
+    if (currentValue !== '' || currentRow.length > 0) {
+      currentRow.push(currentValue);
+      rows.push(currentRow);
+    }
+
+    // Validación de filas incompletas
+    const expectedLength = rows[0]?.length ?? 0;
+
+    rows.forEach((row, index) => {
+      if (row.length !== expectedLength) {
+        errors.push(
+          `Error en la fila ${index + 1}: se esperaban ${expectedLength} columnas pero hay ${row.length}.`
+        );
+      }
+    });
+
+    return { rows, errors };
   }
 
 }

@@ -28,6 +28,9 @@
   <br />
   <div class="card">
     <div class="card-body">
+      <div>
+        <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage"  (closeModal)="closeModal()"></app-modal>
+      </div>
       <div *ngIf="!categories || categories.length == 0">
         <div class="table">
           <div class="inner-table-header d-flex justify-content-between align-items-center">
@@ -63,9 +66,9 @@
                   <h5 *ngIf="categorySelected">{{'dpos.products.page.title' | translate}} {{ categorySelected.name }}</h5>
                 </div>
                 <div class="d-flex gap-2">
-                  <button class="btn btn-primary" (click)="openProductsModal()">{{'dpos.products.create.btn' | translate}}</button>
-                  <button class="btn btn-primary align-self-end" (click)="importProducts()">&nbsp;{{'dpos.customers.import.label' | translate}}</button>
-                  <input type="file" #customerFileInput style="display: none" accept=".csv" (change)="onCustomerFileSelected($event)"/>
+                  <button class="btn btn-primary" [routerLink]="code" (click)="addProduct()">{{'dpos.products.create.btn' | translate}}</button>
+                  <button class="btn btn-primary align-self-end" (click)="importProducts()">&nbsp;{{'dpos.products.import.label' | translate}}</button>
+                  <input type="file" #productFileInput style="display: none" accept=".csv" (change)="onProductFileSelected($event)"/>
                   <button class="btn btn-outline-info justify-content-center">
                     <i class="fa-solid fa-file-csv fa-xl" (click)="downloadCSV()"></i>
                   </button>
@@ -95,16 +98,18 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let product of products | paginate: { id: 'productsList', itemsPerPage: 5, currentPage: currentProductsPage }">
+                    <tr *ngFor="let product of products | paginate: { id: 'productsList', itemsPerPage: 5, currentPage: currentProductsPage }" [routerLink]="code">
                       <td class="text-center align-middle">{{ product.reference }}</td>
                       <td class="text-center align-middle">{{ product.barcode }}</td>
                       <td class="text-center align-middle">{{ product.name }}</td>
-                      <td class="text-center align-middle">{{ product.price }}</td>
+                      <td class="text-center align-middle">{{ product.price/ (Math.pow(10, 2)) | currency : "Eur" : "€" }}</td>
+
+
                       <td class="text-center align-middle">{{ product.stock }}</td>
                       <!-- <td class="text-center align-middle">{{ product.categories[0].name }}</td>
                       <td class="text-center align-middle">{{ product.tax.name }}</td> -->
-                      <td class="text-center align-middle"><span class="align-center"><a><i class="fa-solid fa-pen" style="color: #74c0fc"></i></a></span></td>
-                      <td class="text-center align-middle"><span class="align-center"><a><i class="fa-solid fa-trash" style="color: #FD716E"></i></a></span></td>
+                      <td class="text-center align-middle"><span class="align-center"><a><i class="fa-solid fa-pen" style="color: #74c0fc" (click)="sendProductDetails(product.id)"></i></a></span></td>
+                      <td class="text-center align-middle"><span class="align-center"><a><i class="fa-solid fa-trash" style="color: #FD716E" (click)="deleteProduct(product.id)"></i></a></span></td>
                     </tr>
                   </tbody>
                 </table>
