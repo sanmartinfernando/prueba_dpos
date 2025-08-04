@@ -147,7 +147,7 @@
           <div class="text-start">
             <label id="ticket_bai"><b>{{'dpos.details.order.tbai.label' | translate}}</b> {{ salesTicketBai[0] }}</label>
           </div>
-          <div class="text-start">
+          <div class="text-center my-2">
             <qrcode [qrdata]="salesTicketBai[1]" [width]="200" [errorCorrectionLevel]="'M'"></qrcode>
           </div>
         </div>
@@ -155,7 +155,7 @@
           <div class="text-start">
             <label id="ticket_bai"><b>{{'dpos.details.order.verifactu.label' | translate}}</b>&nbsp;<a href="{{ salesVerifactu[0] }}" target="_blank" rel="noopener">{{ salesVerifactu[0] }}</a></label>
           </div>
-          <div class="text-start">
+          <div class="text-center my-2">
             <qrcode [qrdata]="salesVerifactu[1]" [width]="200" [errorCorrectionLevel]="'M'"></qrcode>
           </div>
         </div>
