@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { PagesService } from 'src/app/_services/pages.service';
 import { Page } from 'src/app/_models/page.model';
 import { StorageService } from 'src/app/_services/storage.service';
@@ -17,6 +17,8 @@ import { UIStateService } from 'src/app/_services/ui-state.service';
   styleUrls: []
 })
 export class HeaderComponent implements OnInit {
+
+  showNav: boolean = true;
 
   pages : Page[] = [];
   username: string;
@@ -45,6 +47,9 @@ export class HeaderComponent implements OnInit {
     this.uiStateService.formSelectEnabled$.subscribe(enabled => {
       this.formSelectEnabled = enabled;
     });
+
+    // Detectar tamaño inicial
+    this.showNav = this.isLargeScreen();
 
   }
 
@@ -81,6 +86,23 @@ export class HeaderComponent implements OnInit {
     });
   }
   
+  // ✅ Método seguro para verificar tamaño de pantalla
+  isLargeScreen(): boolean {
+    return typeof window !== 'undefined' && window.innerWidth >= 768;
+  }
+
+  handlePageClick(text: string, code: string): void {
+    this.titleHeader(text);
+    this.component(code);
+    this.showNav = this.isLargeScreen();
+  }
+
+  // ✅ Escuchar cambios de tamaño de pantalla
+  @HostListener('window:resize')
+  onResize() {
+    this.showNav = this.isLargeScreen();
+  }
+
   getTitle() {
     if(this.isComercia) {
       this.title = "TPV&GO";
