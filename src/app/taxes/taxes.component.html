@@ -72,8 +72,8 @@
                 </ng-container>
               </tbody>
             </table>
-            <div *ngIf="loadCompleted && !emptySearch" class="has-text-centered">
-              <pagination-controls (pageChange)="page = $event"></pagination-controls>
+            <div *ngIf="loadCompleted && !emptySearch" class="text-center mt-3">
+              <pagination-controls (pageChange)="page = $event" previousLabel="" nextLabel=""></pagination-controls>
             </div>
           </div>
         </div>
