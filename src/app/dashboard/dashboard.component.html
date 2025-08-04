@@ -30,15 +30,12 @@
       </div>
     </div>
   </form>
-
   <ng-template #noresults>
     <p>€0.00</p>
   </ng-template>
-
   <ng-template #singular>
     <ng-container>{{'dpos.dashboard.operation.label' | translate}}</ng-container>
   </ng-template>
-
   <!-- KPIs + Gráficos -->
   <div class="row mt-4 g-3">
     <!-- Panel KPIs -->
@@ -87,7 +84,6 @@
               <p *ngIf="aggregations !== undefined && aggregations.length; else noresults">{{ balanceResult | currency : 'Eur' : '€' }}</p>
             </div>
           </div>
-
           <!-- Gráfico evolución KPI -->
           <div class="mt-5">
             <h6>
@@ -114,57 +110,53 @@
         </div>
       </div>
     </div>
-
     <!-- Panel lateral -->
     <div class="col-12 col-lg-4 d-flex flex-column">
-  <div class="card flex-fill mb-3">
-    <div class="card-body">
-      <h5 class="mb-4">
-        <i class="fa-solid fa-chart-line text-success me-2"></i>
-        <b>{{'dpos.dashboard.topsells.label' | translate}}</b>
-      </h5>
-      <ng-template #noTop3Data><br /><b><i>{{'dpos.dashboard.nodata.label' | translate}}</i></b></ng-template>
-      <ng-container *ngIf="loadedTPChart; else spinner">
-        <div class="inner-chart">
-          <ngx-charts-bar-horizontal
-            [view]="viewTop3"
-            [results]="datasetTop3"
-            [animations]="true"
-            [showDataLabel]="true"
-            [xAxis]="false"
-            [yAxis]="true"
-            [customColors]="colorsTop3"
-            *ngIf="!emptyKPIChart; else noTop3Data"
-          >
-          </ngx-charts-bar-horizontal>
+      <div class="card flex-fill mb-3">
+        <div class="card-body">
+          <h5 class="mb-4">
+            <i class="fa-solid fa-chart-line text-success me-2"></i>
+            <b>{{'dpos.dashboard.topsells.label' | translate}}</b>
+          </h5>
+          <ng-template #noTop3Data><br /><b><i>{{'dpos.dashboard.nodata.label' | translate}}</i></b></ng-template>
+          <ng-container *ngIf="loadedTPChart; else spinner">
+            <div class="inner-chart">
+              <ngx-charts-bar-horizontal
+                [view]="viewTop3"
+                [results]="datasetTop3"
+                [animations]="true"
+                [showDataLabel]="true"
+                [xAxis]="false"
+                [yAxis]="true"
+                [customColors]="colorsTop3"
+                *ngIf="!emptyKPIChart; else noTop3Data">
+              </ngx-charts-bar-horizontal>
+            </div>
+          </ng-container>
         </div>
-      </ng-container>
-    </div>
-  </div>
-
-  <div class="card flex-fill">
-    <div class="card-body">
-      <h5 class="mb-4">
-        <i class="fa-solid fa-credit-card text-info me-2"></i>
-        <b>{{'dpos.dashboard.paymentmethods.label' | translate}}</b>
-      </h5>
-      <ng-template #noPMData><br /><b><i>{{'dpos.dashboard.nodata.label' | translate}}</i></b></ng-template>
-      <ng-container *ngIf="loadedPMChart; else spinner">
-        <div class="inner-chart">
-          <ngx-charts-pie-chart
-            [view]="viewPM"
-            [results]="datasetPM"
-            [doughnut]="true"
-            [labels]="true"
-            [arcWidth]="0.5"
-            [customColors]="colorsPM"
-            *ngIf="!emptyKPIChart; else noPMData"
-          >
-          </ngx-charts-pie-chart>
+      </div>
+      <div class="card flex-fill">
+        <div class="card-body">
+          <h5 class="mb-4">
+            <i class="fa-solid fa-credit-card text-info me-2"></i>
+            <b>{{'dpos.dashboard.paymentmethods.label' | translate}}</b>
+          </h5>
+          <ng-template #noPMData><br /><b><i>{{'dpos.dashboard.nodata.label' | translate}}</i></b></ng-template>
+          <ng-container *ngIf="loadedPMChart; else spinner">
+            <div class="inner-chart">
+              <ngx-charts-pie-chart
+                [view]="viewPM"
+                [results]="datasetPM"
+                [doughnut]="true"
+                [labels]="true"
+                [arcWidth]="0.5"
+                [customColors]="colorsPM"
+                *ngIf="!emptyKPIChart; else noPMData">
+              </ngx-charts-pie-chart>
+            </div>
+          </ng-container>
         </div>
-      </ng-container>
+      </div>
     </div>
-  </div>
-</div>
   </div>
 </div>

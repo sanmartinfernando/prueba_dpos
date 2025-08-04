@@ -1,214 +1,216 @@
-<br />
-<div class="container-fluid header-main">
-  <div>
-    <!-- Formulario de búsqueda -->
-    <form class="d-flex flex-wrap mx-1">
-      <div class="me-3">
-        <label class="form-label">{{'dpos.filter.terminal' | translate}}</label>
-        <select class="form-select" id="searchTer" name="terminal" [(ngModel)]="terminalSelected" (change)="onTerminalChange()">
-          <option *ngFor="let terminal of terminalsNumber" [value]="terminal">{{ terminal }}</option>
-        </select>
-      </div>
-      <div class="mx-3">
-        <label class="form-label">{{'dpos.filter.date.from' | translate}}</label>
-        <input type="date" class="form-control" id="sinceDate" [value]="sinceDate" (change)="onSinceDateChange()" />
-      </div>
-      <div class="mx-3">
-        <label class="form-label">{{'dpos.filter.date.to' | translate}}</label>
-        <input type="date" class="form-control" id="tilDate" [value]="tilDate" (change)="onTilDateChange()" />
-      </div>
-      <div class="mx-3">
-        <label class="form-label">{{'dpos.filter.operationtype' | translate}}</label>
-        <select class="form-select" name="operation" [(ngModel)]="typeVarSearch" (change)="onOpTypeChange()">
-          <option>{{'dpos.filter.all' | translate}}</option>
-          <option *ngFor="let type of opTypes; index as i">{{ type.name }}</option>
-        </select>
-      </div>
-      <div class="mx-3">
-        <label class="form-label">{{'dpos.filter.docnumber' | translate}}</label>
-        <input type="text" class="form-control" name="documentN" [(ngModel)]="documentVarSearch" (change)="onDocNumberChange()">
-      </div>
-      <div id="searchButtonsDiv" class="ms-5 d-flex overflow-auto">
-        <button type="reset" class="btn btn-outline-danger align-self-end"> 
-          <a type="button"><i class="fas fa-eraser"></i></a>
-        </button>
-        <a type="button" class="btn btn-primary align-self-end" (click)="searchSales()">
-          <i class="fas fa-search"></i>&nbsp;&nbsp;{{'dpos.action.search' | translate}}
-        </a>
-      </div>
-    </form>
+<div class="container-fluid py-3 header-main">
+  <!-- Formulario de búsqueda -->
+  <form class="row g-3 align-items-end">
+    <div class="col-md-6 col-lg-2">
+      <label for="searchTer" class="form-label">{{'dpos.filter.terminal' | translate}}</label>
+      <select class="form-select" id="searchTer" name="terminal" [(ngModel)]="terminalSelected" (change)="onTerminalChange()">
+        <option *ngFor="let terminal of terminalsNumber" [value]="terminal">{{ terminal }}</option>
+      </select>
+    </div>
+    <div class="col-md-6 col-lg-2">
+      <label for="sinceDate" class="form-label">{{'dpos.filter.date.from' | translate}}</label>
+      <input type="date" class="form-control" id="sinceDate" [value]="sinceDate" (change)="onSinceDateChange()" />
+    </div>
+    <div class="col-md-6 col-lg-2">
+      <label for="tilDate" class="form-label">{{'dpos.filter.date.to' | translate}}</label>
+      <input type="date" class="form-control" id="tilDate" [value]="tilDate" (change)="onTilDateChange()" />
+    </div>
+    <div class="col-md-6 col-lg-2">
+      <label class="form-label">{{'dpos.filter.operationtype' | translate}}</label>
+      <select class="form-select" name="operation" [(ngModel)]="typeVarSearch" (change)="onOpTypeChange()">
+        <option>{{'dpos.filter.all' | translate}}</option>
+        <option *ngFor="let type of opTypes">{{ type.name }}</option>
+      </select>
+    </div>
+    <div class="col-md-6 col-lg-2">
+      <label class="form-label">{{'dpos.filter.docnumber' | translate}}</label>
+      <input type="text" class="form-control" name="documentN" [(ngModel)]="documentVarSearch" (change)="onDocNumberChange()">
+    </div>
+    <div class="col-md-6 col-lg-2 d-flex justify-content-start gap-2">
+      <button type="reset" class="btn btn-outline-danger">
+        <i class="fas fa-eraser"></i>
+      </button>
+      <button type="button" class="btn btn-primary" (click)="searchSales()">
+        <i class="fas fa-search"></i>&nbsp;&nbsp;{{'dpos.action.search' | translate}}
+      </button>
+    </div>
+  </form>
+  <!-- Validación -->
+  <div *ngIf="validationVariable == true" class="d-flex justify-content-center mt-2">
+    <div class="text-danger text-center"><b>{{'dpos.filter.novalid' | translate}}</b></div>
   </div>
-  <br />
-  <!-- Validation -->
-  <div *ngIf="validationVariable == true" class="d-flex justify-content-center" style="position: absolute; left: 50%">
-    <div class="text-danger"><b>{{'dpos.filter.novalid' | translate}}</b></div>
-  </div>
-  <!-- Tabla e indicadores -->
-  <div class="card">
+  <!-- Sección principal -->
+  <div class="card mt-4">
     <div class="card-body">
-      <div class="row mb-4">
-        <div>
-          <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage"  (closeModal)="closeModal()"></app-modal>
-        </div>
-        <div class="col">
+      <div class="row mb-4 align-items-center">
+        <div class="col-md-6">
           <h5><b>{{'dpos.sales.operations.label' | translate}}</b></h5>
         </div>
-        <!-- Indicadores -->
-        <div class="col-5 text-end" *ngIf="loadCompleted == true && emptySearch == false">
-          <label for="inputHeadSales" class="me-2">{{'dpos.sales.operations.number.label' | translate}}</label>
-          <input type="text" id="inputHeadSales" class="text-center me-5" [(ngModel)]="operationN" disabled />
-          <label for="inputHeadSales1" class="me-2">{{'dpos.sales.operations.total.label' | translate}}</label>
-          <input type="text" id="inputHeadSales1" class="text-center me-5" [(ngModel)]="totalSalesString" disabled />
-          <button class="btn btn-outline-info justify-content-center">
-            <i class="fa-solid fa-file-csv fa-xl" (click)="downloadCSV()"></i>
-          </button>
+        <div class="col-md-6 text-md-end mt-2 mt-md-0" *ngIf="loadCompleted && !emptySearch">
+          <div class="d-flex flex-column flex-md-row justify-content-md-end align-items-md-center gap-3">  
+            <!-- Label + input: número de operaciones -->
+            <div class="d-flex flex-column flex-md-row align-items-md-center">
+              <label class="me-md-2 mb-1 mb-md-0">
+                {{'dpos.sales.operations.number.label' | translate}}
+              </label>
+              <input type="text" class="form-control text-center" style="max-width: 120px;" [(ngModel)]="operationN" disabled />
+            </div>
+            <!-- Label + input: total de ventas -->
+            <div class="d-flex flex-column flex-md-row align-items-md-center">
+              <label class="me-md-2 mb-1 mb-md-0">
+                {{'dpos.sales.operations.total.label' | translate}}
+              </label>
+              <input type="text" class="form-control text-center" style="max-width: 120px;" [(ngModel)]="totalSalesString" disabled />
+            </div>
+            <!-- Botón CSV -->
+            <button class="btn btn-outline-info mt-2 mt-md-0" (click)="downloadCSV()">
+              <i class="fa-solid fa-file-csv fa-xl"></i>
+            </button>
+          </div>
         </div>
       </div>
-      <div *ngIf="loadCompleted == false  && emptySearch == false" class="d-flex justify-content-center">
+      <!-- Spinner de carga -->
+      <div *ngIf="!loadCompleted && !emptySearch" class="d-flex justify-content-center">
         <div class="spinner-border text-danger"></div>
       </div>
-      <div *ngIf="loadCompleted && emptySearch == true" class="d-flex justify-content-center">
+      <!-- Mensaje de datos vacíos -->
+      <div *ngIf="loadCompleted && emptySearch" class="d-flex justify-content-center">
         <b><i>{{'dpos.dashboard.nodata.label' | translate}}</i></b>
       </div>
-      <!-- Tabla -->
-      <div class="row" *ngIf="loadCompleted && emptySearch == false">
-        <div class="col">
-          <div class="table-responsive">
-            <table class="table table-hover order-table table-borderless" data-pagination="true" data-page-size="10">
-              <thead class="text-customer">
-                <tr>
-                  <th class="text-center"></th>
-                  <th class="text-start">{{'dpos.sales.operation.document.label' | translate}}</th>
-                  <th class="text-center">{{'dpos.sales.operation.type.label' | translate}}</th>
-                  <th class="text-start">{{'dpos.sales.operation.data.label' | translate}}</th>
-                  <th class="text-center">{{'dpos.sales.operation.terminal.label' | translate}}</th>
-                  <th class="text-center">{{'dpos.sales.operation.tbai.label' | translate}}</th>
-                  <th class="text-end">{{'dpos.sales.operation.subtotal.label' | translate}}</th>
-                  <th class="text-end">{{'dpos.sales.operation.discount.label' | translate}}</th>
-                  <th class="text-end">{{'dpos.sales.operation.base.label' | translate}}</th>
-                  <th class="text-end">{{'dpos.sales.operation.tax.label' | translate}}</th>
-                  <th class="text-end">{{'dpos.sales.operation.total.label' | translate}}</th>
-                </tr>
-              </thead>
-              <ng-template #empty>
-                <td colspan="5">
+      <!-- Tabla de ventas -->
+      <div *ngIf="loadCompleted && !emptySearch" class="table-responsive">
+        <table class="table table-hover table-borderless">
+          <thead class="text-customer">
+            <tr>
+              <th class="text-center"></th>
+              <th>{{'dpos.sales.operation.document.label' | translate}}</th>
+              <th class="text-center">{{'dpos.sales.operation.type.label' | translate}}</th>
+              <th>{{'dpos.sales.operation.data.label' | translate}}</th>
+              <th class="text-center">{{'dpos.sales.operation.terminal.label' | translate}}</th>
+              <th class="text-center">{{'dpos.sales.operation.tbai.label' | translate}}</th>
+              <th class="text-end">{{'dpos.sales.operation.subtotal.label' | translate}}</th>
+              <th class="text-end">{{'dpos.sales.operation.discount.label' | translate}}</th>
+              <th class="text-end">{{'dpos.sales.operation.base.label' | translate}}</th>
+              <th class="text-end">{{'dpos.sales.operation.tax.label' | translate}}</th>
+              <th class="text-end">{{'dpos.sales.operation.total.label' | translate}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngIf="loadCompleted && sales?.data?.length > 0; else emptyTemplate">
+              <tr *ngFor="let sale of sales.data | paginate : { itemsPerPage: 10, currentPage: page }; index as i" [routerLink]="code" (click)="sendSalesDetails(sale.orderId)">
+                <td class="text-center align-middle">
+                  <input class="form-check-input" type="checkbox" [checked]="isAllSelected" (click)="$event.stopPropagation()" />
+                </td>
+                <td class="align-middle">{{ sale.reference }}</td>
+                <td class="text-center align-middle">
+                  <div class="badge rounded-pill" [ngClass]="{
+                    'bg-sale': sale.type === 0,
+                    'bg-refund': sale.type === 2,
+                    'bg-edits': sale.type === 5
+                  }">
+                    {{ sale.type === 0 ? ('dpos.sales.operation.order.label' | translate) :
+                       sale.type === 2 ? ('dpos.sales.operation.refund.label' | translate) :
+                       ('dpos.sales.operation.rectification.label' | translate) }}
+                  </div>
+                </td>
+                <td class="align-middle">{{ sale.createdAt | date: "dd/MM/yyyy HH:mm" }}</td>
+                <td class="text-center align-middle">{{ sale.terminalNumber }}</td>
+                <td class="text-center align-middle" *ngIf="sale.orderTicketBai == null && sale.orderVerifactu == null">
+                  <div class="badge rounded-pill bg-pending">
+                    <i>{{'dpos.sales.operation.verifactu.tbai.no.label' | translate}}</i>
+                  </div>
+                </td>
+                <!-- Ticketbai status -->
+                <td class="text-center align-middle" *ngIf="sale.orderTicketBai != null && salesTicketBai[i] != 0 && salesTicketBai[i] != 1 && salesTicketBai[i] != 2">
+                  <div class="badge rounded-pill bg-pending">
+                    <i>{{'dpos.sales.operation.tbai.no.label' | translate}}</i> 
+                  </div>
+                </td>
+                <td class="text-center align-middle" *ngIf="sale.orderTicketBai != null && salesTicketBai[i] == 0">
+                  <div class="badge rounded-pill bg-accept">
+                    <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.tbai.status.accepted.label' | translate}}
+                  </div>
+                </td>
+                <td class="text-center align-middle" *ngIf="sale.orderTicketBai != null && salesTicketBai[i] == 1">
+                  <div class="badge rounded-pill bg-warning">
+                    <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.tbai.status.warnings.label' | translate}}
+                  </div>
+                </td>
+                <td class="text-center align-middle" *ngIf="sale.orderTicketBai != null && salesTicketBai[i] == 2">
+                  <div class="badge rounded-pill bg-rejected">
+                    <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.tbai.status.rejected.label' | translate}}
+                  </div>
+                </td>
+                <!-- Verifactu status -->
+                <td class="text-center align-middle" *ngIf="sale.orderVerifactu != null && sale.orderVerifactu.status != verifactuStatus.Pending && sale.orderVerifactu.status != verifactuStatus.Processing && sale.orderVerifactu.status != verifactuStatus.Accepted && sale.orderVerifactu.status != verifactuStatus.Completed && sale.orderVerifactu.status != verifactuStatus.Failed && sale.orderVerifactu.status != verifactuStatus.PartiallyAccepted && sale.orderVerifactu.status != verifactuStatus.Rejected">
+                  <div class="badge rounded-pill bg-pending">
+                    <i>{{'dpos.sales.operation.verifactu.no.label' | translate}}</i> 
+                  </div>
+                </td>
+                <td class="text-center align-middle" *ngIf="sale.orderVerifactu != null && sale.orderVerifactu.status == verifactuStatus.Pending">
+                  <div class="badge rounded-pill bg-pending">
+                    <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.verifactu.status.pending.label' | translate}}
+                  </div>
+                </td>
+                <td class="text-center align-middle" *ngIf="sale.orderVerifactu != null && sale.orderVerifactu.status == verifactuStatus.Processing">
+                  <div class="badge rounded-pill bg-pending">
+                    <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.verifactu.status.processing.label' | translate}}
+                  </div>
+                </td>
+                <td class="text-center align-middle" *ngIf="sale.orderVerifactu != null && sale.orderVerifactu.status == verifactuStatus.Accepted">
+                  <div class="badge rounded-pill bg-accept">
+                    <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.verifactu.status.accepted.label' | translate}}
+                  </div>
+                </td>
+                <td class="text-center align-middle" *ngIf="sale.orderVerifactu != null && sale.orderVerifactu.status == verifactuStatus.Completed">
+                  <div class="badge rounded-pill bg-accept">
+                    <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.verifactu.status.completed.label' | translate}}
+                  </div>
+                </td>
+                <td class="text-center align-middle" *ngIf="sale.orderVerifactu != null && sale.orderVerifactu.status == verifactuStatus.Failed">
+                  <div class="badge rounded-pill bg-pending">
+                    <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.verifactu.status.failed.label' | translate}}
+                  </div>
+                </td>
+                <td class="text-center align-middle" *ngIf="sale.orderVerifactu != null && sale.orderVerifactu.status == verifactuStatus.PartiallyAccepted">
+                  <div class="badge rounded-pill bg-warning">
+                    <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.verifactu.status.partially.accepted.label' | translate}}
+                  </div>
+                </td>
+                <td class="text-center align-middle" *ngIf="sale.orderVerifactu != null && sale.orderVerifactu.status == verifactuStatus.Rejected">
+                  <div class="badge rounded-pill bg-rejected">
+                    <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.verifactu.status.rejected.label' | translate}}
+                  </div>
+                </td>
+                <td class="text-end align-middle">
+                  {{ sale.subTotal / (Math.pow(10, sale.decimals)) | currency : "Eur" : "€" }}
+                </td>
+                <td class="text-end align-middle">
+                  {{ sale.totalDiscount / (Math.pow(10, sale.decimals)) | currency : "Eur" : "€" }}
+                </td>
+                <td class="text-end align-middle">
+                  {{ getTotalBase(sale.orderTaxes) | currency : "Eur" : "€" }}
+                </td>
+                <td class="text-end align-middle">
+                  {{ getTotalTaxes(sale.orderTaxes)  | currency : "Eur" : "€" }}
+                </td>
+                <td class="text-end align-middle">
+                  {{ sale.total / (Math.pow(10, sale.decimals)) | currency : "Eur" : "€" }}
+                </td>
+              </tr>
+            </ng-container>
+            <ng-template #emptyTemplate>
+              <tr>
+                <td colspan="11" class="text-center py-3">
                   <b>{{'dpos.sales.operation.nodata.label' | translate}}</b>
                 </td>
-              </ng-template>
-              <tbody>
-                <ng-container *ngIf="loadCompleted; else empty">
-                  <tr *ngFor="let sale of sales.data | paginate : { itemsPerPage: 10, currentPage: page }; index as i" [routerLink]="code" (click)="sendSalesDetails(sale.orderId)">
-                    <td class="text-center align-middle">
-                      <input class="form-check-input" type="checkbox" [checked]="isAllSelected" (click)="$event.stopPropagation()" />
-                    </td>
-                    <td class="text-start align-middle">
-                      <span class="table-title">{{ sale.reference }}</span>
-                    </td>
-                    <td class="text-center align-middle" *ngIf="sale.type == 0">
-                      <div class="badge rounded-pill bg-sale">{{'dpos.sales.operation.order.label' | translate}}</div>
-                    </td>
-                    <td class="text-center align-middle" *ngIf="sale.type == 2">
-                      <div class="badge rounded-pill bg-refund">{{'dpos.sales.operation.refund.label' | translate}}</div>
-                    </td>
-                    <td class="text-center align-middle" *ngIf="sale.type == 5">
-                      <div class="badge rounded-pill bg-edits">{{'dpos.sales.operation.rectification.label' | translate}}</div>
-                    </td>
-                    <td class="text-start align-middle">
-                      {{ sale.createdAt | date : "dd/MM/yyyy HH:mm" }}
-                    </td>
-                    <td class="text-center align-middle">
-                      {{ sale.terminalNumber }}
-                    </td>
-                    <td class="text-center align-middle" *ngIf="sale.orderTicketBai == null && sale.orderVerifactu == null">
-                      <div class="badge rounded-pill bg-pending">
-                        <i>{{'dpos.sales.operation.verifactu.tbai.no.label' | translate}}</i>
-                      </div>
-                    </td>
-                    <!-- Ticketbai status -->
-                    <td class="text-center align-middle" *ngIf="sale.orderTicketBai != null && salesTicketBai[i] != 0 && salesTicketBai[i] != 1 && salesTicketBai[i] != 2">
-                      <div class="badge rounded-pill bg-pending">
-                        <i>{{'dpos.sales.operation.tbai.no.label' | translate}}</i> 
-                      </div>
-                    </td>
-                    <td class="text-center align-middle" *ngIf="sale.orderTicketBai != null && salesTicketBai[i] == 0">
-                      <div class="badge rounded-pill bg-accept">
-                        <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.tbai.status.accepted.label' | translate}}
-                      </div>
-                    </td>
-                    <td class="text-center align-middle" *ngIf="sale.orderTicketBai != null && salesTicketBai[i] == 1">
-                      <div class="badge rounded-pill bg-warning">
-                        <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.tbai.status.warnings.label' | translate}}
-                      </div>
-                    </td>
-                    <td class="text-center align-middle" *ngIf="sale.orderTicketBai != null && salesTicketBai[i] == 2">
-                      <div class="badge rounded-pill bg-rejected">
-                        <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.tbai.status.rejected.label' | translate}}
-                      </div>
-                    </td>
-                    <!-- Verifactu status -->
-                    <td class="text-center align-middle" *ngIf="sale.orderVerifactu != null && sale.orderVerifactu.status != verifactuStatus.Pending && sale.orderVerifactu.status != verifactuStatus.Processing && sale.orderVerifactu.status != verifactuStatus.Accepted && sale.orderVerifactu.status != verifactuStatus.Completed && sale.orderVerifactu.status != verifactuStatus.Failed && sale.orderVerifactu.status != verifactuStatus.PartiallyAccepted && sale.orderVerifactu.status != verifactuStatus.Rejected">
-                      <div class="badge rounded-pill bg-pending">
-                        <i>{{'dpos.sales.operation.verifactu.no.label' | translate}}</i> 
-                      </div>
-                    </td>
-                    <td class="text-center align-middle" *ngIf="sale.orderVerifactu != null && sale.orderVerifactu.status == verifactuStatus.Pending">
-                      <div class="badge rounded-pill bg-pending">
-                        <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.verifactu.status.pending.label' | translate}}
-                      </div>
-                    </td>
-                    <td class="text-center align-middle" *ngIf="sale.orderVerifactu != null && sale.orderVerifactu.status == verifactuStatus.Processing">
-                      <div class="badge rounded-pill bg-pending">
-                        <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.verifactu.status.processing.label' | translate}}
-                      </div>
-                    </td>
-                    <td class="text-center align-middle" *ngIf="sale.orderVerifactu != null && sale.orderVerifactu.status == verifactuStatus.Accepted">
-                      <div class="badge rounded-pill bg-accept">
-                        <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.verifactu.status.accepted.label' | translate}}
-                      </div>
-                    </td>
-                    <td class="text-center align-middle" *ngIf="sale.orderVerifactu != null && sale.orderVerifactu.status == verifactuStatus.Completed">
-                      <div class="badge rounded-pill bg-accept">
-                        <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.verifactu.status.completed.label' | translate}}
-                      </div>
-                    </td>
-                    <td class="text-center align-middle" *ngIf="sale.orderVerifactu != null && sale.orderVerifactu.status == verifactuStatus.Failed">
-                      <div class="badge rounded-pill bg-pending">
-                        <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.verifactu.status.failed.label' | translate}}
-                      </div>
-                    </td>
-                    <td class="text-center align-middle" *ngIf="sale.orderVerifactu != null && sale.orderVerifactu.status == verifactuStatus.PartiallyAccepted">
-                      <div class="badge rounded-pill bg-warning">
-                        <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.verifactu.status.partially.accepted.label' | translate}}
-                      </div>
-                    </td>
-                    <td class="text-center align-middle" *ngIf="sale.orderVerifactu != null && sale.orderVerifactu.status == verifactuStatus.Rejected">
-                      <div class="badge rounded-pill bg-rejected">
-                        <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.verifactu.status.rejected.label' | translate}}
-                      </div>
-                    </td>
-                    <td class="text-end align-middle">
-                      {{ sale.subTotal / (Math.pow(10, sale.decimals)) | currency : "Eur" : "€" }}
-                    </td>
-                    <td class="text-end align-middle">
-                      {{ sale.totalDiscount / (Math.pow(10, sale.decimals)) | currency : "Eur" : "€" }}
-                    </td>
-                    <td class="text-end align-middle">
-                      {{ getTotalBase(sale.orderTaxes) | currency : "Eur" : "€" }}
-                    </td>
-                    <td class="text-end align-middle">
-                      {{ getTotalTaxes(sale.orderTaxes)  | currency : "Eur" : "€" }}
-                    </td>
-                    <td class="text-end align-middle">
-                      {{ sale.total / (Math.pow(10, sale.decimals)) | currency : "Eur" : "€" }}
-                    </td>
-                  </tr>
-                </ng-container>
-              </tbody>
-            </table>
-            <div class="has-text-centered">
-              <pagination-controls (pageChange)="page = $event"></pagination-controls>
-            </div>
-          </div>
+              </tr>
+            </ng-template>
+          </tbody>
+        </table>
+        <!-- Paginación -->
+        <div class="text-center mt-3">
+          <pagination-controls (pageChange)="page = $event"></pagination-controls>
         </div>
       </div>
     </div>
