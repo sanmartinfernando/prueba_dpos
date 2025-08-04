@@ -40,7 +40,6 @@ export class CustomerDetailsComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private encryptionService: EncryptionService,
     private portalUsersService: PortalUsersService,
-    private commercesService: CommercesService,
     private customersService: CustomersService,
     private storageService: StorageService,
     private uiStateService: UIStateService,

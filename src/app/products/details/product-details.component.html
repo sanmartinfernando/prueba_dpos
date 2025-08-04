@@ -1,71 +1,90 @@
 <div class="container-fluid header-main mt-4">
   <div class="d-flex justify-content-between mb-2">
     <a [routerLink]="['/products']" type="button" class="" style="text-decoration: none;">
-      <i class="fa-solid fa-angle-left"></i> {{'dpos.customers.page.back' | translate}}
+      <i class="fa-solid fa-angle-left"></i> {{'dpos.product-details.back' | translate}}
     </a>
   </div>
-  <!-- Load -->
-   <!--
-  <div *ngIf="!loadCompleted" class="d-flex justify-content-center">
-    <div class="spinner-border text-danger"></div>
+  <div class="card my-4">
+    <div class="card-body">
+      <!-- Load -->
+      <div *ngIf="!loadCompleted" class="d-flex justify-content-center">
+        <div class="spinner-border text-danger"></div>
+      </div>
+      <!-- Detalles -->
+      <div class="col mb-4">
+        <h5><b>{{ titlePage }}</b></h5>
+      </div>
+      <form>
+        <div class="row g-3">
+          <!-- Columna izquierda -->
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="name" class="form-label">{{'dpos.product-details.form.name' | translate}}</label>
+              <input type="text" class="form-control" id="name" />
+            </div>
+            <div class="mb-3">
+              <label for="category" class="form-label">{{'dpos.product-details.form.category' | translate}}</label>
+              <input type="text" class="form-control" id="category" />
+            </div>
+            <div class="mb-3">
+              <label for="barcode" class="form-label">{{'dpos.product-details.form.barcode' | translate}}</label>
+              <input type="text" class="form-control" id="barcode" />
+            </div>
+            <div class="mb-3">
+              <label for="reference" class="form-label">{{'dpos.product-details.form.reference' | translate}}</label>
+              <input type="text" class="form-control" id="reference" />
+            </div>
+            <div class="mb-3">
+              <label for="description" class="form-label">{{'dpos.product-details.form.description' | translate}}</label>
+              <textarea class="form-control" id="description" rows="2" style="min-height: 7.6rem;resize: none;"></textarea>
+            </div>
+          </div>
+          <!-- Columna derecha -->
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="priceType" class="form-label">{{'dpos.product-details.form.price.type' | translate}}</label>
+              <input type="text" class="form-control" id="priceType" />
+            </div>
+            <div class="mb-3">
+              <label for="price" class="form-label">{{'dpos.product-details.form.price' | translate}}</label>
+              <input type="text" class="form-control" id="price" />
+            </div>
+            <div class="mb-3">
+              <label for="salesPrice" class="form-label">{{'dpos.product-details.form.sales.price' | translate}}</label>
+              <input type="text" class="form-control" id="salesPrice" />
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="salesDateFrom" class="form-label">
+                  {{'dpos.product-details.form.sales.date.from' | translate}}
+                </label>
+                <input type="date" class="form-control" id="salesDateFrom" [value]="salesStartDate" (change)="onTilSalesStartDateChange()" />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="salesDateTo" class="form-label">
+                  {{'dpos.product-details.form.sales.date.to' | translate}}
+                </label>
+                <input type="date" class="form-control" id="salesDateTo" [value]="salesEndDate" (change)="onTilSalesEndDateChange()" />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="taxes" class="form-label">{{'dpos.product-details.form.taxes' | translate}}</label>
+              <input type="text" class="form-control" id="taxes" />
+            </div>
+            <div class="mb-3">
+              <label for="stock" class="form-label">{{'dpos.product-details.form.stock' | translate}}</label>
+              <input type="text" class="form-control" id="stock" />
+            </div>
+          </div>
+        </div>
+        <!-- Botones -->
+        <div class="d-flex justify-content-end mt-4">
+          <a [routerLink]="['/products']" type="button" class="" style="text-decoration: none;">
+            <button type="button" class="btn btn-outline-danger me-2">{{'dpos.action.cancel' | translate}}</button>
+          </a>
+          <button type="submit" class="btn btn-primary" [routerLink]="code" (click)="saveProduct()">{{'dpos.action.save' | translate}}</button>
+        </div>
+      </form>
+    </div>
   </div>
-  -->
-  <!-- Detalles -->
-  <form>
-    <div class="row g-3">
-      <!-- Columna izquierda -->
-      <div class="col-md-6">
-        <div class="mb-3">
-          <label for="nif" class="form-label">{{'dpos.customers.nif.column' | translate}}</label>
-          <input type="text" class="form-control" id="nif" />
-        </div>
-        <div class="mb-3">
-          <label for="name" class="form-label">{{'dpos.customers.name.column' | translate}}</label>
-          <input type="text" class="form-control" id="nombre" />
-        </div>
-        <div class="mb-3">
-          <label for="lastname" class="form-label">{{'dpos.customers.lastname.column' | translate}}</label>
-          <input type="text" class="form-control" id="apellidos" />
-        </div>
-        <div class="mb-3">
-          <label for="email" class="form-label">{{'dpos.customers.email.column' | translate}}</label>
-          <input type="email" class="form-control" id="email" />
-        </div>
-        <div class="mb-3">
-          <label for="phone" class="form-label">{{'dpos.customers.phone.column' | translate}}</label>
-          <input type="text" class="form-control" id="telefono" />
-        </div>
-      </div>
-      <!-- Columna derecha -->
-      <div class="col-md-6">
-        <div class="mb-3">
-          <label for="address" class="form-label">{{'dpos.customers.address.column' | translate}}</label>
-          <input type="text" class="form-control" id="direccion" />
-        </div>
-        <div class="mb-3">
-          <label for="city" class="form-label">{{'dpos.customers.city.column' | translate}}</label>
-          <input type="text" class="form-control" id="ciudad" />
-        </div>
-        <div class="mb-3">
-          <label for="postcode" class="form-label">{{'dpos.customers.postcode.column' | translate}}</label>
-          <input type="text" class="form-control" id="cp" />
-        </div>
-        <div class="mb-3">
-          <label for="country" class="form-label">{{'dpos.customers.country.column' | translate}}</label>
-          <input type="text" class="form-control" id="provincia" />
-        </div>
-        <div class="mb-3">
-          <label for="state" class="form-label">{{'dpos.customers.state.column' | translate}}</label>
-          <input type="text" class="form-control" id="pais" />
-        </div>
-      </div>
-    </div>
-    <!-- Botones -->
-    <div class="d-flex justify-content-end mt-4">
-      <a [routerLink]="['/customers']" type="button" class="" style="text-decoration: none;">
-        <button type="button" class="btn btn-outline-danger me-2">{{'dpos.action.cancel' | translate}}</button>
-      </a>
-      <button type="submit" class="btn btn-primary">{{'dpos.action.save' | translate}}</button>
-    </div>
-  </form>
 </div>
