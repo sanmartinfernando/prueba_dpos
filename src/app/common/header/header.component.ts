@@ -88,7 +88,7 @@ export class HeaderComponent implements OnInit {
   
   // ✅ Método seguro para verificar tamaño de pantalla
   isLargeScreen(): boolean {
-    return typeof window !== 'undefined' && window.innerWidth >= 768;
+    return typeof window !== 'undefined' && window.innerWidth >= 1200;
   }
 
   handlePageClick(text: string, code: string): void {

@@ -1,72 +1,76 @@
 <br />
 <div class="container-fluid header-main">
-  <div>
-    <!-- Formulario de búsqueda -->
-    <form class="d-flex flex-wrap mx-1">
-      <div class="me-3">
-        <label class="form-label">{{'dpos.filter.reporttype' | translate}}</label>
-        <select class="form-select" name="report" [(ngModel)]="reportVarSearch" (change)="onReportTypeChange()">
-          <option selected>{{'dpos.reports.taxes.label' | translate}}</option>
-          <option>{{'dpos.reports.products.label' | translate}}</option>
-          <option>{{'dpos.reports.paymentmethods.label' | translate}}</option>
-        </select>
-      </div>
-      <div class="me-3">
-        <label class="form-label">{{'dpos.filter.terminal' | translate}}</label>
-        <select class="form-select" id="searchTer" name="terminal" [(ngModel)]="terminalSelected"  (change)="onTerminalChange()" >
-          <option *ngFor="let terminal of terminalsNumber" [value]="terminal">{{ terminal }}</option>
-        </select>
-      </div>
-      <div class="mx-3">
-        <label class="form-label">{{'dpos.filter.date.from' | translate}}</label>
-        <input type="date" class="form-control" id="sinceDate" name="sinceDate" [value]="sinceDate"  (change)="onSinceDateChange()" />
-      </div>
-      <div class="mx-3">
-        <label class="form-label">{{'dpos.filter.date.to' | translate}}</label>
-        <input type="date" class="form-control" id="tilDate" name="tilDate"  [value]="tilDate" (change)="onTilDateChange()"/>
-      </div>
-      <div id="searchButtonsDiv" class="ms-5 d-flex overflow-auto">
-        <button type="reset" class="btn btn-outline-danger align-self-end">
-          <a type="button"><i class="fas fa-eraser"></i> </a>
-        </button>
-        <a type="button" class="btn btn-primary align-self-end" (click)="searchReports()">
-          <i class="fas fa-search"></i>&nbsp;&nbsp;{{'dpos.action.search' | translate}}
-        </a>
-      </div>
-    </form>
-  </div>
+  <!-- Formulario de filtros -->
+  <form class="row g-3 mx-1 align-items-end">
+    <div class="col-12 col-md-auto">
+      <label class="form-label">{{ 'dpos.filter.reporttype' | translate }}</label>
+      <select class="form-select" [(ngModel)]="reportVarSearch" name="report" (change)="onReportTypeChange()">
+        <option selected>{{ 'dpos.reports.taxes.label' | translate }}</option>
+        <option>{{ 'dpos.reports.products.label' | translate }}</option>
+        <option>{{ 'dpos.reports.paymentmethods.label' | translate }}</option>
+      </select>
+    </div>
+
+    <div class="col-12 col-md-auto">
+      <label class="form-label">{{ 'dpos.filter.terminal' | translate }}</label>
+      <select class="form-select" id="searchTer" name="terminal" [(ngModel)]="terminalSelected" (change)="onTerminalChange()">
+        <option *ngFor="let terminal of terminalsNumber" [value]="terminal">{{ terminal }}</option>
+      </select>
+    </div>
+
+    <div class="col-12 col-md-auto">
+      <label class="form-label">{{ 'dpos.filter.date.from' | translate }}</label>
+      <input type="date" class="form-control" id="sinceDate" name="sinceDate" [value]="sinceDate" (change)="onSinceDateChange()" />
+    </div>
+
+    <div class="col-12 col-md-auto">
+      <label class="form-label">{{ 'dpos.filter.date.to' | translate }}</label>
+      <input type="date" class="form-control" id="tilDate" name="tilDate" [value]="tilDate" (change)="onTilDateChange()" />
+    </div>
+
+    <!-- Botones -->
+    <div class="col-12 col-md-auto d-flex flex-column flex-md-row gap-2" id="searchButtonsDiv">
+      <button type="reset" class="btn btn-outline-danger">
+        <i class="fas fa-eraser"></i>
+      </button>
+      <a type="button" class="btn btn-primary" (click)="searchReports()">
+        <i class="fas fa-search"></i>&nbsp;&nbsp;{{ 'dpos.action.search' | translate }}
+      </a>
+    </div>
+  </form>
+
   <br />
-  <!-- Tabla e indicadores -->
-  <br />
+
+  <!-- CONTENIDO -->
   <div class="card">
     <div class="card-body">
-      <div class="row mb-2">
-        <div class="col d-flex align-items-center">
-          <h5>
-            <b>{{ reportVarSearch }}</b>
-          </h5>
+      <!-- Título + botón export -->
+      <div class="row mb-2 align-items-center">
+        <div class="col">
+          <h5><b>{{ reportVarSearch }}</b></h5>
         </div>
-        <!-- Descarga -->
         <ng-container *ngIf="loadCompleted && emptySearch == false">
-          <div class="col-3 text-end">
-            <button class="btn btn-outline-info justify-content-center">
+          <div class="col-12 col-md-3 text-md-end mt-2 mt-md-0">
+            <button class="btn btn-outline-info">
               <i class="fa-solid fa-file-csv fa-xl" (click)="downloadReports()"></i>
             </button>
           </div>
-         </ng-container>
+        </ng-container>
       </div>
+
+      <!-- Indicadores -->
       <div *ngIf="loadCompleted == false && emptySearch == false" class="d-flex justify-content-center">
         <div class="spinner-border text-danger"></div>
       </div>
       <div *ngIf="loadCompleted && emptySearch == true" class="d-flex justify-content-center">
-        <b><i>{{'dpos.dashboard.nodata.label' | translate}}</i></b>
+        <b><i>{{ 'dpos.dashboard.nodata.label' | translate }}</i></b>
       </div>
-      <div>
-        <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage"  (closeModal)="closeModal()"></app-modal>
-      </div>
-      <!-- Tabla vacia -->
+
+      <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage" (closeModal)="closeModal()"></app-modal>
+
+      <!-- Reportes dinámicos -->
       <div class="row" *ngIf="reportVarSearch == null">
-        <b>{{'dpos.reports.selectreport.label' | translate}}</b>
+        <b>{{ 'dpos.reports.selectreport.label' | translate }}</b>
       </div>
       <!-- Tabla impuestos-->
       <div class="row" *ngIf="reportVarSearch == translate.instant('dpos.reports.taxes.label') && loadCompleted && emptySearch == false">

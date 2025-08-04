@@ -1,70 +1,78 @@
 <br />
-<div class="container-fluid header-main"> 
+<div class="container-fluid header-main">
   <!-- Tabla e indicadores -->
   <div class="card">
     <div class="card-body">
-      <div class="row mb-4">
-        <div>
-          <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage"  (closeModal)="closeModal()"></app-modal>
-        </div>
-        <div class="col">
+      <!-- Modal -->
+      <app-modal
+        [showModal]="showModal"
+        [modalTitle]="modalTitle"
+        [modalMessage]="modalMessage"
+        (closeModal)="closeModal()"
+      ></app-modal>
+
+      <!-- Título e indicadores -->
+      <div class="row mb-4 align-items-center">
+        <div class="col-12 col-md-6">
           <h5><b>{{'dpos.taxes.page.title' | translate}}</b></h5>
         </div>
-        <!-- Indicadores -->
-        <div class="col-5 text-end">
-          <a type="button" class="btn btn-outline-danger align-self-end" (click)="deleteTaxes()">&nbsp;{{'dpos.taxes.uncheck.label' | translate}}</a>
-          <a type="button" class="btn btn-primary align-self-end" [routerLink]="code" (click)="openTaxesModal()">&nbsp;{{'dpos.taxes.add.label' | translate}}</a>
-          <button class="btn btn-outline-info justify-content-center">
-            <i class="fa-solid fa-file-csv fa-xl" (click)="downloadCSV()"></i>
+        <div class="col-12 col-md-6 text-md-end text-center mt-3 mt-md-0 d-flex flex-wrap gap-2 justify-content-md-end justify-content-center">
+          <button type="button" class="btn btn-outline-danger" (click)="deleteTaxes()">
+            {{'dpos.taxes.uncheck.label' | translate}}
+          </button>
+          <a type="button" class="btn btn-primary" [routerLink]="code" (click)="openTaxesModal()">
+            {{'dpos.taxes.add.label' | translate}}
+          </a>
+          <button class="btn btn-outline-info" (click)="downloadCSV()">
+            <i class="fa-solid fa-file-csv fa-xl"></i>
           </button>
         </div>
       </div>
-      <div *ngIf="loadCompleted == false  && emptySearch == false" class="d-flex justify-content-center">
+
+      <!-- Estados de carga -->
+      <div *ngIf="!loadCompleted && !emptySearch" class="d-flex justify-content-center">
         <div class="spinner-border text-danger"></div>
       </div>
-      <div *ngIf="loadCompleted && emptySearch == true" class="d-flex justify-content-center">
+      <div *ngIf="loadCompleted && emptySearch" class="d-flex justify-content-center">
         <b><i>{{'dpos.dashboard.nodata.label' | translate}}</i></b>
       </div>
+
       <!-- Tabla -->
-      <div class="row" *ngIf="loadCompleted && emptySearch == false">
+      <div class="row" *ngIf="loadCompleted && !emptySearch">
         <div class="col">
           <div class="table-responsive">
             <table class="table table-hover order-table" data-pagination="true" data-page-size="10">
               <thead class="text-customer">
                 <tr>
-                  <th style="width: 50px;" class="text-center">
-                    <!--<input class="form-check-input" type="checkbox" [(ngModel)]="masterSelected" (change)="selectAllTaxes()" />-->
-                  </th>
+                  <th style="width: 50px;" class="text-center"></th>
                   <th class="text-center">{{'dpos.taxes.id.label' | translate}}</th>
                   <th class="text-center">{{'dpos.taxes.name.label' | translate}}</th>
                   <th class="text-center">{{'dpos.taxes.value.label' | translate}}</th>
                 </tr>
               </thead>
               <ng-template #empty>
-                <td colspan="5">
+                <td colspan="4">
                   <b>{{'dpos.sales.operation.nodata.label' | translate}}</b>
                 </td>
               </ng-template>
               <tbody>
                 <ng-container *ngIf="loadCompleted && taxes; else empty">
-                  <tr *ngFor="let tax of taxes | paginate : { itemsPerPage: 10, currentPage: page }; index as i" (click)="openTaxesModal(tax.id)">
-                    <td style="width: 50px;" class="text-center align-middle">
-                      <input class="form-check-input" type="checkbox" [(ngModel)]="tax.selected" (change)="checkIfAllSelected()" (click)="$event.stopPropagation()"/>
+                  <tr *ngFor="let tax of taxes | paginate : { itemsPerPage: 10, currentPage: page }; index as i"
+                      (click)="openTaxesModal(tax.id)">
+                    <td class="text-center align-middle" style="width: 50px;">
+                      <input class="form-check-input" type="checkbox"
+                             [(ngModel)]="tax.selected"
+                             (change)="checkIfAllSelected()"
+                             (click)="$event.stopPropagation()"/>
                     </td>
-                    <td class="text-center align-middle">
-                      {{ tax.id }}
-                    </td>
-                    <td class="text-center align-middle">
-                      {{ tax.name }}
-                    </td>
-                    <td class="text-center align-middle">
-                      {{ (tax.value / 100).toFixed(2) }}&nbsp;%
-                    </td>
+                    <td class="text-center align-middle">{{ tax.id }}</td>
+                    <td class="text-center align-middle">{{ tax.name }}</td>
+                    <td class="text-center align-middle">{{ (tax.value / 100).toFixed(2) }}&nbsp;%</td>
                   </tr>
                 </ng-container>
               </tbody>
             </table>
-            <div  *ngIf="loadCompleted && emptySearch == false" class="has-text-centered">
+            <div *ngIf="loadCompleted && !emptySearch" class="has-text-centered">
               <pagination-controls (pageChange)="page = $event"></pagination-controls>
             </div>
           </div>
