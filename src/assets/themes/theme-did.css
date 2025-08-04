@@ -9,6 +9,12 @@
   font-style: normal;
 }
 
+@media (max-width: 576px) {
+  .kpi {
+    min-width: 140px;
+  }
+}
+
 :root,
 [data-bs-theme=light] {
   --bs-font-family-main: "Poppins", "Roboto";
@@ -319,7 +325,8 @@ ngx-charts-bar-vertical ngx-charts-chart .ngx-charts-outer .ngx-charts .bar-char
   display: flex;
   justify-content: center;
   align-items: center;
- }
+  overflow-x: auto;
+}
 
 p.center {
   background: var(--bs-color-white-100);
@@ -521,6 +528,10 @@ p.center {
   width: 100%;
   box-shadow: none;
   padding: 20px;
+}
+
+.card.flex-fill {
+  min-height: 0;
 }
 
 .card-header:first-child {

@@ -402,6 +402,7 @@ text.ng-star-inserted, text.pie-label, .textDataLabel {
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow-x: auto;
  }
 
 p {
@@ -621,6 +622,10 @@ div.ng-star-inserted {
   width: 100%;
   box-shadow: none;
   padding: 20px;
+}
+
+.card.flex-fill {
+  min-height: 0;
 }
 
 .card-header:first-child {
