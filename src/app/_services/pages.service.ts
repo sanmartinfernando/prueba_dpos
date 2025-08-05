@@ -13,8 +13,8 @@ export class PagesService {
     new Page('1','Cierres','balances','fa-regular fa-chart-bar'),
     new Page('1','Informes','reports','fa-solid fa-chart-area'),
     new Page('1','Clientes','customers','fa-solid fa-users'),
-    new Page('1','Productos','products','fa-solid fa-boxes-stacked'),
-    new Page('1','Impuestos','taxes','fa-solid fa-coins')
+    new Page('1','Productos','products','fa-solid fa-boxes-stacked')
+    //new Page('1','Impuestos','taxes','fa-solid fa-coins')
   ];
   
   constructor(public translate: TranslateService) {
@@ -25,7 +25,7 @@ export class PagesService {
       this.pages[3].text = this.translate.instant('dpos.reports.page.title');
       this.pages[4].text = this.translate.instant('dpos.customer.page.title');
       this.pages[5].text = this.translate.instant('dpos.products.page.title');
-      this.pages[6].text = this.translate.instant('dpos.taxes.page.title');
+      //this.pages[6].text = this.translate.instant('dpos.taxes.page.title');
     });
    }
 }
