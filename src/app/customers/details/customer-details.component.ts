@@ -132,11 +132,9 @@ export class CustomerDetailsComponent implements OnInit {
 
     this.customersService.createCustomer(this.customer).subscribe({
       next: (customerResponse) => {
-        console.log(customerResponse);
         this.code = '/customers';
       },
       error: (error) => {
-        console.log(error);
         //TODO: Control de errores
         this.code = '/customers';
       }

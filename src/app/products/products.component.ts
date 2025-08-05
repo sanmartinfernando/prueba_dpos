@@ -281,10 +281,7 @@ export class ProductsComponent implements OnInit {
       
       const { rows, errors } = this.parseCSV(text);
 
-      if (errors.length > 0) {
-        console.log('Errores de validación:', errors);
-      } 
-      else {
+      if (errors.length <= 0) {
         let products: Product[] = [];
         for(let i= 0; i < rows.length; i++){
           let product: Product = new Product();

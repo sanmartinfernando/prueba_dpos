@@ -288,10 +288,7 @@ export class CustomersComponent implements OnInit {
       
       const { rows, errors } = this.parseCSV(text);
 
-      if (errors.length > 0) {
-        console.log('Errores de validación:', errors);
-      } 
-      else {
+      if (errors.length <= 0) {
         let customers: Customer[] = [];
         for(let i= 0; i < rows.length; i++){
           let customer: Customer = new Customer();

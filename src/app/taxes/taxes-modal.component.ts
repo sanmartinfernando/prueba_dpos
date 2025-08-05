@@ -96,7 +96,6 @@ export class TaxesModalComponent {
   }
 
   public onSubmit() {
-    console.log('Valores del formulario:', this.taxFormData);
     this.dialogRef.close();
   }
 
