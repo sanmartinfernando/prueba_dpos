@@ -7,7 +7,6 @@ import { SessionService } from 'src/app/_services/session.service';
 import { ThemeService } from 'src/app/_services/theme.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Customer } from 'src/app/_models/customer.model';
-import { CommercesService } from 'src/app/_services/commerces.service';
 import { PortalUsersService } from 'src/app/_services/portal-users.service';
 import { AuthService } from 'src/app/_services/auth.service';
 import { CustomersService } from 'src/app/_services/customers.service';

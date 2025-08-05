@@ -1,4 +1,3 @@
-import { StorageService } from 'src/app/_services/storage.service';
 import { EncryptionService } from './../../_services/encryption.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
@@ -31,8 +30,7 @@ export class DetailsComponent implements OnInit {
     private encryptionService: EncryptionService,
     private sessionService: SessionService,
     private themeService: ThemeService,
-    private uiStateService: UIStateService,
-    private storageService: StorageService
+    private uiStateService: UIStateService
   ) {
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
     //Bloqueamos el selector de comercio;

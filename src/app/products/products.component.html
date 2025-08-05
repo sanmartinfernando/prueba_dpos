@@ -49,33 +49,33 @@
                 <button class="btn btn-primary mt-2 mt-sm-0" (click)="openCategoriesModal()">{{'dpos.products.category.create.btn' | translate}}</button>
               </div>
               <div *ngFor="let category of categories | paginate: { id: 'categoriesList', itemsPerPage: 10, currentPage: currentCategoryPage }; let i = index"
-                   class="list-items" [ngClass]="{'list-item-active': categorySelected === category}"
-                   (click)="categorySelected = category; onCategoryChange()">
-                <div class="d-flex justify-content-between align-items-center">
-                  {{ category.name }}
-                  <a *ngIf="i !== 0" (click)="openCategoriesModal(category.id)"><i class="fa-solid fa-pen pencil"></i></a>
-                </div>
+                class="list-items" [ngClass]="{'list-item-active': categorySelected === category}"
+                (click)="categorySelected = category; onCategoryChange()">
+              <div class="d-flex justify-content-between align-items-center">
+                {{ category.name }}
+                <a *ngIf="i !== 0" (click)="openCategoriesModal(category.id)"><i class="fa-solid fa-pen pencil"></i></a>
               </div>
-              <pagination-controls (pageChange)="currentCategoryPage = $event" id="categoriesList" previousLabel="" nextLabel="" class="mt-3 d-flex justify-content-center"></pagination-controls>
+            </div>
+            <pagination-controls (pageChange)="currentCategoryPage = $event" id="categoriesList" previousLabel="" nextLabel="" class="mt-3 d-flex justify-content-center"></pagination-controls>
             </div>
           </div>
-          <!-- Detalle de Categoria -->
-          <div class="col-lg-8 col-md-7 col-sm-12">
-            <div class="container">
-              <div class="d-flex justify-content-between align-items-start my-3 flex-wrap gap-2">
-                <div>
-                  <h5 *ngIf="categorySelected">{{'dpos.products.page.title' | translate}} {{ categorySelected.name }}</h5>
-                </div>
-                <div class="d-flex flex-wrap gap-2">
-                  <button class="btn btn-primary" [routerLink]="code" (click)="addProduct()">{{'dpos.products.create.btn' | translate}}</button>
-                  <button class="btn btn-primary" (click)="importProducts()">&nbsp;{{'dpos.products.import.label' | translate}}</button>
-                  <input type="file" #productFileInput style="display: none" accept=".csv" (change)="onProductFileSelected($event)" />
-                  <button class="btn btn-outline-info">
-                    <i class="fa-solid fa-file-csv fa-xl" (click)="downloadCSV()"></i>
-                  </button>
-                </div>
+        <!-- Detalle de Categoria -->
+        <div class="col-lg-8 col-md-7 col-sm-12">
+          <div class="container">
+            <div class="d-flex justify-content-between align-items-start my-3 flex-wrap gap-2">
+              <div>
+                <h5 *ngIf="categorySelected">{{'dpos.products.page.title' | translate}} {{ categorySelected.name }}</h5>
+              </div>
+              <div class="d-flex flex-wrap gap-2">
+                <button class="btn btn-primary" [routerLink]="code" (click)="addProduct()">{{'dpos.products.create.btn' | translate}}</button>
+                <button class="btn btn-primary" (click)="importProducts()">&nbsp;{{'dpos.products.import.label' | translate}}</button>
+                <input type="file" #productFileInput style="display: none" accept=".csv" (change)="onProductFileSelected($event)" />
+                <button class="btn btn-outline-info">
+                  <i class="fa-solid fa-file-csv fa-xl" (click)="downloadCSV()"></i>
+                </button>
               </div>
             </div>
+          </div>
             <!-- Tabla de productos paginados -->
             <div>
               <div class="table table-hover" *ngIf="!products || products.length == 0">

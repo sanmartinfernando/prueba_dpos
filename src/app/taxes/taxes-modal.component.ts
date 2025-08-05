@@ -5,9 +5,7 @@ import { PortalUsersService } from '../_services/portal-users.service';
 import { SessionService } from '../_services/session.service';
 import { StorageService } from '../_services/storage.service';
 import { ThemeService } from '../_services/theme.service';
-import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { EncryptionService } from '../_services/encryption.service';
 import { Tax } from '../_models/tax.model';
 
 @Component({
@@ -29,10 +27,7 @@ export class TaxesModalComponent {
   isTaxNameDisabled:boolean = true;
   isTaxValueDisabled:boolean = true;
 
-  constructor(
-    private activatedRoute: ActivatedRoute,
-    private encryptionService: EncryptionService,
-    public dialogRef: MatDialogRef<TaxesModalComponent>,
+  constructor(public dialogRef: MatDialogRef<TaxesModalComponent>,
     private portalUsersService: PortalUsersService,
     private storageService: StorageService,
     private themeService: ThemeService,

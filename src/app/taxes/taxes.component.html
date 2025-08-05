@@ -8,9 +8,7 @@
         [showModal]="showModal"
         [modalTitle]="modalTitle"
         [modalMessage]="modalMessage"
-        (closeModal)="closeModal()"
-      ></app-modal>
-
+        (closeModal)="closeModal()"></app-modal>
       <!-- Título e indicadores -->
       <div class="row mb-4 align-items-center">
         <div class="col-12 col-md-6">
@@ -28,7 +26,6 @@
           </button>
         </div>
       </div>
-
       <!-- Estados de carga -->
       <div *ngIf="!loadCompleted && !emptySearch" class="d-flex justify-content-center">
         <div class="spinner-border text-danger"></div>
@@ -36,7 +33,6 @@
       <div *ngIf="loadCompleted && emptySearch" class="d-flex justify-content-center">
         <b><i>{{'dpos.dashboard.nodata.label' | translate}}</i></b>
       </div>
-
       <!-- Tabla -->
       <div class="row" *ngIf="loadCompleted && !emptySearch">
         <div class="col">

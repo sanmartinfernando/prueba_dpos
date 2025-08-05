@@ -10,24 +10,20 @@
         <option>{{ 'dpos.reports.paymentmethods.label' | translate }}</option>
       </select>
     </div>
-
     <div class="col-12 col-md-auto">
       <label class="form-label">{{ 'dpos.filter.terminal' | translate }}</label>
       <select class="form-select" id="searchTer" name="terminal" [(ngModel)]="terminalSelected" (change)="onTerminalChange()">
         <option *ngFor="let terminal of terminalsNumber" [value]="terminal">{{ terminal }}</option>
       </select>
     </div>
-
     <div class="col-12 col-md-auto">
       <label class="form-label">{{ 'dpos.filter.date.from' | translate }}</label>
       <input type="date" class="form-control" id="sinceDate" name="sinceDate" [value]="sinceDate" (change)="onSinceDateChange()" />
     </div>
-
     <div class="col-12 col-md-auto">
       <label class="form-label">{{ 'dpos.filter.date.to' | translate }}</label>
       <input type="date" class="form-control" id="tilDate" name="tilDate" [value]="tilDate" (change)="onTilDateChange()" />
     </div>
-
     <!-- Botones -->
     <div class="col-12 col-md-auto d-flex flex-column flex-md-row gap-2" id="searchButtonsDiv">
       <button type="reset" class="btn btn-outline-danger">
@@ -38,9 +34,7 @@
       </a>
     </div>
   </form>
-
   <br />
-
   <!-- CONTENIDO -->
   <div class="card">
     <div class="card-body">
@@ -57,7 +51,6 @@
           </div>
         </ng-container>
       </div>
-
       <!-- Indicadores -->
       <div *ngIf="loadCompleted == false && emptySearch == false" class="d-flex justify-content-center">
         <div class="spinner-border text-danger"></div>
@@ -65,9 +58,7 @@
       <div *ngIf="loadCompleted && emptySearch == true" class="d-flex justify-content-center">
         <b><i>{{ 'dpos.dashboard.nodata.label' | translate }}</i></b>
       </div>
-
       <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage" (closeModal)="closeModal()"></app-modal>
-
       <!-- Reportes dinámicos -->
       <div class="row" *ngIf="reportVarSearch == null">
         <b>{{ 'dpos.reports.selectreport.label' | translate }}</b>

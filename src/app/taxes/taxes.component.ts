@@ -1,7 +1,6 @@
 import { StorageService } from 'src/app/_services/storage.service';
-import { EncryptionService } from '../_services/encryption.service';
 import { DownloadCsvService } from '../_services/download-csv.service';
-import { Component, ElementRef, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { PortalUsersService } from '../_services/portal-users.service';
 import { CommercesService } from '../_services/commerces.service';
 import { AuthService } from '../_services/auth.service';
@@ -11,7 +10,6 @@ import { Commerce } from '../_models/commerce.model';
 import { SessionService } from '../_services/session.service';
 import { ThemeService } from '../_services/theme.service';
 import { UIStateService } from '../_services/ui-state.service';
-import { TaxesService } from '../_services/taxes.service';
 import { Tax } from '../_models/tax.model';
 import { TaxesModalComponent } from './taxes-modal.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -53,12 +51,9 @@ export class TaxesComponent implements OnInit {
   commerceSelected: string;
   commerces: Commerce[];
 
-  constructor(
-    private encryptionService: EncryptionService,
-    private downloadCsvService: DownloadCsvService,
+  constructor(private downloadCsvService: DownloadCsvService,
     private storageService: StorageService,
     private portalUsersService: PortalUsersService,
-    private taxesService: TaxesService,
     private dialog: MatDialog,
     private commercesService: CommercesService,
     private translate: TranslateService,

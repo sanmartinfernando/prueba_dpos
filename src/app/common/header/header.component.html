@@ -2,11 +2,8 @@
 <button class="btn btn-dark d-md-none toggle-nav-btn" (click)="showNav = !showNav">
   <i class="fa fa-bars fa-lg"></i>
 </button>
-
 <!-- Sidenav responsive -->
 <nav class="sidenav vh-100 d-flex flex-column overflow-auto" [ngClass]="{ 'd-none': !showNav, 'd-flex': showNav, 'd-md-flex': true }">
-  
-  <!-- Logo -->
   <div class="logo flex-shrink-0 p-2 text-white text-center">
     <a class="d-flex align-items-center justify-content-center text-white text-decoration-none"
        (click)="getTitle()" routerLink="/dashboard">
@@ -14,8 +11,6 @@
       <img *ngIf="isComercia" src="assets/img/logo-lacaixa.png" alt="Logotipo La Caixa" class="logoLaCaixa">
     </a>
   </div>
-
-  <!-- Navegación -->
   <div id="navBar1" class="flex-shrink-0">
     <ul id="navBarMain" class="navbar-nav flex-column align-items-center align-items-md-stretch w-100">
       <ng-container>
@@ -34,15 +29,11 @@
 <header class="bg-customer">
   <div class="clearfix header-main container-fluid py-2">
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
-      <!-- Título -->
       <h3 class="float-start p-3 pb-2 mb-0"><b>{{ title }}</b></h3>
-      <!-- Menú usuario / idioma / comercio -->
       <ul class="navbar-nav d-flex flex-column flex-md-row align-items-start align-items-md-center ms-md-auto px-3 gap-2">
-        <!-- Language switcher -->
         <li class="mx-3 nav-item pt-2 pb-2">
           <DOPSW-lang-switcher></DOPSW-lang-switcher>
         </li>
-        <!-- Selector de comercio -->
         <li class="mx-3 nav-item pt-2 pb-2 w-100 w-md-auto">
           <select [disabled]="!formSelectEnabled"
                   class="form-select-commerce"
@@ -56,7 +47,6 @@
             </option>
           </select>
         </li>
-        <!-- Logout -->
         <li class="mx-3 nav-item pt-2 pb-2 w-100 w-md-auto">
           <a class="btn btn-light d-flex align-items-center gap-2" *ngIf="username" (click)="logOut()" style="cursor: pointer">
             <i class="fa-solid fa-circle-user fa-lg" style="color: #ffbb00;"></i>
@@ -64,7 +54,6 @@
             <i class="fa-solid fa-arrow-right-from-bracket"></i>
           </a>
         </li>
-        <!-- Login -->
         <ng-template #loginLink>
           <li class="mx-3 nav-item pt-2 pb-2">
             <a class="btn" routerLink="/login">{{ 'dpos.login.btn' | translate }}</a>

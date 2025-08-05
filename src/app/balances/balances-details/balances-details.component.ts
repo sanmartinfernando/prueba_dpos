@@ -3,7 +3,6 @@ import { BalancesService } from '../../_services/balances.service';
 import { EncryptionService } from './../../_services/encryption.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { StorageService } from 'src/app/_services/storage.service';
 import { Balance } from 'src/app/_models/balance.model';
 import { BalanceLine } from 'src/app/_models/balance-line.model';
 import { UIStateService } from 'src/app/_services/ui-state.service';
@@ -39,7 +38,6 @@ export class BalancesDetailsComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private balancesService: BalancesService,
     private downloadPDFService: DownloadPDFService,
-    private storageService: StorageService,
     private uiStateService: UIStateService,
     private sessionService: SessionService,
     private themeService: ThemeService) {

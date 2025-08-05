@@ -22,7 +22,6 @@ export class HeaderComponent implements OnInit {
 
   pages : Page[] = [];
   username: string;
-  authService: AuthService;
   isLoggedIn: boolean = false;
   commerceSelected: number;
   commerces: Commerce[];
@@ -32,7 +31,7 @@ export class HeaderComponent implements OnInit {
   formSelectEnabled = true;
 
   constructor(private pagesService: PagesService,
-    private _authService : AuthService,
+    private authService : AuthService,
     private portalUsersService: PortalUsersService,
     private commercesService: CommercesService,
     private storageService: StorageService,
@@ -42,7 +41,6 @@ export class HeaderComponent implements OnInit {
     public router: Router){
 
     this.pages = pagesService.pages;
-    this.authService = _authService;
 
     this.uiStateService.formSelectEnabled$.subscribe(enabled => {
       this.formSelectEnabled = enabled;

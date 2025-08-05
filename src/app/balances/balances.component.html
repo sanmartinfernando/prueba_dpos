@@ -2,24 +2,20 @@
 <div class="container-fluid header-main">
   <div>
     <form class="row gx-3 gy-2 align-items-end mx-1">
-      
       <div class="col-12 col-sm-6 col-md-3">
         <label class="form-label">{{'dpos.filter.terminal' | translate}}</label>
         <select class="form-select" id="searchTer" name="terminal" [(ngModel)]="terminalSelected" (change)="onTerminalChange()">
           <option *ngFor="let terminal of terminalsNumber" [value]="terminal">{{ terminal }}</option>
         </select>
       </div>
-
       <div class="col-6 col-md-3">
         <label class="form-label">{{'dpos.filter.date.from' | translate}}</label>
         <input type="date" class="form-control" id="sinceDate" [value]="sinceDate" (change)="onSinceDateChange()" />
       </div>
-
       <div class="col-6 col-md-3">
         <label class="form-label">{{'dpos.filter.date.to' | translate}}</label>
         <input type="date" class="form-control" id="tilDate" [value]="tilDate" (change)="onTilDateChange()" />
       </div>
-
       <div class="col-12 col-md-3 d-flex justify-content-md-start justify-content-center gap-2 mt-2 mt-md-0">
         <button type="reset" class="btn btn-outline-danger">
           <i class="fas fa-eraser"></i>
@@ -28,12 +24,9 @@
           <i class="fas fa-search"></i>&nbsp;&nbsp;{{'dpos.action.search' | translate}}
         </button>
       </div>
-      
     </form>
   </div>
-
   <br />
-
   <div class="card">
     <div class="card-body">
       <div class="row mb-4 align-items-center">
@@ -49,15 +42,12 @@
           </button>
         </div>
       </div>
-
       <div *ngIf="!loadCompleted && !emptySearch" class="d-flex justify-content-center my-3">
         <div class="spinner-border text-danger"></div>
       </div>
-
       <div *ngIf="loadCompleted && emptySearch" class="d-flex justify-content-center my-3">
         <b><i>{{'dpos.dashboard.nodata.label' | translate}}</i></b>
       </div>
-
       <div class="row" *ngIf="loadCompleted && !emptySearch">
         <div class="col">
           <div class="table-responsive">
