@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { Commerce } from '../_models/commerce.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SessionService {
 
+  static readonly COMMERCE:string = "commerce";
   static readonly COMMERCE_ID:string = "commerceId";
   static readonly RESELLER_NAME:string = "resellerName";
   static readonly TERMINAL_NUMBER:string = "terminalNumber";
@@ -25,6 +27,7 @@ export class SessionService {
   static readonly PRODUCT_BARCODE:string = "productBarcode";
 
   private commerceId: BehaviorSubject<number> = new BehaviorSubject<number>(this.getItem(SessionService.COMMERCE_ID) || 0);
+  private commerce: BehaviorSubject<Commerce> = new BehaviorSubject<Commerce>(this.getItem(SessionService.COMMERCE) || null);
 
   // Método para guardar un valor en sessionStorage
   setItem(key: string, value: any): void {
@@ -45,6 +48,14 @@ export class SessionService {
   // Método para limpiar todo el sessionStorage
   clear(): void {
     sessionStorage.clear();
+  }
+
+  getCommerce(): BehaviorSubject<Commerce> {
+    return this.commerce;
+  }
+
+  setCommerce(commerce:Commerce):void {
+    this.commerce.next(commerce);
   }
 
   getCommerceId(): BehaviorSubject<number> {

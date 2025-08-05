@@ -4,13 +4,22 @@
     <i class="fa fa-bars fa-lg"></i>
   </button>
 </div>
+<ng-template class="d-flex justify-content-center" #spinner>
+  <div class="spinner-border text-danger"></div>
+</ng-template>
 <!-- Sidenav responsive -->
 <nav class="sidenav vh-100 d-flex flex-column overflow-auto" [ngClass]="{ 'd-none': !showNav, 'd-flex': showNav, 'd-md-flex': true }">
   <div class="logo flex-shrink-0 p-2 text-white text-center">
     <a class="d-flex align-items-center justify-content-center text-white text-decoration-none"
        (click)="getTitle()" routerLink="/dashboard">
-      <i *ngIf="!isComercia" class="fa-solid fa-box py-2 logo"></i>
-      <img *ngIf="isComercia" src="assets/img/logo-lacaixa.png" alt="Logotipo La Caixa" class="logoLaCaixa">
+      <ng-container *ngIf="logoLoaded; else spinner">
+        <ng-container *ngIf="!isComercia">
+          <i class="fa-solid fa-box py-2 logo"></i>
+        </ng-container>
+        <ng-container *ngIf="isComercia">
+          <img src="assets/img/logo-lacaixa.png" alt="Logotipo La Caixa" class="logoLaCaixa">
+        </ng-container>
+      </ng-container>
     </a>
   </div>
   <div id="navBar1" class="flex-shrink-0">
@@ -31,7 +40,9 @@
 <header class="bg-customer">
   <div class="clearfix header-main container-fluid py-2">
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+      <ng-container *ngIf="logoLoaded; else spinner">
       <h3 class="float-start p-3 pb-2 mb-0"><b>{{ title }}</b></h3>
+      </ng-container>
       <ul class="navbar-nav d-flex flex-column flex-md-row align-items-start align-items-md-center ms-md-auto px-3 gap-2">
         <li class="mx-3 nav-item pt-2 pb-2">
           <DOPSW-lang-switcher></DOPSW-lang-switcher>

@@ -31,6 +31,7 @@ export class HeaderComponent implements OnInit {
   title0: string= "DPOS";
   isComercia:boolean = false;
   formSelectEnabled = true;
+  logoLoaded = false;
 
   constructor(private pagesService: PagesService,
     private authService : AuthService,
@@ -54,6 +55,7 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadThemeByResellerName();
     this.storageService.userInfo.subscribe(user =>{
       if(user !== undefined && user != null){
         this.isLoggedIn = true;
@@ -67,7 +69,8 @@ export class HeaderComponent implements OnInit {
                 this.commerceSelected = this.sessionService.getItem(SessionService.COMMERCE_ID);
                 if(this.commerceSelected === null){
                   this.commerceSelected = commerces[0].commerceId;
-                  this.sessionService.setItem(SessionService.COMMERCE_ID, this.getCommerceId());
+                  this.sessionService.setItem(SessionService.COMMERCE_ID, commerces[0].commerceId);
+                  this.sessionService.setItem(SessionService.RESELLER_NAME, commerces[0].resellerName);
                   this.loadThemeByResellerName();
                 }
               },
@@ -137,41 +140,34 @@ export class HeaderComponent implements OnInit {
 
   onCommerceChange(): void {
 
-    let commerceId: number = this.getCommerceId();
+    let commerce: Commerce = this.getCommerce();
 
-    this.commerceSelected = commerceId;
-    this.commercesService.setCommerceId(commerceId);
-    this.sessionService.setItem(SessionService.COMMERCE_ID, commerceId);
-    this.sessionService.setCommerceId(commerceId);
+    this.commerceSelected = commerce.commerceId;
+    this.commercesService.setCommerceId(commerce.commerceId);
+    this.sessionService.setItem(SessionService.COMMERCE_ID, commerce.commerceId);
+    this.sessionService.setItem(SessionService.RESELLER_NAME, commerce.resellerName);
+    this.sessionService.setCommerceId(commerce.commerceId);
 
     this.loadThemeByResellerName();
   }
   
-  getCommerceId(): number {
+  getCommerce(): Commerce {
     const commerce = this.commerces.find(commerce => commerce.commerceId == this.commerceSelected);
     if(commerce != undefined) {
-      return commerce.commerceId;
+      return commerce;
     }
-    return 0;
-  }
-
-  getCommerceResellerName(): string {
-    const commerce = this.commerces.find(commerce => commerce.commerceId == this.commerceSelected);
-    if(commerce != undefined) {
-      this.sessionService.setItem(SessionService.RESELLER_NAME, commerce.resellerName);
-      return commerce.resellerName;
-    }
-
     return null;
   }
 
   private loadThemeByResellerName():void {
-    this.themeService.loadTheme(this.getCommerceResellerName());
+    this.logoLoaded = false;
+    this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
     this.isComercia = this.isComerciaTheme();
     this.getTitle();
+    this.logoLoaded = true;
   }
 
   private isComerciaTheme():boolean {
-    return this.getCommerceResellerName() == Commerce.RESELLER_COMERCIA;
+    return this.sessionService.getItem(SessionService.RESELLER_NAME) == Commerce.RESELLER_COMERCIA;
   }
 }
