@@ -1,7 +1,9 @@
 <!-- Botón flotante hamburguesa para móviles -->
-<button class="btn btn-dark d-md-none toggle-nav-btn" (click)="showNav = !showNav">
-  <i class="fa fa-bars fa-lg"></i>
-</button>
+<div class="d-md-none d-flex justify-content-end px-3">
+  <button class="btn btn-dark toggle-nav-btn" (click)="toggleNav()"> 
+    <i class="fa fa-bars fa-lg"></i>
+  </button>
+</div>
 <!-- Sidenav responsive -->
 <nav class="sidenav vh-100 d-flex flex-column overflow-auto" [ngClass]="{ 'd-none': !showNav, 'd-flex': showNav, 'd-md-flex': true }">
   <div class="logo flex-shrink-0 p-2 text-white text-center">

@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, EventEmitter, HostListener, OnInit, Output } from '@angular/core';
 import { PagesService } from 'src/app/_services/pages.service';
 import { Page } from 'src/app/_models/page.model';
 import { StorageService } from 'src/app/_services/storage.service';
@@ -18,6 +18,8 @@ import { UIStateService } from 'src/app/_services/ui-state.service';
 })
 export class HeaderComponent implements OnInit {
 
+  @Output() navToggled = new EventEmitter<boolean>();
+  
   showNav: boolean = true;
 
   pages : Page[] = [];
@@ -83,8 +85,13 @@ export class HeaderComponent implements OnInit {
       }
     });
   }
+
+  toggleNav() {
+    this.showNav = !this.showNav;
+    this.navToggled.emit(this.showNav);  // Emitir evento
+  }
   
-  // ✅ Método seguro para verificar tamaño de pantalla
+  //Método seguro para verificar tamaño de pantalla
   isLargeScreen(): boolean {
     return typeof window !== 'undefined' && window.innerWidth >= 768;
   }
@@ -93,12 +100,13 @@ export class HeaderComponent implements OnInit {
     this.titleHeader(text);
     this.component(code);
     this.showNav = this.isLargeScreen();
+    this.navToggled.emit(this.showNav);  // Emitir también aquí porque cambia showNav
   }
 
-  // ✅ Escuchar cambios de tamaño de pantalla
   @HostListener('window:resize')
   onResize() {
     this.showNav = this.isLargeScreen();
+    this.navToggled.emit(this.showNav);  // Emitir también al cambiar tamaño
   }
 
   getTitle() {

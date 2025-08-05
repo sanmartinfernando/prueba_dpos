@@ -1,5 +1,7 @@
-<DPOSW-header></DPOSW-header>
-<div class="py-6 px-3 body-content">
+<DPOSW-header (navToggled)="onNavToggled($event)" [class.nav-open]="navIsOpen"></DPOSW-header>
+
+<div class="py-6 px-3 body-content" [class.nav-open]="navIsOpen">
   <router-outlet></router-outlet>
 </div>
-<DPOSW-footer></DPOSW-footer>
+
+<DPOSW-footer [class.nav-open]="navIsOpen"></DPOSW-footer>

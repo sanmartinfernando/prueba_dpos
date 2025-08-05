@@ -8,6 +8,8 @@ import { InactivityService } from './_services/inactivity.service';
 })
 export class AppComponent {
   
+  navIsOpen = true;
+
   constructor(private inactivityService: InactivityService) {}
 
   ngOnInit() {
@@ -18,5 +20,9 @@ export class AppComponent {
   ngOnDestroy() {
     // Detener el monitoreo si el componente se destruye
     this.inactivityService.stopMonitoring();
+  }
+
+  onNavToggled(isOpen: boolean) {
+    this.navIsOpen = isOpen;
   }
 }
