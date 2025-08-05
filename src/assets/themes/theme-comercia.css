@@ -204,6 +204,7 @@ label.me-2 {
   left: 0;
   overflow-x: hidden;
   background-color: var(--bs-color-black-100);
+  z-index: 1050;
 }
 
 .sidenav a {
