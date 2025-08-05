@@ -7,6 +7,20 @@
   font-style: normal;
 }
 
+
+@media (max-width: 576px) {
+  .kpi {
+    min-width: 140px;
+  }
+}
+
+@media (max-width: 768px) {
+  .responsive-input,
+  .responsive-button {
+    width: 100%;
+  }
+}
+
 .toggle-nav-btn {
   position: fixed;
   top: 1rem;
