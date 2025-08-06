@@ -601,6 +601,10 @@ div.ng-star-inserted {
   --bs-btn-disabled-border-color: var(--bs-color-red-300);
 }
 
+.min-btn-width {
+  min-width: 180px;
+}
+
 .text-customer {
   color: var(--bs-color-white-100);
 }
