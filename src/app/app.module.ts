@@ -45,6 +45,7 @@ import { TaxesComponent } from './taxes/taxes.component';
 import { TaxesModalComponent } from './taxes/taxes-modal.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { CategoryModalComponent } from './categories/category-modal.component';
+import { ModifiersModalComponent } from './modifiers/modifiers-modal.component';
 
 registerLocaleData(localeEs);
 
@@ -64,6 +65,7 @@ registerLocaleData(localeEs);
         TaxesComponent,
         TaxesModalComponent,
         CategoryModalComponent,
+        ModifiersModalComponent,
         ProductsComponent,
         ProductDetailsComponent,
         ErrorComponent,

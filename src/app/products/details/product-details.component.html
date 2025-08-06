@@ -22,10 +22,40 @@
               <label for="name" class="form-label">{{'dpos.product-details.form.name' | translate}}</label>
               <input type="text" class="form-control" id="name" />
             </div>
-            <div class="mb-3">
-              <label for="category" class="form-label">{{'dpos.product-details.form.category' | translate}}</label>
-              <input type="text" class="form-control" id="category" />
+            <div class="row">
+              <div class="col-md-8 mb-3">
+                <label for="category" class="form-label">{{'dpos.product-details.form.category' | translate}}</label>
+                <input type="text" class="form-control" id="category" />
+              </div>
+              <div class="col-md-4 mb-3 d-flex align-items-end justify-content-end">
+                <button class="btn btn-secondary" (click)="openCategoriesModal()">
+                  {{'dpos.product-details.category.create.btn' | translate}}
+                </button>
+              </div>
             </div>
+
+            <div class="row">
+              <div class="col-md-8 mb-3">
+                <label for="modifiers" class="form-label">{{'dpos.product-details.form.modifiers' | translate}}</label>
+                <input type="text" class="form-control" id="modifiers" />
+              </div>
+              <div class="col-md-4 mb-3 d-flex align-items-end justify-content-end">
+                <button class="btn btn-secondary" (click)="openModifiersModal()">
+                  {{'dpos.product-details.modifiers.create.btn' | translate}}
+                </button>
+              </div>
+            </div>
+             <div class="mb-3">
+              <label for="stock" class="form-label">{{'dpos.product-details.form.stock' | translate}}</label>
+              <input type="text" class="form-control" id="stock" />
+            </div>
+            <div class="mb-3">
+              <label for="description" class="form-label">{{'dpos.product-details.form.description' | translate}}</label>
+              <textarea class="form-control" id="description" rows="2"></textarea>
+            </div>
+          </div>
+          <!-- Columna derecha -->
+          <div class="col-md-6">
             <div class="mb-3">
               <label for="barcode" class="form-label">{{'dpos.product-details.form.barcode' | translate}}</label>
               <input type="text" class="form-control" id="barcode" />
@@ -35,13 +65,6 @@
               <input type="text" class="form-control" id="reference" />
             </div>
             <div class="mb-3">
-              <label for="description" class="form-label">{{'dpos.product-details.form.description' | translate}}</label>
-              <textarea class="form-control" id="description" rows="2" style="min-height: 7.6rem;resize: none;"></textarea>
-            </div>
-          </div>
-          <!-- Columna derecha -->
-          <div class="col-md-6">
-            <div class="mb-3">
               <label for="priceType" class="form-label">{{'dpos.product-details.form.price.type' | translate}}</label>
               <input type="text" class="form-control" id="priceType" />
             </div>
@@ -50,30 +73,8 @@
               <input type="text" class="form-control" id="price" />
             </div>
             <div class="mb-3">
-              <label for="salesPrice" class="form-label">{{'dpos.product-details.form.sales.price' | translate}}</label>
-              <input type="text" class="form-control" id="salesPrice" />
-            </div>
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label for="salesDateFrom" class="form-label">
-                  {{'dpos.product-details.form.sales.date.from' | translate}}
-                </label>
-                <input type="date" class="form-control" id="salesDateFrom" [value]="salesStartDate" (change)="onTilSalesStartDateChange()" />
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="salesDateTo" class="form-label">
-                  {{'dpos.product-details.form.sales.date.to' | translate}}
-                </label>
-                <input type="date" class="form-control" id="salesDateTo" [value]="salesEndDate" (change)="onTilSalesEndDateChange()" />
-              </div>
-            </div>
-            <div class="mb-3">
               <label for="taxes" class="form-label">{{'dpos.product-details.form.taxes' | translate}}</label>
               <input type="text" class="form-control" id="taxes" />
-            </div>
-            <div class="mb-3">
-              <label for="stock" class="form-label">{{'dpos.product-details.form.stock' | translate}}</label>
-              <input type="text" class="form-control" id="stock" />
             </div>
           </div>
         </div>

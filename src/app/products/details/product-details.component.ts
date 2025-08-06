@@ -9,6 +9,9 @@ import { StorageService } from 'src/app/_services/storage.service';
 import { ThemeService } from 'src/app/_services/theme.service';
 import { UIStateService } from 'src/app/_services/ui-state.service';
 import { Product } from '../../_models/product.model';
+import { CategoryModalComponent } from 'src/app/categories/category-modal.component';
+import { ModifiersModalComponent } from 'src/app/modifiers/modifiers-modal.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'DPOSW-product-details',
@@ -34,6 +37,7 @@ export class ProductDetailsComponent implements OnInit {
       private storageService: StorageService,
       private uiStateService: UIStateService,
       private sessionService: SessionService,
+      private dialog: MatDialog,
       private themeService: ThemeService,
       private translate: TranslateService,
       private authService: AuthService) {
@@ -86,6 +90,20 @@ export class ProductDetailsComponent implements OnInit {
 
   public getProduct(idClient: string): void {
     //TODO
+  }
+
+  public openCategoriesModal(id?: string): void {
+    const dialogRef = this.dialog.open(CategoryModalComponent, {data: { id }});
+    dialogRef.afterClosed().subscribe(result => {
+
+    });
+  }
+
+  public openModifiersModal(id?: string): void {
+    const dialogRef = this.dialog.open(ModifiersModalComponent, {data: { id }});
+    dialogRef.afterClosed().subscribe(result => {
+
+    });
   }
 
   public saveProduct(): void {
