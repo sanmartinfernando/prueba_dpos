@@ -12,6 +12,9 @@ import { Product } from '../../_models/product.model';
 import { CategoryModalComponent } from 'src/app/categories/category-modal.component';
 import { ModifiersModalComponent } from 'src/app/modifiers/modifiers-modal.component';
 import { MatDialog } from '@angular/material/dialog';
+import { Category } from 'src/app/_models/category.model';
+import { Modifier } from '@popperjs/core';
+import { Modifiers } from '../../_models/modifiers.model';
 
 @Component({
   selector: 'DPOSW-product-details',
@@ -26,10 +29,16 @@ export class ProductDetailsComponent implements OnInit {
 
   product: Product;
 
+  categoryIdSelected: string[] = [];
+  modifiersIdSelected: string;
+
   salesStartDate: string;
   salesStartDateMilli: number;
   salesEndDate: string;
   salesEndDateMilli: number;
+
+  categories: Category[] = [{id: "0", name: "Todas las categorías"}, {id: "1", name: "Categoria 1"}, {id: "2", name: "Categoria 2"}];
+  modifiers: Modifiers[] = [{id: "0", name: "Punto de la carne", modifiers: "muy hecho, hecho, al punto, crudo"}];
 
   constructor(private encryptionService: EncryptionService,
       private portalUsersService: PortalUsersService,

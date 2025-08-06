@@ -293,6 +293,13 @@ footer{
   min-width: 190px !important;
 }
 
+select[multiple] {
+  height: 7.7rem;
+  scrollbar-width: none;        /* Firefox */
+  -ms-overflow-style: none;     /* Internet Explorer 10+ */
+  overflow-y: hidden;           /* Safari/Chrome */
+}
+
 select, input[type="date" i], i{
   cursor: pointer;
 }

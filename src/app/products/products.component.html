@@ -45,7 +45,6 @@
             </div>
             <div class="d-flex flex-wrap gap-2">
               <button class="btn btn-primary" [routerLink]="code" (click)="addProduct()">{{'dpos.products.create.btn' | translate}}</button>
-              <button class="btn btn-primary" (click)="openCategoriesModal()">{{'dpos.products.category.create.btn' | translate}}</button>
               <button class="btn btn-primary" (click)="importProducts()">&nbsp;{{'dpos.products.import.label' | translate}}</button>
               <input type="file" #productFileInput style="display: none" accept=".csv" (change)="onProductFileSelected($event)" />
               <button class="btn btn-outline-info">

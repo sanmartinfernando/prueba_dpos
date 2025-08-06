@@ -224,14 +224,6 @@ export class ProductsComponent implements OnInit {
     this.getProducts();
   }
 
-
-  public openCategoriesModal(id?: string): void {
-    const dialogRef = this.dialog.open(CategoryModalComponent, {data: { id }});
-    dialogRef.afterClosed().subscribe(result => {
-
-    });
-  }
-
   public onCategoryChange(): void {
   //  this.getModels();
   }

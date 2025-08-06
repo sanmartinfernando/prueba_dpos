@@ -25,7 +25,9 @@
             <div class="row">
               <div class="col-md-8 mb-3">
                 <label for="category" class="form-label">{{'dpos.product-details.form.category' | translate}}</label>
-                <input type="text" class="form-control" id="category" />
+                <select class="form-select" id="category" name="category" multiple [(ngModel)]="categoryIdSelected">
+                  <option class="multiple-option" *ngFor="let category of categories" [value]="category.id">{{ category.name }}</option>
+                </select>
               </div>
               <div class="col-md-4 mb-3 d-flex align-items-end justify-content-end">
                 <button class="btn btn-secondary min-btn-width" (click)="openCategoriesModal()">
@@ -33,11 +35,12 @@
                 </button>
               </div>
             </div>
-
             <div class="row">
               <div class="col-md-8 mb-3">
                 <label for="modifiers" class="form-label">{{'dpos.product-details.form.modifiers' | translate}}</label>
-                <input type="text" class="form-control" id="modifiers" />
+                <select class="form-select" id="modifiers" name="modifiers" [(ngModel)]="modifiersIdSelected">
+                  <option *ngFor="let modifier of modifiers" [value]="modifier.id">{{ modifier.name }}</option>
+                </select>
               </div>
               <div class="col-md-4 mb-3 d-flex align-items-end justify-content-end">
                 <button class="btn btn-secondary min-btn-width" (click)="openModifiersModal()">
@@ -48,11 +51,7 @@
              <div class="mb-3">
               <label for="stock" class="form-label">{{'dpos.product-details.form.stock' | translate}}</label>
               <input type="text" class="form-control" id="stock" />
-            </div>
-            <div class="mb-3">
-              <label for="description" class="form-label">{{'dpos.product-details.form.description' | translate}}</label>
-              <textarea class="form-control" id="description" rows="2"></textarea>
-            </div>
+             </div>
           </div>
           <!-- Columna derecha -->
           <div class="col-md-6">
@@ -77,6 +76,10 @@
               <input type="text" class="form-control" id="taxes" />
             </div>
           </div>
+        </div>
+        <div class="col-md-12 mb-3">
+          <label for="description" class="form-label">{{'dpos.product-details.form.description' | translate}}</label>
+          <textarea class="form-control" id="description" rows="2"></textarea>
         </div>
         <!-- Botones -->
         <div class="d-flex justify-content-end mt-4">

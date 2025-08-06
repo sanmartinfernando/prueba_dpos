@@ -324,6 +324,23 @@ label.me-2 {
   min-width: 150px;
 }
 
+.multiple-option {
+    color: var(--bs-color-white-100);
+    background-color: var(--bs-color-black-100)00 !important;
+}
+
+select[multiple] {
+  height: 7.7rem;
+  background-color: var(--bs-color-grey-700)00 !important;
+  scrollbar-width: none;        /* Firefox */
+  -ms-overflow-style: none;     /* Internet Explorer 10+ */
+  overflow-y: hidden;           /* Safari/Chrome */
+}
+
+select[multiple]::-webkit-scrollbar {
+  display: none;                /* Chrome, Safari, Edge */
+}
+
 .form-control:disabled {
   background-color: var(--bs-color-black-200);
   color: #6c757d;
