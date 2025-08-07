@@ -1,29 +1,28 @@
 <div class="container-fluid py-3 header-main">
-  <!-- Formulario de búsqueda -->
   <form class="row g-3 align-items-end">
     <div class="col-md-6 col-lg-2">
-      <label for="searchTer" class="form-label">{{'dpos.filter.terminal' | translate}}</label>
+      <label for="searchTer" class="form-label">{{ 'dpos.filter.terminal' | translate }}</label>
       <select class="form-select" id="searchTer" name="terminal" [(ngModel)]="terminalSelected" (change)="onTerminalChange()">
         <option *ngFor="let terminal of terminalsNumber" [value]="terminal">{{ terminal }}</option>
       </select>
     </div>
     <div class="col-md-6 col-lg-2">
-      <label for="sinceDate" class="form-label">{{'dpos.filter.date.from' | translate}}</label>
+      <label for="sinceDate" class="form-label">{{ 'dpos.filter.date.from' | translate }}</label>
       <input type="date" class="form-control" id="sinceDate" [value]="sinceDate" (change)="onSinceDateChange()" />
     </div>
     <div class="col-md-6 col-lg-2">
-      <label for="tilDate" class="form-label">{{'dpos.filter.date.to' | translate}}</label>
+      <label for="tilDate" class="form-label">{{ 'dpos.filter.date.to' | translate }}</label>
       <input type="date" class="form-control" id="tilDate" [value]="tilDate" (change)="onTilDateChange()" />
     </div>
     <div class="col-md-6 col-lg-2">
-      <label class="form-label">{{'dpos.filter.operationtype' | translate}}</label>
+      <label class="form-label">{{ 'dpos.filter.operationtype' | translate }}</label>
       <select class="form-select" name="operation" [(ngModel)]="typeVarSearch" (change)="onOpTypeChange()">
-        <option>{{'dpos.filter.all' | translate}}</option>
+        <option>{{ 'dpos.filter.all' | translate }}</option>
         <option *ngFor="let type of opTypes">{{ type.name }}</option>
       </select>
     </div>
     <div class="col-md-6 col-lg-2">
-      <label class="form-label">{{'dpos.filter.docnumber' | translate}}</label>
+      <label class="form-label">{{ 'dpos.filter.docnumber' | translate }}</label>
       <input type="text" class="form-control" name="documentN" [(ngModel)]="documentVarSearch" (change)="onDocNumberChange()">
     </div>
     <div class="col-md-6 col-lg-2 d-flex justify-content-start gap-2">
@@ -31,68 +30,58 @@
         <i class="fas fa-eraser"></i>
       </button>
       <button type="button" class="btn btn-primary" (click)="searchSales()">
-        <i class="fas fa-search"></i>&nbsp;&nbsp;{{'dpos.action.search' | translate}}
+        <i class="fas fa-search"></i>&nbsp;&nbsp;{{ 'dpos.action.search' | translate }}
       </button>
     </div>
   </form>
-  <!-- Validación -->
   <div *ngIf="validationVariable == true" class="d-flex justify-content-center mt-2">
-    <div class="text-danger text-center"><b>{{'dpos.filter.novalid' | translate}}</b></div>
+    <div class="text-danger text-center"><b>{{ 'dpos.filter.novalid' | translate }}</b></div>
   </div>
-  <!-- Sección principal -->
   <div class="card mt-4">
     <div class="card-body">
       <div class="row mb-4 align-items-center">
         <div class="col-md-6">
-          <h5><b>{{'dpos.sales.operations.label' | translate}}</b></h5>
+          <h5><b>{{ 'dpos.sales.operations.label' | translate }}</b></h5>
         </div>
         <div class="col-md-6 text-md-end mt-2 mt-md-0" *ngIf="loadCompleted && !emptySearch">
-          <div class="d-flex flex-column flex-md-row justify-content-md-end align-items-md-center gap-3">  
-            <!-- Label + input: número de operaciones -->
+          <div class="d-flex flex-column flex-md-row justify-content-md-end align-items-md-center gap-3">
             <div class="d-flex flex-column flex-md-row align-items-md-center">
               <label class="me-md-2 mb-1 mb-md-0">
-                {{'dpos.sales.operations.number.label' | translate}}
+                {{ 'dpos.sales.operations.number.label' | translate }}
               </label>
               <input type="text" class="form-control text-center" style="max-width: 120px;" [(ngModel)]="operationN" disabled />
             </div>
-            <!-- Label + input: total de ventas -->
             <div class="d-flex flex-column flex-md-row align-items-md-center">
-              <label class="me-md-2 mb-1 mb-md-0">
-                {{'dpos.sales.operations.total.label' | translate}}
-              </label>
+              <label class="me-md-2 mb-1 mb-md-0">{{ 'dpos.sales.operations.total.label' | translate }}</label>
               <input type="text" class="form-control text-center" style="max-width: 120px;" [(ngModel)]="totalSalesString" disabled />
             </div>
-            <!-- Botón CSV -->
             <button class="btn btn-outline-info mt-2 mt-md-0" (click)="downloadCSV()">
               <i class="fa-solid fa-file-csv fa-xl"></i>
             </button>
           </div>
         </div>
       </div>
-      <!-- Spinner de carga -->
       <div *ngIf="!loadCompleted && !emptySearch" class="d-flex justify-content-center">
         <div class="spinner-border text-danger"></div>
       </div>
-      <!-- Mensaje de datos vacíos -->
       <div *ngIf="loadCompleted && emptySearch" class="d-flex justify-content-center">
-        <b><i>{{'dpos.dashboard.nodata.label' | translate}}</i></b>
+        <b><i>{{ 'dpos.dashboard.nodata.label' | translate }}</i></b>
       </div>
-      <!-- Tabla de ventas -->
       <div *ngIf="loadCompleted && !emptySearch" class="table-responsive">
         <table class="table table-hover table-borderless">
           <thead class="text-customer">
             <tr>
               <th class="text-center"></th>
-              <th>{{'dpos.sales.operation.document.label' | translate}}</th>
-              <th class="text-center">{{'dpos.sales.operation.type.label' | translate}}</th>
-              <th>{{'dpos.sales.operation.data.label' | translate}}</th>
-              <th class="text-center">{{'dpos.sales.operation.terminal.label' | translate}}</th>
-              <th class="text-center">{{'dpos.sales.operation.tbai.label' | translate}}</th>
-              <th class="text-end">{{'dpos.sales.operation.subtotal.label' | translate}}</th>
-              <th class="text-end">{{'dpos.sales.operation.discount.label' | translate}}</th>
-              <th class="text-end">{{'dpos.sales.operation.base.label' | translate}}</th>
-              <th class="text-end">{{'dpos.sales.operation.tax.label' | translate}}</th>
-              <th class="text-end">{{'dpos.sales.operation.total.label' | translate}}</th>
+              <th>{{ 'dpos.sales.operation.document.label' | translate }}</th>
+              <th class="text-center">{{ 'dpos.sales.operation.type.label' | translate }}</th>
+              <th>{{ 'dpos.sales.operation.data.label' | translate }}</th>
+              <th class="text-center">{{ 'dpos.sales.operation.terminal.label' | translate }}</th>
+              <th class="text-center">{{ 'dpos.sales.operation.tbai.label' | translate }}</th>
+              <th class="text-end">{{ 'dpos.sales.operation.subtotal.label' | translate }}</th>
+              <th class="text-end">{{ 'dpos.sales.operation.discount.label' | translate }}</th>
+              <th class="text-end">{{ 'dpos.sales.operation.base.label' | translate }}</th>
+              <th class="text-end">{{ 'dpos.sales.operation.tax.label' | translate }}</th>
+              <th class="text-end">{{ 'dpos.sales.operation.total.label' | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -103,78 +92,70 @@
                 </td>
                 <td class="align-middle">{{ sale.reference }}</td>
                 <td class="text-center align-middle">
-                  <div class="badge rounded-pill" [ngClass]="{
-                    'bg-sale': sale.type === 0,
-                    'bg-refund': sale.type === 2,
-                    'bg-edits': sale.type === 5
-                  }">
-                    {{ sale.type === 0 ? ('dpos.sales.operation.order.label' | translate) :
-                       sale.type === 2 ? ('dpos.sales.operation.refund.label' | translate) :
-                       ('dpos.sales.operation.rectification.label' | translate) }}
+                  <div class="badge rounded-pill" [ngClass]="{ 'bg-sale': sale.type === 0, 'bg-refund': sale.type === 2, 'bg-edits': sale.type === 5 }">
+                    {{ sale.type === 0 ? ('dpos.sales.operation.order.label' | translate) : sale.type === 2 ? ('dpos.sales.operation.refund.label' | translate) : ('dpos.sales.operation.rectification.label' | translate) }}
                   </div>
                 </td>
                 <td class="align-middle">{{ sale.createdAt | date: "dd/MM/yyyy HH:mm" }}</td>
                 <td class="text-center align-middle">{{ sale.terminalNumber }}</td>
                 <td class="text-center align-middle" *ngIf="sale.orderTicketBai == null && sale.orderVerifactu == null">
                   <div class="badge rounded-pill bg-pending">
-                    <i>{{'dpos.sales.operation.verifactu.tbai.no.label' | translate}}</i>
+                    <i>{{ 'dpos.sales.operation.verifactu.tbai.no.label' | translate }}</i>
                   </div>
                 </td>
-                <!-- Ticketbai status -->
                 <td class="text-center align-middle" *ngIf="sale.orderTicketBai != null && salesTicketBai[i] != 0 && salesTicketBai[i] != 1 && salesTicketBai[i] != 2">
                   <div class="badge rounded-pill bg-pending">
-                    <i>{{'dpos.sales.operation.tbai.no.label' | translate}}</i> 
+                    <i>{{ 'dpos.sales.operation.tbai.no.label' | translate }}</i>
                   </div>
                 </td>
                 <td class="text-center align-middle" *ngIf="sale.orderTicketBai != null && salesTicketBai[i] == 0">
                   <div class="badge rounded-pill bg-accept">
-                    <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.tbai.status.accepted.label' | translate}}
+                    <i class="fa-solid fa-qrcode"></i> {{ 'dpos.sales.operation.tbai.status.accepted.label' | translate }}
                   </div>
                 </td>
                 <td class="text-center align-middle" *ngIf="sale.orderTicketBai != null && salesTicketBai[i] == 1">
                   <div class="badge rounded-pill bg-warning">
-                    <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.tbai.status.warnings.label' | translate}}
+                    <i class="fa-solid fa-qrcode"></i> {{ 'dpos.sales.operation.tbai.status.warnings.label' | translate }}
                   </div>
                 </td>
                 <td class="text-center align-middle" *ngIf="sale.orderTicketBai != null && salesTicketBai[i] == 2">
                   <div class="badge rounded-pill bg-rejected">
-                    <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.tbai.status.rejected.label' | translate}}
+                    <i class="fa-solid fa-qrcode"></i> {{ 'dpos.sales.operation.tbai.status.rejected.label' | translate }}
                   </div>
                 </td>
-                <!-- Verifactu status -->
                 <td class="text-center align-middle" *ngIf="sale.orderVerifactu != null && sale.orderVerifactu.status != verifactuStatus.Pending && sale.orderVerifactu.status != verifactuStatus.Processing && sale.orderVerifactu.status != verifactuStatus.Accepted && sale.orderVerifactu.status != verifactuStatus.Completed && sale.orderVerifactu.status != verifactuStatus.Failed && sale.orderVerifactu.status != verifactuStatus.PartiallyAccepted && sale.orderVerifactu.status != verifactuStatus.Rejected">
                   <div class="badge rounded-pill bg-pending">
-                    <i>{{'dpos.sales.operation.verifactu.no.label' | translate}}</i> 
+                    <i>{{ 'dpos.sales.operation.verifactu.no.label' | translate }}</i>
                   </div>
                 </td>
                 <td class="text-center align-middle" *ngIf="sale.orderVerifactu != null && sale.orderVerifactu.status == verifactuStatus.Pending">
                   <div class="badge rounded-pill bg-pending">
-                    <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.verifactu.status.pending.label' | translate}}
+                    <i class="fa-solid fa-qrcode"></i> {{ 'dpos.sales.operation.verifactu.status.pending.label' | translate }}
                   </div>
                 </td>
                 <td class="text-center align-middle" *ngIf="sale.orderVerifactu != null && sale.orderVerifactu.status == verifactuStatus.Processing">
                   <div class="badge rounded-pill bg-pending">
-                    <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.verifactu.status.processing.label' | translate}}
+                    <i class="fa-solid fa-qrcode"></i> {{ 'dpos.sales.operation.verifactu.status.processing.label' | translate }}
                   </div>
                 </td>
                 <td class="text-center align-middle" *ngIf="sale.orderVerifactu != null && sale.orderVerifactu.status == verifactuStatus.Accepted">
                   <div class="badge rounded-pill bg-accept">
-                    <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.verifactu.status.accepted.label' | translate}}
+                    <i class="fa-solid fa-qrcode"></i> {{ 'dpos.sales.operation.verifactu.status.accepted.label' | translate }}
                   </div>
                 </td>
                 <td class="text-center align-middle" *ngIf="sale.orderVerifactu != null && sale.orderVerifactu.status == verifactuStatus.Completed">
                   <div class="badge rounded-pill bg-accept">
-                    <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.verifactu.status.completed.label' | translate}}
+                    <i class="fa-solid fa-qrcode"></i> {{ 'dpos.sales.operation.verifactu.status.completed.label' | translate }}
                   </div>
                 </td>
                 <td class="text-center align-middle" *ngIf="sale.orderVerifactu != null && sale.orderVerifactu.status == verifactuStatus.Failed">
                   <div class="badge rounded-pill bg-pending">
-                    <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.verifactu.status.failed.label' | translate}}
+                    <i class="fa-solid fa-qrcode"></i> {{ 'dpos.sales.operation.verifactu.status.failed.label' | translate }}
                   </div>
                 </td>
                 <td class="text-center align-middle" *ngIf="sale.orderVerifactu != null && sale.orderVerifactu.status == verifactuStatus.PartiallyAccepted">
                   <div class="badge rounded-pill bg-warning">
-                    <i class="fa-solid fa-qrcode"></i> {{'dpos.sales.operation.verifactu.status.partially.accepted.label' | translate}}
+                    <i class="fa-solid fa-qrcode"></i> {{ 'dpos.sales.operation.verifactu.status.partially.accepted.label' | translate }}
                   </div>
                 </td>
                 <td class="text-center align-middle" *ngIf="sale.orderVerifactu != null && sale.orderVerifactu.status == verifactuStatus.Rejected">
@@ -192,7 +173,7 @@
                   {{ getTotalBase(sale.orderTaxes) | currency : "Eur" : "€" }}
                 </td>
                 <td class="text-end align-middle">
-                  {{ getTotalTaxes(sale.orderTaxes)  | currency : "Eur" : "€" }}
+                  {{ getTotalTaxes(sale.orderTaxes) | currency : "Eur" : "€" }}
                 </td>
                 <td class="text-end align-middle">
                   {{ sale.total / (Math.pow(10, sale.decimals)) | currency : "Eur" : "€" }}
@@ -202,13 +183,12 @@
             <ng-template #emptyTemplate>
               <tr>
                 <td colspan="11" class="text-center py-3">
-                  <b>{{'dpos.sales.operation.nodata.label' | translate}}</b>
+                  <b>{{ 'dpos.sales.operation.nodata.label' | translate }}</b>
                 </td>
               </tr>
             </ng-template>
           </tbody>
         </table>
-        <!-- Paginación -->
         <div class="text-center mt-3">
           <pagination-controls (pageChange)="page = $event" previousLabel="" nextLabel=""></pagination-controls>
         </div>

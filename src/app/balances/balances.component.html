@@ -3,17 +3,17 @@
   <div>
     <form class="row gx-3 gy-2 align-items-end mx-1">
       <div class="col-12 col-sm-6 col-md-3">
-        <label class="form-label">{{'dpos.filter.terminal' | translate}}</label>
+        <label class="form-label">{{ 'dpos.filter.terminal' | translate }}</label>
         <select class="form-select" id="searchTer" name="terminal" [(ngModel)]="terminalSelected" (change)="onTerminalChange()">
           <option *ngFor="let terminal of terminalsNumber" [value]="terminal">{{ terminal }}</option>
         </select>
       </div>
       <div class="col-6 col-md-3">
-        <label class="form-label">{{'dpos.filter.date.from' | translate}}</label>
+        <label class="form-label">{{ 'dpos.filter.date.from' | translate }}</label>
         <input type="date" class="form-control" id="sinceDate" [value]="sinceDate" (change)="onSinceDateChange()" />
       </div>
       <div class="col-6 col-md-3">
-        <label class="form-label">{{'dpos.filter.date.to' | translate}}</label>
+        <label class="form-label">{{ 'dpos.filter.date.to' | translate }}</label>
         <input type="date" class="form-control" id="tilDate" [value]="tilDate" (change)="onTilDateChange()" />
       </div>
       <div class="col-12 col-md-3 d-flex justify-content-md-start justify-content-center gap-2 mt-2 mt-md-0">
@@ -21,7 +21,7 @@
           <i class="fas fa-eraser"></i>
         </button>
         <button type="button" class="btn btn-primary" (click)="searchBalances()">
-          <i class="fas fa-search"></i>&nbsp;&nbsp;{{'dpos.action.search' | translate}}
+          <i class="fas fa-search"></i>&nbsp;&nbsp;{{ 'dpos.action.search' | translate }}
         </button>
       </div>
     </form>
@@ -46,7 +46,7 @@
         <div class="spinner-border text-danger"></div>
       </div>
       <div *ngIf="loadCompleted && emptySearch" class="d-flex justify-content-center my-3">
-        <b><i>{{'dpos.dashboard.nodata.label' | translate}}</i></b>
+        <b><i>{{ 'dpos.dashboard.nodata.label' | translate }}</i></b>
       </div>
       <div class="row" *ngIf="loadCompleted && !emptySearch">
         <div class="col">
@@ -55,24 +55,23 @@
               <thead class="text-customer">
                 <tr>
                   <th class="text-center"></th>
-                  <th class="text-start">{{'dpos.balances.document.label' | translate}}</th>
-                  <th class="text-center">{{'dpos.balances.terminal.label' | translate}}</th>
-                  <th class="text-start">{{'dpos.balances.datefrom.label' | translate}}</th>
-                  <th class="text-start">{{'dpos.balances.dateto.label' | translate}}</th>
-                  <th class="text-center">{{'dpos.balances.operations.label' | translate}}</th>
-                  <th class="text-end">{{'dpos.balances.mismatch.label' | translate}}</th>
-                  <th class="text-end">{{'dpos.balances.total.label' | translate}}</th>
+                  <th class="text-start">{{ 'dpos.balances.document.label' | translate }}</th>
+                  <th class="text-center">{{ 'dpos.balances.terminal.label' | translate }}</th>
+                  <th class="text-start">{{ 'dpos.balances.datefrom.label' | translate }}</th>
+                  <th class="text-start">{{ 'dpos.balances.dateto.label' | translate }}</th>
+                  <th class="text-center">{{ 'dpos.balances.operations.label' | translate }}</th>
+                  <th class="text-end">{{ 'dpos.balances.mismatch.label' | translate }}</th>
+                  <th class="text-end">{{ 'dpos.balances.total.label' | translate }}</th>
                 </tr>
               </thead>
               <ng-template #empty>
                 <td colspan="8">
-                  <b>{{'dpos.balances.noresults.label' | translate}}</b>
+                  <b>{{ 'dpos.balances.noresults.label' | translate }}</b>
                 </td>
               </ng-template>
               <tbody>
                 <ng-container *ngIf="loadCompleted; else empty">
-                  <tr *ngFor="let balance of balances | paginate : { itemsPerPage: 10, currentPage: page }; index as i" 
-                      [routerLink]="code" (click)="sendSalesDetails(balance.balanceId)" style="cursor: pointer;">
+                  <tr *ngFor="let balance of balances | paginate : { itemsPerPage: 10, currentPage: page }; index as i" [routerLink]="code" (click)="sendSalesDetails(balance.balanceId)" style="cursor: pointer;">
                     <td class="text-center align-middle">
                       <input class="form-check-input" type="checkbox" [checked]="isAllSelected" (click)="$event.stopPropagation()" />
                     </td>

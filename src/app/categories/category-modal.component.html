@@ -9,7 +9,7 @@
       <form (ngSubmit)="onSubmit()">
         <div class="row mb-12">
           <div class="col-md-12">
-            <label class="form-label">{{'dpos.category.modal.form.name' | translate}}</label>
+            <label class="form-label">{{ 'dpos.category.modal.form.name' | translate }}</label>
             <input type="text" class="form-control" name="name" [(ngModel)]="categoryFormData.name">
           </div>
         </div>
@@ -17,7 +17,7 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-outline-danger" (click)="close()">{{'dpos.action.cancel' | translate}}</button>
-    <button type="submit" class="btn btn-primary">{{'dpos.action.create' | translate}}</button>
+    <button class="btn btn-outline-danger" (click)="close()">{{ 'dpos.action.cancel' | translate }}</button>
+    <button type="submit" class="btn btn-primary">{{ 'dpos.action.create' | translate }}</button>
   </div>
 </div>

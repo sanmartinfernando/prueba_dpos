@@ -1,30 +1,27 @@
 <div class="container-fluid header-main mt-4">
   <div class="d-flex justify-content-between mb-2">
-    <a [routerLink]="['/products']" type="button" class="" style="text-decoration: none;">
-      <i class="fa-solid fa-angle-left"></i> {{'dpos.product-details.back' | translate}}
+    <a [routerLink]="['/products']" type="button" style="text-decoration: none;">
+      <i class="fa-solid fa-angle-left"></i> {{ 'dpos.product-details.back' | translate }}
     </a>
   </div>
   <div class="card my-4">
     <div class="card-body">
-      <!-- Load -->
       <div *ngIf="!loadCompleted" class="d-flex justify-content-center">
         <div class="spinner-border text-danger"></div>
       </div>
-      <!-- Detalles -->
       <div class="col mb-4">
         <h5><b>{{ titlePage }}</b></h5>
       </div>
       <form>
         <div class="row g-3">
-          <!-- Columna izquierda -->
           <div class="col-md-6">
             <div class="mb-3">
-              <label for="name" class="form-label">{{'dpos.product-details.form.name' | translate}}</label>
+              <label for="name" class="form-label">{{ 'dpos.product-details.form.name' | translate }}</label>
               <input type="text" class="form-control" id="name" />
             </div>
             <div class="row">
               <div class="col-md-8 mb-3">
-                <label for="category" class="form-label">{{'dpos.product-details.form.category' | translate}}</label>
+                <label for="category" class="form-label">{{ 'dpos.product-details.form.category' | translate }}</label>
                 <select class="form-select" id="category" name="category" multiple [(ngModel)]="categoryIdSelected">
                   <option class="multiple-option" *ngFor="let category of categories" [value]="category.id">{{ category.name }}</option>
                 </select>
@@ -37,7 +34,7 @@
             </div>
             <div class="row">
               <div class="col-md-8 mb-3">
-                <label for="modifiers" class="form-label">{{'dpos.product-details.form.modifiers' | translate}}</label>
+                <label for="modifiers" class="form-label">{{ 'dpos.product-details.form.modifiers' | translate }}</label>
                 <select class="form-select" id="modifiers" name="modifiers" [(ngModel)]="modifiersIdSelected">
                   <option *ngFor="let modifier of modifiers" [value]="modifier.id">{{ modifier.name }}</option>
                 </select>
@@ -48,45 +45,43 @@
                 </button>
               </div>
             </div>
-             <div class="mb-3">
-              <label for="stock" class="form-label">{{'dpos.product-details.form.stock' | translate}}</label>
+            <div class="mb-3">
+              <label for="stock" class="form-label">{{ 'dpos.product-details.form.stock' | translate }}</label>
               <input type="text" class="form-control" id="stock" />
-             </div>
+            </div>
           </div>
-          <!-- Columna derecha -->
           <div class="col-md-6">
             <div class="mb-3">
-              <label for="barcode" class="form-label">{{'dpos.product-details.form.barcode' | translate}}</label>
+              <label for="barcode" class="form-label">{{ 'dpos.product-details.form.barcode' | translate }}</label>
               <input type="text" class="form-control" id="barcode" />
             </div>
             <div class="mb-3">
-              <label for="reference" class="form-label">{{'dpos.product-details.form.reference' | translate}}</label>
+              <label for="reference" class="form-label">{{ 'dpos.product-details.form.reference' | translate }}</label>
               <input type="text" class="form-control" id="reference" />
             </div>
             <div class="mb-3">
-              <label for="priceType" class="form-label">{{'dpos.product-details.form.price.type' | translate}}</label>
+              <label for="priceType" class="form-label">{{ 'dpos.product-details.form.price.type' | translate }}</label>
               <input type="text" class="form-control" id="priceType" />
             </div>
             <div class="mb-3">
-              <label for="price" class="form-label">{{'dpos.product-details.form.price' | translate}}</label>
+              <label for="price" class="form-label">{{ 'dpos.product-details.form.price' | translate }}</label>
               <input type="text" class="form-control" id="price" />
             </div>
             <div class="mb-3">
-              <label for="taxes" class="form-label">{{'dpos.product-details.form.taxes' | translate}}</label>
+              <label for="taxes" class="form-label">{{ 'dpos.product-details.form.taxes' | translate }}</label>
               <input type="text" class="form-control" id="taxes" />
             </div>
           </div>
         </div>
         <div class="col-md-12 mb-3">
-          <label for="description" class="form-label">{{'dpos.product-details.form.description' | translate}}</label>
+          <label for="description" class="form-label">{{ 'dpos.product-details.form.description' | translate }}</label>
           <textarea class="form-control" id="description" rows="2"></textarea>
         </div>
-        <!-- Botones -->
         <div class="d-flex justify-content-end mt-4">
-          <a [routerLink]="['/products']" type="button" class="" style="text-decoration: none;">
-            <button type="button" class="btn btn-outline-danger me-2">{{'dpos.action.cancel' | translate}}</button>
+          <a [routerLink]="['/products']" type="button" style="text-decoration: none;">
+            <button type="button" class="btn btn-outline-danger me-2">{{ 'dpos.action.cancel' | translate }}</button>
           </a>
-          <button type="submit" class="btn btn-primary" [routerLink]="code" (click)="saveProduct()">{{'dpos.action.save' | translate}}</button>
+          <button type="submit" class="btn btn-primary" [routerLink]="code" (click)="saveProduct()">{{ 'dpos.action.save' | translate }}</button>
         </div>
       </form>
     </div>

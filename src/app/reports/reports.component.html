@@ -1,6 +1,5 @@
 <br />
 <div class="container-fluid header-main">
-  <!-- Formulario de filtros -->
   <form class="row g-3 mx-1 align-items-end">
     <div class="col-12 col-md-auto">
       <label class="form-label">{{ 'dpos.filter.reporttype' | translate }}</label>
@@ -24,7 +23,6 @@
       <label class="form-label">{{ 'dpos.filter.date.to' | translate }}</label>
       <input type="date" class="form-control" id="tilDate" name="tilDate" [value]="tilDate" (change)="onTilDateChange()" />
     </div>
-    <!-- Botones -->
     <div class="col-12 col-md-auto d-flex flex-column flex-md-row gap-2" id="searchButtonsDiv">
       <button type="reset" class="btn btn-outline-danger">
         <i class="fas fa-eraser"></i>
@@ -35,10 +33,8 @@
     </div>
   </form>
   <br />
-  <!-- CONTENIDO -->
   <div class="card">
     <div class="card-body">
-      <!-- Título + botón export -->
       <div class="row mb-2 align-items-center">
         <div class="col">
           <h5><b>{{ reportVarSearch }}</b></h5>
@@ -51,7 +47,6 @@
           </div>
         </ng-container>
       </div>
-      <!-- Indicadores -->
       <div *ngIf="loadCompleted == false && emptySearch == false" class="d-flex justify-content-center">
         <div class="spinner-border text-danger"></div>
       </div>
@@ -59,26 +54,24 @@
         <b><i>{{ 'dpos.dashboard.nodata.label' | translate }}</i></b>
       </div>
       <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage" (closeModal)="closeModal()"></app-modal>
-      <!-- Reportes dinámicos -->
       <div class="row" *ngIf="reportVarSearch == null">
         <b>{{ 'dpos.reports.selectreport.label' | translate }}</b>
       </div>
-      <!-- Tabla impuestos-->
       <div class="row" *ngIf="reportVarSearch == translate.instant('dpos.reports.taxes.label') && loadCompleted && emptySearch == false">
         <div class="col">
           <div class="table-responsive">
             <table class="table table-hover order-table" data-pagination="true" data-page-size="10">
               <thead class="text-customer">
                 <tr>
-                  <th class="text-start">{{'dpos.reports.taxname.label' | translate}}</th>
-                  <th class="text-end">{{'dpos.reports.base.label' | translate}}</th>
-                  <th class="text-end">{{'dpos.reports.amount.label' | translate}}</th>
-                  <th class="text-end">{{'dpos.reports.tax.total.label' | translate}}</th>
+                  <th class="text-start">{{ 'dpos.reports.taxname.label' | translate }}</th>
+                  <th class="text-end">{{ 'dpos.reports.base.label' | translate }}</th>
+                  <th class="text-end">{{ 'dpos.reports.amount.label' | translate }}</th>
+                  <th class="text-end">{{ 'dpos.reports.tax.total.label' | translate }}</th>
                 </tr>
               </thead>
               <ng-template #empty>
                 <td colspan="5">
-                  <b>{{'dpos.reports.nodata.label' | translate}}</b>
+                  <b>{{ 'dpos.reports.nodata.label' | translate }}</b>
                 </td>
               </ng-template>
               <tbody>
@@ -92,51 +85,10 @@
                     </ng-container>
                   </tr>
                   <tr>
-                    <td class="text-start align-middle"><b>{{'dpos.reports.total.label' | translate}}</b></td>
+                    <td class="text-start align-middle"><b>{{ 'dpos.reports.total.label' | translate }}</b></td>
                     <td class="text-end align-middle"><b>{{ totalBase | currency : "Eur" : "€"}}</b></td>
                     <td class="text-end align-middle"><b>{{ totalCuote | currency : "Eur" : "€"}}</b></td>
                     <td class="text-end align-middle"><b>{{ totalTax | currency : "Eur" : "€"}}</b></td>
-                  </tr>
-              </ng-container>
-              </tbody>
-            </table>
-            <div class="text-center mt-3">
-              <pagination-controls (pageChange)="page = $event" previousLabel="" nextLabel=""></pagination-controls>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Tabla productos -->
-      <div class="row" *ngIf="reportVarSearch == translate.instant('dpos.reports.products.label') && loadCompleted && emptySearch == false">
-        <div class="col">
-          <div class="table-responsive">
-            <table class="table table-hover order-table" data-pagination="true" data-page-size="10">
-              <thead class="text-customer">
-                <tr>
-                  <th class="text-start">{{'dpos.reports.product.label' | translate}}</th>
-                  <th class="text-end">{{'dpos.reports.product.price.label' | translate}}</th>
-                  <th class="text-end">{{'dpos.reports.product.units.label' | translate}}</th>
-                  <th class="text-end">{{'dpos.reports.product.total.label' | translate}}</th>
-                </tr>
-              </thead>
-              <ng-template #empty>
-                <td colspan="5">
-                  <b>{{'dpos.reports.nodata.label' | translate}}</b>
-                </td>
-              </ng-template>
-              <tbody>
-                <ng-container *ngIf="emptySearch == false; else empty">
-                  <tr *ngFor="let product of indexProduct | paginate : { itemsPerPage: 10, currentPage: page }; index as z">
-                    <td class="text-start align-middle">{{ product.product }}</td>
-                    <td class="text-end align-middle">{{ product.total / 100000000 / ( (product.units ?? 2) / 1000) | currency : "Eur" : "€" }}</td>
-                    <td class="text-end align-middle">{{ (product.units ?? 2) / 1000 }}</td>
-                    <td class="text-end align-middle">{{ product.total / 100000000 | currency : "Eur" : "€" }}</td>
-                  </tr>
-                  <tr>
-                    <td class="text-start align-middle"><b>{{'dpos.reports.total.label' | translate}}</b></td>
-                    <td class="text-end align-middle"></td>
-                    <td class="text-end align-middle"><b>{{ totalUnits}}</b></td>
-                    <td class="text-end align-middle"><b>{{ totalUnitsValor | currency : "Eur" : "€"}}</b></td>
                   </tr>
                 </ng-container>
               </tbody>
@@ -147,22 +99,63 @@
           </div>
         </div>
       </div>
-      <!-- Tabla métodos de pago -->
+      <div class="row"
+        *ngIf="reportVarSearch == translate.instant('dpos.reports.products.label') && loadCompleted && emptySearch == false">
+        <div class="col">
+          <div class="table-responsive">
+            <table class="table table-hover order-table" data-pagination="true" data-page-size="10">
+              <thead class="text-customer">
+                <tr>
+                  <th class="text-start">{{ 'dpos.reports.product.label' | translate }}</th>
+                  <th class="text-end">{{ 'dpos.reports.product.price.label' | translate }}</th>
+                  <th class="text-end">{{ 'dpos.reports.product.units.label' | translate }}</th>
+                  <th class="text-end">{{ 'dpos.reports.product.total.label' | translate }}</th>
+                </tr>
+              </thead>
+              <ng-template #empty>
+                <td colspan="5">
+                  <b>{{ 'dpos.reports.nodata.label' | translate }}</b>
+                </td>
+              </ng-template>
+              <tbody>
+                <ng-container *ngIf="emptySearch == false; else empty">
+                  <tr
+                    *ngFor="let product of indexProduct | paginate : { itemsPerPage: 10, currentPage: page }; index as z">
+                    <td class="text-start align-middle">{{ product.product }}</td>
+                    <td class="text-end align-middle">{{ product.total / 100000000 / ( (product.units ?? 2) / 1000) | currency : "Eur" : "€" }}</td>
+                    <td class="text-end align-middle">{{ (product.units ?? 2) / 1000 }}</td>
+                    <td class="text-end align-middle">{{ product.total / 100000000 | currency : "Eur" : "€" }}</td>
+                  </tr>
+                  <tr>
+                    <td class="text-start align-middle"><b>{{ 'dpos.reports.total.label' | translate }}</b></td>
+                    <td class="text-end align-middle"></td>
+                    <td class="text-end align-middle"><b>{{ totalUnits }}</b></td>
+                    <td class="text-end align-middle"><b>{{ totalUnitsValor | currency : "Eur" : "€" }}</b></td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+            <div class="text-center mt-3">
+              <pagination-controls (pageChange)="page = $event" previousLabel="" nextLabel=""></pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="row" *ngIf="reportVarSearch == translate.instant('dpos.reports.paymentmethods.label') && loadCompleted && emptySearch == false">
         <div class="col">
           <div class="table-responsive">
             <table class="table table-hover order-table" data-pagination="true" data-page-size="10">
               <thead class="text-customer">
                 <tr>
-                  <th class="text-start">{{'dpos.reports.paymentmethod.label' | translate}}</th>
+                  <th class="text-start">{{ 'dpos.reports.paymentmethod.label' | translate }}</th>
                   <th></th>
-                  <th class="text-end">{{'dpos.reports.paymentmethod.percentage.label' | translate}}</th>
-                  <th class="text-end">{{'dpos.reports.paymentmethod.total.label' | translate}}</th>
+                  <th class="text-end">{{ 'dpos.reports.paymentmethod.percentage.label' | translate }}</th>
+                  <th class="text-end">{{ 'dpos.reports.paymentmethod.total.label' | translate }}</th>
                 </tr>
               </thead>
               <ng-template #empty>
                 <td colspan="5">
-                  <b>{{'dpos.reports.nodata.label' | translate}}</b>
+                  <b>{{ 'dpos.reports.nodata.label' | translate }}</b>
                 </td>
               </ng-template>
               <tbody>
@@ -176,10 +169,10 @@
                     </ng-container>
                   </tr>
                   <tr>
-                    <td class="text-start align-middle"> <b>{{'dpos.reports.total.label' | translate}}</b> </td>
+                    <td class="text-start align-middle"> <b>{{'dpos.reports.total.label' | translate}}</b></td>
                     <td></td>
-                    <td class="text-end align-middle"><b>{{ totalPercentage + ' %'}}</b></td>
-                    <td class="text-end align-middle"><b>{{ totalValuePercentage | currency : "Eur" : "€"}}</b></td>
+                    <td class="text-end align-middle"><b>{{ totalPercentage + ' %' }}</b></td>
+                    <td class="text-end align-middle"><b>{{ totalValuePercentage | currency : "Eur" : "€" }}</b></td>
                   </tr>
                 </ng-container>
               </tbody>
