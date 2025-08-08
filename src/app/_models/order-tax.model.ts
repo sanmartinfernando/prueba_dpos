@@ -1,4 +1,5 @@
 export class OrderTax {
+  
   orderTaxId: string;
   currency: string;
   name: string;

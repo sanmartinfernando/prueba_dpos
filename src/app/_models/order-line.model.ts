@@ -1,4 +1,5 @@
 export class OrderLine {
+  
   orderLineId: string;
   rowNumber: number;
   productId: number;

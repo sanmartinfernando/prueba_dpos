@@ -1,4 +1,5 @@
 export class OrderCommerce {
+  
   orderCommerceId: string;
   name: string;
   tradeName: string;

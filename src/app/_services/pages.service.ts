@@ -2,21 +2,22 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Page } from 'src/app/_models/page.model';
 
+
 @Injectable({
   providedIn: 'root'
 })
 export class PagesService {
-  
-  public pages : Page[] = [
-    new Page('0','Dashboard','dashboard','fa-solid fa-square-poll-vertical'),
-    new Page('1','Ventas','sales','fa-solid fa-chart-line'),
-    new Page('1','Cierres','balances','fa-regular fa-chart-bar'),
-    new Page('1','Informes','reports','fa-solid fa-chart-area'),
-    new Page('1','Clientes','customers','fa-solid fa-users'),
-    new Page('1','Productos','products','fa-solid fa-boxes-stacked')
+
+  public pages: Page[] = [
+    new Page('0', 'Dashboard', 'dashboard', 'fa-solid fa-square-poll-vertical'),
+    new Page('1', 'Ventas', 'sales', 'fa-solid fa-chart-line'),
+    new Page('1', 'Cierres', 'balances', 'fa-regular fa-chart-bar'),
+    new Page('1', 'Informes', 'reports', 'fa-solid fa-chart-area'),
+    new Page('1', 'Clientes', 'customers', 'fa-solid fa-users'),
+    new Page('1', 'Productos', 'products', 'fa-solid fa-boxes-stacked')
     //new Page('1','Impuestos','taxes','fa-solid fa-coins')
   ];
-  
+
   constructor(public translate: TranslateService) {
     this.translate.onLangChange.subscribe(event => {
       this.pages[0].text = this.translate.instant('dpos.dashboard.page.title');
@@ -27,5 +28,5 @@ export class PagesService {
       this.pages[5].text = this.translate.instant('dpos.products.page.title');
       //this.pages[6].text = this.translate.instant('dpos.taxes.page.title');
     });
-   }
+  }
 }

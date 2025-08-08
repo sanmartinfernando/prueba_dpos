@@ -1,5 +1,6 @@
 import { FilterStep } from "./filters.interface";
 
+
 export class EvolutionResultsFilter {
 
   public idEvoResults: FilterStep[];

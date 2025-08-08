@@ -68,10 +68,8 @@ export class SalesComponent implements OnInit {
   selectedIndices: number[] = [];
   isAllSelected: boolean = false;
   counter = 0;
-
   currentLang: string;
   langSubscription: Subscription;
-
   commerceSelected: string;
   commerces: Commerce[];
 
@@ -89,13 +87,13 @@ export class SalesComponent implements OnInit {
     private themeService: ThemeService,
     private uiStateService: UIStateService,
     private authService: AuthService
-  ) {  
-    
+  ) {
+
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
-    
+
     //Desbloqueamos el selector de comercio;
     this.uiStateService.setFormSelectEnabled(true);
-    
+
     this.currentLang = this.translate.currentLang || 'es';
     this.langSubscription = this.translate.onLangChange.subscribe(event => {
       this.currentLang = event.lang;
@@ -116,34 +114,35 @@ export class SalesComponent implements OnInit {
   ngOnInit(): void {
     this.loadCompleted = false;
 
-    if(this.sessionService.getItem(SessionService.FROM_DATE) != null){
+    if (this.sessionService.getItem(SessionService.FROM_DATE) != null) {
       this.sinceDate = this.formatDate(this.sessionService.getItem(SessionService.FROM_DATE));
     }
 
-    if(this.sessionService.getItem(SessionService.TO_DATE) != null){
+    if (this.sessionService.getItem(SessionService.TO_DATE) != null) {
       this.tilDate = this.formatDate(this.sessionService.getItem(SessionService.TO_DATE));
     }
 
-    if(this.sessionService.getItem(SessionService.OP_TYPE) != null){
+    if (this.sessionService.getItem(SessionService.OP_TYPE) != null) {
       this.typeVarSearch = this.getTypeVarSearch(this.sessionService.getItem(SessionService.OP_TYPE));
-    } else {
+    }
+    else {
       this.sessionService.setItem(SessionService.OP_TYPE, -1);
       this.typeVarSearch = this.translate.instant('dpos.filter.all');
     }
 
-    if(this.sessionService.getItem(SessionService.DOC_NUMBER) != null){
+    if (this.sessionService.getItem(SessionService.DOC_NUMBER) != null) {
       this.documentVarSearch = this.sessionService.getItem(SessionService.DOC_NUMBER);
     }
 
-    this.storageService.userInfo.subscribe((user) =>{
+    this.storageService.userInfo.subscribe((user) => {
       this.portalUsersService.getToken(user).subscribe({
-        next: (portalUserToken)=> {
+        next: (portalUserToken) => {
           this.authService.setPortalUsersToken(portalUserToken.token);
           this.commercesService.getCommerceList().subscribe({
             next: (commerces) => {
               this.commerces = commerces;
               this.sessionService.getCommerceId().subscribe((commerceId) => {
-                if(commerceId != 0) {
+                if (commerceId != 0) {
                   this.commerceId = commerceId; // Actualizar el valor en el componente
                 } else {
                   this.commerceId = commerces[0].commerceId;
@@ -153,11 +152,11 @@ export class SalesComponent implements OnInit {
                 this.terminalsService.getTerminalList().subscribe({
                   next: (terminals) => {
                     terminals = terminals.filter(terminal => terminal.commerceId == this.commerceId && terminal.terminalNumber != null);
-                    if(terminals.length != 0) {
+                    if (terminals.length != 0) {
                       this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
                     }
                     this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
-                    if(this.sessionService.getItem(SessionService.TERMINAL_NUMBER) == null){
+                    if (this.sessionService.getItem(SessionService.TERMINAL_NUMBER) == null) {
                       this.terminalSelected = this.terminalsNumber[0];
                       this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
                     } else {
@@ -210,10 +209,10 @@ export class SalesComponent implements OnInit {
       if (this.terminalSelected == this.translate.instant('dpos.filter.all')) {
         this.varSearch = this.varSearch + "{'or':[";
         for (let i = 1; i < this.terminalsNumber.length; i++) {
-            this.varSearch = this.varSearch + "{'field':'terminal_number','op':'=','value':'" + this.terminalsNumber[i] + "'}";
-            if (i+1 < this.terminalsNumber.length) {
-              this.varSearch = this.varSearch + ",";
-            }
+          this.varSearch = this.varSearch + "{'field':'terminal_number','op':'=','value':'" + this.terminalsNumber[i] + "'}";
+          if (i + 1 < this.terminalsNumber.length) {
+            this.varSearch = this.varSearch + ",";
+          }
         }
         this.varSearch = this.varSearch + ']}';
       } else {
@@ -229,12 +228,12 @@ export class SalesComponent implements OnInit {
         this.varSearch = this.varSearch + ',';
       }
       this.varSearch =
-        this.varSearch +"{'field':'CommerceId','op':'=','value':'" +this.commerceId +"'}";
+        this.varSearch + "{'field':'CommerceId','op':'=','value':'" + this.commerceId + "'}";
     }
-    
+
     //Desde fecha
     if (this.sinceDateMilli > 0) {
-      if(this.sinceDateMilli > this.tilDateMilli && this.tilDateMilli > 0) {
+      if (this.sinceDateMilli > this.tilDateMilli && this.tilDateMilli > 0) {
         this.modalTitle = this.translate.instant('dpos.modal.fromDate.title');
         this.modalMessage = this.translate.instant('dpos.modal.fromDate.message');
         this.openModal();
@@ -245,13 +244,13 @@ export class SalesComponent implements OnInit {
         } else {
           this.varSearch = this.varSearch + ',';
         }
-        this.varSearch = this.varSearch + "{'field':'CreatedAt','op':'>','value':'" + this.sinceDateMilli +"'}";
+        this.varSearch = this.varSearch + "{'field':'CreatedAt','op':'>','value':'" + this.sinceDateMilli + "'}";
       }
     }
 
     //Hasta fecha
     if (this.tilDateMilli > 0) {
-      if(this.tilDateMilli < this.sinceDateMilli && this.sinceDateMilli > 0) {
+      if (this.tilDateMilli < this.sinceDateMilli && this.sinceDateMilli > 0) {
         this.modalTitle = this.translate.instant('dpos.filter.toDate.title');
         this.modalMessage = this.translate.instant('dpos.filter.toDate.message');
         this.openModal();
@@ -262,7 +261,7 @@ export class SalesComponent implements OnInit {
         } else {
           this.varSearch = this.varSearch + ',';
         }
-        this.varSearch = this.varSearch +"{'field':'CreatedAt','op':'<','value':'" +this.tilDateMilli +"'}";
+        this.varSearch = this.varSearch + "{'field':'CreatedAt','op':'<','value':'" + this.tilDateMilli + "'}";
       }
     }
 
@@ -332,17 +331,17 @@ export class SalesComponent implements OnInit {
     this.ordersService.getOrderInfo(this.size, this.varSearch).subscribe(
       (sale) => {
         this.sales = sale;
-        if(this.sales.data.length != 0) {
+        if (this.sales.data.length != 0) {
           this.operationN = this.sales.data.length;
 
           this.totalSales = 0;
           for (let i = 0; i < this.sales.data.length; i++) {
 
-            if(this.sales.data[i].type == 0 ) { //Ventas
-            this.totalSales = this.totalSales + Number(this.sales.data[i].total);
+            if (this.sales.data[i].type == 0) { //Ventas
+              this.totalSales = this.totalSales + Number(this.sales.data[i].total);
             }
-            else if(this.sales.data[i].type == 2 ) { //Devoluciones
-            this.totalSales = this.totalSales - Number(this.sales.data[i].total);
+            else if (this.sales.data[i].type == 2) { //Devoluciones
+              this.totalSales = this.totalSales - Number(this.sales.data[i].total);
             }
           }
           this.totalSalesString = (this.currencyPipe.transform(this.totalSales / (Math.pow(10, 2)), 'EUR', '€') || '');
@@ -433,16 +432,16 @@ export class SalesComponent implements OnInit {
           }
 
           this.salesTicketBai = []
-          for( let i=0; i<= this.sales.data.length; i++){
-            if(this.sales.data[i] != null && this.sales.data[i].orderTicketBai != null ){
+          for (let i = 0; i <= this.sales.data.length; i++) {
+            if (this.sales.data[i] != null && this.sales.data[i].orderTicketBai != null) {
               if (this.sales.data[i].orderTicketBai.status == '00' && this.sales.data[i].orderTicketBai.warns.length <= 0) {
-                this.salesTicketBai[i]=0
+                this.salesTicketBai[i] = 0
               }
               if (this.sales.data[i].orderTicketBai.status == '00' && this.sales.data[i].orderTicketBai.warns.length > 0) {
-                this.salesTicketBai[i]=1
+                this.salesTicketBai[i] = 1
               }
               if (this.sales.data[i].orderTicketBai.status == '01') {
-                this.salesTicketBai[i]=2
+                this.salesTicketBai[i] = 2
               }
             }
           }
@@ -485,7 +484,7 @@ export class SalesComponent implements OnInit {
   }
 
   //Boton Descargar
-  downloadCSV(){
+  downloadCSV() {
     this.downloadCsvService.downloadSalesFile(this.sales, this.translate.instant('dpos.sales.page.title'), this.currentLang);
   }
 
@@ -502,7 +501,7 @@ export class SalesComponent implements OnInit {
     this.terminalsService.getTerminalList().subscribe({
       next: (terminals) => {
         terminals = terminals.filter(terminal => terminal.commerceId == this.commerceId && terminal.terminalNumber != null);
-        if(terminals.length != 0) {
+        if (terminals.length != 0) {
           this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
         }
         this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
@@ -513,7 +512,7 @@ export class SalesComponent implements OnInit {
       }
     });
   }
-  
+
   onTerminalChange(): void {
     this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
   }
@@ -521,19 +520,19 @@ export class SalesComponent implements OnInit {
   onSinceDateChange(): void {
     this.sessionService.setItem(SessionService.FROM_DATE, this.terminalSelected);
     this.sinceDate = (<HTMLInputElement>(document.getElementById('sinceDate'))).value;
-    if(this.sinceDate.length > 0){
+    if (this.sinceDate.length > 0) {
       this.sinceDateMilli = Date.parse(this.sinceDate);
       this.sessionService.setItem(SessionService.FROM_DATE, this.sinceDateMilli);
-    } 
+    }
   }
 
   onTilDateChange(): void {
     this.sessionService.setItem(SessionService.TO_DATE, this.terminalSelected);
     this.tilDate = (<HTMLInputElement>(document.getElementById('tilDate'))).value;
-    if(this.tilDate.length > 0){
+    if (this.tilDate.length > 0) {
       this.tilDateMilli = Date.parse(this.tilDate);
       this.sessionService.setItem(SessionService.TO_DATE, this.tilDateMilli);
-    } 
+    }
   }
 
   onOpTypeChange(): void {
@@ -546,8 +545,8 @@ export class SalesComponent implements OnInit {
 
   getTypeVarSearch(opType: number): string {
     let opTypeValue: string = this.translate.instant('dpos.filter.all');
-    if(opType != null) {
-      switch(opType) {
+    if (opType != null) {
+      switch (opType) {
         case Order.TYPE_SALE:
           opTypeValue = this.translate.instant('dpos.sales.operation.order.label');
           break;
@@ -562,38 +561,36 @@ export class SalesComponent implements OnInit {
     return opTypeValue;
   }
 
-
   getOpType(): number {
     let opType = -1;
-    if(this.typeVarSearch != null) {
-      switch(this.typeVarSearch) {
+    if (this.typeVarSearch != null) {
+      switch (this.typeVarSearch) {
         case this.translate.instant('dpos.sales.operation.order.label'):
           opType = Order.TYPE_SALE;
           break;
-          case this.translate.instant('dpos.sales.operation.refund.label'):
-            opType = Order.TYPE_REFUND;
+        case this.translate.instant('dpos.sales.operation.refund.label'):
+          opType = Order.TYPE_REFUND;
           break;
-          case this.translate.instant('dpos.sales.operation.rectification.label'):
-            opType = Order.TYPE_RECTIFY;
+        case this.translate.instant('dpos.sales.operation.rectification.label'):
+          opType = Order.TYPE_RECTIFY;
           break;
       }
     }
     return opType;
   }
 
-
   getCommerceId(): number {
     const commerce = this.commerces.find(commerce => commerce.commerceNumber == this.commerceSelected);
-    if(commerce != undefined) {
+    if (commerce != undefined) {
       return commerce.commerceId;
     }
     return 0;
   }
 
-  getTotalBase(orderTaxes:OrderTax[]): number {
-    if(orderTaxes != undefined) {
-      let totalBase:number = 0;
-      for(let i = 0; i < orderTaxes.length ; i++) {
+  getTotalBase(orderTaxes: OrderTax[]): number {
+    if (orderTaxes != undefined) {
+      let totalBase: number = 0;
+      for (let i = 0; i < orderTaxes.length; i++) {
         totalBase += orderTaxes[i].base / Math.pow(10, orderTaxes[i].decimals);
       }
       return totalBase;
@@ -601,11 +598,10 @@ export class SalesComponent implements OnInit {
     return 0;
   }
 
-
-  getTotalTaxes(orderTaxes:OrderTax[]): number {
-    if(orderTaxes != undefined) {
-      let totalTaxes:number = 0;
-      for(let i = 0; i < orderTaxes.length ; i++) {
+  getTotalTaxes(orderTaxes: OrderTax[]): number {
+    if (orderTaxes != undefined) {
+      let totalTaxes: number = 0;
+      for (let i = 0; i < orderTaxes.length; i++) {
         totalTaxes += orderTaxes[i].total / Math.pow(10, orderTaxes[i].decimals);
       }
       return totalTaxes;
@@ -613,9 +609,9 @@ export class SalesComponent implements OnInit {
     return 0;
   }
 
-  getCommerceNumber(commerceId:number): string {
+  getCommerceNumber(commerceId: number): string {
     const commerce = this.commerces.find(commerce => commerce.commerceId == commerceId);
-    if(commerce != undefined) {
+    if (commerce != undefined) {
       return commerce.commerceNumber;
     }
     return "";
@@ -623,10 +619,10 @@ export class SalesComponent implements OnInit {
 
   // Método para convertir timestamp a formato dd/mm/yyyy
   formatDate(timestamp: number): string {
-    const date = new Date(timestamp);  
-    const day = String(date.getDate()).padStart(2, '0'); // Obtener día (con 2 dígitos)
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Obtener mes (agregar 1 porque getMonth empieza desde 0)
-    const year = date.getFullYear(); // Obtener el año
+    const date = new Date(timestamp);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
     return `${year}-${month}-${day}`;
   }
 }

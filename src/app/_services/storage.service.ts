@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { User } from '../_models/user.model';
 import { AuthService } from './auth.service';
-import { StringConstants } from '../_config/string-constants';
+import { StringConstants } from '../_rest/string-constants';
+
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class StorageService {
 
   public userInfo = new BehaviorSubject(this.getUser());
   private loggedin: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
-  public loggedin$: Observable<boolean>= this.loggedin.asObservable();
+  public loggedin$: Observable<boolean> = this.loggedin.asObservable();
 
   username: string = '';
   component: string;
@@ -36,28 +37,19 @@ export class StorageService {
     localStorage.removeItem(key);
   }
 
-  setUsername(username: string) {
+  public setUsername(username: string) {
     this.username = username;
     window.localStorage.setItem(StringConstants.USERNAME_KEY, username);
   }
 
-  getUsername() {
+  public getUsername() {
     return window.localStorage.getItem(StringConstants.USERNAME_KEY);
   }
 
-  clean(): void {
+  public clean(): void {
     window.localStorage.clear();
     sessionStorage.clear();
     this.userInfo.next(null);
-  }
-
-  private saveUser(user: User): void {
-    if (user != null) {
-      this.setUsername(user.email);
-      window.localStorage.removeItem(StringConstants.USER_KEY);
-      window.localStorage.setItem(StringConstants.USER_KEY, JSON.stringify(user));//
-    }
-    this.userInfo.next(user);
   }
 
   public updateVerifiedEmail() {
@@ -84,15 +76,24 @@ export class StorageService {
     return false;
   }
 
-  setComponent(component: string) {
+  public setComponent(component: string) {
     this.component = component;
   }
 
-  getComponent() {
+  public getComponent() {
     return this.component;
   }
-  
-  updateloggin(logginupdated){
+
+  public updateloggin(logginupdated) {
     this.loggedin.next(logginupdated)
+  }
+
+  private saveUser(user: User): void {
+    if (user != null) {
+      this.setUsername(user.email);
+      window.localStorage.removeItem(StringConstants.USER_KEY);
+      window.localStorage.setItem(StringConstants.USER_KEY, JSON.stringify(user));//
+    }
+    this.userInfo.next(user);
   }
 }

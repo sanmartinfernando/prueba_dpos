@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment.dev-inte';
-import { RestRoutes } from '../_config/rest-routes.config';
+import { RestRoutes } from '../_rest/rest-routes.config';
 import { TaxInfo } from '../_models/tax-info.model';
 import { Tax } from '../_models/tax.model';
+import { TranslateService } from '@ngx-translate/core';
 
 
 @Injectable({
@@ -12,7 +13,7 @@ import { Tax } from '../_models/tax.model';
 })
 export class TaxesService {
 
-  httpOptions = {
+  public httpOptions = {
     headers: new HttpHeaders(
       {
         'Content-type': 'application/json'
@@ -20,14 +21,20 @@ export class TaxesService {
     )
   };
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private translate: TranslateService) { }
 
-  public getTaxes(size:number, searchParams: string): Observable<TaxInfo> {
+  public getTaxes(size: number, searchParams: string): Observable<TaxInfo> {
+    if (size === undefined || size === null || searchParams === undefined || searchParams === null) {
+      return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
+    }
     let urlTaxes: string = `${environment.urlWS}${RestRoutes.TAXES_INFO}${size}${RestRoutes.PARAM_OFFSET}${searchParams}`;
     return this.http.get<TaxInfo>(urlTaxes, this.httpOptions);
   }
 
-  public getTaxesDetails(id:string): Observable<Tax> {
+  public getTaxesDetails(id: string): Observable<Tax> {
+    if (id === undefined || id === null) {
+      return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
+    }
     let urlTaxes: string = `${environment.urlWS}${RestRoutes.TAXES}${id}`;
     return this.http.get<Tax>(urlTaxes, this.httpOptions);
   }

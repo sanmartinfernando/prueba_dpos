@@ -1,5 +1,6 @@
 import { FilterStep } from "./filters.interface";
 
+
 export class Top3Filter {
 
   public idTop3: FilterStep[];
@@ -45,11 +46,7 @@ export class Top3Filter {
         $sort: {
           quantity: -1,
         },
-      }/*,
-      {
-        $limit: 3,
-      },
-      */
+      }
     ];
   }
 

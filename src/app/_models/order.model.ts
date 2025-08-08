@@ -5,6 +5,7 @@ import { OrderTax } from "./order-tax.model";
 import { OrderTicketBai } from "./order-ticketbai.model";
 import { OrderVerifactu } from "./order-verifactu.model";
 
+
 export class Order {
 
   static readonly TYPE_SALE = 0;
@@ -37,8 +38,8 @@ export class Order {
   orderPayments: OrderPayment[];
   orderCommerce: OrderCommerce;
   orderCustomer: string;
-  orderTicketBai:   OrderTicketBai;
-  orderVerifactu:   OrderVerifactu;
+  orderTicketBai: OrderTicketBai;
+  orderVerifactu: OrderVerifactu;
   orderDiscounts: string;
   childs: string;
   hash: string;

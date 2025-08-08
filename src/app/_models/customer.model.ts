@@ -7,7 +7,7 @@ export class Customer {
   static readonly ID_TYPE_OTHER_COUNTRY = "04";
   static readonly ID_TYPE_OTHER_RESIDENCE = "05";
   static readonly ID_TYPE_OTHER_OTHER = "06";
-  
+
   clientId: string;
   name: string;
   idType: string;
@@ -20,5 +20,5 @@ export class Customer {
   postcode: string;
   email: string;
   phone: string;
-  selected:boolean = false;
+  selected: boolean = false;
 }

@@ -13,7 +13,7 @@ import { ReportsComponent } from './reports/reports.component';
 import { ErrorComponent } from './common/error/error.component';
 import { LoginComponent } from './common/login/login.component';
 import { BaseComponent } from './common/base/base.component';
-import { httpInterceptorProviders } from './_helpers/http.interceptor';
+import { httpInterceptorProviders } from './_rest/http.interceptor';
 import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UnauthorizedComponent } from './common/unauthorized/unauthorized.component';

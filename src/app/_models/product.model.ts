@@ -2,12 +2,13 @@ import { Category } from "./category.model";
 import { Modifiers } from "./modifiers.model";
 import { Tax } from "./tax.model";
 
+
 export class Product {
 
   static readonly NO_ID = "-1";
   static readonly TYPE_NORMAL = 0;
   static readonly TYPE_VARIABLE_PRICE = 1;
-  
+
   id: string;
   name: string;
   price: number;
@@ -18,7 +19,7 @@ export class Product {
   barcode: string;
   reference: string;
   description?: string;
-  tax?:Tax;
+  tax?: Tax;
   taxExemptCode?: string;
   categories?: Category[] = [];
   modifiers?: Modifiers[];
@@ -30,5 +31,5 @@ export class Product {
   endSalesPrice?: number;
   decorationCategory?: string;
   decorationElement?: string;
-  selected?:boolean = false;
+  selected?: boolean = false;
 }

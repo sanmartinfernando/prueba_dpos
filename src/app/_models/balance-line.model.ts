@@ -1,9 +1,9 @@
 export class BalanceLine {
 
-  static readonly TYPE_TAX:number = 1;
-  static readonly TYPE_PAYMENT_METHOD:number = 2;
-  static readonly TYPE_CARD_BRAND:number = 3;
-  static readonly TYPE_TIPS:number = 4;
+  static readonly TYPE_TAX: number = 1;
+  static readonly TYPE_PAYMENT_METHOD: number = 2;
+  static readonly TYPE_CARD_BRAND: number = 3;
+  static readonly TYPE_TIPS: number = 4;
 
   balanceLineId: string;
   balanceId: string;

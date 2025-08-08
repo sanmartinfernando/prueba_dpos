@@ -8,7 +8,9 @@ export enum VerifactuStatus {
   Failed = "FAILED"
 }
 
+
 export class OrderVerifactu {
+
   orderVerifactuId: string;
   verifactuId: string;
   userReference: string;

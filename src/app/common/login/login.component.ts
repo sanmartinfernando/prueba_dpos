@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
 import { User } from '../../_models/user.model';
 import { FormBuilder, Validators } from '@angular/forms';
 
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -15,7 +16,7 @@ export class LoginComponent implements OnInit {
 
   private userSuscription!: Subscription;
   loginForm;
-  code:string = "password-recovery";
+  code: string = "password-recovery";
   isLoggedIn = false;
   isLoginFailed = false;
   errorMessage = '';
@@ -24,13 +25,13 @@ export class LoginComponent implements OnInit {
   componentSelected: string;
   loading: boolean = false;
 
-  constructor(private authService: AuthService, 
+  constructor(private authService: AuthService,
     private storageService: StorageService,
-    private formBuilder: FormBuilder, 
-    public router: Router, 
-    private route: ActivatedRoute, 
+    private formBuilder: FormBuilder,
+    public router: Router,
+    private route: ActivatedRoute,
     private _pagesService: PagesService) {
-    
+
   }
 
   ngOnInit(): void {
@@ -76,14 +77,17 @@ export class LoginComponent implements OnInit {
     });
     this.router.navigate([page], { queryParams: params });
   }
+
   navigateError() {
     var params = {};
     var page = "/error"
     this.router.navigate([page], { queryParams: params });
   }
+
   reloadPage(): void {
     this.navigateLoggedIn();
   }
+
   updateUserData(user: User) {
     if (user != null) {
       this.isLoggedIn = true;

@@ -41,7 +41,7 @@
     "dpos.action.save": "Mantendu",
     "dpos.action.advancedsearch": "Bilaketa aurreratua",
     "dpos.error.msg.general": "[!] Errore mezua",
-    "dpos.error.msg.params": "Alguna de les dades són invalides (undefined o null)",
+    "dpos.error.msg.params": "Datu batzuk baliogabeak dira (undefined o null)",
     "dpos.footer.msg.privacy": "Pribatutasun-politika",
     "dpos.footer.msg.cookies": "Cookieen politika",
     "dpos.footer.msg.uses": "Erabilera-baldintzak",

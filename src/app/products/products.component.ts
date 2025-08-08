@@ -13,9 +13,9 @@ import { AuthService } from '../_services/auth.service';
 import { Commerce } from '../_models/commerce.model';
 import { Product } from '../_models/product.model';
 import { Category } from '../_models/category.model';
-import { CategoryModalComponent } from '../categories/category-modal.component';
 import { MatDialog } from '@angular/material/dialog';
 import { DownloadCsvService } from '../_services/download-csv.service';
+
 
 @Component({
   selector: 'DPOSW-products',
@@ -27,19 +27,14 @@ export class ProductsComponent implements OnInit {
 
   loadCompleted: boolean = false;
   size: number = 10000;
-
   code: string;
-
   Math = Math
-
   productNameVarSearch: string = null;
   productReferenceVarSearch: string = null;
   productBarcodeVarSearch: string = null;
-
   commerces: Commerce[];
   commerceId: number = 0;
   commerceSelected: string;
-
   currentCategoryPage: number = 1;
   categorySelected:Category;
   categories: Category[] = [{id: "0", name: "Todas las categorías"}, {id: "1", name: "Categoria 1"}, {id: "2", name: "Categoria 2"}];
@@ -57,13 +52,10 @@ export class ProductsComponent implements OnInit {
 
   currentLang: string;
   langSubscription: Subscription;
-
   validationVariable: boolean = false;
   searchCounter: boolean = false;
   varSearch: string = null;
-
   emptySearch: boolean = false;
-
   showModal: boolean = false;
   modalTitle: string = '';
   modalMessage: string = '';
@@ -83,7 +75,6 @@ export class ProductsComponent implements OnInit {
         
     //Desbloqueamos el selector de comercio;
     this.uiStateService.setFormSelectEnabled(true);
-
     this.currentLang = this.translate.currentLang || 'es';
     this.langSubscription = this.translate.onLangChange.subscribe(event => {
       this.currentLang = event.lang;
@@ -91,9 +82,7 @@ export class ProductsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
     this.loadCompleted = false;
-
     if(this.sessionService.getItem(SessionService.PRODUCT_NAME) != null){
       this.productNameVarSearch = this.sessionService.getItem(SessionService.PRODUCT_NAME);
     }
@@ -103,7 +92,6 @@ export class ProductsComponent implements OnInit {
     if(this.sessionService.getItem(SessionService.PRODUCT_BARCODE) != null){
       this.productBarcodeVarSearch = this.sessionService.getItem(SessionService.PRODUCT_BARCODE);
     }
-
     this.storageService.userInfo.subscribe((user) =>{
       this.portalUsersService.getToken(user).subscribe({
         next: (portalUserToken)=> {
@@ -135,7 +123,6 @@ export class ProductsComponent implements OnInit {
         }
       });
     });
-
   }
 
   ngOnDestroy() {
@@ -261,18 +248,13 @@ export class ProductsComponent implements OnInit {
   }
 
   onProductFileSelected(event: Event) {
-
     const input = event.target as HTMLInputElement;
     if (!input.files?.length) return;
-
     const file = input.files[0];
     const reader = new FileReader();
-
     reader.onload = () => {
       const text = reader.result as string;
-      
       const { rows, errors } = this.parseCSV(text);
-
       if (errors.length <= 0) {
         let products: Product[] = [];
         for(let i= 0; i < rows.length; i++){
@@ -283,10 +265,8 @@ export class ProductsComponent implements OnInit {
           product.name = rows[i][2];
           product.price = Number(rows[i][3]);
           product.stock = Number(rows[i][4]);
-          
           products.push(product);
         }
-
         this.showModal = true;
         this.modalTitle = 'Importación de productos';
         this.modalMessage = 'Productos importados correctamente';
@@ -387,5 +367,4 @@ export class ProductsComponent implements OnInit {
 
     return { rows, errors };
   }
-
 }

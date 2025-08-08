@@ -55,16 +55,14 @@ export class DetailsComponent implements OnInit {
           this.salesVerifactu[0] = this.ticket.orderVerifactu.url;
           this.salesVerifactu[1] = this.ticket.orderVerifactu.url;
         }
-        
         this.totalBase = 0;
-        for(let i = 0; i < this.ticket.orderTaxes.length ; i++) {
+        for (let i = 0; i < this.ticket.orderTaxes.length; i++) {
           this.totalBase += this.ticket.orderTaxes[i].base / Math.pow(10, this.ticket.orderTaxes[i].decimals);
         }
-
         this.loadCompleted = true;
-      } ,
+      },
       error: (error) => {
-        if (error.status == 401|| error.status == 500) {
+        if (error.status == 401 || error.status == 500) {
           this.loadCompleted = true;
         };
       }
@@ -80,7 +78,7 @@ export class DetailsComponent implements OnInit {
     return total;
   }
 
-  downloadPDF(){
+  downloadPDF() {
     this.downloadPDFService.downloadOrdersFile(this.orderId)
   }
 }

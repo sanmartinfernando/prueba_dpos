@@ -3,27 +3,33 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Subject, firstValueFrom } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import { User } from '../_models/user.model';
-import Helper from '../_helpers/helper';
-import { RestRoutes } from '../_config/rest-routes.config';
+import { RestRoutes } from '../_rest/rest-routes.config';
 import { LoginRequest } from '../_models/login-request.model';
-import { StringConstants } from '../_config/string-constants';
+import { StringConstants } from '../_rest/string-constants';
 import { AuthRequest } from '../_models/auth-request.model';
+
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
 
-  httpOptions = {
+  public configObservable = new Subject<User>();
+  public portalUsersToken: string;
+  public httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
     }),
   };
 
-  public configObservable = new Subject<User>();
-  public portalUsersToken: string;
+  public static handleErrors(response) {
+    if (!(response.status == 200 || response.status == 409)) {
+      throw Error(response.statusText);
+    }
+    return response;
+  }
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   async login(UserName: string, Password: string): Promise<string> {
 
@@ -39,17 +45,17 @@ export class AuthService {
       },
       body: JSON.stringify(loginRequest),
     })
-    .then(Helper.handleErrors)
-    .then((response) => response.json())
-    .then(async (result) => {
-      this.saveToken(result.token);
-      this.saveUserName(loginRequest.userName);
-      let validation = await this.validate();
-      var userInfo = new User();
-      userInfo.user = loginRequest.userName;
-      userInfo.pwd = loginRequest.password;
-      this.loginEvent(userInfo);
-    });
+      .then(AuthService.handleErrors)
+      .then((response) => response.json())
+      .then(async (result) => {
+        this.saveToken(result.token);
+        this.saveUserName(loginRequest.userName);
+        let validation = await this.validate();
+        var userInfo = new User();
+        userInfo.user = loginRequest.userName;
+        userInfo.pwd = loginRequest.password;
+        this.loginEvent(userInfo);
+      });
 
     let urlLogin2: string = `${environment.urlAuth}${RestRoutes.AUTH}/authorize`;
     var loginRequest2 = new AuthRequest();
@@ -63,13 +69,13 @@ export class AuthService {
       },
       body: JSON.stringify(loginRequest2),
     })
-    .then(Helper.handleErrors)
-    .then((response) => response.json())
-    .then(async (result) => {
-      window.localStorage.removeItem(StringConstants.TOKEN_KEY2);
-      window.localStorage.setItem(StringConstants.TOKEN_KEY2, result.token);
-      let validation = await this.validate();
-    });
+      .then(AuthService.handleErrors)
+      .then((response) => response.json())
+      .then(async (result) => {
+        window.localStorage.removeItem(StringConstants.TOKEN_KEY2);
+        window.localStorage.setItem(StringConstants.TOKEN_KEY2, result.token);
+        let validation = await this.validate();
+      });
     return this.getToken();
   }
 
@@ -82,12 +88,12 @@ export class AuthService {
     let urlUser: string = `${environment.urlAuth}${RestRoutes.USER}`;
     return firstValueFrom(this.http.get<User>(urlUser, this.httpOptions));
   }
-  
-  loginEvent(user: User) {
+
+  public loginEvent(user: User) {
     this.configObservable.next(user);
   }
 
-  logOut() {
+  public logOut() {
     window.localStorage.clear();
     sessionStorage.clear();
     this.configObservable.next(null);
@@ -126,7 +132,7 @@ export class AuthService {
   public setPortalUsersToken(token: string) {
     return this.portalUsersToken = token;
   }
-  
+
   public clearToken(): void {
     window.localStorage.removeItem(StringConstants.TOKEN_KEY);
   }

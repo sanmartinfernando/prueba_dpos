@@ -14,6 +14,7 @@ import { SessionService } from '../_services/session.service';
 import { ThemeService } from '../_services/theme.service';
 import { UIStateService } from '../_services/ui-state.service';
 
+
 @Component({
   selector: 'DPOSW-balances',
   templateUrl: './balances.component.html',
@@ -21,31 +22,6 @@ import { UIStateService } from '../_services/ui-state.service';
 })
 export class BalancesComponent implements OnInit {
 
-  constructor(private balancesService: BalancesService,
-    private encryptionService: EncryptionService, 
-    private storageService: StorageService, 
-    private downloadCsvService: DownloadCsvService,
-    private portalUsersService: PortalUsersService,
-    private terminalsService: TerminalsService,
-    private commercesService: CommercesService,
-    private sessionService: SessionService,
-    private themeService: ThemeService,
-    private translate: TranslateService,
-    private uiStateService: UIStateService,
-    private authService: AuthService) {
-      
-      this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
-
-      //Desbloqueamos el selector de comercio;
-      this.uiStateService.setFormSelectEnabled(true);
-
-      this.currentLang = this.translate.currentLang || 'es';
-      this.langSubscription = this.translate.onLangChange.subscribe(event => {
-        this.currentLang = event.lang;
-        this.terminalsNumber[0] = this.translate.instant('dpos.filter.all');
-      });
-    }
-    
   Math = Math;
   balances: Balance[];
   page: number = 0;
@@ -77,28 +53,53 @@ export class BalancesComponent implements OnInit {
   modalTitle: string = '';
   modalMessage: string = '';
 
+  constructor(private balancesService: BalancesService,
+    private encryptionService: EncryptionService,
+    private storageService: StorageService,
+    private downloadCsvService: DownloadCsvService,
+    private portalUsersService: PortalUsersService,
+    private terminalsService: TerminalsService,
+    private commercesService: CommercesService,
+    private sessionService: SessionService,
+    private themeService: ThemeService,
+    private translate: TranslateService,
+    private uiStateService: UIStateService,
+    private authService: AuthService) {
+
+    this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
+
+    //Desbloqueamos el selector de comercio;
+    this.uiStateService.setFormSelectEnabled(true);
+
+    this.currentLang = this.translate.currentLang || 'es';
+    this.langSubscription = this.translate.onLangChange.subscribe(event => {
+      this.currentLang = event.lang;
+      this.terminalsNumber[0] = this.translate.instant('dpos.filter.all');
+    });
+  }
+
   ngOnDestroy() {
     this.langSubscription.unsubscribe();
   }
-  
+
   ngOnInit(): void {
 
-    if(this.sessionService.getItem(SessionService.FROM_DATE) != null){
+    if (this.sessionService.getItem(SessionService.FROM_DATE) != null) {
       this.sinceDate = this.formatDate(this.sessionService.getItem(SessionService.FROM_DATE));
     }
 
-    if(this.sessionService.getItem(SessionService.TO_DATE) != null){
+    if (this.sessionService.getItem(SessionService.TO_DATE) != null) {
       this.tilDate = this.formatDate(this.sessionService.getItem(SessionService.TO_DATE));
     }
 
-    this.storageService.userInfo.subscribe((user) =>{
+    this.storageService.userInfo.subscribe((user) => {
       this.portalUsersService.getToken(user).subscribe({
-        next: (portalUserToken)=> {
+        next: (portalUserToken) => {
           this.authService.setPortalUsersToken(portalUserToken.token);
           this.commercesService.getCommerceList().subscribe({
             next: (commerces) => {
               this.sessionService.getCommerceId().subscribe((commerceId) => {
-                if(commerceId != 0) {
+                if (commerceId != 0) {
                   this.commerceId = commerceId; // Actualizar el valor en el componente
                 } else {
                   this.commerceId = commerces[0].commerceId;
@@ -107,11 +108,11 @@ export class BalancesComponent implements OnInit {
                 this.terminalsService.getTerminalList().subscribe({
                   next: (terminals) => {
                     terminals = terminals.filter(terminal => terminal.commerceId == this.commerceId && terminal.terminalNumber != null);
-                    if(terminals.length != 0) {
+                    if (terminals.length != 0) {
                       this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
                     }
                     this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
-                    if(this.sessionService.getItem(SessionService.TERMINAL_NUMBER) == null){
+                    if (this.sessionService.getItem(SessionService.TERMINAL_NUMBER) == null) {
                       this.terminalSelected = this.terminalsNumber[0];
                       this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
                     } else {
@@ -163,10 +164,10 @@ export class BalancesComponent implements OnInit {
       if (this.terminalSelected == this.translate.instant('dpos.filter.all')) {
         this.varSearch = this.varSearch + "{'or':[";
         for (let i = 1; i < this.terminalsNumber.length; i++) {
-            this.varSearch = this.varSearch + "{'field':'terminal_number','op':'=','value':'" + this.terminalsNumber[i] + "'}";
-            if (i+1 < this.terminalsNumber.length) {
-              this.varSearch = this.varSearch + ",";
-            }
+          this.varSearch = this.varSearch + "{'field':'terminal_number','op':'=','value':'" + this.terminalsNumber[i] + "'}";
+          if (i + 1 < this.terminalsNumber.length) {
+            this.varSearch = this.varSearch + ",";
+          }
         }
         this.varSearch = this.varSearch + ']}';
       } else {
@@ -182,12 +183,12 @@ export class BalancesComponent implements OnInit {
         this.varSearch = this.varSearch + ',';
       }
       this.varSearch =
-        this.varSearch +"{'field':'CommerceId','op':'=','value':'" +this.commerceId +"'}";
+        this.varSearch + "{'field':'CommerceId','op':'=','value':'" + this.commerceId + "'}";
     }
 
     //Desde fecha
     if (this.sinceDateMilli > 0) {
-      if(this.sinceDateMilli > this.tilDateMilli && this.tilDateMilli > 0) {
+      if (this.sinceDateMilli > this.tilDateMilli && this.tilDateMilli > 0) {
         this.modalTitle = this.translate.instant('dpos.modal.fromDate.title');
         this.modalMessage = this.translate.instant('dpos.modal.fromDate.message');
         this.openModal();
@@ -204,7 +205,7 @@ export class BalancesComponent implements OnInit {
 
     //Hasta fecha
     if (this.tilDateMilli > 0) {
-      if(this.tilDateMilli < this.sinceDateMilli && this.sinceDateMilli > 0) {
+      if (this.tilDateMilli < this.sinceDateMilli && this.sinceDateMilli > 0) {
         this.modalTitle = this.translate.instant('dpos.filter.toDate.title');
         this.modalMessage = this.translate.instant('dpos.filter.toDate.message');
         this.openModal();
@@ -220,7 +221,7 @@ export class BalancesComponent implements OnInit {
     }
 
     //Búsqueda vacia
-    if (this.terminalSelected!= null && this.sinceDateMilli == 0 && this.tilDateMilli == 0) {
+    if (this.terminalSelected != null && this.sinceDateMilli == 0 && this.tilDateMilli == 0) {
       this.getBalanceInfo();
     }
 
@@ -233,13 +234,13 @@ export class BalancesComponent implements OnInit {
 
   //Llamada API
   getBalanceInfo() {
-    this.loadCompleted=false;
+    this.loadCompleted = false;
     let size: number = 10000;
     let selectSales = new Array(3);
     this.balancesService.getBalanceInfo(size, this.varSearch).subscribe({
       next: (balanceInfo) => {
         this.balances = balanceInfo.data;
-        if(this.balances.length != 0) {
+        if (this.balances.length != 0) {
           for (let i = 0; i < 3; i++) {
             selectSales[i] = new Array(this.balances.length);
           }
@@ -247,7 +248,7 @@ export class BalancesComponent implements OnInit {
           //Terminal
           for (let i = 0; i < this.balances.length; i++) {
             let balance: Balance = this.balances[i];
-            this.mismatch[i] = Math.abs(balance.manualCashRecount)-Math.abs(balance.autoCashRecount);
+            this.mismatch[i] = Math.abs(balance.manualCashRecount) - Math.abs(balance.autoCashRecount);
             let counterSelect: boolean = false;
             if (i == 0) {
               selectSales[0][i] = balance.terminalNumber;
@@ -274,10 +275,10 @@ export class BalancesComponent implements OnInit {
         } else {
           this.emptySearch = true;
         }
-        this.loadCompleted=true;
+        this.loadCompleted = true;
       },
       error: (error) => {
-        if (error.status == 401  || error.status == 500) {
+        if (error.status == 401 || error.status == 500) {
           this.emptySearch = true;
           this.loadCompleted = true;
         };
@@ -303,13 +304,13 @@ export class BalancesComponent implements OnInit {
   }
 
   //Encriptación
-  sendSalesDetails(id:string) {
+  sendSalesDetails(id: string) {
     this.code = this.encryptionService.encryptData(id)
     this.code = '/balances-details/' + this.encryptionService.encode(this.code);
   }
 
   //Boton Descargar CSV
-  downloadCSV(){
+  downloadCSV() {
     this.downloadCsvService.downloadBalancesFile(this.balances, this.translate.instant('dpos.balances.page.title'), this.currentLang);
   }
 
@@ -328,27 +329,27 @@ export class BalancesComponent implements OnInit {
   onSinceDateChange(): void {
     this.sessionService.setItem(SessionService.FROM_DATE, this.terminalSelected);
     this.sinceDate = (<HTMLInputElement>(document.getElementById('sinceDate'))).value;
-    if(this.sinceDate.length > 0){
+    if (this.sinceDate.length > 0) {
       this.sinceDateMilli = Date.parse(this.sinceDate);
       this.sessionService.setItem(SessionService.FROM_DATE, this.sinceDateMilli);
-    } 
+    }
   }
 
   onTilDateChange(): void {
     this.sessionService.setItem(SessionService.TO_DATE, this.terminalSelected);
     this.tilDate = (<HTMLInputElement>(document.getElementById('tilDate'))).value;
-    if(this.tilDate.length > 0){
+    if (this.tilDate.length > 0) {
       this.tilDateMilli = Date.parse(this.tilDate);
       this.sessionService.setItem(SessionService.TO_DATE, this.tilDateMilli);
-    } 
+    }
   }
 
   // Método para convertir timestamp a formato dd/mm/yyyy
   formatDate(timestamp: number): string {
-    const date = new Date(timestamp);  
-    const day = String(date.getDate()).padStart(2, '0'); // Obtener día (con 2 dígitos)
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Obtener mes (agregar 1 porque getMonth empieza desde 0)
-    const year = date.getFullYear(); // Obtener el año
+    const date = new Date(timestamp);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
     return `${year}-${month}-${day}`;
   }
 }

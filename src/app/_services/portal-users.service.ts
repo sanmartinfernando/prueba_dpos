@@ -2,20 +2,22 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.dev-inte';
-import { RestRoutes } from '../_config/rest-routes.config';
+import { RestRoutes } from '../_rest/rest-routes.config';
 import { PortalUserToken } from '../_models/portal-user-token.model';
 import { User } from '../_models/user.model';
 import { PwdProperties } from '../_models/pwd-properties.model';
 import { PwdReset } from '../_models/pwd-reset.model';
 
+
 const TOKEN_KEY = 'dmf-token';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class PortalUsersService {
 
-  httpOptions = {
+  public httpOptions = {
     headers: new HttpHeaders(
       {
         'Content-type': 'application/json'
@@ -24,7 +26,7 @@ export class PortalUsersService {
   };
 
   constructor(private http: HttpClient) { }
-  
+
   public getToken(user: User): Observable<PortalUserToken> {
     let loginRequest = {
       userName: user.user,
@@ -56,7 +58,7 @@ export class PortalUsersService {
     })
     return this.getTokenKey();
   }
-  
+
   public getTokenKey(): string {
     const token = window.localStorage.getItem(TOKEN_KEY);
     return token;

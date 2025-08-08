@@ -1,4 +1,5 @@
 export class OrderPayment {
+  
   orderPaymentId: string;
   amount: number;
   income: number;

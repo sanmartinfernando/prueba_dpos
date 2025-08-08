@@ -1,5 +1,5 @@
-
 export class Terminal {
+
     terminalId: number;
     commerceId: number;
     terminalUid: string;

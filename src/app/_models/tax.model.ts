@@ -19,5 +19,5 @@ export class Tax {
   type?: number;
   isDefault?: boolean;
   deleted?: boolean;
-  selected?:boolean = false;
+  selected?: boolean = false;
 }

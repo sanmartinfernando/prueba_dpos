@@ -1,4 +1,5 @@
 export class PwdReset {
+  
   Errors: [];
   StatusCode: number;
   ErrorCode: number;

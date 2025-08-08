@@ -1,4 +1,5 @@
 export class OrderTicketBai {
+  
   ticketBaiId: string;
   terminalNumber: number;
   terminalUid: string;

@@ -1,4 +1,5 @@
 export class User {
+  
   public id: number;
   public idToken: String
   public email: string;

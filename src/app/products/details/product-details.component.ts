@@ -13,8 +13,8 @@ import { CategoryModalComponent } from 'src/app/categories/category-modal.compon
 import { ModifiersModalComponent } from 'src/app/modifiers/modifiers-modal.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Category } from 'src/app/_models/category.model';
-import { Modifier } from '@popperjs/core';
 import { Modifiers } from '../../_models/modifiers.model';
+
 
 @Component({
   selector: 'DPOSW-product-details',
@@ -26,44 +26,40 @@ export class ProductDetailsComponent implements OnInit {
   idProduct: string = null;
   titlePage: string;
   code: string;
-
   product: Product;
-
   categoryIdSelected: string[] = [];
   modifiersIdSelected: string;
-
   salesStartDate: string;
   salesStartDateMilli: number;
   salesEndDate: string;
   salesEndDateMilli: number;
 
-  categories: Category[] = [{id: "0", name: "Todas las categorías"}, {id: "1", name: "Categoria 1"}, {id: "2", name: "Categoria 2"}];
-  modifiers: Modifiers[] = [{id: "0", name: "Punto de la carne", modifiers: "muy hecho, hecho, al punto, crudo"}];
+  categories: Category[] = [{ id: "0", name: "Todas las categorías" }, { id: "1", name: "Categoria 1" }, { id: "2", name: "Categoria 2" }];
+  modifiers: Modifiers[] = [{ id: "0", name: "Punto de la carne", modifiers: "muy hecho, hecho, al punto, crudo" }];
 
   constructor(private encryptionService: EncryptionService,
-      private portalUsersService: PortalUsersService,
-      private activatedRoute: ActivatedRoute,
-      private storageService: StorageService,
-      private uiStateService: UIStateService,
-      private sessionService: SessionService,
-      private dialog: MatDialog,
-      private themeService: ThemeService,
-      private translate: TranslateService,
-      private authService: AuthService) {
-        
-      this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
-  
-      //Bloqueamos el selector de comercio;
-      this.uiStateService.setFormSelectEnabled(false);
-    }
-    
-    ngOnInit(): void {
+    private portalUsersService: PortalUsersService,
+    private activatedRoute: ActivatedRoute,
+    private storageService: StorageService,
+    private uiStateService: UIStateService,
+    private sessionService: SessionService,
+    private dialog: MatDialog,
+    private themeService: ThemeService,
+    private translate: TranslateService,
+    private authService: AuthService) {
 
-      this.storageService.userInfo.subscribe((user) =>{
+    this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
+
+    //Bloqueamos el selector de comercio;
+    this.uiStateService.setFormSelectEnabled(false);
+  }
+
+  ngOnInit(): void {
+
+    this.storageService.userInfo.subscribe((user) => {
       this.portalUsersService.getToken(user).subscribe({
-        next: (portalUserToken)=> {
+        next: (portalUserToken) => {
           this.authService.setPortalUsersToken(portalUserToken.token);
-          
           const idParam = this.activatedRoute.snapshot.params['id'];
           if (idParam) {
             this.idProduct = this.encryptionService.decode(idParam);
@@ -72,9 +68,7 @@ export class ProductDetailsComponent implements OnInit {
           } else {
             this.titlePage = this.translate.instant('dpos.product-details.page.add.title');
           }
-
           this.loadCompleted = true;
-
         },
         error: (error) => {
           console.error("Error Portal user token", error);
@@ -85,16 +79,16 @@ export class ProductDetailsComponent implements OnInit {
 
   onTilSalesStartDateChange(): void {
     this.salesStartDate = (<HTMLInputElement>(document.getElementById('salesDateFrom'))).value;
-    if(this.salesStartDate.length > 0){
+    if (this.salesStartDate.length > 0) {
       this.salesStartDateMilli = Date.parse(this.salesStartDate);
-    } 
+    }
   }
 
   onTilSalesEndDateChange(): void {
     this.salesEndDate = (<HTMLInputElement>(document.getElementById('salesDateTo'))).value;
-    if(this.salesEndDate.length > 0){
+    if (this.salesEndDate.length > 0) {
       this.salesEndDateMilli = Date.parse(this.salesEndDate);
-    } 
+    }
   }
 
   public getProduct(idClient: string): void {
@@ -102,34 +96,32 @@ export class ProductDetailsComponent implements OnInit {
   }
 
   public openCategoriesModal(id?: string): void {
-    const dialogRef = this.dialog.open(CategoryModalComponent, {data: { id }});
+    const dialogRef = this.dialog.open(CategoryModalComponent, { data: { id } });
     dialogRef.afterClosed().subscribe(result => {
 
     });
   }
 
   public openModifiersModal(id?: string): void {
-    const dialogRef = this.dialog.open(ModifiersModalComponent, {data: { id }});
+    const dialogRef = this.dialog.open(ModifiersModalComponent, { data: { id } });
     dialogRef.afterClosed().subscribe(result => {
 
     });
   }
 
   public saveProduct(): void {
-      if(this.product) {
-        this.updateProduct();
-      } else {
-        this.createProduct();
-      }
+    if (this.product) {
+      this.updateProduct();
+    } else {
+      this.createProduct();
     }
-  
-    private updateProduct() {
-      //TODO
-      this.code = '/products';
-    }
-  
-    private createProduct() {
-      //TODO
-      this.code = '/products';
-    }
+  }
+
+  private updateProduct() {
+    this.code = '/products';
+  }
+
+  private createProduct() {
+    this.code = '/products';
+  }
 }

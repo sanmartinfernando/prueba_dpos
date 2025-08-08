@@ -10,24 +10,24 @@ import { Customer } from '../_models/customer.model';
 import { Tax } from '../_models/tax.model';
 import { Product } from '../_models/product.model';
 
+
 @Injectable({
   providedIn: 'root'
 })
 export class DownloadCsvService {
 
-  currentLang: string;
+  public currentLang: string;
 
-  constructor(private datePipe: DatePipe, 
-    private translate: TranslateService, 
+  constructor(private datePipe: DatePipe,
+    private translate: TranslateService,
     private currencyPipe: CurrencyPipe) {
     this.currentLang = this.translate.currentLang || 'es';
-   }
-  
+  }
+
   public downloadSalesFile(sales: OrderInfo, filename = 'data', language: string) {
 
-    if(!sales) return;
+    if (!sales) return;
 
-    // Encabezados en ambos idiomas
     const headersES = [
       'Documento',
       'Tipo',
@@ -53,42 +53,40 @@ export class DownloadCsvService {
     ];
 
     const headersEU = [
-        'Dokumentua',
-        'Guy',
-        'Data',
-        'Terminala',
-        'Azpitotala',
-        'Deskontuak',
-        'Zerga Oinarria',
-        'BEZa',
-        'Guztira'
+      'Dokumentua',
+      'Guy',
+      'Data',
+      'Terminala',
+      'Azpitotala',
+      'Deskontuak',
+      'Zerga Oinarria',
+      'BEZa',
+      'Guztira'
     ];
-    
+
     let headers: string[] = headersES;
 
-    if(language === 'es'){
-        headers = headersES;
-    } else if (language === 'eu'){
-        headers = headersEU;
-    } else if (language === 'cat'){
+    if (language === 'es') {
+      headers = headersES;
+    } else if (language === 'eu') {
+      headers = headersEU;
+    } else if (language === 'cat') {
       headers = headersCAT;
     }
 
     const fields = [
-        'reference',
-        'type',
-        'createdAt',
-        'terminalNumber',
-        'subTotal',
-        'totalDiscount',
-        'subTotalTaxes',
-        'totalTaxes',
-        'total'
+      'reference',
+      'type',
+      'createdAt',
+      'terminalNumber',
+      'subTotal',
+      'totalDiscount',
+      'subTotalTaxes',
+      'totalTaxes',
+      'total'
     ];
 
-    // Convertir a CSV con solo los datos y encabezados específicos
     let csvData = this.convertSalesToCSV(sales.data, fields, headers);
-    
     let blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
     let dwldLink = document.createElement("a");
     let url = URL.createObjectURL(blob);
@@ -101,10 +99,9 @@ export class DownloadCsvService {
   }
 
   public downloadBalancesFile(balances: Balance[], filename = 'data', language: string) {
-    
-    if(!balances) return;
 
-    // Encabezados en ambos idiomas
+    if (!balances) return;
+
     const headersES = [
       'Documento',
       'Terminal',
@@ -126,38 +123,36 @@ export class DownloadCsvService {
     ];
 
     const headersEU = [
-        'Dokumentua',
-        'Terminala',
-        'Bertatik',
-        'Arte',
-        'Eragiketak',
-        'Okerrak(€)',
-        'Guztira'
+      'Dokumentua',
+      'Terminala',
+      'Bertatik',
+      'Arte',
+      'Eragiketak',
+      'Okerrak(€)',
+      'Guztira'
     ];
-    
+
     let headers: string[] = headersES;
 
-    if(language === 'es'){
-        headers = headersES;
-    } else if (language === 'eu'){
-        headers = headersEU;
-    } else if (language === 'cat'){
+    if (language === 'es') {
+      headers = headersES;
+    } else if (language === 'eu') {
+      headers = headersEU;
+    } else if (language === 'cat') {
       headers = headersCAT;
     }
 
     const fields = [
-        'reference',
-        'terminalNumber',
-        'startedAt',
-        'finishedAt',
-        'salesCount',
-        'autoCashRecount',
-        'total'
+      'reference',
+      'terminalNumber',
+      'startedAt',
+      'finishedAt',
+      'salesCount',
+      'autoCashRecount',
+      'total'
     ];
 
-    // Convertir a CSV con solo los datos y encabezados específicos
     let csvData = this.convertBalancesToCSV(balances, fields, headers);
-    
     let blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
     let dwldLink = document.createElement("a");
     let url = URL.createObjectURL(blob);
@@ -171,9 +166,8 @@ export class DownloadCsvService {
 
   public downloadArqueoXFile(arqueoX: Balance, filename = 'data', language: string) {
 
-    if(!arqueoX) return;
+    if (!arqueoX) return;
 
-    // Encabezados en ambos idiomas
     const headersES = [
       'Impuesto',
       'Base',
@@ -188,32 +182,30 @@ export class DownloadCsvService {
       'Total'
     ];
     const headersEU = [
-        'Zerga',
-        'Oinarria',
-        'Partekatu',
-        'Guztira'
+      'Zerga',
+      'Oinarria',
+      'Partekatu',
+      'Guztira'
     ];
-    
+
     let headers: string[] = headersES;
 
-    if(language === 'es'){
-        headers = headersES;
-    } else if (language === 'eu'){
-        headers = headersEU;
-    } else if (language === 'cat'){
+    if (language === 'es') {
+      headers = headersES;
+    } else if (language === 'eu') {
+      headers = headersEU;
+    } else if (language === 'cat') {
       headers = headersCAT;
     }
 
     const fields = [
-        'name',
-        'base',
-        'tax',
-        'total'
+      'name',
+      'base',
+      'tax',
+      'total'
     ];
 
-    // Convertir a CSV con solo los datos y encabezados específicos
     let csvData = this.convertArqueoXToCSV(arqueoX, fields, headers);
-    
     let blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
     let dwldLink = document.createElement("a");
     let url = URL.createObjectURL(blob);
@@ -227,9 +219,8 @@ export class DownloadCsvService {
 
   public downloadSalesReportFile(salesReport: SalesReport, filename = 'data', language: string) {
 
-    if(!salesReport) return;
+    if (!salesReport) return;
 
-    // Encabezados en ambos idiomas
     const headersES = [
       'Producto',
       'PVP (IVA INC.)',
@@ -245,32 +236,30 @@ export class DownloadCsvService {
     ];
 
     const headersEU = [
-        'Produktua',
-        'RRP (BEZa barne)',
-        'Saldu duzu',
-        'Guztira'
+      'Produktua',
+      'RRP (BEZa barne)',
+      'Saldu duzu',
+      'Guztira'
     ];
-    
+
     let headers: string[] = headersES;
 
-    if(language === 'es'){
-        headers = headersES;
-    } else if (language === 'eu'){
-        headers = headersEU;
-    } else if (language === 'cat'){
+    if (language === 'es') {
+      headers = headersES;
+    } else if (language === 'eu') {
+      headers = headersEU;
+    } else if (language === 'cat') {
       headers = headersCAT;
     }
 
     const fields = [
-        'aggregations.product',
-        'currency',
-        'aggregations.units',
-        'aggregations.total'
+      'aggregations.product',
+      'currency',
+      'aggregations.units',
+      'aggregations.total'
     ];
 
-    // Convertir a CSV con solo los datos y encabezados específicos
     let csvData = this.convertSalesReportToCSV(salesReport, fields, headers);
-    
     let blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
     let dwldLink = document.createElement("a");
     let url = URL.createObjectURL(blob);
@@ -284,9 +273,8 @@ export class DownloadCsvService {
 
   public downloadPaymentMethodsFile(arqueoX: Balance, filename = 'data', language: string) {
 
-    if(!arqueoX) return;
+    if (!arqueoX) return;
 
-    // Encabezados en ambos idiomas
     const headersES = [
       'Método de Pago',
       '% sobre importe total',
@@ -300,30 +288,28 @@ export class DownloadCsvService {
     ];
 
     const headersEU = [
-        'Ordainketa-metodoa',
-        'zenbateko osoaren %',
-        'Guztira'
+      'Ordainketa-metodoa',
+      'zenbateko osoaren %',
+      'Guztira'
     ];
-    
+
     let headers: string[] = headersES;
 
-    if(language === 'es'){
-        headers = headersES;
-    } else if (language === 'eu'){
-        headers = headersEU;
-    } else if (language === 'cat'){
+    if (language === 'es') {
+      headers = headersES;
+    } else if (language === 'eu') {
+      headers = headersEU;
+    } else if (language === 'cat') {
       headers = headersCAT;
     }
 
     const fields = [
-        'itemName',
-        'percentage',
-        'total'
+      'itemName',
+      'percentage',
+      'total'
     ];
 
-    // Convertir a CSV con solo los datos y encabezados específicos
     let csvData = this.convertBalanceLinesToCSV(arqueoX, fields, headers);
-    
     let blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
     let dwldLink = document.createElement("a");
     let url = URL.createObjectURL(blob);
@@ -337,9 +323,8 @@ export class DownloadCsvService {
 
   public downloadCustomersFile(customers: Customer[], filename = 'data', language: string) {
 
-    if(!customers) return;
-    
-    // Encabezados en ambos idiomas
+    if (!customers) return;
+
     const headersES = [
       'NIF',
       'Nombre',
@@ -357,34 +342,32 @@ export class DownloadCsvService {
     ];
 
     const headersEU = [
-        'IFZ',
-        'Izena',
-        'Abizenak',
-        'Telefonoa',
-        'Posta elektronikoa'
+      'IFZ',
+      'Izena',
+      'Abizenak',
+      'Telefonoa',
+      'Posta elektronikoa'
     ];
-    
+
     let headers: string[] = headersES;
 
-    if(language === 'es'){
-        headers = headersES;
-    } else if (language === 'eu'){
-        headers = headersEU;
-    } else if (language === 'cat'){
+    if (language === 'es') {
+      headers = headersES;
+    } else if (language === 'eu') {
+      headers = headersEU;
+    } else if (language === 'cat') {
       headers = headersCAT;
     }
 
     const fields = [
-        'nif',
-        'name',
-        'lastname',
-        'phone',
-        'email'
+      'nif',
+      'name',
+      'lastname',
+      'phone',
+      'email'
     ];
 
-    // Convertir a CSV con solo los datos y encabezados específicos
     let csvData = this.convertCustomersToCSV(customers, fields, headers);
-    
     let blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
     let dwldLink = document.createElement("a");
     let url = URL.createObjectURL(blob);
@@ -398,9 +381,8 @@ export class DownloadCsvService {
 
   public downloadProductsFile(products: Product[], filename = 'data', language: string) {
 
-    if(!products) return;
-    
-    // Encabezados en ambos idiomas
+    if (!products) return;
+
     const headersES = [
       'Referencia',
       'Código de barras',
@@ -418,34 +400,32 @@ export class DownloadCsvService {
     ];
 
     const headersEU = [
-        'Erreferentzia',
-        'Barra-kodea',
-        'Izena',
-        'Prezioa',
-        'Stocka'
+      'Erreferentzia',
+      'Barra-kodea',
+      'Izena',
+      'Prezioa',
+      'Stocka'
     ];
-    
+
     let headers: string[] = headersES;
 
-    if(language === 'es'){
-        headers = headersES;
-    } else if (language === 'eu'){
-        headers = headersEU;
-    } else if (language === 'cat'){
+    if (language === 'es') {
+      headers = headersES;
+    } else if (language === 'eu') {
+      headers = headersEU;
+    } else if (language === 'cat') {
       headers = headersCAT;
     }
 
     const fields = [
-        'reference',
-        'barcode',
-        'name',
-        'price',
-        'stock'
+      'reference',
+      'barcode',
+      'name',
+      'price',
+      'stock'
     ];
 
-    // Convertir a CSV con solo los datos y encabezados específicos
     let csvData = this.convertProductsToCSV(products, fields, headers);
-    
     let blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
     let dwldLink = document.createElement("a");
     let url = URL.createObjectURL(blob);
@@ -459,9 +439,8 @@ export class DownloadCsvService {
 
   public downloadTaxesFile(taxes: Tax[], filename = 'data', language: string) {
 
-    if(!taxes) return;
-    
-    // Encabezados en ambos idiomas
+    if (!taxes) return;
+
     const headersES = [
       'ID',
       'Nombre',
@@ -475,30 +454,28 @@ export class DownloadCsvService {
     ];
 
     const headersEU = [
-        'IFZ',
-        'Izena',
-        'Balio'
+      'IFZ',
+      'Izena',
+      'Balio'
     ];
-    
+
     let headers: string[] = headersES;
 
-    if(language === 'es'){
-        headers = headersES;
-    } else if (language === 'eu'){
-        headers = headersEU;
-    } else if (language === 'cat'){
+    if (language === 'es') {
+      headers = headersES;
+    } else if (language === 'eu') {
+      headers = headersEU;
+    } else if (language === 'cat') {
       headers = headersCAT;
     }
 
     const fields = [
-        'id',
-        'value',
-        'name'
+      'id',
+      'value',
+      'name'
     ];
 
-    // Convertir a CSV con solo los datos y encabezados específicos
     let csvData = this.convertTaxesToCSV(taxes, fields, headers);
-    
     let blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
     let dwldLink = document.createElement("a");
     let url = URL.createObjectURL(blob);
@@ -510,62 +487,47 @@ export class DownloadCsvService {
     document.body.removeChild(dwldLink);
   }
 
-  public convertSalesToCSV(orders:Order[], fields:string[], headers: string[]) {
+  public convertSalesToCSV(orders: Order[], fields: string[], headers: string[]) {
 
-    let str = headers.join(';') + '\r\n'; 
+    let str = headers.join(';') + '\r\n';
+
     for (let i = 0; i < orders.length; i++) {
       let order: Order = orders[i]
-      let line:string = "";
-      //reference
+      let line: string = "";
       line += (line ? ';' : '') + (order.reference || '');
-      //type
-      if(order.type == 2) {
+      if (order.type == 2) {
         line += (line ? ';' : '') + (this.translate.instant('dpos.sales.operation.refund.label') || '');
-      } else if(order.type == 5) {
+      } else if (order.type == 5) {
         line += (line ? ';' : '') + (this.translate.instant('dpos.sales.operation.rectification.label') || '');
       } else {
         line += (line ? ';' : '') + (this.translate.instant('dpos.sales.operation.order.label') || '');
       }
-      //createdAt
       line += (line ? ';' : '') + (this.datePipe.transform(order.createdAt, 'dd/MM/yyyy HH:mm') || '');
-      //terminalNumber
       line += (line ? ';' : '') + (order.terminalNumber || '');
-      //subTotal
       line += (line ? ';' : '') + (this.currencyPipe.transform(order.subTotal / (Math.pow(10, order.decimals)), 'EUR', '€') || '');
-      //totalDiscount
       line += (line ? ';' : '') + (this.currencyPipe.transform(order.totalDiscount / (Math.pow(10, order.decimals)), 'EUR', '€') || '');
-      //subTotalTaxes
       line += (line ? ';' : '') + (this.currencyPipe.transform(order.subTotalTaxes / (Math.pow(10, order.decimals)), 'EUR', '€') || '');
-      //totalTaxes
       line += (line ? ';' : '') + (this.currencyPipe.transform(order.totalTaxes / (Math.pow(10, order.decimals)), 'EUR', '€') || '');
-      //total
       line += (line ? ';' : '') + (this.currencyPipe.transform(order.total / (Math.pow(10, order.decimals)), 'EUR', '€') || '');
-      
       str += line + '\r\n';
     }
+
     return str;
   }
 
-  public convertBalancesToCSV(balances:Balance[], fields:string[], headers: string[]) {
+  public convertBalancesToCSV(balances: Balance[], fields: string[], headers: string[]) {
 
-    //let array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
-    let str = headers.join(';') + '\r\n'; 
+    let str = headers.join(';') + '\r\n';
+
     for (let i = 0; i < balances.length; i++) {
-      let balance:Balance = balances[i];
-      let line:string = "";
-      //reference
-      line += (line ? ';' : '') + (balance.reference|| '');
-      //terminalNumber
-      line += (line ? ';' : '') + (balance.terminalNumber|| '');
-      //startedAt
+      let balance: Balance = balances[i];
+      let line: string = "";
+      line += (line ? ';' : '') + (balance.reference || '');
+      line += (line ? ';' : '') + (balance.terminalNumber || '');
       line += (line ? ';' : '') + (this.datePipe.transform(balance.startedAt, 'dd/MM/yyyy HH:mm') || '');
-      //finishedAt 
       line += (line ? ';' : '') + (this.datePipe.transform(balance.finishedAt, 'dd/MM/yyyy HH:mm') || '');
-      //salesCount
       line += (line ? ';' : '') + ((balance.salesCount + balance.refundsCount + balance.rectifyCount) || '');
-      //autoCashRecount
-      line += (line ? ';' : '') + (this.currencyPipe.transform((Math.abs(balance.manualCashRecount)-Math.abs(balance.autoCashRecount)) / (Math.pow(10, balance.decimals)), 'EUR', '€') || '');
-      //total
+      line += (line ? ';' : '') + (this.currencyPipe.transform((Math.abs(balance.manualCashRecount) - Math.abs(balance.autoCashRecount)) / (Math.pow(10, balance.decimals)), 'EUR', '€') || '');
       line += (line ? ';' : '') + (this.currencyPipe.transform(balance.total / (Math.pow(10, balance.decimals)), 'EUR', '€') || '');
       str += line + '\r\n';
     }
@@ -573,22 +535,17 @@ export class DownloadCsvService {
     return str;
   }
 
-  public convertArqueoXToCSV(balance:Balance, fields:string[], headers: string[]) {
+  public convertArqueoXToCSV(balance: Balance, fields: string[], headers: string[]) {
 
-    let str = headers.join(';') + '\r\n'; 
+    let str = headers.join(';') + '\r\n';
 
     for (let i = 0; i < balance.balanceLines.length; i++) {
-      let taxes:BalanceLine = balance.balanceLines[i];
-      let line:string = "";
-      
-      if(taxes.itemType == 1 && taxes.itemValue != -1) {
-        //name
-        line += (line ? ';' : '') + (taxes.itemName|| '');
-        //base
+      let taxes: BalanceLine = balance.balanceLines[i];
+      let line: string = "";
+      if (taxes.itemType == 1 && taxes.itemValue != -1) {
+        line += (line ? ';' : '') + (taxes.itemName || '');
         line += (line ? ';' : '') + (this.currencyPipe.transform(taxes.base / Math.pow(10, taxes.decimals), 'EUR', '€') || '');
-        //tax
         line += (line ? ';' : '') + (this.currencyPipe.transform(taxes.tax / Math.pow(10, taxes.decimals), 'EUR', '€') || '');
-        //total 
         line += (line ? ';' : '') + (this.currencyPipe.transform(taxes.total / Math.pow(10, taxes.decimals), 'EUR', '€') || '');
         str += line + '\r\n';
       }
@@ -597,22 +554,17 @@ export class DownloadCsvService {
     return str;
   }
 
-  public convertSalesReportToCSV(salesReport:SalesReport, fields:string[], headers: string[]) {
-    
-    let products:SalesReportAggregations[] = Object.values(salesReport.aggregations);
-    let str = headers.join(';') + '\r\n'; 
+  public convertSalesReportToCSV(salesReport: SalesReport, fields: string[], headers: string[]) {
+
+    let products: SalesReportAggregations[] = Object.values(salesReport.aggregations);
+    let str = headers.join(';') + '\r\n';
 
     for (let i = 0; i < products.length; i++) {
       let product: SalesReportAggregations = products[i];
-      let line:string = "";
-      
-      //aggregations.product
+      let line: string = "";
       line += (line ? ';' : '') + (product.product || '');
-      //currency
-      line += (line ? ';' : '') + (this.currencyPipe.transform(product.total / 100000000 / ( (product.units ?? 2) / 1000), 'EUR', '€') || '');
-      //aggregations.units
+      line += (line ? ';' : '') + (this.currencyPipe.transform(product.total / 100000000 / ((product.units ?? 2) / 1000), 'EUR', '€') || '');
       line += (line ? ';' : '') + ((product.units ?? 2) / 1000 || '');
-      //aggregations.total
       line += (line ? ';' : '') + (this.currencyPipe.transform(product.total / 100000000, 'EUR', '€') || '');
       str += line + '\r\n';
     }
@@ -620,20 +572,16 @@ export class DownloadCsvService {
     return str;
   }
 
-  public convertBalanceLinesToCSV(balance:Balance, fields:string[], headers: string[]) {
+  public convertBalanceLinesToCSV(balance: Balance, fields: string[], headers: string[]) {
 
-    let str = headers.join(';') + '\r\n'; 
+    let str = headers.join(';') + '\r\n';
 
     for (let i = 0; i < balance.balanceLines.length; i++) {
-      let paymentMethod:BalanceLine = balance.balanceLines[i];
-      let line:string = "";
-      
-      if(paymentMethod.itemType == 2) {
-        //itemName
-        line += (line ? ';' : '') + (paymentMethod.itemName|| '');
-        //percentage
+      let paymentMethod: BalanceLine = balance.balanceLines[i];
+      let line: string = "";
+      if (paymentMethod.itemType == 2) {
+        line += (line ? ';' : '') + (paymentMethod.itemName || '');
         line += (line ? ';' : '') + (paymentMethod.percentage + " %" || '');
-        //total 
         line += (line ? ';' : '') + (this.currencyPipe.transform(paymentMethod.total / Math.pow(10, paymentMethod.decimals), 'EUR', '€') || '');
         str += line + '\r\n';
       }
@@ -642,64 +590,63 @@ export class DownloadCsvService {
     return str;
   }
 
-  public convertCustomersToCSV(customers:Customer[], fields:string[], headers: string[]) {
+  public convertCustomersToCSV(customers: Customer[], fields: string[], headers: string[]) {
 
-    let str = headers.join(';') + '\r\n'; 
+    let str = headers.join(';') + '\r\n';
+
     for (let i = 0; i < customers.length; i++) {
       let customer: Customer = customers[i]
-      let line:string = "";
-
+      let line: string = "";
       line += (line ? ';' : '') + (customer.identityDocument || '');
       line += (line ? ';' : '') + (customer.name || '');
       line += (line ? ';' : '') + (customer.lastName || '');
       line += (line ? ';' : '') + (customer.phone || '');
       line += (line ? ';' : '') + (customer.email || '');
-
       str += line + '\r\n';
     }
+
     return str;
   }
 
-  public convertProductsToCSV(products:Product[], fields:string[], headers: string[]) {
+  public convertProductsToCSV(products: Product[], fields: string[], headers: string[]) {
 
-    let str = headers.join(';') + '\r\n'; 
+    let str = headers.join(';') + '\r\n';
+
     for (let i = 0; i < products.length; i++) {
       let product: Product = products[i]
-      let line:string = "";
-
+      let line: string = "";
       line += (line ? ';' : '') + (product.reference || '');
       line += (line ? ';' : '') + (product.barcode || '');
       line += (line ? ';' : '') + (product.name || '');
       line += (line ? ';' : '') + (this.currencyPipe.transform(product.price / (Math.pow(10, product.price)), 'EUR', '€') || '');
       line += (line ? ';' : '') + (product.stock || '');
-
       str += line + '\r\n';
     }
+
     return str;
   }
 
-  public convertTaxesToCSV(taxes:Tax[], fields:string[], headers: string[]) {
+  public convertTaxesToCSV(taxes: Tax[], fields: string[], headers: string[]) {
 
-    let str = headers.join(';') + '\r\n'; 
+    let str = headers.join(';') + '\r\n';
+
     for (let i = 0; i < taxes.length; i++) {
       let tax: Tax = taxes[i]
-      let line:string = "";
-
+      let line: string = "";
       line += (line ? ';' : '') + (tax.id || '');
-      line += (line ? ';' : '') + ((tax.value / 100).toFixed(2)+' %' || '');
+      line += (line ? ';' : '') + ((tax.value / 100).toFixed(2) + ' %' || '');
       line += (line ? ';' : '') + (tax.name || '');
-
       str += line + '\r\n';
     }
+
     return str;
   }
-
-
+  
   private formatDate(timestamp: number): string {
-    const date = new Date(timestamp);  
-    const day = String(date.getDate()).padStart(2, '0'); // Obtener día (con 2 dígitos)
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Obtener mes (agregar 1 porque getMonth empieza desde 0)
-    const year = date.getFullYear(); // Obtener el año
+    const date = new Date(timestamp);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
     return `${day}-${month}-${year}`;
   }
 }

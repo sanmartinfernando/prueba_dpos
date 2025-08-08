@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.dev-inte';
-import { RestRoutes } from '../_config/rest-routes.config';
+import { RestRoutes } from '../_rest/rest-routes.config';
 import { BehaviorSubject } from 'rxjs';
 import { Commerce } from '../_models/commerce.model';
 
@@ -11,10 +11,9 @@ import { Commerce } from '../_models/commerce.model';
 })
 export class CommercesService {
 
-  private commerceId= new BehaviorSubject<number>(0);
-  commerceId$ = this.commerceId.asObservable();
-
-  httpOptions = {
+  private commerceId = new BehaviorSubject<number>(0);
+  public commerceId$ = this.commerceId.asObservable();
+  public httpOptions = {
     headers: new HttpHeaders(
       {
         'accept': 'text/plain',
@@ -25,12 +24,12 @@ export class CommercesService {
 
   constructor(private http: HttpClient) { }
 
-  getCommerceList(): Observable<Commerce[]> {
+  public getCommerceList(): Observable<Commerce[]> {
     let urlPortalUserCommerces: string = `${environment.urlWE}${RestRoutes.PORTALUSERS_COMMERCES}`;
     return this.http.get<Commerce[]>(urlPortalUserCommerces, this.httpOptions);
   }
-  
-  setCommerceId(commerceId: number) {
+
+  public setCommerceId(commerceId: number) {
     this.commerceId.next(commerceId);
   }
 }

@@ -8,20 +8,20 @@ import { ThemeService } from '../_services/theme.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Category } from '../_models/category.model';
 
+
 @Component({
   selector: 'DPOSW-category-modal',
   templateUrl: './category-modal.component.html',
-  styleUrls: [ ]
+  styleUrls: []
 })
 export class CategoryModalComponent {
 
+  Category: Category;
   titlePage: string;
   idCategory: string;
   categoryFormData = {
     name: ''
   };
-  
-  Category: Category;
 
   constructor(public dialogRef: MatDialogRef<CategoryModalComponent>,
     private portalUsersService: PortalUsersService,
@@ -30,16 +30,16 @@ export class CategoryModalComponent {
     private sessionService: SessionService,
     private translate: TranslateService,
     private authService: AuthService,
-    @Inject(MAT_DIALOG_DATA) public data: { id?: string },
-  ) { 
+    @Inject(MAT_DIALOG_DATA) public data: { id?: string },) {
+      
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
     this.idCategory = data.id;
   }
 
   ngOnInit(): void {
-    this.storageService.userInfo.subscribe((user) =>{
+    this.storageService.userInfo.subscribe((user) => {
       this.portalUsersService.getToken(user).subscribe({
-        next: (portalUserToken)=> {
+        next: (portalUserToken) => {
           this.authService.setPortalUsersToken(portalUserToken.token);
           if (this.idCategory) {
             this.titlePage = this.translate.instant('dpos.category.modal.title.edit');

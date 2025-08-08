@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.dev-inte';
-import { RestRoutes } from '../_config/rest-routes.config';
+import { RestRoutes } from '../_rest/rest-routes.config';
 import { Balance } from '../_models/balance.model';
 
 
@@ -21,17 +21,14 @@ export class ArqueoXService {
 
   constructor(private http: HttpClient) { }
 
-  public getArqueoX(fromDate:number, toDate:number, terminalNumber?: string, commerceId?: number): Observable<Balance> {
-
+  public getArqueoX(fromDate: number, toDate: number, terminalNumber?: string, commerceId?: number): Observable<Balance> {
     let urlArqueoX: string = `${environment.urlWS}${RestRoutes.BALANCES_ARQUEO_X}${fromDate}${RestRoutes.PARAM_TODATE}${toDate}`;
-    
     if (terminalNumber) {
       urlArqueoX += `${RestRoutes.PARAM_TERMINALNUMBER}${terminalNumber}`;
     }
     if (commerceId) {
       urlArqueoX += `${RestRoutes.PARAM_COMMERCEID}${commerceId}`;
     }
-
     return this.http.post<Balance>(urlArqueoX, this.httpOptions);
   }
 }

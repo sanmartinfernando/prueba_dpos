@@ -8,10 +8,11 @@ import { ThemeService } from '../_services/theme.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Modifiers } from '../_models/modifiers.model';
 
+
 @Component({
   selector: 'DPOSW-modifiers-modal',
   templateUrl: './modifiers-modal.component.html',
-  styleUrls: [ ]
+  styleUrls: []
 })
 export class ModifiersModalComponent {
 
@@ -25,7 +26,7 @@ export class ModifiersModalComponent {
     modifier4: '',
     modifier5: ''
   };
-  
+
   modifiers: Modifiers;
 
   constructor(public dialogRef: MatDialogRef<ModifiersModalComponent>,
@@ -36,15 +37,15 @@ export class ModifiersModalComponent {
     private translate: TranslateService,
     private authService: AuthService,
     @Inject(MAT_DIALOG_DATA) public data: { id?: string },
-  ) { 
+  ) {
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
     this.idModifiers = data.id;
   }
 
   ngOnInit(): void {
-    this.storageService.userInfo.subscribe((user) =>{
+    this.storageService.userInfo.subscribe((user) => {
       this.portalUsersService.getToken(user).subscribe({
-        next: (portalUserToken)=> {
+        next: (portalUserToken) => {
           this.authService.setPortalUsersToken(portalUserToken.token);
           if (this.idModifiers) {
             this.titlePage = this.translate.instant('dpos.modifiers-modal.title.edit');

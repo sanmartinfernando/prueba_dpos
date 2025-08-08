@@ -11,6 +11,7 @@ import { PortalUsersService } from 'src/app/_services/portal-users.service';
 import { AuthService } from 'src/app/_services/auth.service';
 import { CustomersService } from 'src/app/_services/customers.service';
 
+
 @Component({
   selector: 'DPOSW-customer-details',
   templateUrl: './customer-details.component.html',
@@ -27,7 +28,7 @@ export class CustomerDetailsComponent implements OnInit {
   identityDocument: string;
   name: string;
   lastname: string;
-  email: string; 
+  email: string;
   phone: string;
   address: string;
   city: string;
@@ -49,18 +50,17 @@ export class CustomerDetailsComponent implements OnInit {
   ) {
 
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
-    
+
     //Bloqueamos el selector de comercio;
     this.uiStateService.setFormSelectEnabled(false);
   }
 
   ngOnInit(): void {
-
-    this.storageService.userInfo.subscribe((user) =>{
+    this.storageService.userInfo.subscribe((user) => {
       this.portalUsersService.getToken(user).subscribe({
-        next: (portalUserToken)=> {
+        next: (portalUserToken) => {
           this.authService.setPortalUsersToken(portalUserToken.token);
-          
+
           const idParam = this.activatedRoute.snapshot.params['id'];
           if (idParam) {
             this.idCustomer = this.encryptionService.decode(idParam);
@@ -69,9 +69,7 @@ export class CustomerDetailsComponent implements OnInit {
           } else {
             this.titlePage = this.translate.instant('dpos.customer.details.page.add.title');
           }
-
           this.loadCompleted = true;
-
         },
         error: (error) => {
           console.error("Error Portal user token", error);
@@ -79,7 +77,7 @@ export class CustomerDetailsComponent implements OnInit {
       });
     });
   }
-  
+
   public getCustomer(idClient: string): void {
     this.customersService.getCustomer(idClient).subscribe({
       next: (customerResponse) => {
@@ -87,7 +85,7 @@ export class CustomerDetailsComponent implements OnInit {
         this.identityDocument = this.customer.identityDocument;
         this.name = this.customer.name;
         this.lastname = this.customer.lastName;
-        this.email = this.customer.email; 
+        this.email = this.customer.email;
         this.phone = this.customer.phone;
         this.address = this.customer.address;
         this.city = this.customer.city;
@@ -102,7 +100,7 @@ export class CustomerDetailsComponent implements OnInit {
   }
 
   public saveCustomer(): void {
-    if(this.customer) {
+    if (this.customer) {
       this.updateCustomer();
     } else {
       this.createCustomer();
@@ -110,9 +108,7 @@ export class CustomerDetailsComponent implements OnInit {
   }
 
   private updateCustomer() {
-
     this.setCustomerFields();
-
     this.customersService.updateCustomer(this.customer.clientId, this.customer).subscribe({
       next: (customerResponse) => {
         this.code = '/customers';
@@ -125,10 +121,8 @@ export class CustomerDetailsComponent implements OnInit {
   }
 
   private createCustomer() {
-
     this.customer = new Customer();
     this.setCustomerFields();
-
     this.customersService.createCustomer(this.customer).subscribe({
       next: (customerResponse) => {
         this.code = '/customers';
@@ -144,7 +138,7 @@ export class CustomerDetailsComponent implements OnInit {
     this.customer.identityDocument = this.identityDocument;
     this.customer.name = this.name;
     this.customer.lastName = this.lastname;
-    this.customer.email = this.email; 
+    this.customer.email = this.email;
     this.customer.phone = this.phone;
     this.customer.address = this.address;
     this.customer.city = this.city;

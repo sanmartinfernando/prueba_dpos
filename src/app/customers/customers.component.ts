@@ -14,6 +14,7 @@ import { UIStateService } from '../_services/ui-state.service';
 import { CustomersService } from '../_services/customers.service';
 import { Customer } from '../_models/customer.model';
 
+
 @Component({
   selector: 'DPOSW-customers',
   templateUrl: './customers.component.html',
@@ -27,9 +28,7 @@ export class CustomersComponent implements OnInit {
   loadCompleted: boolean = false;
   validationVariable: boolean = false;
   commerceId: number = 0;
-
   Math = Math;
-
   masterSelected: boolean = false;
 
   //Parámetros de búsqueda
@@ -73,7 +72,7 @@ export class CustomersComponent implements OnInit {
     private themeService: ThemeService,
     private uiStateService: UIStateService,
     private authService: AuthService
-  ) {  
+  ) {
 
     //Desbloqueamos el selector de comercio;
     this.uiStateService.setFormSelectEnabled(true);
@@ -92,31 +91,31 @@ export class CustomersComponent implements OnInit {
   ngOnInit(): void {
     this.loadCompleted = false;
 
-    if(this.sessionService.getItem(SessionService.CUSTOMER_NIF) != null){
+    if (this.sessionService.getItem(SessionService.CUSTOMER_NIF) != null) {
       this.customerNifVarSearch = this.sessionService.getItem(SessionService.CUSTOMER_NIF);
     }
-    if(this.sessionService.getItem(SessionService.CUSTOMER_NAME) != null){
+    if (this.sessionService.getItem(SessionService.CUSTOMER_NAME) != null) {
       this.customerNameVarSearch = this.sessionService.getItem(SessionService.CUSTOMER_NAME);
     }
-    if(this.sessionService.getItem(SessionService.CUSTOMER_LASTNAME) != null){
+    if (this.sessionService.getItem(SessionService.CUSTOMER_LASTNAME) != null) {
       this.customerLastNameVarSearch = this.sessionService.getItem(SessionService.CUSTOMER_LASTNAME);
     }
-    if(this.sessionService.getItem(SessionService.CUSTOMER_PHONE) != null){
+    if (this.sessionService.getItem(SessionService.CUSTOMER_PHONE) != null) {
       this.customerPhoneVarSearch = this.sessionService.getItem(SessionService.CUSTOMER_PHONE);
     }
-    if(this.sessionService.getItem(SessionService.CUSTOMER_EMAIL) != null){
+    if (this.sessionService.getItem(SessionService.CUSTOMER_EMAIL) != null) {
       this.customerEmailVarSearch = this.sessionService.getItem(SessionService.CUSTOMER_EMAIL);
     }
 
-    this.storageService.userInfo.subscribe((user) =>{
+    this.storageService.userInfo.subscribe((user) => {
       this.portalUsersService.getToken(user).subscribe({
-        next: (portalUserToken)=> {
+        next: (portalUserToken) => {
           this.authService.setPortalUsersToken(portalUserToken.token);
           this.commercesService.getCommerceList().subscribe({
             next: (commerces) => {
               this.commerces = commerces;
               this.sessionService.getCommerceId().subscribe((commerceId) => {
-                if(commerceId != 0) {
+                if (commerceId != 0) {
                   this.commerceId = commerceId; // Actualizar el valor en el componente
                 } else {
                   this.commerceId = commerces[0].commerceId;
@@ -142,7 +141,7 @@ export class CustomersComponent implements OnInit {
   searchCustomers() {
     this.validationVariable = false;
     this.loadCompleted = false;
-   
+
     //Comienzo query búsqueda
     this.varSearch = "&qs={'and':[";
 
@@ -154,9 +153,9 @@ export class CustomersComponent implements OnInit {
         this.varSearch = this.varSearch + ',';
       }
       this.varSearch =
-        this.varSearch +"{'field':'CommerceId','op':'=','value':'" +this.commerceId +"'}";
+        this.varSearch + "{'field':'CommerceId','op':'=','value':'" + this.commerceId + "'}";
     }
-    
+
     //NIF
     if (this.customerNifVarSearch != null && this.customerNifVarSearch !== "") {
       if (this.searchCounter == false) {
@@ -239,7 +238,7 @@ export class CustomersComponent implements OnInit {
 
   //Checkboxes
   selectAllCustomers() {
-  for (const customer of this.customers) {
+    for (const customer of this.customers) {
       customer.selected = this.masterSelected;
     }
   }
@@ -257,22 +256,22 @@ export class CustomersComponent implements OnInit {
       this.code = '/customer-details/' + this.encryptionService.encode(this.code);
     }
   }
-  
+
   //Eliminar clientes
-  deleteCustomers(){
+  deleteCustomers() {
     this.customers = this.customers.filter(customer => !customer.selected);
-    if(this.customers.length == 0) {
+    if (this.customers.length == 0) {
       this.emptySearch = true;
     }
   }
-  
+
   //Añadir cliente
-  addCustomer(){
+  addCustomer() {
     this.sendCustomerDetails(null);
   }
-  
+
   //Importar clientes
-  importCustomers(){
+  importCustomers() {
     this.customerFileInput.nativeElement.click();
   }
 
@@ -285,12 +284,12 @@ export class CustomersComponent implements OnInit {
 
     reader.onload = () => {
       const text = reader.result as string;
-      
+
       const { rows, errors } = this.parseCSV(text);
 
       if (errors.length <= 0) {
         let customers: Customer[] = [];
-        for(let i= 0; i < rows.length; i++){
+        for (let i = 0; i < rows.length; i++) {
           let customer: Customer = new Customer();
           customer.clientId = i.toString();
           customer.identityDocument = rows[i][0];
@@ -310,12 +309,12 @@ export class CustomersComponent implements OnInit {
         this.modalTitle = 'Importación de clientes';
         this.modalMessage = 'Clientes importados correctamente';
 
-        if(!this.customers)
+        if (!this.customers)
           this.customers = [];
 
         this.customers.push(...customers);
 
-        if(this.customers.length > 0)
+        if (this.customers.length > 0)
           this.emptySearch = false;
       }
     };
@@ -324,7 +323,7 @@ export class CustomersComponent implements OnInit {
   }
 
   //Descargar clientes
-  downloadCSV(){
+  downloadCSV() {
     this.downloadCsvService.downloadCustomersFile(this.customers, this.translate.instant('dpos.customers.page.title'), this.currentLang);
   }
 
@@ -336,7 +335,7 @@ export class CustomersComponent implements OnInit {
     this.commerceId = this.getCommerceId();
     this.searchCustomers();
   }
-  
+
   onCustomerNifChange(): void {
     this.sessionService.setItem(SessionService.CUSTOMER_NIF, this.customerNifVarSearch);
   }
@@ -359,26 +358,26 @@ export class CustomersComponent implements OnInit {
 
   getCommerceId(): number {
     const commerce = this.commerces.find(commerce => commerce.commerceNumber == this.commerceSelected);
-    if(commerce != undefined) {
+    if (commerce != undefined) {
       return commerce.commerceId;
     }
     return 0;
   }
 
-  getCommerceNumber(commerceId:number): string {
+  getCommerceNumber(commerceId: number): string {
     const commerce = this.commerces.find(commerce => commerce.commerceId == commerceId);
-    if(commerce != undefined) {
+    if (commerce != undefined) {
       return commerce.commerceNumber;
     }
     return "";
   }
 
   cleanFormFields(): void {
-    this.customerNifVarSearch="";
-    this.customerNameVarSearch="";
-    this.customerLastNameVarSearch="";
-    this.customerPhoneVarSearch="";
-    this.customerEmailVarSearch="";
+    this.customerNifVarSearch = "";
+    this.customerNameVarSearch = "";
+    this.customerLastNameVarSearch = "";
+    this.customerPhoneVarSearch = "";
+    this.customerEmailVarSearch = "";
     this.sessionService.setItem(SessionService.CUSTOMER_NIF, this.customerNifVarSearch);
     this.sessionService.setItem(SessionService.CUSTOMER_NAME, this.customerNameVarSearch);
     this.sessionService.setItem(SessionService.CUSTOMER_LASTNAME, this.customerLastNameVarSearch);
@@ -388,7 +387,7 @@ export class CustomersComponent implements OnInit {
 
   private getCommerceResellerName(commerces: Commerce[]): string {
     const commerce = commerces.find(commerce => commerce.commerceId == this.commerceId);
-    if(commerce != undefined) {
+    if (commerce != undefined) {
       return commerce.resellerName;
     }
     return null;

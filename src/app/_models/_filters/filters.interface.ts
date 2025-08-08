@@ -6,9 +6,11 @@ interface AddFields {
   };
 }
 
+
 interface Unwind {
   $unwind: string;
 }
+
 
 interface Match {
   $match: {
@@ -18,6 +20,7 @@ interface Match {
     created_at: { $gte: number; $lte: number };
   };
 }
+
 
 interface Group {
   $group: {
@@ -34,6 +37,7 @@ interface Group {
   };
 }
 
+
 interface Sort {
   $sort: {
     _id?: number;
@@ -41,8 +45,10 @@ interface Sort {
   };
 }
 
+
 interface Limit {
   $limit: number;
 }
+
 
 export type FilterStep = AddFields | Unwind | Match | Group | Sort | Limit;

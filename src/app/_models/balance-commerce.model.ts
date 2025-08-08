@@ -1,4 +1,5 @@
 export class BalanceCommerce {
+  
   balanceCommerceId: string;
   name: string;
   tradeName: string;

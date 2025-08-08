@@ -41,7 +41,7 @@
     "dpos.action.save": "Guardar",
     "dpos.action.advancedsearch": "Busqueda Avanzada",
     "dpos.error.msg.general": "[!] Mensaje de error",
-    "dpos.error.msg.params": "Datu batzuk baliogabeak dira (undefined o null)",
+    "dpos.error.msg.params": "Algunos datos son inválidos (undefined o null)",
     "dpos.footer.msg.privacy": "Política de privacidad",
     "dpos.footer.msg.cookies": "Política de cookies",
     "dpos.footer.msg.uses": "Condiciones de uso",

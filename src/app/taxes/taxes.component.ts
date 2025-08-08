@@ -14,6 +14,7 @@ import { Tax } from '../_models/tax.model';
 import { TaxesModalComponent } from './taxes-modal.component';
 import { MatDialog } from '@angular/material/dialog';
 
+
 @Component({
   selector: 'DPOSW-taxes',
   templateUrl: './taxes.component.html',
@@ -21,7 +22,7 @@ import { MatDialog } from '@angular/material/dialog';
 export class TaxesComponent implements OnInit {
 
   size: number = 10000;
-  taxes: Tax[] = [{id:1, value:1000, name:"IVA 10%"}, {id:2, value:2100, name:"IVA 21%"}];
+  taxes: Tax[] = [{ id: 1, value: 1000, name: "IVA 10%" }, { id: 2, value: 2100, name: "IVA 21%" }];
   page: number = 0;
   code: string;
   loadCompleted: boolean = false;
@@ -60,8 +61,7 @@ export class TaxesComponent implements OnInit {
     private sessionService: SessionService,
     private themeService: ThemeService,
     private uiStateService: UIStateService,
-    private authService: AuthService
-  ) {  
+    private authService: AuthService) {
 
     //Desbloqueamos el selector de comercio;
     this.uiStateService.setFormSelectEnabled(true);
@@ -79,16 +79,15 @@ export class TaxesComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCompleted = false;
-
-    this.storageService.userInfo.subscribe((user) =>{
+    this.storageService.userInfo.subscribe((user) => {
       this.portalUsersService.getToken(user).subscribe({
-        next: (portalUserToken)=> {
+        next: (portalUserToken) => {
           this.authService.setPortalUsersToken(portalUserToken.token);
           this.commercesService.getCommerceList().subscribe({
             next: (commerces) => {
               this.commerces = commerces;
               this.sessionService.getCommerceId().subscribe((commerceId) => {
-                if(commerceId != 0) {
+                if (commerceId != 0) {
                   this.commerceId = commerceId; // Actualizar el valor en el componente
                 } else {
                   this.commerceId = commerces[0].commerceId;
@@ -112,12 +111,9 @@ export class TaxesComponent implements OnInit {
   }
 
   searchTaxes() {
-
     this.loadCompleted = false;
-   
     //Comienzo query búsqueda
     this.varSearch = "&qs={'and':[";
-
     //Commerce id
     if (this.commerceId != 0) {
       if (this.searchCounter == false) {
@@ -126,9 +122,8 @@ export class TaxesComponent implements OnInit {
         this.varSearch = this.varSearch + ',';
       }
       this.varSearch =
-        this.varSearch +"{'field':'CommerceId','op':'=','value':'" +this.commerceId +"'}";
+        this.varSearch + "{'field':'CommerceId','op':'=','value':'" + this.commerceId + "'}";
     }
-    
     this.varSearch = this.varSearch + ']}';
     this.searchCounter = false;
     this.getTaxes();
@@ -160,7 +155,7 @@ export class TaxesComponent implements OnInit {
 
   //Checkboxes
   selectAllTaxes() {
-  for (const tax of this.taxes) {
+    for (const tax of this.taxes) {
       tax.selected = this.masterSelected;
     }
   }
@@ -170,23 +165,23 @@ export class TaxesComponent implements OnInit {
   }
 
   //Eliminar impuestos
-  deleteTaxes(){
+  deleteTaxes() {
     this.taxes = this.taxes.filter(tax => !tax.selected);
-    if(this.taxes.length == 0) {
+    if (this.taxes.length == 0) {
       this.emptySearch = true;
     }
   }
-  
+
   //Añadir impuesto
   public openTaxesModal(id?: number): void {
-    const dialogRef = this.dialog.open(TaxesModalComponent, {data: { id }});
+    const dialogRef = this.dialog.open(TaxesModalComponent, { data: { id } });
     dialogRef.afterClosed().subscribe(result => {
 
     });
   }
 
   //Descargar impuestos
-  downloadCSV(){
+  downloadCSV() {
     this.downloadCsvService.downloadTaxesFile(this.taxes, this.translate.instant('dpos.taxes.page.title'), this.currentLang);
   }
 
@@ -205,15 +200,15 @@ export class TaxesComponent implements OnInit {
 
   getCommerceId(): number {
     const commerce = this.commerces.find(commerce => commerce.commerceNumber == this.commerceSelected);
-    if(commerce != undefined) {
+    if (commerce != undefined) {
       return commerce.commerceId;
     }
     return 0;
   }
 
-  getCommerceNumber(commerceId:number): string {
+  getCommerceNumber(commerceId: number): string {
     const commerce = this.commerces.find(commerce => commerce.commerceId == commerceId);
-    if(commerce != undefined) {
+    if (commerce != undefined) {
       return commerce.commerceNumber;
     }
     return "";
@@ -221,7 +216,7 @@ export class TaxesComponent implements OnInit {
 
   private getCommerceResellerName(commerces: Commerce[]): string {
     const commerce = commerces.find(commerce => commerce.commerceId == this.commerceId);
-    if(commerce != undefined) {
+    if (commerce != undefined) {
       return commerce.resellerName;
     }
     return null;

@@ -16,6 +16,7 @@ import { SessionService } from '../_services/session.service';
 import { ThemeService } from '../_services/theme.service';
 import { UIStateService } from '../_services/ui-state.service';
 
+
 @Component({
   selector: 'DPOSW-reports',
   templateUrl: './reports.component.html',
@@ -23,36 +24,7 @@ import { UIStateService } from '../_services/ui-state.service';
 })
 export class ReportsComponent implements OnInit {
 
-  constructor(
-    private encryptionService: EncryptionService,
-    private arqueoXService: ArqueoXService,
-    private salesReportService: SalesReportService,
-    private storageService: StorageService,
-    private downloadCsvService: DownloadCsvService,
-    private portalUsersService: PortalUsersService,
-    private terminalsService: TerminalsService,
-    private commercesService: CommercesService,
-    private sessionService: SessionService,
-    private themeService: ThemeService,
-    public translate: TranslateService,
-    private uiStateService: UIStateService,
-    private authService: AuthService
-  ) {
-    
-    this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
-
-    //Desbloqueamos el selector de comercio;
-    this.uiStateService.setFormSelectEnabled(true);
-    
-    this.currentLang = this.translate.currentLang || 'es';
-    this.langSubscription = this.translate.onLangChange.subscribe(event => {
-      this.currentLang = event.lang;
-      this.terminalsNumber[0] = this.translate.instant('dpos.filter.all');
-      this.reportVarSearch = this.translate.instant('dpos.reports.taxes.label');
-    });
-
-  }
-
+  
   size: number = 10000;
   sales: Balance;
   salesReports: SalesReport;
@@ -90,6 +62,36 @@ export class ReportsComponent implements OnInit {
   modalTitle: string = '';
   modalMessage: string = '';
 
+
+  constructor(
+    private encryptionService: EncryptionService,
+    private arqueoXService: ArqueoXService,
+    private salesReportService: SalesReportService,
+    private storageService: StorageService,
+    private downloadCsvService: DownloadCsvService,
+    private portalUsersService: PortalUsersService,
+    private terminalsService: TerminalsService,
+    private commercesService: CommercesService,
+    private sessionService: SessionService,
+    private themeService: ThemeService,
+    public translate: TranslateService,
+    private uiStateService: UIStateService,
+    private authService: AuthService
+  ) {
+
+    this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
+
+    //Desbloqueamos el selector de comercio;
+    this.uiStateService.setFormSelectEnabled(true);
+
+    this.currentLang = this.translate.currentLang || 'es';
+    this.langSubscription = this.translate.onLangChange.subscribe(event => {
+      this.currentLang = event.lang;
+      this.terminalsNumber[0] = this.translate.instant('dpos.filter.all');
+      this.reportVarSearch = this.translate.instant('dpos.reports.taxes.label');
+    });
+  }
+
   ngOnDestroy() {
     this.langSubscription.unsubscribe();
   }
@@ -97,30 +99,30 @@ export class ReportsComponent implements OnInit {
   ngOnInit(): void {
     this.loadCompleted = false;
 
-    if(this.sessionService.getItem(SessionService.FROM_DATE) != null){
+    if (this.sessionService.getItem(SessionService.FROM_DATE) != null) {
       this.sinceDate = this.formatDate(this.sessionService.getItem(SessionService.FROM_DATE));
     }
 
-    if(this.sessionService.getItem(SessionService.TO_DATE) != null){
+    if (this.sessionService.getItem(SessionService.TO_DATE) != null) {
       this.tilDate = this.formatDate(this.sessionService.getItem(SessionService.TO_DATE));
     }
 
-    if(this.sessionService.getItem(SessionService.REPORT_TYPE) != null){
+    if (this.sessionService.getItem(SessionService.REPORT_TYPE) != null) {
       this.reportVarSearch = this.getReportVarSearch(this.sessionService.getItem(SessionService.REPORT_TYPE));
     } else {
       this.sessionService.setItem(SessionService.REPORT_TYPE, -1);
       this.reportVarSearch = this.translate.instant('dpos.reports.taxes.label');
     }
-    
-    this.storageService.userInfo.subscribe((user) =>{
+
+    this.storageService.userInfo.subscribe((user) => {
       this.portalUsersService.getToken(user).subscribe({
-        next: (portalUserToken)=> {
+        next: (portalUserToken) => {
           this.authService.setPortalUsersToken(portalUserToken.token);
 
           this.commercesService.getCommerceList().subscribe({
             next: (commerces) => {
               this.sessionService.getCommerceId().subscribe((commerceId) => {
-                if(commerceId != 0) {
+                if (commerceId != 0) {
                   this.commerceId = commerceId; // Actualizar el valor en el componente
                 } else {
                   this.commerceId = commerces[0].commerceId;
@@ -129,11 +131,11 @@ export class ReportsComponent implements OnInit {
                 this.terminalsService.getTerminalList().subscribe({
                   next: (terminals) => {
                     terminals = terminals.filter(terminal => terminal.commerceId == this.commerceId && terminal.terminalNumber != null);
-                    if(terminals.length != 0) {
+                    if (terminals.length != 0) {
                       this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
                     }
                     this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
-                    if(this.sessionService.getItem(SessionService.TERMINAL_NUMBER) == null){
+                    if (this.sessionService.getItem(SessionService.TERMINAL_NUMBER) == null) {
                       this.terminalSelected = this.terminalsNumber[0];
                       this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
                     } else {
@@ -165,8 +167,7 @@ export class ReportsComponent implements OnInit {
 
     //Seteamos por defecto el año actual
     let yearDate = new Date(new Date().getFullYear(), 0);
-
-    if(this.sinceDateMilli > 0){
+    if (this.sinceDateMilli > 0) {
       this.sinceDateMilli = Date.parse(this.sinceDate);
     } else {
       this.sinceDateMilli = yearDate.getTime();
@@ -174,7 +175,7 @@ export class ReportsComponent implements OnInit {
       this.sessionService.setItem(SessionService.TO_DATE, this.sinceDateMilli);
     }
 
-    if(this.tilDateMilli > 0){
+    if (this.tilDateMilli > 0) {
       let date = new Date(this.tilDate);
       // Establecer la hora a las 23:59
       date.setHours(23, 59, 0, 0);
@@ -187,29 +188,29 @@ export class ReportsComponent implements OnInit {
 
     //Desde fecha
     if (this.sinceDateMilli > 0) {
-      if(this.sinceDateMilli > this.tilDateMilli && this.tilDateMilli > 0) {
+      if (this.sinceDateMilli > this.tilDateMilli && this.tilDateMilli > 0) {
         this.modalTitle = this.translate.instant('dpos.modal.fromDate.title');
         this.modalMessage = this.translate.instant('dpos.modal.fromDate.message');
         this.openModal();
         return;
       }
-    } 
+    }
 
     //Hasta fecha
     if (this.tilDateMilli > 0) {
-      if(this.tilDateMilli < this.sinceDateMilli && this.sinceDateMilli > 0) {
+      if (this.tilDateMilli < this.sinceDateMilli && this.sinceDateMilli > 0) {
         this.modalTitle = this.translate.instant('dpos.filter.toDate.title');
         this.modalMessage = this.translate.instant('dpos.filter.toDate.message');
         this.openModal();
         return;
-      } 
+      }
     }
 
     //Cierre y reseteo de parámetros
     this.varSearch += ']}';
     this.searchCounter = false;
     //Llamada API
-    if (this.reportVarSearch == this.translate.instant('dpos.reports.taxes.label') || this.reportVarSearch == this.translate.instant('dpos.reports.paymentmethods.label')) { 
+    if (this.reportVarSearch == this.translate.instant('dpos.reports.taxes.label') || this.reportVarSearch == this.translate.instant('dpos.reports.paymentmethods.label')) {
       this.getArqueoX();
     } else {//Productos
       this.getSalesReport();
@@ -218,17 +219,15 @@ export class ReportsComponent implements OnInit {
 
   private getArqueoX() {
     this.loadCompleted = false;
-
     this.arqueoXService.getArqueoX(this.sinceDateMilli, this.tilDateMilli, this.terminalSelected == this.translate.instant('dpos.filter.all') ? null : this.terminalSelected, this.commerceId).subscribe({
       next: (arqueo) => {
         this.sales = arqueo;
-
         this.totalBase = 0;
         this.totalCuote = 0;
         this.totalTax = 0;
         this.totalPercentage = 0;
         this.totalValuePercentage = 0;
-        if(this.sales != null && this.sales.balanceLines.length > 0) {
+        if (this.sales != null && this.sales.balanceLines.length > 0) {
           //Calculo de indicadores totales informes
           for (let i = 0; this.sales.balanceLines != null && i < this.sales.balanceLines.length; i++) {
             if (this.sales.balanceLines[i].itemType == 1 && this.sales.balanceLines[i].itemValue != -1) {
@@ -254,7 +253,7 @@ export class ReportsComponent implements OnInit {
           this.emptySearch = true;
         }
         this.loadCompleted = true;
-      }, 
+      },
       error: (error) => {
         if (error.status == 400 || error.status == 404 || error.status == 401 || error.status == 500) {
           this.emptySearch = true;
@@ -270,11 +269,9 @@ export class ReportsComponent implements OnInit {
       next: (salesReport) => {
         this.salesReports = salesReport;
         this.indexProduct = Object.values(salesReport.aggregations);
-
         this.totalUnits = 0;
         this.totalUnitsValor = 0;
-
-        if(this.indexProduct != null && this.indexProduct.length > 0){
+        if (this.indexProduct != null && this.indexProduct.length > 0) {
           //Calculo indices totales productos
           for (let i = 0; i < this.indexProduct.length; i++) {
             this.totalUnits = this.totalUnits + (this.indexProduct[i].units ?? 2) / Math.pow(10, 3);
@@ -302,12 +299,12 @@ export class ReportsComponent implements OnInit {
   }
 
   //Boton Descargar
-  downloadReports(){
-    if(this.reportVarSearch == this.translate.instant('dpos.reports.taxes.label')) {
+  downloadReports() {
+    if (this.reportVarSearch == this.translate.instant('dpos.reports.taxes.label')) {
       this.downloadCsvService.downloadArqueoXFile(this.sales, this.translate.instant('dpos.reports.taxes.label'), this.currentLang);
-    } else if(this.reportVarSearch == this.translate.instant('dpos.reports.products.label')) {
+    } else if (this.reportVarSearch == this.translate.instant('dpos.reports.products.label')) {
       this.downloadCsvService.downloadSalesReportFile(this.salesReports, this.translate.instant('dpos.reports.products.label'), this.currentLang);
-    } else if(this.reportVarSearch == this.translate.instant('dpos.reports.paymentmethods.label')) {
+    } else if (this.reportVarSearch == this.translate.instant('dpos.reports.paymentmethods.label')) {
       this.downloadCsvService.downloadPaymentMethodsFile(this.sales, this.translate.instant('dpos.reports.paymentmethods.label'), this.currentLang);
     }
   }
@@ -327,19 +324,19 @@ export class ReportsComponent implements OnInit {
   onSinceDateChange(): void {
     this.sessionService.setItem(SessionService.FROM_DATE, this.terminalSelected);
     this.sinceDate = (<HTMLInputElement>(document.getElementById('sinceDate'))).value;
-    if(this.sinceDate.length > 0){
+    if (this.sinceDate.length > 0) {
       this.sinceDateMilli = Date.parse(this.sinceDate);
       this.sessionService.setItem(SessionService.FROM_DATE, this.sinceDateMilli);
-    } 
+    }
   }
 
   onTilDateChange(): void {
     this.sessionService.setItem(SessionService.TO_DATE, this.terminalSelected);
     this.tilDate = (<HTMLInputElement>(document.getElementById('tilDate'))).value;
-    if(this.tilDate.length > 0){
+    if (this.tilDate.length > 0) {
       this.tilDateMilli = Date.parse(this.tilDate);
       this.sessionService.setItem(SessionService.TO_DATE, this.tilDateMilli);
-    } 
+    }
   }
 
   onReportTypeChange(): void {
@@ -348,7 +345,7 @@ export class ReportsComponent implements OnInit {
 
   // Método para convertir timestamp a formato dd/mm/yyyy
   formatDate(timestamp: number): string {
-    const date = new Date(timestamp);  
+    const date = new Date(timestamp);
     const day = String(date.getDate()).padStart(2, '0'); // Obtener día (con 2 dígitos)
     const month = String(date.getMonth() + 1).padStart(2, '0'); // Obtener mes (agregar 1 porque getMonth empieza desde 0)
     const year = date.getFullYear(); // Obtener el año
@@ -357,8 +354,8 @@ export class ReportsComponent implements OnInit {
 
   getReportVarSearch(reportType: number): string {
     let reportTypeValue: string = this.translate.instant('dpos.reports.taxes.label');
-    if(reportType != null) {
-      switch(reportType) {
+    if (reportType != null) {
+      switch (reportType) {
         case Balance.REPORT_TYPE_TAXES:
           reportTypeValue = this.translate.instant('dpos.reports.taxes.label');
           break;
@@ -372,11 +369,11 @@ export class ReportsComponent implements OnInit {
     }
     return reportTypeValue;
   }
-  
+
   getReportType(): number {
     let reportType = -1;
-    if(this.reportVarSearch != null) {
-      switch(this.reportVarSearch) {
+    if (this.reportVarSearch != null) {
+      switch (this.reportVarSearch) {
         case this.translate.instant('dpos.reports.taxes.label'):
           reportType = Balance.REPORT_TYPE_TAXES;
           break;

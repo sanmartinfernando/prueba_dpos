@@ -11,6 +11,7 @@ import { SessionService } from 'src/app/_services/session.service';
 import { ThemeService } from '../../_services/theme.service';
 import { UIStateService } from 'src/app/_services/ui-state.service';
 
+
 @Component({
   selector: 'DPOSW-header',
   templateUrl: './header.component.html',
@@ -19,29 +20,28 @@ import { UIStateService } from 'src/app/_services/ui-state.service';
 export class HeaderComponent implements OnInit {
 
   @Output() navToggled = new EventEmitter<boolean>();
-  
-  showNav: boolean = true;
 
-  pages : Page[] = [];
+  showNav: boolean = true;
+  pages: Page[] = [];
   username: string;
   isLoggedIn: boolean = false;
   commerceSelected: number;
   commerces: Commerce[];
-  title: string= "DPOS";
-  title0: string= "DPOS";
-  isComercia:boolean = false;
+  title: string = "DPOS";
+  title0: string = "DPOS";
+  isComercia: boolean = false;
   formSelectEnabled = true;
   logoLoaded = false;
 
   constructor(private pagesService: PagesService,
-    private authService : AuthService,
+    private authService: AuthService,
     private portalUsersService: PortalUsersService,
     private commercesService: CommercesService,
     private storageService: StorageService,
     private sessionService: SessionService,
     private themeService: ThemeService,
     private uiStateService: UIStateService,
-    public router: Router){
+    public router: Router) {
 
     this.pages = pagesService.pages;
 
@@ -51,23 +51,22 @@ export class HeaderComponent implements OnInit {
 
     // Detectar tamaño inicial
     this.showNav = this.isLargeScreen();
-
   }
 
   ngOnInit(): void {
     this.loadThemeByResellerName();
-    this.storageService.userInfo.subscribe(user =>{
-      if(user !== undefined && user != null){
+    this.storageService.userInfo.subscribe(user => {
+      if (user !== undefined && user != null) {
         this.isLoggedIn = true;
         this.username = user.user;
         this.portalUsersService.getToken(user).subscribe({
-          next: (portalUserToken)=> {
+          next: (portalUserToken) => {
             this.authService.setPortalUsersToken(portalUserToken.token);
             this.commercesService.getCommerceList().subscribe({
               next: (commerces) => {
                 this.commerces = commerces;
                 this.commerceSelected = this.sessionService.getItem(SessionService.COMMERCE_ID);
-                if(this.commerceSelected === null){
+                if (this.commerceSelected === null) {
                   this.commerceSelected = commerces[0].commerceId;
                   this.sessionService.setItem(SessionService.COMMERCE_ID, commerces[0].commerceId);
                   this.sessionService.setItem(SessionService.RESELLER_NAME, commerces[0].resellerName);
@@ -83,7 +82,7 @@ export class HeaderComponent implements OnInit {
             console.error("Error Portal user token", error);
           }
         });
-      }else{
+      } else {
         this.isLoggedIn = false;
       }
     });
@@ -93,7 +92,7 @@ export class HeaderComponent implements OnInit {
     this.showNav = !this.showNav;
     this.navToggled.emit(this.showNav);  // Emitir evento
   }
-  
+
   //Método seguro para verificar tamaño de pantalla
   isLargeScreen(): boolean {
     return typeof window !== 'undefined' && window.innerWidth >= 768;
@@ -113,53 +112,50 @@ export class HeaderComponent implements OnInit {
   }
 
   getTitle() {
-    if(this.isComercia) {
+    if (this.isComercia) {
       this.title = "TPV&GO";
     } else {
       this.title = "DPOS";
     }
   }
 
-  titleHeader(name: string){
-      this.title=name;
+  titleHeader(name: string) {
+    this.title = name;
   }
 
-  logOut(){
+  logOut() {
     this.storageService.clean();
     window.location.reload();
     this.storageService.updateloggin(this.isLoggedIn);
   }
 
   ngDoCheck() {
-
+    
   }
 
-  component(component:string){
+  component(component: string) {
     this.storageService.setComponent(component);
   }
 
   onCommerceChange(): void {
-
     let commerce: Commerce = this.getCommerce();
-
     this.commerceSelected = commerce.commerceId;
     this.commercesService.setCommerceId(commerce.commerceId);
     this.sessionService.setItem(SessionService.COMMERCE_ID, commerce.commerceId);
     this.sessionService.setItem(SessionService.RESELLER_NAME, commerce.resellerName);
     this.sessionService.setCommerceId(commerce.commerceId);
-
     this.loadThemeByResellerName();
   }
-  
+
   getCommerce(): Commerce {
     const commerce = this.commerces.find(commerce => commerce.commerceId == this.commerceSelected);
-    if(commerce != undefined) {
+    if (commerce != undefined) {
       return commerce;
     }
     return null;
   }
 
-  private loadThemeByResellerName():void {
+  private loadThemeByResellerName(): void {
     this.logoLoaded = false;
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
     this.isComercia = this.isComerciaTheme();
@@ -167,7 +163,7 @@ export class HeaderComponent implements OnInit {
     this.logoLoaded = true;
   }
 
-  private isComerciaTheme():boolean {
+  private isComerciaTheme(): boolean {
     return this.sessionService.getItem(SessionService.RESELLER_NAME) == Commerce.RESELLER_COMERCIA;
   }
 }

@@ -25,48 +25,49 @@ import { Top3Aggregation } from '../_models/top3-aggregation.model';
 import { ThemeService } from '../_services/theme.service';
 import { UIStateService } from '../_services/ui-state.service';
 
+
 @Component({
   selector: 'DPOSW-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: [],
 })
 export class DashboardComponent implements OnInit {
-  
-  public loadedKPIChart:boolean = false;
-  public loadedPMChart:boolean = false;
-  public loadedTPChart:boolean = false;
-  public emptyKPIChart:boolean = false;
-  public emptyPMChart:boolean = false;
-  public emptyTPChart:boolean = false;
-  
+
+  public loadedKPIChart: boolean = false;
+  public loadedPMChart: boolean = false;
+  public loadedTPChart: boolean = false;
+  public emptyKPIChart: boolean = false;
+  public emptyPMChart: boolean = false;
+  public emptyTPChart: boolean = false;
+
   public terminalSelected: string;
-  
+
   public ordersResult = { total: 0, count: 0 };
   public refundsResult = { total: 0, count: 0 };
   public rectificationsResult = { total: 0, count: 0 };
-  public avTicketResult:number = 0;
-  public cashMovementsResult:number = 0;
-  public cashMovementsOperationsResult:number = 0;
-  public balanceResult:number = 0;
-  
-  public showSalesVar:boolean = false;
-  public showRefundsVar:boolean = false;
-  public showAverageTicketVar:boolean = false;
-  public showCashMovVar:boolean = false;
-  public showResultsVar:boolean = false;
-  
-  public year:number = new Date().getFullYear();
+  public avTicketResult: number = 0;
+  public cashMovementsResult: number = 0;
+  public cashMovementsOperationsResult: number = 0;
+  public balanceResult: number = 0;
+
+  public showSalesVar: boolean = false;
+  public showRefundsVar: boolean = false;
+  public showAverageTicketVar: boolean = false;
+  public showCashMovVar: boolean = false;
+  public showResultsVar: boolean = false;
+
+  public year: number = new Date().getFullYear();
   private yearVarSearch = '';
   private monthVarSearch = '';
   private selectedMonthIndex = 0;
-  private yearDate:Date;
-  private yearMilli:number = 0;
-  private yearMaxDate:Date;
-  private yearMaxMilli:number = 0;
-  private dateMilli:number = 0;
-  private dateMaxMilli:number = 0;
+  private yearDate: Date;
+  private yearMilli: number = 0;
+  private yearMaxDate: Date;
+  private yearMaxMilli: number = 0;
+  private dateMilli: number = 0;
+  private dateMaxMilli: number = 0;
   private Math = Math;
-  
+
   public terminalsNumber: string[];
   private terminals: Terminal[];
   private commerceId: number;
@@ -82,13 +83,13 @@ export class DashboardComponent implements OnInit {
   private idT3;
   private idTP;
 
-  private colors: string[] = ['#6DB9FF', 
-            '#1FCC92',
-            '#FF803C', 
-            '#F598F5', 
-            '#FF6E6E', 
-            '#FFCC4D',
-            '#7C77FE'];
+  private colors: string[] = ['#6DB9FF',
+    '#1FCC92',
+    '#FF803C',
+    '#F598F5',
+    '#FF6E6E',
+    '#FFCC4D',
+    '#7C77FE'];
 
   public kpiDataset = [];
   public colorsKPI = [];
@@ -113,15 +114,15 @@ export class DashboardComponent implements OnInit {
     { name: 'Rectificación', value: this.colors[6] },
   ];
 
-  public datasetTop3:DataSetTop3[];
+  public datasetTop3: DataSetTop3[];
   public colorsTop3 = [];
 
   currentLang: string;
   langSubscription: Subscription;
 
-  viewEvo:[number, number] = [700, 400]; 
-  viewPM:[number, number] = [500, 250]; 
-  viewTop3:[number, number] = [400, 200];
+  viewEvo: [number, number] = [700, 400];
+  viewPM: [number, number] = [500, 250];
+  viewTop3: [number, number] = [400, 200];
 
   constructor(
     private ordersService: OrdersService,
@@ -145,13 +146,13 @@ export class DashboardComponent implements OnInit {
 
     this.formatCurrencyLabel = this.formatCurrencyLabel.bind(this);
     this.currentLang = this.translate.currentLang || 'es';
-    
+
     this.langSubscription = this.translate.onLangChange.subscribe(event => {
       this.currentLang = event.lang;
-      if(this.terminalSelected === this.terminalsNumber[0]) {
+      if (this.terminalSelected === this.terminalsNumber[0]) {
         this.terminalSelected = this.translate.instant('dpos.filter.all');
       }
-      if(this.selectedMonthIndex == 0) {
+      if (this.selectedMonthIndex == 0) {
         this.monthVarSearch = this.translate.instant('dpos.filter.all');
       }
       this.terminalsNumber[0] = this.translate.instant('dpos.filter.all');
@@ -165,53 +166,53 @@ export class DashboardComponent implements OnInit {
   public ngOnInit(): void {
     this.updateView();
 
-    this.storageService.userInfo.subscribe((user) =>{
-        this.portalUsersService.getToken(user).subscribe({
-          next: (portalUserToken)=> {
-            this.authService.setPortalUsersToken(portalUserToken.token);
-            this.commercesService.getCommerceList().subscribe({
-              next: (commerces) => {
-                this.sessionService.getCommerceId().subscribe((commerceId) => {
-                 if(commerceId != 0) {
+    this.storageService.userInfo.subscribe((user) => {
+      this.portalUsersService.getToken(user).subscribe({
+        next: (portalUserToken) => {
+          this.authService.setPortalUsersToken(portalUserToken.token);
+          this.commercesService.getCommerceList().subscribe({
+            next: (commerces) => {
+              this.sessionService.getCommerceId().subscribe((commerceId) => {
+                if (commerceId != 0) {
                   this.commerceId = commerceId; // Actualizar el valor en el componente
-                 } else {
+                } else {
                   this.commerceId = commerces[0].commerceId;
                   this.sessionService.setItem(SessionService.COMMERCE_ID, this.commerceId);
-                 }
-                 this.terminalsService.getTerminalList().subscribe({
-                    next: (terminals) => {
-                      terminals = terminals.filter(terminal => terminal.commerceId == this.commerceId && terminal.terminalNumber != null);
-                      if(terminals.length != 0) {
-                        this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
-                      }
-                      this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
-
-                      if(this.sessionService.getItem(SessionService.TERMINAL_NUMBER) == null){
-                        this.terminalSelected = this.terminalsNumber[0];
-                        this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
-                      } else {
-                        this.terminalSelected = this.sessionService.getItem(SessionService.TERMINAL_NUMBER);
-                      }
-                      this.searchTerminal();
-                    },
-                    error: (error) => {
-                      console.error("Error Terminals: ", error);
+                }
+                this.terminalsService.getTerminalList().subscribe({
+                  next: (terminals) => {
+                    terminals = terminals.filter(terminal => terminal.commerceId == this.commerceId && terminal.terminalNumber != null);
+                    if (terminals.length != 0) {
+                      this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
                     }
-                  });
+                    this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
+
+                    if (this.sessionService.getItem(SessionService.TERMINAL_NUMBER) == null) {
+                      this.terminalSelected = this.terminalsNumber[0];
+                      this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
+                    } else {
+                      this.terminalSelected = this.sessionService.getItem(SessionService.TERMINAL_NUMBER);
+                    }
+                    this.searchTerminal();
+                  },
+                  error: (error) => {
+                    console.error("Error Terminals: ", error);
+                  }
                 });
-              },
-              error: (error) => {
-                console.error("Error Commerces: ", error);
-              }
-            });
-          },
-          error: (error) => {
-            console.error("Error Portal user token", error);
-            if (error.status === 401) {
-              this.router.navigate(['/login']);
+              });
+            },
+            error: (error) => {
+              console.error("Error Commerces: ", error);
             }
+          });
+        },
+        error: (error) => {
+          console.error("Error Portal user token", error);
+          if (error.status === 401) {
+            this.router.navigate(['/login']);
           }
-        });
+        }
+      });
     });
   }
 
@@ -219,7 +220,7 @@ export class DashboardComponent implements OnInit {
   onResize(event) {
     this.updateView();
   }
-  
+
   private updateView(): void {
     // Definir el tamaño en función del ancho de la ventana
     const width = window.innerWidth;
@@ -241,10 +242,10 @@ export class DashboardComponent implements OnInit {
   /**
    * Función que solo muestra el value label en el gráfico de barras del mes que se ha seleccionado en el filtro
    */
-  public formatCurrencyLabel = (value:any) => {
+  public formatCurrencyLabel = (value: any) => {
     this.monthVarSearch = (<HTMLInputElement>(document.getElementById('monthDate'))).value;
     if (this.monthVarSearch != this.translate.instant('dpos.filter.all')) {
-      if (this.kpiDataset[+this.monthVarSearch - 1].value == value && value !=0) {
+      if (this.kpiDataset[+this.monthVarSearch - 1].value == value && value != 0) {
         value = value.toFixed(1) + '€';
       } else {
         value = null;
@@ -283,8 +284,8 @@ export class DashboardComponent implements OnInit {
     this.resetKpiDataset();
     this.resetColorsKPI();
 
-    let fromDate:number = 0;
-    let toDate:number = 0;
+    let fromDate: number = 0;
+    let toDate: number = 0;
     let terminalsSelected: any;
 
     //Si se selecciona el valor "Todos", se establece con todos los números de terminal
@@ -297,14 +298,14 @@ export class DashboardComponent implements OnInit {
     //Obtención de variables de búsqueda de año y mes
     this.yearVarSearch = (<HTMLInputElement>(document.getElementById('yearDate'))).value;
     this.monthVarSearch = (<HTMLInputElement>(document.getElementById('monthDate'))).value;
-    
+
     //Se comprueba si es necesario filtrar por solo año o por año+mes, el if es el caso de solo año
     if (this.selectedMonthIndex == 0) {
       //Se obtiene el año inicial (yearMilli) y el año máximo (yearMaxMilli) y se transforma a unicode
       this.yearDate = new Date(parseInt(this.yearVarSearch), 0);
       fromDate = this.yearDate.getTime();
       toDate = this.yearDate.getTime() + 31536000000;
-    //En el else se contempla el caso de que la búsqueda se realice con año+mes
+      //En el else se contempla el caso de que la búsqueda se realice con año+mes
     } else {
       //Se obtienen las variables de fechas (inicial (dateMilli) y max (dateMaxMilli)) teniendo en cuenta la variable de búsqueda de año y mes, se pasan a unicode
       this.yearDate = new Date(parseInt(this.yearVarSearch), parseInt(this.monthVarSearch) - 1);
@@ -312,7 +313,7 @@ export class DashboardComponent implements OnInit {
       this.yearMaxDate = new Date(parseInt(this.yearVarSearch), parseInt(this.monthVarSearch));
       toDate = this.yearMaxDate.getTime();
     }
-    
+
     this.idOrders = new OrdersFilter(this.commerceId, terminalsSelected, fromDate, toDate).idOrders;
     this.idCM = new CashMovementsFilter(this.commerceId, terminalsSelected, fromDate, toDate).idCashMovement;
     this.idEvo = new EvolutionFilter(this.commerceId, terminalsSelected, fromDate, toDate).idEvo;
@@ -335,12 +336,12 @@ export class DashboardComponent implements OnInit {
     this.emptyKPIChart = true;
 
     //Se captura el nombre del KPI en el que se clicka para mostrar el gráfico
-    let idElement:string = 'sales'; 
-    if(event != undefined) {
+    let idElement: string = 'sales';
+    if (event != undefined) {
       let target = event.target as HTMLElement;
       idElement = target.id.slice(0, 5);
     }
-    
+
     //Segun el KPI seleccionado: se activa la variable de nombre escogida, se desactiva el resto,
     //y se dibuja el gráfico con los datos correspondientes
     switch (idElement) {
@@ -406,7 +407,7 @@ export class DashboardComponent implements OnInit {
 
     //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
     this.ordersService.getOrderAggregate(this.idEvo).subscribe((aggregationsEvo) => {
-      if(aggregationsEvo.length != 0) {
+      if (aggregationsEvo.length != 0) {
         //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
         for (let i = 0; i < aggregationsEvo.length; i++) {
           this.kpiDataset[aggregationsEvo[i]._id - 1].value = aggregationsEvo[i].total / 100;
@@ -433,7 +434,7 @@ export class DashboardComponent implements OnInit {
     this.idEvo[1].$match.type = 2;
     //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
     this.ordersService.getOrderAggregate(this.idEvo).subscribe((aggregationsEvo) => {
-      if(aggregationsEvo.length != 0) {
+      if (aggregationsEvo.length != 0) {
         //Actualzamos los colores de las barras
         for (let i = 0; i < this.colorsKPI.length; i++) {
           this.colorsKPI[i].value = this.colors[2];
@@ -464,8 +465,8 @@ export class DashboardComponent implements OnInit {
     //Se establece el filtro de búsqueda de type en la variable a 0 para filtrar por operaciones de venta
     this.idEvo[1].$match.type = 0;
     //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
-    this.ordersService.getOrderAggregate(this.idEvo).subscribe((aggregationsEvo) => { 
-      if(aggregationsEvo.length != 0) {
+    this.ordersService.getOrderAggregate(this.idEvo).subscribe((aggregationsEvo) => {
+      if (aggregationsEvo.length != 0) {
         //Actualzamos los colores de las barras
         for (let i = 0; i < this.colorsKPI.length; i++) {
           this.colorsKPI[i].value = this.colors[1];
@@ -498,7 +499,7 @@ export class DashboardComponent implements OnInit {
     let valueGraphArrayOut = new Array(12);
     //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal y intervalo de tiempo)
     this.cashMovementsService.getCashMovementsAggregate(this.idEvoCM).subscribe((aggregationsEvoIn) => {
-      if(aggregationsEvoIn.length != 0) {
+      if (aggregationsEvoIn.length != 0) {
         //Actualzamos los colores de las barras
         for (let i = 0; i < this.colorsKPI.length; i++) {
           this.colorsKPI[i].value = this.colors[3];
@@ -506,8 +507,8 @@ export class DashboardComponent implements OnInit {
         //Se inicializan los arrays
         this.resetKpiDataset();
         for (let i = 0; i < this.kpiDataset.length; i++) {
-            valueGraphArrayIn[i] = 0;
-            valueGraphArrayOut[i] = 0;
+          valueGraphArrayIn[i] = 0;
+          valueGraphArrayOut[i] = 0;
         }
         //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
         for (let i = 0; i < aggregationsEvoIn.length; i++) {
@@ -538,15 +539,15 @@ export class DashboardComponent implements OnInit {
    * Función para mostrar los datos de la evolución de los cierres de caja
    */
   private printBalancesEvoChart() {
-    
+
     //Se inicializan los array de in y out donde se van a poner los datos de los movimientos de caja positivos y negativos
-    let valueGraphArrayIn: number[] = [0,0,0,0,0,0,0,0,0,0,0,0];
-    let valueGraphArrayOut: number[] = [0,0,0,0,0,0,0,0,0,0,0,0];
-    let valueArrayCashMovements: number[] = [0,0,0,0,0,0,0,0,0,0,0,0];
-    
+    let valueGraphArrayIn: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    let valueGraphArrayOut: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    let valueArrayCashMovements: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
     //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal y intervalo de tiempo)
     this.cashMovementsService.getCashMovementsAggregate(this.idEvoCM).subscribe((aggregationsEvoIn) => {
-      if(aggregationsEvoIn.length != 0) {
+      if (aggregationsEvoIn.length != 0) {
         //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
         for (let i = 0; i < aggregationsEvoIn.length; i++) {
           //Se separan los datos dependiendo de su id (0 movimiento in en el if y 1 movimiento out en el else)
@@ -560,13 +561,13 @@ export class DashboardComponent implements OnInit {
         for (let i = 0; i < this.kpiDataset.length; i++) {
           valueArrayCashMovements[i] = valueGraphArrayIn[i] - valueGraphArrayOut[i];
         }
-      } 
+      }
 
       let valueGraphArraySales = new Array(12);
       let valueGraphArrayRefunds = new Array(12);
       //Se realiza la llamada a la API con la variable de búsqueda actualizada (terminal, intervalo de tiempo y tipo)
       this.ordersService.getOrderAggregate(this.idEvoResults).subscribe((aggregationsEvoOrder) => {
-        if(aggregationsEvoOrder.length != 0) {
+        if (aggregationsEvoOrder.length != 0) {
           //Actualzamos los colores de las barras
           for (let i = 0; i < this.colorsKPI.length; i++) {
             this.colorsKPI[i].value = this.colors[4];
@@ -574,12 +575,12 @@ export class DashboardComponent implements OnInit {
           //Inicializamos los arrays
           this.resetKpiDataset();
           for (let i = 0; i < this.kpiDataset.length; i++) {
-              valueGraphArraySales[i] = 0;
-              valueGraphArrayRefunds[i] = 0;
+            valueGraphArraySales[i] = 0;
+            valueGraphArrayRefunds[i] = 0;
           }
           let totalSales = 0;
           let totalRefunds = 0;
-  
+
           //Se clasifican los datos obtenidos según el tipo ( 0 ventas, 2 devoluciones y 5 rectificaciones) en el array de resultados
           for (let i = 0; i < aggregationsEvoOrder.length; i++) {
             switch (aggregationsEvoOrder[i]._id.type) {
@@ -593,7 +594,7 @@ export class DashboardComponent implements OnInit {
                 break;
             }
           }
-  
+
           //Se actualizan los datos del array de resultados en el array de datos del gráfico para que se muestren los resultados (ventas - (devoluciones+rectificaciones))
           for (let i = 0; i < this.kpiDataset.length; i++) {
             this.kpiDataset[i].value = valueGraphArraySales[i] - valueGraphArrayRefunds[i] + valueArrayCashMovements[i];
@@ -611,17 +612,17 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-   /**
-    * Función para mostrar los datos de todos los KPI 
-    */
-   private getKPIs() {
-    
+  /**
+   * Función para mostrar los datos de todos los KPI 
+   */
+  private getKPIs() {
+
     this.cashMovementsResult = 0;
     this.cashMovementsOperationsResult = 0;
 
-    this.ordersResult = {total: 0, count: 0};
-    this.refundsResult = {total: 0, count: 0};
-    this.rectificationsResult = {total: 0, count: 0};
+    this.ordersResult = { total: 0, count: 0 };
+    this.refundsResult = { total: 0, count: 0 };
+    this.rectificationsResult = { total: 0, count: 0 };
     this.avTicketResult = 0;
     this.balanceResult = 0;
 
@@ -629,17 +630,17 @@ export class DashboardComponent implements OnInit {
     this.cashMovementsService.getCashMovementsAggregate(this.idCM).subscribe(
       (aggregationsCM) => {
 
-        let inTotal:number = 0;
-        let inDecimals:number = 0;
-        let inCount:number = 0;
+        let inTotal: number = 0;
+        let inDecimals: number = 0;
+        let inCount: number = 0;
 
-        let ouTotal:number = 0;
-        let outDecimals:number = 0;
-        let outCount:number = 0;
-        
-        for(let i=0; i < aggregationsCM.length; i++) {
+        let ouTotal: number = 0;
+        let outDecimals: number = 0;
+        let outCount: number = 0;
+
+        for (let i = 0; i < aggregationsCM.length; i++) {
           let cashMovement = aggregationsCM[i];
-          if(cashMovement._id == 0) {
+          if (cashMovement._id == 0) {
             inTotal = aggregationsCM[0].total;
             inDecimals = aggregationsCM[0].decimals;
             inCount = aggregationsCM[0].count;
@@ -656,7 +657,7 @@ export class DashboardComponent implements OnInit {
         //Comunicación con API para obtener los datos agregados que se muestran como base al iniciar la página en la sección de KPIs
         this.ordersService.getOrderAggregate(this.idOrders).subscribe(
           (aggregation) => {
-            if(aggregation.length != 0) {
+            if (aggregation.length != 0) {
               this.aggregations = aggregation;
               //Bucle para recorrer el objeto respuesta
               for (let i = 0; i < this.aggregations.length; i++) {
@@ -703,7 +704,7 @@ export class DashboardComponent implements OnInit {
     //Llamada a la API para obtener el total de productos vendidos
     this.ordersService.getOrderTop3Aggregate(this.idTP).subscribe(
       (aggregationsTP) => {
-        if(aggregationsTP.length != 0) {
+        if (aggregationsTP.length != 0) {
           //Llamada a la API para obtener los datos del gráfico de top 3 más vendidos
           this.ordersService.getOrderTop3Aggregate(this.idT3).subscribe(
             (aggregationsTop3) => {
@@ -712,10 +713,10 @@ export class DashboardComponent implements OnInit {
               this.colorsTop3 = [];
               this.datasetTop3 = [];
 
-              let top3:Top3Aggregation[] = [];
+              let top3: Top3Aggregation[] = [];
               let totalQuantity = 0;
 
-              if(aggregationsTop3 != null) {
+              if (aggregationsTop3 != null) {
                 //Multiplicamos por 1000 la cantidad de productos cuya unidad de medida son "unidades" para normalizarlo con los pesos
                 aggregationsTop3.forEach(item => {
                   if (item.unitsMeasurement === 0) {
@@ -725,16 +726,16 @@ export class DashboardComponent implements OnInit {
                 });
 
                 //ordenamos descendentemente y nos quedamos con los 3 primeros
-                top3 = aggregationsTop3.sort((a, b) => b.quantity - a.quantity).slice(0, 3); 
+                top3 = aggregationsTop3.sort((a, b) => b.quantity - a.quantity).slice(0, 3);
               }
-              
+
               for (let i = 0; i < top3.length; i++) {
                 sumaTP = sumaTP + top3[i].quantity;
 
-                let quantityValue:string = "";
-                let quantity:number = top3[i].quantity/1000;
+                let quantityValue: string = "";
+                let quantity: number = top3[i].quantity / 1000;
 
-                if(top3[i].unitsMeasurement == 1) {
+                if (top3[i].unitsMeasurement == 1) {
                   quantityValue = quantity + "kg";
                 } else if (top3[i].unitsMeasurement == 2) {
                   quantityValue = quantity + "m";
@@ -746,17 +747,17 @@ export class DashboardComponent implements OnInit {
 
                 let dataName: string = top3[i].product + ' (' + quantityValue + ')';
                 let dataValue: number = Math.round((top3[i].quantity / totalQuantity) * 100);
-                this.colorsTop3.push({ name: dataName, value: this.colors[i]});
-                let data= new DataSetTop3(dataName, dataValue);
+                this.colorsTop3.push({ name: dataName, value: this.colors[i] });
+                let data = new DataSetTop3(dataName, dataValue);
                 this.datasetTop3.push(data);
               }
-              
+
               //Se asocia el 4º puesto del array del gráfico correspondiente al apartado "resto de productos"
               //El dato se obtiene restando el valor total de la consulta de aggregationsTP a la sumaTP
               if (this.datasetTop3.length >= 3) {
-                let dataName: string = 'Resto (' + (totalQuantity - sumaTP) +' uds)';
+                let dataName: string = 'Resto (' + (totalQuantity - sumaTP) + ' uds)';
                 let dataValue: number = Math.round(((totalQuantity - sumaTP) / totalQuantity) * 100);
-                let data= new DataSetTop3(dataName, dataValue);
+                let data = new DataSetTop3(dataName, dataValue);
                 this.datasetTop3.push();
               }
 
@@ -764,7 +765,7 @@ export class DashboardComponent implements OnInit {
 
               this.loadedTPChart = true;
               this.emptyTPChart = false;
-            } 
+            }
           );
         } else {
           this.loadedTPChart = true;
@@ -784,7 +785,7 @@ export class DashboardComponent implements OnInit {
 
     //Llamada a la API para obtener los métodos de pago
     this.ordersService.getOrderAggregate(this.idPM).subscribe((aggregationsPM) => {
-      if(aggregationsPM.length != 0) {
+      if (aggregationsPM.length != 0) {
         //Se reinicia el array de datos del gráfico
         for (let i = 0; i < this.datasetPM.length; i++) {
           this.datasetPM[i].value = 0;
@@ -804,7 +805,7 @@ export class DashboardComponent implements OnInit {
               break;
             case 'Efectivo':
               this.datasetPM[0].value = Math.round((aggregationsPM[i].count / totalPM) * 100);
-              this.datasetPM[0].name ='Efectivo';
+              this.datasetPM[0].name = 'Efectivo';
               break;
             case 'Vales':
               this.datasetPM[2].value = Math.round((aggregationsPM[i].count / totalPM) * 100);
@@ -885,7 +886,7 @@ export class DashboardComponent implements OnInit {
 
   // Función de formato para las etiquetas de datos
   dataLabelFormatting(value: any): string {
-    if(value<=0) return "";
+    if (value <= 0) return "";
     return value.toFixed(2); // Redondear a 2 decimales
   }
 }
