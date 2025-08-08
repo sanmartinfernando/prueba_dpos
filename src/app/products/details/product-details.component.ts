@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'src/app/_services/auth.service';
@@ -17,12 +17,21 @@ import { Modifiers } from '../../_models/modifiers.model';
 
 
 @Component({
-  selector: 'DPOSW-product-details',
+  selector: 'app-dpos-product-details',
   templateUrl: './product-details.component.html',
 })
 export class ProductDetailsComponent implements OnInit {
 
-  loadCompleted: boolean = false;
+  private encryptionService = inject(EncryptionService);
+  private portalUsersService = inject(PortalUsersService);
+  private activatedRoute = inject(ActivatedRoute);
+  private storageService = inject(StorageService);
+  private sessionService = inject(SessionService);
+  private dialog = inject(MatDialog);
+  private translate = inject(TranslateService);
+  private authService = inject(AuthService);
+
+  loadCompleted = false;
   idProduct: string = null;
   titlePage: string;
   code: string;
@@ -37,16 +46,8 @@ export class ProductDetailsComponent implements OnInit {
   categories: Category[] = [{ id: "0", name: "Todas las categorías" }, { id: "1", name: "Categoria 1" }, { id: "2", name: "Categoria 2" }];
   modifiers: Modifiers[] = [{ id: "0", name: "Punto de la carne", modifiers: "muy hecho, hecho, al punto, crudo" }];
 
-  constructor(private encryptionService: EncryptionService,
-    private portalUsersService: PortalUsersService,
-    private activatedRoute: ActivatedRoute,
-    private storageService: StorageService,
-    private uiStateService: UIStateService,
-    private sessionService: SessionService,
-    private dialog: MatDialog,
-    private themeService: ThemeService,
-    private translate: TranslateService,
-    private authService: AuthService) {
+  constructor(private uiStateService: UIStateService,
+    private themeService: ThemeService) {
 
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
 
@@ -78,14 +79,14 @@ export class ProductDetailsComponent implements OnInit {
   }
 
   onTilSalesStartDateChange(): void {
-    this.salesStartDate = (<HTMLInputElement>(document.getElementById('salesDateFrom'))).value;
+    this.salesStartDate = (document.getElementById('salesDateFrom') as HTMLInputElement).value;
     if (this.salesStartDate.length > 0) {
       this.salesStartDateMilli = Date.parse(this.salesStartDate);
     }
   }
 
   onTilSalesEndDateChange(): void {
-    this.salesEndDate = (<HTMLInputElement>(document.getElementById('salesDateTo'))).value;
+    this.salesEndDate = (document.getElementById('salesDateTo') as HTMLInputElement).value;
     if (this.salesEndDate.length > 0) {
       this.salesEndDateMilli = Date.parse(this.salesEndDate);
     }

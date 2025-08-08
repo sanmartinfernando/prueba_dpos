@@ -1,7 +1,7 @@
 import { StorageService } from 'src/app/_services/storage.service';
 import { EncryptionService } from './../_services/encryption.service';
 import { DownloadCsvService } from '../_services/download-csv.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { PortalUsersService } from '../_services/portal-users.service';
 import { TerminalsService } from '../_services/terminals.service';
 import { CommercesService } from '../_services/commerces.service';
@@ -16,55 +16,57 @@ import { UIStateService } from '../_services/ui-state.service';
 
 
 @Component({
-  selector: 'DPOSW-balances',
+  selector: 'app-dpos-balances',
   templateUrl: './balances.component.html',
   styleUrls: [],
 })
-export class BalancesComponent implements OnInit {
+export class BalancesComponent implements OnInit, OnDestroy {
+
+  private balancesService = inject(BalancesService);
+  private encryptionService = inject(EncryptionService);
+  private storageService = inject(StorageService);
+  private downloadCsvService = inject(DownloadCsvService);
+  private portalUsersService = inject(PortalUsersService);
+  private terminalsService = inject(TerminalsService);
+  private commercesService = inject(CommercesService);
+  private sessionService = inject(SessionService);
+  private themeService = inject(ThemeService);
+  private translate = inject(TranslateService);
+  private uiStateService = inject(UIStateService);
+  private authService = inject(AuthService);
 
   Math = Math;
   balances: Balance[];
-  page: number = 0;
+  page = 0;
   code: string;
-  loadCompleted: boolean = false;
-  mismatch = new Array;
+  loadCompleted = false;
+  mismatch = [];
 
   terminalsNumber: string[];
   terminalSelected: string = null;
-  searchCounter: boolean = false;
+  searchCounter = false;
   sinceDate: string;
   sinceDateMilli: number;
   tilDate: string;
   tilDateMilli: number;
   today: Date = new Date();
   todayMilli = this.today.getTime();
-  varSearch: string = '';
-  emptySearch: boolean = false;
-  commerceId: number = 0;
+  varSearch = '';
+  emptySearch = false;
+  commerceId = 0;
 
   selectedIndices: number[] = [];
-  isAllSelected: boolean = false;
+  isAllSelected = false;
   counter = 0;
 
   currentLang: string;
   langSubscription: Subscription;
 
-  showModal: boolean = false;
-  modalTitle: string = '';
-  modalMessage: string = '';
+  showModal = false;
+  modalTitle = '';
+  modalMessage = '';
 
-  constructor(private balancesService: BalancesService,
-    private encryptionService: EncryptionService,
-    private storageService: StorageService,
-    private downloadCsvService: DownloadCsvService,
-    private portalUsersService: PortalUsersService,
-    private terminalsService: TerminalsService,
-    private commercesService: CommercesService,
-    private sessionService: SessionService,
-    private themeService: ThemeService,
-    private translate: TranslateService,
-    private uiStateService: UIStateService,
-    private authService: AuthService) {
+  constructor() {
 
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
 
@@ -84,11 +86,11 @@ export class BalancesComponent implements OnInit {
 
   ngOnInit(): void {
 
-    if (this.sessionService.getItem(SessionService.FROM_DATE) != null) {
+    if (this.sessionService.getItem(SessionService.FROM_DATE) !== null) {
       this.sinceDate = this.formatDate(this.sessionService.getItem(SessionService.FROM_DATE));
     }
 
-    if (this.sessionService.getItem(SessionService.TO_DATE) != null) {
+    if (this.sessionService.getItem(SessionService.TO_DATE) !== null) {
       this.tilDate = this.formatDate(this.sessionService.getItem(SessionService.TO_DATE));
     }
 
@@ -99,7 +101,7 @@ export class BalancesComponent implements OnInit {
           this.commercesService.getCommerceList().subscribe({
             next: (commerces) => {
               this.sessionService.getCommerceId().subscribe((commerceId) => {
-                if (commerceId != 0) {
+                if (commerceId !== 0) {
                   this.commerceId = commerceId; // Actualizar el valor en el componente
                 } else {
                   this.commerceId = commerces[0].commerceId;
@@ -107,12 +109,12 @@ export class BalancesComponent implements OnInit {
                 }
                 this.terminalsService.getTerminalList().subscribe({
                   next: (terminals) => {
-                    terminals = terminals.filter(terminal => terminal.commerceId == this.commerceId && terminal.terminalNumber != null);
-                    if (terminals.length != 0) {
+                    terminals = terminals.filter(terminal => terminal.commerceId === this.commerceId && terminal.terminalNumber !== null);
+                    if (terminals.length !== 0) {
                       this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
                     }
                     this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
-                    if (this.sessionService.getItem(SessionService.TERMINAL_NUMBER) == null) {
+                    if (this.sessionService.getItem(SessionService.TERMINAL_NUMBER) === null) {
                       this.terminalSelected = this.terminalsNumber[0];
                       this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
                     } else {
@@ -140,14 +142,14 @@ export class BalancesComponent implements OnInit {
 
   //Método de búsqueda
   searchBalances() {
-    if (this.terminalSelected == '') {
+    if (this.terminalSelected === '') {
       this.terminalSelected = null;
     }
 
     //Obtención variables fechas
     this.sinceDateMilli = Date.parse(this.sinceDate);
 
-    let date = new Date(this.tilDate);
+    const date = new Date(this.tilDate);
     // Establecer la hora a las 23:59
     date.setHours(23, 59, 0, 0);
     this.tilDateMilli = date.getTime();
@@ -157,11 +159,11 @@ export class BalancesComponent implements OnInit {
 
     //Parámetros de búsqueda activos
     //Terminal
-    if (this.terminalSelected != null) {
-      if (this.searchCounter == false) {
+    if (this.terminalSelected !== null) {
+      if (this.searchCounter === false) {
         this.searchCounter = true;
       }
-      if (this.terminalSelected == this.translate.instant('dpos.filter.all')) {
+      if (this.terminalSelected === this.translate.instant('dpos.filter.all')) {
         this.varSearch = this.varSearch + "{'or':[";
         for (let i = 1; i < this.terminalsNumber.length; i++) {
           this.varSearch = this.varSearch + "{'field':'terminal_number','op':'=','value':'" + this.terminalsNumber[i] + "'}";
@@ -176,8 +178,8 @@ export class BalancesComponent implements OnInit {
     }
 
     //Commerce id
-    if (this.commerceId != 0) {
-      if (this.searchCounter == false) {
+    if (this.commerceId !== 0) {
+      if (this.searchCounter === false) {
         this.searchCounter = true;
       } else {
         this.varSearch = this.varSearch + ',';
@@ -194,7 +196,7 @@ export class BalancesComponent implements OnInit {
         this.openModal();
         return;
       } else {
-        if (this.searchCounter == false) {
+        if (this.searchCounter === false) {
           this.searchCounter = true;
         } else {
           this.varSearch = this.varSearch + ',';
@@ -211,7 +213,7 @@ export class BalancesComponent implements OnInit {
         this.openModal();
         return;
       } else {
-        if (this.searchCounter == false) {
+        if (this.searchCounter === false) {
           this.searchCounter = true;
         } else {
           this.varSearch = this.varSearch + ',';
@@ -221,7 +223,7 @@ export class BalancesComponent implements OnInit {
     }
 
     //Búsqueda vacia
-    if (this.terminalSelected != null && this.sinceDateMilli == 0 && this.tilDateMilli == 0) {
+    if (this.terminalSelected !== null && this.sinceDateMilli === 0 && this.tilDateMilli === 0) {
       this.getBalanceInfo();
     }
 
@@ -235,29 +237,29 @@ export class BalancesComponent implements OnInit {
   //Llamada API
   getBalanceInfo() {
     this.loadCompleted = false;
-    let size: number = 10000;
-    let selectSales = new Array(3);
+    const size = 10000;
+    const selectSales = new Array(3);
     this.balancesService.getBalanceInfo(size, this.varSearch).subscribe({
       next: (balanceInfo) => {
         this.balances = balanceInfo.data;
-        if (this.balances.length != 0) {
+        if (this.balances.length !== 0) {
           for (let i = 0; i < 3; i++) {
             selectSales[i] = new Array(this.balances.length);
           }
           //Creación de arrays del select del formulario de búsqueda
           //Terminal
           for (let i = 0; i < this.balances.length; i++) {
-            let balance: Balance = this.balances[i];
+            const balance: Balance = this.balances[i];
             this.mismatch[i] = Math.abs(balance.manualCashRecount) - Math.abs(balance.autoCashRecount);
-            let counterSelect: boolean = false;
-            if (i == 0) {
+            let counterSelect = false;
+            if (i === 0) {
               selectSales[0][i] = balance.terminalNumber;
             } else {
               for (let z = 0; z <= i; z++) {
-                if (selectSales[0][z] == balance.terminalNumber || counterSelect == true) {
+                if (selectSales[0][z] === balance.terminalNumber || counterSelect === true) {
                   counterSelect = true;
                 }
-                if (counterSelect == false && z == i) {
+                if (counterSelect === false && z === i) {
                   selectSales[0][i] = balance.terminalNumber;
                 }
               }
@@ -266,7 +268,7 @@ export class BalancesComponent implements OnInit {
             //Eliminación espacios en blanco de arrays
             //Terminal
             for (let i = this.balances.length - 1; i >= 0; i--) {
-              if (selectSales[0][i] == null) {
+              if (selectSales[0][i] === null) {
                 selectSales[0].splice(i, 1);
               }
             }
@@ -278,7 +280,7 @@ export class BalancesComponent implements OnInit {
         this.loadCompleted = true;
       },
       error: (error) => {
-        if (error.status == 401 || error.status == 500) {
+        if (error.status === 401 || error.status === 500) {
           this.emptySearch = true;
           this.loadCompleted = true;
         };
@@ -291,7 +293,7 @@ export class BalancesComponent implements OnInit {
     if (event.target.checked) {
       this.selectedIndices = [];
       for (let i = 0; i < this.balances.length; i++) {
-        let globalIndex = i;
+        const globalIndex = i;
         this.selectedIndices.push(globalIndex);
       }
       this.counter = this.selectedIndices.length;
@@ -328,7 +330,7 @@ export class BalancesComponent implements OnInit {
 
   onSinceDateChange(): void {
     this.sessionService.setItem(SessionService.FROM_DATE, this.terminalSelected);
-    this.sinceDate = (<HTMLInputElement>(document.getElementById('sinceDate'))).value;
+    this.sinceDate = (document.getElementById('sinceDate') as HTMLInputElement).value;
     if (this.sinceDate.length > 0) {
       this.sinceDateMilli = Date.parse(this.sinceDate);
       this.sessionService.setItem(SessionService.FROM_DATE, this.sinceDateMilli);
@@ -337,7 +339,7 @@ export class BalancesComponent implements OnInit {
 
   onTilDateChange(): void {
     this.sessionService.setItem(SessionService.TO_DATE, this.terminalSelected);
-    this.tilDate = (<HTMLInputElement>(document.getElementById('tilDate'))).value;
+    this.tilDate = (document.getElementById('tilDate') as HTMLInputElement).value;
     if (this.tilDate.length > 0) {
       this.tilDateMilli = Date.parse(this.tilDate);
       this.sessionService.setItem(SessionService.TO_DATE, this.tilDateMilli);

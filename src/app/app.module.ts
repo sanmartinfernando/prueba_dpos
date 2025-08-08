@@ -133,6 +133,6 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
 export function setupTranslateFactory(session: SessionService, translate: TranslateService) {
 
   let language: string = session.getItem(SessionService.LANGUAGE);
-  language = language != null ? language : 'es';
+  language = language !== null ? language : 'es';
   return () => translate.use(language).toPromise();
 }

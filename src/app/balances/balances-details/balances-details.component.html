@@ -203,7 +203,7 @@
               </thead>
               <tbody>
                 <tr *ngFor="let taxes of balances.balanceLines; index as i">
-                  <ng-container *ngIf="taxes.itemName.substring(0, 3) == 'IVA'">
+                  <ng-container *ngIf="taxes.itemName.substring(0, 3) === 'IVA'">
                     <td>{{ taxes.itemName }}</td>
                     <td></td>
                     <td class="text-end">{{ taxes.base / Math.pow(10, taxes.decimals) | currency : "Eur" : "€" }}</td>
@@ -246,7 +246,7 @@
               <tbody>
                 <tr *ngFor="let paymentmethod of balances.balanceLines; index as i">
                   <ng-container
-                    *ngIf="paymentmethod.itemName.substring(0,3) == 'Efe' || paymentmethod.itemName.substring(0,3) == 'Tar' || paymentmethod.itemName.substring(0,3) == 'Val' || paymentmethod.itemName.substring(0,3) == 'Vir' || paymentmethod.itemName.substring(0,3) == 'Otr' || paymentmethod.itemName.substring(0,3) == 'Bon' || paymentmethod.itemName.substring(0,3) == 'Rec'">
+                    *ngIf="paymentmethod.itemName.substring(0,3) === 'Efe' || paymentmethod.itemName.substring(0,3) === 'Tar' || paymentmethod.itemName.substring(0,3) === 'Val' || paymentmethod.itemName.substring(0,3) === 'Vir' || paymentmethod.itemName.substring(0,3) === 'Otr' || paymentmethod.itemName.substring(0,3) === 'Bon' || paymentmethod.itemName.substring(0,3) === 'Rec'">
                     <td>{{paymentmethod.itemName}}</td>
                     <td></td>
                     <td></td>

@@ -1,6 +1,6 @@
 import { StorageService } from 'src/app/_services/storage.service';
 import { ArqueoXService } from './../_services/arqueo-x.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { EncryptionService } from '../_services/encryption.service';
 import { DownloadCsvService } from '../_services/download-csv.service';
 import { Balance } from '../_models/balance.model';
@@ -18,65 +18,65 @@ import { UIStateService } from '../_services/ui-state.service';
 
 
 @Component({
-  selector: 'DPOSW-reports',
+  selector: 'app-dpos-reports',
   templateUrl: './reports.component.html',
   styleUrls: [],
 })
-export class ReportsComponent implements OnInit {
+export class ReportsComponent implements OnInit, OnDestroy {
 
-  
-  size: number = 10000;
+  private encryptionService = inject(EncryptionService);
+  private arqueoXService = inject(ArqueoXService);
+  private salesReportService = inject(SalesReportService);
+  private storageService = inject(StorageService);
+  private downloadCsvService = inject(DownloadCsvService);
+  private portalUsersService = inject(PortalUsersService);
+  private terminalsService = inject(TerminalsService);
+  private commercesService = inject(CommercesService);
+  private sessionService = inject(SessionService);
+  private authService = inject(AuthService);
+
+  size = 10000;
   sales: Balance;
   salesReports: SalesReport;
   indexProduct: SalesReportAggregations[];
-  page: number = 0;
-  searchParams0: string = '';
-  loadCompleted: boolean = false;
+  page = 0;
+  searchParams0 = '';
+  loadCompleted = false;
   Math = Math;
-  totalUnits: number = 0;
-  totalUnitsValor: number = 0;
-  totalBase: number = 0;
-  totalCuote: number = 0;
-  totalTax: number = 0;
-  totalPercentage: number = 0;
-  totalValuePercentage: number = 0;
+  totalUnits = 0;
+  totalUnitsValor = 0;
+  totalBase = 0;
+  totalCuote = 0;
+  totalTax = 0;
+  totalPercentage = 0;
+  totalValuePercentage = 0;
 
   //Parámetros de búsqueda
   public terminalsNumber: string[];
   terminalSelected: string = null;
   reportVarSearch: string = this.translate.instant('dpos.reports.taxes.label');;
-  searchCounter: boolean = false;
+  searchCounter = false;
   sinceDate: string;
-  sinceDateMilli: number = 0;
+  sinceDateMilli = 0;
   tilDate: string;
-  tilDateMilli: number = 0;
+  tilDateMilli = 0;
   today: Date = new Date();
   todayMilli = this.today.getTime();
-  varSearch: string = '';
-  emptySearch: boolean = false;
-  commerceId: number = 0;
+  varSearch = '';
+  emptySearch = false;
+  commerceId = 0;
 
   currentLang: string;
   langSubscription: Subscription;
-  showModal: boolean = false;
-  modalTitle: string = '';
-  modalMessage: string = '';
+  showModal = false;
+  modalTitle = '';
+  modalMessage = '';
 
 
   constructor(
-    private encryptionService: EncryptionService,
-    private arqueoXService: ArqueoXService,
-    private salesReportService: SalesReportService,
-    private storageService: StorageService,
-    private downloadCsvService: DownloadCsvService,
-    private portalUsersService: PortalUsersService,
-    private terminalsService: TerminalsService,
-    private commercesService: CommercesService,
-    private sessionService: SessionService,
     private themeService: ThemeService,
     public translate: TranslateService,
-    private uiStateService: UIStateService,
-    private authService: AuthService
+    private uiStateService: UIStateService
   ) {
 
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
@@ -99,15 +99,15 @@ export class ReportsComponent implements OnInit {
   ngOnInit(): void {
     this.loadCompleted = false;
 
-    if (this.sessionService.getItem(SessionService.FROM_DATE) != null) {
+    if (this.sessionService.getItem(SessionService.FROM_DATE) !== null) {
       this.sinceDate = this.formatDate(this.sessionService.getItem(SessionService.FROM_DATE));
     }
 
-    if (this.sessionService.getItem(SessionService.TO_DATE) != null) {
+    if (this.sessionService.getItem(SessionService.TO_DATE) !== null) {
       this.tilDate = this.formatDate(this.sessionService.getItem(SessionService.TO_DATE));
     }
 
-    if (this.sessionService.getItem(SessionService.REPORT_TYPE) != null) {
+    if (this.sessionService.getItem(SessionService.REPORT_TYPE) !== null) {
       this.reportVarSearch = this.getReportVarSearch(this.sessionService.getItem(SessionService.REPORT_TYPE));
     } else {
       this.sessionService.setItem(SessionService.REPORT_TYPE, -1);
@@ -122,7 +122,7 @@ export class ReportsComponent implements OnInit {
           this.commercesService.getCommerceList().subscribe({
             next: (commerces) => {
               this.sessionService.getCommerceId().subscribe((commerceId) => {
-                if (commerceId != 0) {
+                if (commerceId !== 0) {
                   this.commerceId = commerceId; // Actualizar el valor en el componente
                 } else {
                   this.commerceId = commerces[0].commerceId;
@@ -130,12 +130,12 @@ export class ReportsComponent implements OnInit {
                 }
                 this.terminalsService.getTerminalList().subscribe({
                   next: (terminals) => {
-                    terminals = terminals.filter(terminal => terminal.commerceId == this.commerceId && terminal.terminalNumber != null);
-                    if (terminals.length != 0) {
+                    terminals = terminals.filter(terminal => terminal.commerceId === this.commerceId && terminal.terminalNumber !== null);
+                    if (terminals.length !== 0) {
                       this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
                     }
                     this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
-                    if (this.sessionService.getItem(SessionService.TERMINAL_NUMBER) == null) {
+                    if (this.sessionService.getItem(SessionService.TERMINAL_NUMBER) === null) {
                       this.terminalSelected = this.terminalsNumber[0];
                       this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
                     } else {
@@ -166,7 +166,7 @@ export class ReportsComponent implements OnInit {
     this.loadCompleted = false;
 
     //Seteamos por defecto el año actual
-    let yearDate = new Date(new Date().getFullYear(), 0);
+    const yearDate = new Date(new Date().getFullYear(), 0);
     if (this.sinceDateMilli > 0) {
       this.sinceDateMilli = Date.parse(this.sinceDate);
     } else {
@@ -176,7 +176,7 @@ export class ReportsComponent implements OnInit {
     }
 
     if (this.tilDateMilli > 0) {
-      let date = new Date(this.tilDate);
+      const date = new Date(this.tilDate);
       // Establecer la hora a las 23:59
       date.setHours(23, 59, 0, 0);
       this.tilDateMilli = date.getTime();
@@ -210,7 +210,7 @@ export class ReportsComponent implements OnInit {
     this.varSearch += ']}';
     this.searchCounter = false;
     //Llamada API
-    if (this.reportVarSearch == this.translate.instant('dpos.reports.taxes.label') || this.reportVarSearch == this.translate.instant('dpos.reports.paymentmethods.label')) {
+    if (this.reportVarSearch === this.translate.instant('dpos.reports.taxes.label') || this.reportVarSearch === this.translate.instant('dpos.reports.paymentmethods.label')) {
       this.getArqueoX();
     } else {//Productos
       this.getSalesReport();
@@ -219,7 +219,7 @@ export class ReportsComponent implements OnInit {
 
   private getArqueoX() {
     this.loadCompleted = false;
-    this.arqueoXService.getArqueoX(this.sinceDateMilli, this.tilDateMilli, this.terminalSelected == this.translate.instant('dpos.filter.all') ? null : this.terminalSelected, this.commerceId).subscribe({
+    this.arqueoXService.getArqueoX(this.sinceDateMilli, this.tilDateMilli, this.terminalSelected === this.translate.instant('dpos.filter.all') ? null : this.terminalSelected, this.commerceId).subscribe({
       next: (arqueo) => {
         this.sales = arqueo;
         this.totalBase = 0;
@@ -227,22 +227,22 @@ export class ReportsComponent implements OnInit {
         this.totalTax = 0;
         this.totalPercentage = 0;
         this.totalValuePercentage = 0;
-        if (this.sales != null && this.sales.balanceLines.length > 0) {
+        if (this.sales !== null && this.sales.balanceLines.length > 0) {
           //Calculo de indicadores totales informes
-          for (let i = 0; this.sales.balanceLines != null && i < this.sales.balanceLines.length; i++) {
-            if (this.sales.balanceLines[i].itemType == 1 && this.sales.balanceLines[i].itemValue != -1) {
+          for (let i = 0; this.sales.balanceLines !== null && i < this.sales.balanceLines.length; i++) {
+            if (this.sales.balanceLines[i].itemType === 1 && this.sales.balanceLines[i].itemValue !== -1) {
               this.totalBase = this.totalBase + this.sales.balanceLines[i].base / Math.pow(10, this.sales.balanceLines[i].decimals);
               this.totalCuote = this.totalCuote + this.sales.balanceLines[i].tax / Math.pow(10, this.sales.balanceLines[i].decimals);
               this.totalTax = this.totalTax + this.sales.balanceLines[i].total / Math.pow(10, this.sales.balanceLines[i].decimals);
             }
             if (
-              this.sales.balanceLines[i].itemName.substring(0, 3) == 'Efe' ||
-              this.sales.balanceLines[i].itemName.substring(0, 3) == 'Tar' ||
-              this.sales.balanceLines[i].itemName.substring(0, 3) == 'Val' ||
-              this.sales.balanceLines[i].itemName.substring(0, 3) == 'Vir' ||
-              this.sales.balanceLines[i].itemName.substring(0, 3) == 'Otr' ||
-              this.sales.balanceLines[i].itemName.substring(0, 3) == 'Bon' ||
-              this.sales.balanceLines[i].itemName.substring(0, 3) == 'Rec'
+              this.sales.balanceLines[i].itemName.substring(0, 3) === 'Efe' ||
+              this.sales.balanceLines[i].itemName.substring(0, 3) === 'Tar' ||
+              this.sales.balanceLines[i].itemName.substring(0, 3) === 'Val' ||
+              this.sales.balanceLines[i].itemName.substring(0, 3) === 'Vir' ||
+              this.sales.balanceLines[i].itemName.substring(0, 3) === 'Otr' ||
+              this.sales.balanceLines[i].itemName.substring(0, 3) === 'Bon' ||
+              this.sales.balanceLines[i].itemName.substring(0, 3) === 'Rec'
             ) {
               this.totalPercentage = this.totalPercentage + this.sales.balanceLines[i].percentage;
               this.totalValuePercentage = this.totalValuePercentage + this.sales.balanceLines[i].total / Math.pow(10, this.sales.balanceLines[i].decimals);
@@ -255,7 +255,7 @@ export class ReportsComponent implements OnInit {
         this.loadCompleted = true;
       },
       error: (error) => {
-        if (error.status == 400 || error.status == 404 || error.status == 401 || error.status == 500) {
+        if (error.status === 400 || error.status === 404 || error.status === 401 || error.status === 500) {
           this.emptySearch = true;
           this.loadCompleted = true;
         }
@@ -265,13 +265,13 @@ export class ReportsComponent implements OnInit {
 
   private getSalesReport() {
     this.loadCompleted = false;
-    this.salesReportService.getSalesReport(this.sinceDateMilli, this.tilDateMilli, this.terminalSelected == this.translate.instant('dpos.filter.all') ? null : this.terminalSelected, this.commerceId).subscribe({
+    this.salesReportService.getSalesReport(this.sinceDateMilli, this.tilDateMilli, this.terminalSelected === this.translate.instant('dpos.filter.all') ? null : this.terminalSelected, this.commerceId).subscribe({
       next: (salesReport) => {
         this.salesReports = salesReport;
         this.indexProduct = Object.values(salesReport.aggregations);
         this.totalUnits = 0;
         this.totalUnitsValor = 0;
-        if (this.indexProduct != null && this.indexProduct.length > 0) {
+        if (this.indexProduct !== null && this.indexProduct.length > 0) {
           //Calculo indices totales productos
           for (let i = 0; i < this.indexProduct.length; i++) {
             this.totalUnits = this.totalUnits + (this.indexProduct[i].units ?? 2) / Math.pow(10, 3);
@@ -284,7 +284,7 @@ export class ReportsComponent implements OnInit {
         this.loadCompleted = true;
       },
       error: (error) => {
-        if (error.status == 400 || error.status == 404 || error.status == 401 || error.status == 500) {
+        if (error.status === 400 || error.status === 404 || error.status === 401 || error.status === 500) {
           this.emptySearch = true;
           this.loadCompleted = true;
         }
@@ -300,11 +300,11 @@ export class ReportsComponent implements OnInit {
 
   //Boton Descargar
   downloadReports() {
-    if (this.reportVarSearch == this.translate.instant('dpos.reports.taxes.label')) {
+    if (this.reportVarSearch === this.translate.instant('dpos.reports.taxes.label')) {
       this.downloadCsvService.downloadArqueoXFile(this.sales, this.translate.instant('dpos.reports.taxes.label'), this.currentLang);
-    } else if (this.reportVarSearch == this.translate.instant('dpos.reports.products.label')) {
+    } else if (this.reportVarSearch === this.translate.instant('dpos.reports.products.label')) {
       this.downloadCsvService.downloadSalesReportFile(this.salesReports, this.translate.instant('dpos.reports.products.label'), this.currentLang);
-    } else if (this.reportVarSearch == this.translate.instant('dpos.reports.paymentmethods.label')) {
+    } else if (this.reportVarSearch === this.translate.instant('dpos.reports.paymentmethods.label')) {
       this.downloadCsvService.downloadPaymentMethodsFile(this.sales, this.translate.instant('dpos.reports.paymentmethods.label'), this.currentLang);
     }
   }
@@ -323,7 +323,7 @@ export class ReportsComponent implements OnInit {
 
   onSinceDateChange(): void {
     this.sessionService.setItem(SessionService.FROM_DATE, this.terminalSelected);
-    this.sinceDate = (<HTMLInputElement>(document.getElementById('sinceDate'))).value;
+    this.sinceDate = (document.getElementById('sinceDate') as HTMLInputElement).value;
     if (this.sinceDate.length > 0) {
       this.sinceDateMilli = Date.parse(this.sinceDate);
       this.sessionService.setItem(SessionService.FROM_DATE, this.sinceDateMilli);
@@ -332,7 +332,7 @@ export class ReportsComponent implements OnInit {
 
   onTilDateChange(): void {
     this.sessionService.setItem(SessionService.TO_DATE, this.terminalSelected);
-    this.tilDate = (<HTMLInputElement>(document.getElementById('tilDate'))).value;
+    this.tilDate = (document.getElementById('tilDate') as HTMLInputElement).value;
     if (this.tilDate.length > 0) {
       this.tilDateMilli = Date.parse(this.tilDate);
       this.sessionService.setItem(SessionService.TO_DATE, this.tilDateMilli);
@@ -354,7 +354,7 @@ export class ReportsComponent implements OnInit {
 
   getReportVarSearch(reportType: number): string {
     let reportTypeValue: string = this.translate.instant('dpos.reports.taxes.label');
-    if (reportType != null) {
+    if (reportType !== null) {
       switch (reportType) {
         case Balance.REPORT_TYPE_TAXES:
           reportTypeValue = this.translate.instant('dpos.reports.taxes.label');
@@ -372,7 +372,7 @@ export class ReportsComponent implements OnInit {
 
   getReportType(): number {
     let reportType = -1;
-    if (this.reportVarSearch != null) {
+    if (this.reportVarSearch !== null) {
       switch (this.reportVarSearch) {
         case this.translate.instant('dpos.reports.taxes.label'):
           reportType = Balance.REPORT_TYPE_TAXES;

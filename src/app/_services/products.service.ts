@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment.dev-inte';
@@ -13,6 +13,9 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class ProductsService {
 
+  private http = inject(HttpClient);
+  private translate = inject(TranslateService);
+
   public httpOptions = {
     headers: new HttpHeaders(
       {
@@ -21,13 +24,13 @@ export class ProductsService {
     )
   };
 
-  constructor(private http: HttpClient, private translate: TranslateService) { }
+  constructor() { }
 
   public getProducts(size: number, searchParams: string): Observable<ProductInfo> {
     if (size === undefined || size === null || searchParams === undefined || searchParams === null) {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
     }
-    let urlProducts: string = `${environment.urlWS}${RestRoutes.PRODUCTS_INFO}${size}${RestRoutes.PARAM_OFFSET}${searchParams}`;
+    const urlProducts = `${environment.urlWS}${RestRoutes.PRODUCTS_INFO}${size}${RestRoutes.PARAM_OFFSET}${searchParams}`;
     return this.http.get<ProductInfo>(urlProducts, this.httpOptions);
   }
 
@@ -35,7 +38,7 @@ export class ProductsService {
     if (id === undefined || id === null) {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
     }
-    let urlProducts: string = `${environment.urlWS}${RestRoutes.PRODUCTS}${id}`;
+    const urlProducts = `${environment.urlWS}${RestRoutes.PRODUCTS}${id}`;
     return this.http.get<Product>(urlProducts, this.httpOptions);
   }
 }

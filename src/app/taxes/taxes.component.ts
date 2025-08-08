@@ -1,6 +1,6 @@
 import { StorageService } from 'src/app/_services/storage.service';
 import { DownloadCsvService } from '../_services/download-csv.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { PortalUsersService } from '../_services/portal-users.service';
 import { CommercesService } from '../_services/commerces.service';
 import { AuthService } from '../_services/auth.service';
@@ -16,34 +16,43 @@ import { MatDialog } from '@angular/material/dialog';
 
 
 @Component({
-  selector: 'DPOSW-taxes',
+  selector: 'app-dpos-taxes',
   templateUrl: './taxes.component.html',
 })
-export class TaxesComponent implements OnInit {
+export class TaxesComponent implements OnInit, OnDestroy {
 
-  size: number = 10000;
+  private downloadCsvService = inject(DownloadCsvService);
+  private storageService = inject(StorageService);
+  private portalUsersService = inject(PortalUsersService);
+  private dialog = inject(MatDialog);
+  private commercesService = inject(CommercesService);
+  private sessionService = inject(SessionService);
+  private themeService = inject(ThemeService);
+  private authService = inject(AuthService);
+
+  size = 10000;
   taxes: Tax[] = [{ id: 1, value: 1000, name: "IVA 10%" }, { id: 2, value: 2100, name: "IVA 21%" }];
-  page: number = 0;
+  page = 0;
   code: string;
-  loadCompleted: boolean = false;
-  commerceId: number = 0;
+  loadCompleted = false;
+  commerceId = 0;
 
-  masterSelected: boolean = false;
+  masterSelected = false;
 
   //Parámetros de búsqueda
   public terminalsNumber: string[];
   terminalSelected: string = null;
-  searchCounter: boolean = false;
+  searchCounter = false;
   varSearch: string = null;
 
-  emptySearch: boolean = false;
-  showModal: boolean = false;
-  modalTitle: string = '';
-  modalMessage: string = '';
+  emptySearch = false;
+  showModal = false;
+  modalTitle = '';
+  modalMessage = '';
 
   // Checkboxes
   selectedIndices: number[] = [];
-  isAllSelected: boolean = false;
+  isAllSelected = false;
   counter = 0;
 
   currentLang: string;
@@ -52,16 +61,8 @@ export class TaxesComponent implements OnInit {
   commerceSelected: string;
   commerces: Commerce[];
 
-  constructor(private downloadCsvService: DownloadCsvService,
-    private storageService: StorageService,
-    private portalUsersService: PortalUsersService,
-    private dialog: MatDialog,
-    private commercesService: CommercesService,
-    private translate: TranslateService,
-    private sessionService: SessionService,
-    private themeService: ThemeService,
-    private uiStateService: UIStateService,
-    private authService: AuthService) {
+  constructor(private translate: TranslateService,
+    private uiStateService: UIStateService) {
 
     //Desbloqueamos el selector de comercio;
     this.uiStateService.setFormSelectEnabled(true);
@@ -87,7 +88,7 @@ export class TaxesComponent implements OnInit {
             next: (commerces) => {
               this.commerces = commerces;
               this.sessionService.getCommerceId().subscribe((commerceId) => {
-                if (commerceId != 0) {
+                if (commerceId !== 0) {
                   this.commerceId = commerceId; // Actualizar el valor en el componente
                 } else {
                   this.commerceId = commerces[0].commerceId;
@@ -115,8 +116,8 @@ export class TaxesComponent implements OnInit {
     //Comienzo query búsqueda
     this.varSearch = "&qs={'and':[";
     //Commerce id
-    if (this.commerceId != 0) {
-      if (this.searchCounter == false) {
+    if (this.commerceId !== 0) {
+      if (this.searchCounter === false) {
         this.searchCounter = true;
       } else {
         this.varSearch = this.varSearch + ',';
@@ -135,7 +136,7 @@ export class TaxesComponent implements OnInit {
     this.taxesService.getTaxes(this.size, this.varSearch).subscribe(
       (taxes) => {
         this.taxes = taxes.data;
-        if(this.taxes.length != 0) {
+        if(this.taxes.length !== 0) {
           this.emptySearch = false;
         } else {
           this.emptySearch = true;
@@ -144,7 +145,7 @@ export class TaxesComponent implements OnInit {
       },
       (error) => {
         this.taxes = null;
-        if (error.status == 401 || error.status == 404 ||  error.status == 500) {
+        if (error.status === 401 || error.status === 404 ||  error.status === 500) {
           this.emptySearch = true;
           this.loadCompleted = true;
         };
@@ -167,7 +168,7 @@ export class TaxesComponent implements OnInit {
   //Eliminar impuestos
   deleteTaxes() {
     this.taxes = this.taxes.filter(tax => !tax.selected);
-    if (this.taxes.length == 0) {
+    if (this.taxes.length === 0) {
       this.emptySearch = true;
     }
   }
@@ -199,24 +200,24 @@ export class TaxesComponent implements OnInit {
   }
 
   getCommerceId(): number {
-    const commerce = this.commerces.find(commerce => commerce.commerceNumber == this.commerceSelected);
-    if (commerce != undefined) {
+    const commerce = this.commerces.find(commerce => commerce.commerceNumber === this.commerceSelected);
+    if (commerce !== undefined) {
       return commerce.commerceId;
     }
     return 0;
   }
 
   getCommerceNumber(commerceId: number): string {
-    const commerce = this.commerces.find(commerce => commerce.commerceId == commerceId);
-    if (commerce != undefined) {
+    const commerce = this.commerces.find(commerce => commerce.commerceId === commerceId);
+    if (commerce !== undefined) {
       return commerce.commerceNumber;
     }
     return "";
   }
 
   private getCommerceResellerName(commerces: Commerce[]): string {
-    const commerce = commerces.find(commerce => commerce.commerceId == this.commerceId);
-    if (commerce != undefined) {
+    const commerce = commerces.find(commerce => commerce.commerceId === this.commerceId);
+    if (commerce !== undefined) {
       return commerce.resellerName;
     }
     return null;

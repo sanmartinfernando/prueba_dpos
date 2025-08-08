@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpInterceptor, HttpHandler, HttpRequest, HTTP_INTERCEPTORS, HttpErrorResponse, HttpEvent } from '@angular/common/http';
 import { AuthService } from '../_services/auth.service';
 import { RestRoutes } from './rest-routes.config';
@@ -11,7 +11,11 @@ import { InactivityService } from '../_services/inactivity.service';
 @Injectable()
 export class HttpRequestInterceptor implements HttpInterceptor {
 
-  constructor(private authService: AuthService, private router: Router, private inactivityService: InactivityService) { }
+  private authService = inject(AuthService);
+  private router = inject(Router); 
+  private inactivityService = inject(InactivityService);
+
+  constructor() { }
 
   public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let authReq = req;
@@ -20,7 +24,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
     }
     if (req.url.includes('PortalUsers/commerces') || req.url.includes('PortalUsers/terminals')) {
       const token = this.authService.getPortalUsersToken();
-      if (token != null) {
+      if (token !== null) {
         authReq = req.clone({
           headers: req.headers.set(
             SecurityConstants.TOKEN_HEADER_KEY,
@@ -30,7 +34,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
       }
     } else if (req.url.includes('wsenrollment')) {
       const token = this.authService.getToken2();
-      if (token != null) {
+      if (token !== null) {
         authReq = req.clone({
           headers: req.headers.set(
             SecurityConstants.TOKEN_HEADER_KEY,
@@ -40,7 +44,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
       }
     } else {
       const token = this.authService.getToken();
-      if (token != null) {
+      if (token !== null) {
         authReq = req.clone({
           headers: req.headers.set(
             SecurityConstants.TOKEN_HEADER_KEY,

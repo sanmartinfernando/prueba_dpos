@@ -22,8 +22,8 @@ export class ThemeService {
 
   public loadTheme(resellerName: string): void {
     const head = document.getElementsByTagName('head')[0];
-    let themeLink = document.getElementById(this.themeLinkId) as HTMLLinkElement;
-    let themeName = this.getThemeName(resellerName);
+    const themeLink = document.getElementById(this.themeLinkId) as HTMLLinkElement;
+    const themeName = this.getThemeName(resellerName);
     if (themeLink) {
       themeLink.href = `assets/themes/${themeName}.css`;
     } else {

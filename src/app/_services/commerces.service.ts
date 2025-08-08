@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.dev-inte';
 import { RestRoutes } from '../_rest/rest-routes.config';
@@ -10,6 +10,8 @@ import { Commerce } from '../_models/commerce.model';
   providedIn: 'root'
 })
 export class CommercesService {
+
+  private http = inject(HttpClient);
 
   private commerceId = new BehaviorSubject<number>(0);
   public commerceId$ = this.commerceId.asObservable();
@@ -22,10 +24,10 @@ export class CommercesService {
     )
   };
 
-  constructor(private http: HttpClient) { }
+  constructor() { }
 
   public getCommerceList(): Observable<Commerce[]> {
-    let urlPortalUserCommerces: string = `${environment.urlWE}${RestRoutes.PORTALUSERS_COMMERCES}`;
+    const urlPortalUserCommerces = `${environment.urlWE}${RestRoutes.PORTALUSERS_COMMERCES}`;
     return this.http.get<Commerce[]>(urlPortalUserCommerces, this.httpOptions);
   }
 

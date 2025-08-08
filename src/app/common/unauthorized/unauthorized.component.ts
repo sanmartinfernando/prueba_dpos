@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 
 @Component({
-  selector: 'DPOSW-unauthorized',
+  selector: 'app-dpos-unauthorized',
   templateUrl: './unauthorized.component.html',
   styleUrls: []
 })

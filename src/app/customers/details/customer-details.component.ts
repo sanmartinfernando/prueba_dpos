@@ -1,6 +1,6 @@
 import { StorageService } from 'src/app/_services/storage.service';
 import { EncryptionService } from '../../_services/encryption.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UIStateService } from 'src/app/_services/ui-state.service';
 import { SessionService } from 'src/app/_services/session.service';
@@ -13,12 +13,23 @@ import { CustomersService } from 'src/app/_services/customers.service';
 
 
 @Component({
-  selector: 'DPOSW-customer-details',
+  selector: 'app-dpos-customer-details',
   templateUrl: './customer-details.component.html',
 })
 export class CustomerDetailsComponent implements OnInit {
 
-  loadCompleted: boolean = false;
+  private activatedRoute = inject(ActivatedRoute);
+  private encryptionService = inject(EncryptionService);
+  private portalUsersService = inject(PortalUsersService);
+  private customersService = inject(CustomersService);
+  private storageService = inject(StorageService);
+  private uiStateService = inject(UIStateService);
+  private sessionService = inject(SessionService);
+  private translate = inject(TranslateService);
+  private themeService = inject(ThemeService);
+  private authService = inject(AuthService);
+
+  loadCompleted = false;
   idCustomer: string = null;
   titlePage: string;
 
@@ -36,18 +47,7 @@ export class CustomerDetailsComponent implements OnInit {
   country: string;
   state: string;
 
-  constructor(
-    private activatedRoute: ActivatedRoute,
-    private encryptionService: EncryptionService,
-    private portalUsersService: PortalUsersService,
-    private customersService: CustomersService,
-    private storageService: StorageService,
-    private uiStateService: UIStateService,
-    private sessionService: SessionService,
-    private translate: TranslateService,
-    private themeService: ThemeService,
-    private authService: AuthService
-  ) {
+  constructor() {
 
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
 

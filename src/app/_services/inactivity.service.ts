@@ -1,4 +1,4 @@
-import { Injectable, NgZone } from '@angular/core';
+import { inject, Injectable, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { StorageService } from './storage.service';
 
@@ -8,12 +8,16 @@ import { StorageService } from './storage.service';
 })
 export class InactivityService {
 
+  private router = inject(Router);
+  private ngZone = inject(NgZone);
+  private storageService = inject(StorageService);
+
   private timeout: any;
   private readonly INACTIVITY_TIME = 30 * 60 * 1000;
   private readonly WARNING_TIME = 25 * 60 * 1000;
-  private monitoringActive: boolean = false;
+  private monitoringActive = false;
 
-  constructor(private router: Router, private ngZone: NgZone, private storageService: StorageService) { }
+  constructor() { }
 
   startMonitoring() {
     this.monitoringActive = true;

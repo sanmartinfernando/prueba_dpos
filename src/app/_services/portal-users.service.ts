@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.dev-inte';
@@ -17,6 +17,8 @@ const TOKEN_KEY = 'dmf-token';
 })
 export class PortalUsersService {
 
+  private http = inject(HttpClient);
+
   public httpOptions = {
     headers: new HttpHeaders(
       {
@@ -25,29 +27,29 @@ export class PortalUsersService {
     )
   };
 
-  constructor(private http: HttpClient) { }
+  constructor() { }
 
   public getToken(user: User): Observable<PortalUserToken> {
-    let loginRequest = {
+    const loginRequest = {
       userName: user.user,
       password: user.pwd
     }
-    let urlPortalUsers: string = `${environment.urlAuth}${RestRoutes.AUTH_PORTALUSERS_LOGIN}`;
+    const urlPortalUsers = `${environment.urlAuth}${RestRoutes.AUTH_PORTALUSERS_LOGIN}`;
     return this.http.post<PortalUserToken>(urlPortalUsers, loginRequest);
   }
 
   public resetPwd(parameters: any): Observable<PwdReset> {
-    let urlPortalUsers: string = `${environment.urlAuth}${RestRoutes.AUTH_PORTALUSERS_PWD_RESET}`;
+    const urlPortalUsers = `${environment.urlAuth}${RestRoutes.AUTH_PORTALUSERS_PWD_RESET}`;
     return this.http.post<PwdReset>(urlPortalUsers, parameters, this.httpOptions);
   }
 
   public checkPwdProperties(): Observable<PwdProperties> {
-    let urlPortalUsers: string = `${environment.urlAuth}${RestRoutes.AUTH_PORTALUSERS_PWD_PROPERTIES}`;
+    const urlPortalUsers = `${environment.urlAuth}${RestRoutes.AUTH_PORTALUSERS_PWD_PROPERTIES}`;
     return this.http.get<PwdProperties>(urlPortalUsers, this.httpOptions);
   }
 
   async recoverPwd(user: any): Promise<string> {
-    let urlPortalUsers: string = `${environment.urlAuth}${RestRoutes.AUTH_PORTALUSERS_PWD_RECOVER}`;
+    const urlPortalUsers = `${environment.urlAuth}${RestRoutes.AUTH_PORTALUSERS_PWD_RECOVER}`;
     await fetch(urlPortalUsers, {
       method: 'POST',
       headers: {

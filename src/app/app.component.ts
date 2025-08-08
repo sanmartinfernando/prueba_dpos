@@ -1,16 +1,18 @@
-import { Component, OnInit, OnDestroy  } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject  } from '@angular/core';
 import { InactivityService } from './_services/inactivity.service';
 
 @Component({
-  selector: 'DPOSW-root',
+  selector: 'app-dpos-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit, OnDestroy {
   
+  private inactivityService = inject(InactivityService);
+
   navIsOpen = true;
 
-  constructor(private inactivityService: InactivityService) {}
+  constructor() {}
 
   ngOnInit() {
     // Comienza a monitorear la inactividad cuando se carga el componente

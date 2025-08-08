@@ -1,7 +1,7 @@
 export class User {
   
   public id: number;
-  public idToken: String
+  public idToken: string
   public email: string;
   public user: string;
   public first_name: string;

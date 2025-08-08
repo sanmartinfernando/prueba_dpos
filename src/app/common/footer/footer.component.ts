@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 
 @Component({
-  selector: 'DPOSW-footer',
+  selector: 'app-dpos-footer',
   templateUrl: './footer.component.html',
   styleUrls: []
 })

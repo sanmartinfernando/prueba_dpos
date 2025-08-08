@@ -39,7 +39,7 @@
         <div class="col">
           <h5><b>{{ reportVarSearch }}</b></h5>
         </div>
-        <ng-container *ngIf="loadCompleted && emptySearch == false">
+        <ng-container *ngIf="loadCompleted && emptySearch === false">
           <div class="col-12 col-md-3 text-md-end mt-2 mt-md-0">
             <button class="btn btn-outline-info">
               <i class="fa-solid fa-file-csv fa-xl" (click)="downloadReports()"></i>
@@ -47,17 +47,17 @@
           </div>
         </ng-container>
       </div>
-      <div *ngIf="loadCompleted == false && emptySearch == false" class="d-flex justify-content-center">
+      <div *ngIf="loadCompleted === false && emptySearch === false" class="d-flex justify-content-center">
         <div class="spinner-border text-danger"></div>
       </div>
-      <div *ngIf="loadCompleted && emptySearch == true" class="d-flex justify-content-center">
+      <div *ngIf="loadCompleted && emptySearch === true" class="d-flex justify-content-center">
         <b><i>{{ 'dpos.dashboard.nodata.label' | translate }}</i></b>
       </div>
       <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage" (closeModal)="closeModal()"></app-modal>
-      <div class="row" *ngIf="reportVarSearch == null">
+      <div class="row" *ngIf="reportVarSearch === null">
         <b>{{ 'dpos.reports.selectreport.label' | translate }}</b>
       </div>
-      <div class="row" *ngIf="reportVarSearch == translate.instant('dpos.reports.taxes.label') && loadCompleted && emptySearch == false">
+      <div class="row" *ngIf="reportVarSearch === translate.instant('dpos.reports.taxes.label') && loadCompleted && emptySearch === false">
         <div class="col">
           <div class="table-responsive">
             <table class="table table-hover order-table" data-pagination="true" data-page-size="10">
@@ -75,9 +75,9 @@
                 </td>
               </ng-template>
               <tbody>
-                <ng-container *ngIf="loadCompleted && emptySearch == false; else empty">
+                <ng-container *ngIf="loadCompleted && emptySearch === false; else empty">
                   <tr *ngFor="let taxes of sales.balanceLines | paginate : { itemsPerPage: 10, currentPage: page }">
-                    <ng-container *ngIf="taxes.itemType == 1 && taxes.itemValue != -1 ">
+                    <ng-container *ngIf="taxes.itemType === 1 && taxes.itemValue !== -1 ">
                       <td class="text-start align-middle"><span>{{ taxes.itemName }}</span></td>
                       <td class="text-end align-middle">{{ taxes.base / Math.pow(10, taxes.decimals) | currency : "Eur" : "€" }}</td>
                       <td class="text-end align-middle">{{ taxes.tax / Math.pow(10, taxes.decimals) | currency : "Eur" : "€" }}</td>
@@ -100,7 +100,7 @@
         </div>
       </div>
       <div class="row"
-        *ngIf="reportVarSearch == translate.instant('dpos.reports.products.label') && loadCompleted && emptySearch == false">
+        *ngIf="reportVarSearch === translate.instant('dpos.reports.products.label') && loadCompleted && emptySearch === false">
         <div class="col">
           <div class="table-responsive">
             <table class="table table-hover order-table" data-pagination="true" data-page-size="10">
@@ -118,7 +118,7 @@
                 </td>
               </ng-template>
               <tbody>
-                <ng-container *ngIf="emptySearch == false; else empty">
+                <ng-container *ngIf="emptySearch === false; else empty">
                   <tr
                     *ngFor="let product of indexProduct | paginate : { itemsPerPage: 10, currentPage: page }; index as z">
                     <td class="text-start align-middle">{{ product.product }}</td>
@@ -141,7 +141,7 @@
           </div>
         </div>
       </div>
-      <div class="row" *ngIf="reportVarSearch == translate.instant('dpos.reports.paymentmethods.label') && loadCompleted && emptySearch == false">
+      <div class="row" *ngIf="reportVarSearch === translate.instant('dpos.reports.paymentmethods.label') && loadCompleted && emptySearch === false">
         <div class="col">
           <div class="table-responsive">
             <table class="table table-hover order-table" data-pagination="true" data-page-size="10">
@@ -159,9 +159,9 @@
                 </td>
               </ng-template>
               <tbody>
-                <ng-container *ngIf="loadCompleted && emptySearch == false; else empty">
+                <ng-container *ngIf="loadCompleted && emptySearch === false; else empty">
                   <tr *ngFor="let paymentmethod of sales.balanceLines; index as i">
-                    <ng-container *ngIf="paymentmethod.itemType == 2">
+                    <ng-container *ngIf="paymentmethod.itemType === 2">
                       <td class="text-start align-middle">{{ paymentmethod.itemName }}</td>
                       <td></td>
                       <td class="text-end align-middle">{{ paymentmethod.percentage + " %" }}</td>

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment.dev-inte';
@@ -12,6 +12,9 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class CashMovementsService {
 
+  private http = inject(HttpClient);
+  private translate = inject(TranslateService);
+
   public httpOptions = {
     headers: new HttpHeaders(
       {
@@ -20,13 +23,13 @@ export class CashMovementsService {
     )
   };
 
-  constructor(private http: HttpClient, private translate: TranslateService) { }
+  constructor() { }
 
   public getCashMovementsAggregate(searchParams: string): Observable<OrderAggregation[]> {
     if (searchParams === undefined || searchParams === null) {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
     }
-    let urlCashMovements: string = `${environment.urlWS}${RestRoutes.CASH_MOVEMENTS_AGGREGATE}`;
+    const urlCashMovements = `${environment.urlWS}${RestRoutes.CASH_MOVEMENTS_AGGREGATE}`;
     return this.http.post<OrderAggregation[]>(urlCashMovements, searchParams, this.httpOptions);
   }
 }

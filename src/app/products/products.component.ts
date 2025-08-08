@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, OnDestroy, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { EncryptionService } from '../_services/encryption.service';
 import { SessionService } from '../_services/session.service';
@@ -18,61 +18,63 @@ import { DownloadCsvService } from '../_services/download-csv.service';
 
 
 @Component({
-  selector: 'DPOSW-products',
+  selector: 'app-dpos-products',
   templateUrl: './products.component.html',
 })
-export class ProductsComponent implements OnInit {
+export class ProductsComponent implements OnInit, OnDestroy {
+
+  private encryptionService = inject(EncryptionService);
+  private activatedRoute = inject(ActivatedRoute);
+  private portalUsersService = inject(PortalUsersService);
+  private downloadCsvService = inject(DownloadCsvService);
+  private commercesService = inject(CommercesService);
+  private storageService = inject(StorageService);
+  private dialog = inject(MatDialog);
+  private translate = inject(TranslateService);
+  private uiStateService = inject(UIStateService);
+  private sessionService = inject(SessionService);
+  private authService = inject(AuthService);
+  private themeService = inject(ThemeService);
 
   @ViewChild('productFileInput') productFileInput!: ElementRef<HTMLInputElement>;
 
-  loadCompleted: boolean = false;
-  size: number = 10000;
+  loadCompleted = false;
+  size = 10000;
   code: string;
   Math = Math
   productNameVarSearch: string = null;
   productReferenceVarSearch: string = null;
   productBarcodeVarSearch: string = null;
   commerces: Commerce[];
-  commerceId: number = 0;
+  commerceId = 0;
   commerceSelected: string;
-  currentCategoryPage: number = 1;
-  categorySelected:Category;
-  categories: Category[] = [{id: "0", name: "Todas las categorías"}, {id: "1", name: "Categoria 1"}, {id: "2", name: "Categoria 2"}];
+  currentCategoryPage = 1;
+  categorySelected: Category;
+  categories: Category[] = [{ id: "0", name: "Todas las categorías" }, { id: "1", name: "Categoria 1" }, { id: "2", name: "Categoria 2" }];
 
-  currentProductsPage: number = 1;
-  products: Product[] = [{id: "1", name: "Producto 1", price: 1000, reference: "Referencia 1", barcode: "Codigo de barras 1", stock: 10 },
-                        {id: "2", name: "Producto 2", price: 2000, reference: "Referencia 2", barcode: "Codigo de barras 2", stock: 20 },
-                        {id: "3", name: "Producto 3", price: 3000, reference: "Referencia 3", barcode: "Codigo de barras 3", stock: 30 },
-                        {id: "4", name: "Producto 4", price: 4000, reference: "Referencia 4", barcode: "Codigo de barras 4", stock: 40 },
-                        {id: "5", name: "Producto 5", price: 5000, reference: "Referencia 5", barcode: "Codigo de barras 5", stock: 50 },
-                        {id: "6", name: "Producto 6", price: 6000, reference: "Referencia 6", barcode: "Codigo de barras 6", stock: 60 },
-                        {id: "7", name: "Producto 7", price: 7000, reference: "Referencia 7", barcode: "Codigo de barras 7", stock: 70 },
-                        {id: "8", name: "Producto 8", price: 8000, reference: "Referencia 8", barcode: "Codigo de barras 8", stock: 80 }
+  currentProductsPage = 1;
+  products: Product[] = [{ id: "1", name: "Producto 1", price: 1000, reference: "Referencia 1", barcode: "Codigo de barras 1", stock: 10 },
+  { id: "2", name: "Producto 2", price: 2000, reference: "Referencia 2", barcode: "Codigo de barras 2", stock: 20 },
+  { id: "3", name: "Producto 3", price: 3000, reference: "Referencia 3", barcode: "Codigo de barras 3", stock: 30 },
+  { id: "4", name: "Producto 4", price: 4000, reference: "Referencia 4", barcode: "Codigo de barras 4", stock: 40 },
+  { id: "5", name: "Producto 5", price: 5000, reference: "Referencia 5", barcode: "Codigo de barras 5", stock: 50 },
+  { id: "6", name: "Producto 6", price: 6000, reference: "Referencia 6", barcode: "Codigo de barras 6", stock: 60 },
+  { id: "7", name: "Producto 7", price: 7000, reference: "Referencia 7", barcode: "Codigo de barras 7", stock: 70 },
+  { id: "8", name: "Producto 8", price: 8000, reference: "Referencia 8", barcode: "Codigo de barras 8", stock: 80 }
   ];
 
   currentLang: string;
   langSubscription: Subscription;
-  validationVariable: boolean = false;
-  searchCounter: boolean = false;
+  validationVariable = false;
+  searchCounter = false;
   varSearch: string = null;
-  emptySearch: boolean = false;
-  showModal: boolean = false;
-  modalTitle: string = '';
-  modalMessage: string = '';
+  emptySearch = false;
+  showModal = false;
+  modalTitle = '';
+  modalMessage = '';
 
-  constructor(private encryptionService: EncryptionService,
-      private activatedRoute: ActivatedRoute,
-      private portalUsersService: PortalUsersService,
-      private downloadCsvService: DownloadCsvService,
-      private commercesService: CommercesService,
-      private storageService: StorageService,
-      private dialog: MatDialog,
-      private translate: TranslateService,
-      private uiStateService: UIStateService,
-      private sessionService: SessionService,
-      private authService: AuthService,
-      private themeService: ThemeService) {
-        
+  constructor() {
+
     //Desbloqueamos el selector de comercio;
     this.uiStateService.setFormSelectEnabled(true);
     this.currentLang = this.translate.currentLang || 'es';
@@ -83,24 +85,24 @@ export class ProductsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCompleted = false;
-    if(this.sessionService.getItem(SessionService.PRODUCT_NAME) != null){
+    if (this.sessionService.getItem(SessionService.PRODUCT_NAME) !== null) {
       this.productNameVarSearch = this.sessionService.getItem(SessionService.PRODUCT_NAME);
     }
-    if(this.sessionService.getItem(SessionService.PRODUCT_REFERENCE) != null){
+    if (this.sessionService.getItem(SessionService.PRODUCT_REFERENCE) !== null) {
       this.productReferenceVarSearch = this.sessionService.getItem(SessionService.PRODUCT_REFERENCE);
     }
-    if(this.sessionService.getItem(SessionService.PRODUCT_BARCODE) != null){
+    if (this.sessionService.getItem(SessionService.PRODUCT_BARCODE) !== null) {
       this.productBarcodeVarSearch = this.sessionService.getItem(SessionService.PRODUCT_BARCODE);
     }
-    this.storageService.userInfo.subscribe((user) =>{
+    this.storageService.userInfo.subscribe((user) => {
       this.portalUsersService.getToken(user).subscribe({
-        next: (portalUserToken)=> {
+        next: (portalUserToken) => {
           this.authService.setPortalUsersToken(portalUserToken.token);
           this.commercesService.getCommerceList().subscribe({
             next: (commerces) => {
               this.commerces = commerces;
               this.sessionService.getCommerceId().subscribe((commerceId) => {
-                if(commerceId != 0) {
+                if (commerceId !== 0) {
                   this.commerceId = commerceId; // Actualizar el valor en el componente
                 } else {
                   this.commerceId = commerces[0].commerceId;
@@ -108,7 +110,7 @@ export class ProductsComponent implements OnInit {
                 }
                 this.themeService.loadTheme(this.getCommerceResellerName(commerces));
                 this.commerceSelected = this.getCommerceNumber(this.commerceId);
-              
+
                 this.categorySelected = this.categories[0];
                 this.searchProducts();
               });
@@ -142,17 +144,17 @@ export class ProductsComponent implements OnInit {
   }
 
   cleanFormFields(): void {
-    this.productNameVarSearch="";
-    this.productReferenceVarSearch="";
-    this.productBarcodeVarSearch="";
+    this.productNameVarSearch = "";
+    this.productReferenceVarSearch = "";
+    this.productBarcodeVarSearch = "";
     this.sessionService.setItem(SessionService.CUSTOMER_NIF, this.productNameVarSearch);
     this.sessionService.setItem(SessionService.CUSTOMER_NAME, this.productReferenceVarSearch);
     this.sessionService.setItem(SessionService.CUSTOMER_LASTNAME, this.productBarcodeVarSearch);
   }
 
-  getCommerceNumber(commerceId:number): string {
-    const commerce = this.commerces.find(commerce => commerce.commerceId == commerceId);
-    if(commerce != undefined) {
+  getCommerceNumber(commerceId: number): string {
+    const commerce = this.commerces.find(commerce => commerce.commerceId === commerceId);
+    if (commerce !== undefined) {
       return commerce.commerceNumber;
     }
     return "";
@@ -161,24 +163,24 @@ export class ProductsComponent implements OnInit {
   searchProducts() {
     this.validationVariable = false;
     this.loadCompleted = false;
-   
+
     //Comienzo query búsqueda
     this.varSearch = "&qs={'and':[";
 
     //Commerce id
-    if (this.commerceId != 0) {
-      if (this.searchCounter == false) {
+    if (this.commerceId !== 0) {
+      if (this.searchCounter === false) {
         this.searchCounter = true;
       } else {
         this.varSearch = this.varSearch + ',';
       }
       this.varSearch =
-        this.varSearch +"{'field':'CommerceId','op':'=','value':'" +this.commerceId +"'}";
+        this.varSearch + "{'field':'CommerceId','op':'=','value':'" + this.commerceId + "'}";
     }
-    
+
     //Nombre Producto
-    if (this.productNameVarSearch != null && this.productNameVarSearch !== "") {
-      if (this.searchCounter == false) {
+    if (this.productNameVarSearch !== null && this.productNameVarSearch !== "") {
+      if (this.searchCounter === false) {
         this.searchCounter = true;
       } else {
         this.varSearch = this.varSearch + ',';
@@ -187,8 +189,8 @@ export class ProductsComponent implements OnInit {
     }
 
     //Referencia Producto
-    if (this.productReferenceVarSearch != null && this.productReferenceVarSearch !== "") {
-      if (this.searchCounter == false) {
+    if (this.productReferenceVarSearch !== null && this.productReferenceVarSearch !== "") {
+      if (this.searchCounter === false) {
         this.searchCounter = true;
       } else {
         this.varSearch = this.varSearch + ',';
@@ -197,8 +199,8 @@ export class ProductsComponent implements OnInit {
     }
 
     //Codigo de barras
-    if (this.productBarcodeVarSearch != null && this.productBarcodeVarSearch !== "") {
-      if (this.searchCounter == false) {
+    if (this.productBarcodeVarSearch !== null && this.productBarcodeVarSearch !== "") {
+      if (this.searchCounter === false) {
         this.searchCounter = true;
       } else {
         this.varSearch = this.varSearch + ',';
@@ -212,11 +214,11 @@ export class ProductsComponent implements OnInit {
   }
 
   public onCategoryChange(): void {
-  //  this.getModels();
+    //  this.getModels();
   }
 
   //Añadir product
-  addProduct(){
+  addProduct() {
     this.sendProductDetails(null);
   }
 
@@ -231,19 +233,19 @@ export class ProductsComponent implements OnInit {
   }
 
   //Eliminar productos
-  deleteProduct(productId: string){
-    this.products = this.products.filter(product => product.id != productId);
-    if(this.products.length == 0) {
+  deleteProduct(productId: string) {
+    this.products = this.products.filter(product => product.id !== productId);
+    if (this.products.length === 0) {
       this.emptySearch = true;
     }
   }
 
-  downloadCSV(){
+  downloadCSV() {
     this.downloadCsvService.downloadProductsFile(this.products, this.translate.instant('dpos.products.page.title'), this.currentLang);
   }
 
   //Importar clientes
-  importProducts(){
+  importProducts() {
     this.productFileInput.nativeElement.click();
   }
 
@@ -256,9 +258,9 @@ export class ProductsComponent implements OnInit {
       const text = reader.result as string;
       const { rows, errors } = this.parseCSV(text);
       if (errors.length <= 0) {
-        let products: Product[] = [];
-        for(let i= 0; i < rows.length; i++){
-          let product: Product = new Product();
+        const products: Product[] = [];
+        for (let i = 0; i < rows.length; i++) {
+          const product: Product = new Product();
           product.id = i.toString();
           product.reference = rows[i][0];
           product.barcode = rows[i][1];
@@ -271,12 +273,12 @@ export class ProductsComponent implements OnInit {
         this.modalTitle = 'Importación de productos';
         this.modalMessage = 'Productos importados correctamente';
 
-        if(!this.products)
+        if (!this.products)
           this.products = [];
 
         this.products.push(...products);
 
-        if(this.products.length > 0)
+        if (this.products.length > 0)
           this.emptySearch = false;
       }
     };
@@ -288,8 +290,8 @@ export class ProductsComponent implements OnInit {
   }
 
   private getCommerceResellerName(commerces: Commerce[]): string {
-    const commerce = commerces.find(commerce => commerce.commerceId == this.commerceId);
-    if(commerce != undefined) {
+    const commerce = commerces.find(commerce => commerce.commerceId === this.commerceId);
+    if (commerce !== undefined) {
       return commerce.resellerName;
     }
     return null;
@@ -300,7 +302,7 @@ export class ProductsComponent implements OnInit {
     this.productsService.getProducts(this.size, this.varSearch).subscribe(
       (products) => {
         this.products = products.data;
-        if(this.products.length != 0) {
+        if(this.products.length !== 0) {
           this.emptySearch = false;
         } else {
           this.emptySearch = true;
@@ -309,7 +311,7 @@ export class ProductsComponent implements OnInit {
       },
       (error) => {
         this.products = null;
-        if (error.status == 401 || error.status == 404 ||  error.status == 500) {
+        if (error.status === 401 || error.status === 404 ||  error.status === 500) {
           this.emptySearch = true;
           this.loadCompleted = true;
         };

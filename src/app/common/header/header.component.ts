@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, OnInit, Output, DoCheck, inject } from '@angular/core';
 import { PagesService } from 'src/app/_services/pages.service';
 import { Page } from 'src/app/_models/page.model';
 import { StorageService } from 'src/app/_services/storage.service';
@@ -13,35 +13,36 @@ import { UIStateService } from 'src/app/_services/ui-state.service';
 
 
 @Component({
-  selector: 'DPOSW-header',
+  selector: 'app-dpos-header',
   templateUrl: './header.component.html',
   styleUrls: []
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, DoCheck {
+
+  private authService = inject(AuthService);
+  private portalUsersService = inject(PortalUsersService);
+  private commercesService = inject(CommercesService);
+  private storageService = inject(StorageService);
+  private sessionService = inject(SessionService);
+  private themeService = inject(ThemeService);
+  private uiStateService = inject(UIStateService);
+  public router = inject(Router);
 
   @Output() navToggled = new EventEmitter<boolean>();
 
-  showNav: boolean = true;
+  showNav = true;
   pages: Page[] = [];
   username: string;
-  isLoggedIn: boolean = false;
+  isLoggedIn = false;
   commerceSelected: number;
   commerces: Commerce[];
-  title: string = "DPOS";
-  title0: string = "DPOS";
-  isComercia: boolean = false;
+  title = "DPOS";
+  title0 = "DPOS";
+  isComercia = false;
   formSelectEnabled = true;
   logoLoaded = false;
 
-  constructor(private pagesService: PagesService,
-    private authService: AuthService,
-    private portalUsersService: PortalUsersService,
-    private commercesService: CommercesService,
-    private storageService: StorageService,
-    private sessionService: SessionService,
-    private themeService: ThemeService,
-    private uiStateService: UIStateService,
-    public router: Router) {
+  constructor(private pagesService: PagesService) {
 
     this.pages = pagesService.pages;
 
@@ -56,7 +57,7 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {
     this.loadThemeByResellerName();
     this.storageService.userInfo.subscribe(user => {
-      if (user !== undefined && user != null) {
+      if (user !== undefined && user !== null) {
         this.isLoggedIn = true;
         this.username = user.user;
         this.portalUsersService.getToken(user).subscribe({
@@ -130,7 +131,7 @@ export class HeaderComponent implements OnInit {
   }
 
   ngDoCheck() {
-    
+
   }
 
   component(component: string) {
@@ -138,7 +139,7 @@ export class HeaderComponent implements OnInit {
   }
 
   onCommerceChange(): void {
-    let commerce: Commerce = this.getCommerce();
+    const commerce: Commerce = this.getCommerce();
     this.commerceSelected = commerce.commerceId;
     this.commercesService.setCommerceId(commerce.commerceId);
     this.sessionService.setItem(SessionService.COMMERCE_ID, commerce.commerceId);
@@ -148,8 +149,8 @@ export class HeaderComponent implements OnInit {
   }
 
   getCommerce(): Commerce {
-    const commerce = this.commerces.find(commerce => commerce.commerceId == this.commerceSelected);
-    if (commerce != undefined) {
+    const commerce = this.commerces.find(commerce => commerce.commerceId === this.commerceSelected);
+    if (commerce !== undefined) {
       return commerce;
     }
     return null;
@@ -164,6 +165,6 @@ export class HeaderComponent implements OnInit {
   }
 
   private isComerciaTheme(): boolean {
-    return this.sessionService.getItem(SessionService.RESELLER_NAME) == Commerce.RESELLER_COMERCIA;
+    return this.sessionService.getItem(SessionService.RESELLER_NAME) === Commerce.RESELLER_COMERCIA;
   }
 }

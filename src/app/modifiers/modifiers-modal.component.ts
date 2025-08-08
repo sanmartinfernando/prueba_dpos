@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AuthService } from '../_services/auth.service';
 import { PortalUsersService } from '../_services/portal-users.service';
@@ -10,11 +10,17 @@ import { Modifiers } from '../_models/modifiers.model';
 
 
 @Component({
-  selector: 'DPOSW-modifiers-modal',
+  selector: 'app-dpos-modifiers-modal',
   templateUrl: './modifiers-modal.component.html',
   styleUrls: []
 })
-export class ModifiersModalComponent {
+export class ModifiersModalComponent implements OnInit {
+
+  private portalUsersService = inject(PortalUsersService);
+  private storageService = inject(StorageService);
+  private sessionService = inject(SessionService);
+  private translate = inject(TranslateService);
+  private authService = inject(AuthService);
 
   titlePage: string;
   idModifiers: string;
@@ -30,12 +36,7 @@ export class ModifiersModalComponent {
   modifiers: Modifiers;
 
   constructor(public dialogRef: MatDialogRef<ModifiersModalComponent>,
-    private portalUsersService: PortalUsersService,
-    private storageService: StorageService,
     private themeService: ThemeService,
-    private sessionService: SessionService,
-    private translate: TranslateService,
-    private authService: AuthService,
     @Inject(MAT_DIALOG_DATA) public data: { id?: string },
   ) {
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));

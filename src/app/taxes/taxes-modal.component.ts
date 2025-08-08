@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AuthService } from '../_services/auth.service';
 import { PortalUsersService } from '../_services/portal-users.service';
@@ -10,11 +10,17 @@ import { Tax } from '../_models/tax.model';
 
 
 @Component({
-  selector: 'DPOSW-taxes-modal',
+  selector: 'app-dpos-taxes-modal',
   templateUrl: './taxes-modal.component.html',
   styleUrls: []
 })
-export class TaxesModalComponent {
+export class TaxesModalComponent implements OnInit {
+
+  private portalUsersService = inject(PortalUsersService);
+  private storageService = inject(StorageService);
+  private sessionService = inject(SessionService);
+  private translate = inject(TranslateService);
+  private authService = inject(AuthService);
 
   titlePage: string;
   idTax: number;
@@ -25,16 +31,11 @@ export class TaxesModalComponent {
   };
 
   Tax: Tax;
-  isTaxNameDisabled: boolean = true;
-  isTaxValueDisabled: boolean = true;
+  isTaxNameDisabled = true;
+  isTaxValueDisabled = true;
 
   constructor(public dialogRef: MatDialogRef<TaxesModalComponent>,
-    private portalUsersService: PortalUsersService,
-    private storageService: StorageService,
     private themeService: ThemeService,
-    private sessionService: SessionService,
-    private translate: TranslateService,
-    private authService: AuthService,
     @Inject(MAT_DIALOG_DATA) public data: { id?: number }) {
 
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));

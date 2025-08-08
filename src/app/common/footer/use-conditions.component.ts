@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 
 @Component({
-  selector: 'DPOSW-use-conditions',
+  selector: 'app-dpos-use-conditions',
   templateUrl: './use-conditions.component.html',
   styleUrls: []
 })

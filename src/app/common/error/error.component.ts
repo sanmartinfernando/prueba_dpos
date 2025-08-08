@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 
 @Component({
-  selector: 'DPOSW-error',
+  selector: 'app-dpos-error',
   templateUrl: './error.component.html',
   styleUrls: []
 })

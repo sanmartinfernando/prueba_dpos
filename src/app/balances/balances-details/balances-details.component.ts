@@ -1,7 +1,7 @@
 import { DownloadPDFService } from '../../_services/download-pdf.service';
 import { BalancesService } from '../../_services/balances.service';
 import { EncryptionService } from './../../_services/encryption.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Balance } from 'src/app/_models/balance.model';
 import { BalanceLine } from 'src/app/_models/balance-line.model';
@@ -11,37 +11,39 @@ import { SessionService } from 'src/app/_services/session.service';
 
 
 @Component({
-  selector: 'DPOSW-balances-details',
+  selector: 'app-dpos-balances-details',
   templateUrl: './balances-details.component.html',
   styleUrls: []
 })
 export class BalancesDetailsComponent implements OnInit {
 
+  private encryptionService = inject(EncryptionService);
+  private activatedRoute = inject(ActivatedRoute);
+  private balancesService = inject(BalancesService);
+  private downloadPDFService = inject(DownloadPDFService);
+  private uiStateService = inject(UIStateService);
+  private sessionService = inject(SessionService);
+  private themeService = inject(ThemeService);
+
   balances: Balance;
-  isLoggedIn: boolean = true;
-  nPage: number = 1;
+  isLoggedIn = true;
+  nPage = 1;
   nRecords: number;
   itemTypeTax = 1;
   itemTypeTax2 = 2;
   itemTypeTax3 = 3;
   Math = Math;
-  loadCompleted: boolean = false;
+  loadCompleted = false;
   element = true;
   balancesId: string;
   index: any;
 
-  base: number = 0;
-  cuota: number = 0;
-  total: number = 0;
-  pmTotal: number = 0;
+  base = 0;
+  cuota = 0;
+  total = 0;
+  pmTotal = 0;
 
-  constructor(private encryptionService: EncryptionService,
-    private activatedRoute: ActivatedRoute,
-    private balancesService: BalancesService,
-    private downloadPDFService: DownloadPDFService,
-    private uiStateService: UIStateService,
-    private sessionService: SessionService,
-    private themeService: ThemeService) {
+  constructor() {
 
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
 
@@ -51,7 +53,7 @@ export class BalancesDetailsComponent implements OnInit {
 
   ngOnInit(): void {
 
-    let iddecode = this.encryptionService.decode(this.activatedRoute.snapshot.params['id']);
+    const iddecode = this.encryptionService.decode(this.activatedRoute.snapshot.params['id']);
     this.balancesId = this.encryptionService.decrypt(iddecode);
 
     this.balancesService.getBalanceDetail(this.balancesId).subscribe({
@@ -62,18 +64,18 @@ export class BalancesDetailsComponent implements OnInit {
         this.total = 0;
         this.pmTotal = 0;
         for (let i = 0; i < this.balances.balanceLines.length; i++) {
-          let balanceLine = this.balances.balanceLines[i];
+          const balanceLine = this.balances.balanceLines[i];
           this.base += balanceLine.base / Math.pow(10, balanceLine.decimals);
           this.cuota += balanceLine.tax / Math.pow(10, balanceLine.decimals);
-          if (balanceLine.itemType == BalanceLine.TYPE_TAX)
+          if (balanceLine.itemType === BalanceLine.TYPE_TAX)
             this.total += balanceLine.total / Math.pow(10, balanceLine.decimals);
-          if (balanceLine.itemType == BalanceLine.TYPE_PAYMENT_METHOD)
+          if (balanceLine.itemType === BalanceLine.TYPE_PAYMENT_METHOD)
             this.pmTotal += balanceLine.total / Math.pow(10, balanceLine.decimals)
         }
         this.loadCompleted = true;
       },
       error: (error) => {
-        if (error.status == 401 || error.status == 500) {
+        if (error.status === 401 || error.status === 500) {
           this.loadCompleted = true;
         };
       }

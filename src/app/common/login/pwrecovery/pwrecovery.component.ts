@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { User } from 'src/app/_models/user.model';
 import { StorageService } from 'src/app/_services/storage.service';
@@ -12,11 +12,14 @@ import { CountdownEvent } from 'ngx-countdown';
 })
 export class PwrecoveryComponent implements OnInit {
 
+  private storageService = inject(StorageService);
+  private PortalUsersService = inject(PortalUsersService);
+
   private userSuscription!: Subscription;
   disabled = false;
   isLoggedIn = false;
   componentSelected: string;
-  userLocal: string = "";
+  userLocal = "";
   user: any = {
     userName: '',
   }
@@ -24,7 +27,7 @@ export class PwrecoveryComponent implements OnInit {
   text2 = "";
   text3 = "";
 
-  constructor(private storageService: StorageService, private PortalUsersService: PortalUsersService) { }
+  constructor() { }
 
   ngOnInit(): void {
     this.userSuscription = this.storageService.userInfo.subscribe(user => {
@@ -48,7 +51,7 @@ export class PwrecoveryComponent implements OnInit {
   }
 
   updateUserData(user: User) {
-    if (user != null) {
+    if (user !== null) {
       this.isLoggedIn = true;
     } else {
       this.isLoggedIn = false;
@@ -56,10 +59,10 @@ export class PwrecoveryComponent implements OnInit {
   }
 
   onTimerFinished(e: CountdownEvent) {
-    if (e.action == 'start') {
+    if (e.action === 'start') {
       this.disabled = true;
     }
-    if (e.action == 'done') {
+    if (e.action === 'done') {
       this.disabled = false;
     }
   }

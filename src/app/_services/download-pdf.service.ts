@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment.dev-inte';
 import { RestRoutes } from '../_rest/rest-routes.config';
 
@@ -8,7 +8,9 @@ import { RestRoutes } from '../_rest/rest-routes.config';
 })
 export class DownloadPDFService {
 
-  constructor(private http: HttpClient) { }
+  private http = inject(HttpClient);
+
+  constructor() { }
 
   public downloadBalancesFile(id: string): void {
     const apiUrl = `${environment.urlWS}${RestRoutes.BALANCES}${id}/download`;

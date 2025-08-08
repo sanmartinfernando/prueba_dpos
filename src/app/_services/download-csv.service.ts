@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { OrderInfo } from '../_models/order-info.model';
 import { Balance } from '../_models/balance.model';
 import { SalesReport, SalesReportAggregations } from '../_models/sales-report.model';
@@ -16,11 +16,13 @@ import { Product } from '../_models/product.model';
 })
 export class DownloadCsvService {
 
+  private datePipe = inject(DatePipe);
+  private translate = inject(TranslateService);
+  private currencyPipe = inject(CurrencyPipe);
+
   public currentLang: string;
 
-  constructor(private datePipe: DatePipe,
-    private translate: TranslateService,
-    private currencyPipe: CurrencyPipe) {
+  constructor() {
     this.currentLang = this.translate.currentLang || 'es';
   }
 
@@ -86,10 +88,10 @@ export class DownloadCsvService {
       'total'
     ];
 
-    let csvData = this.convertSalesToCSV(sales.data, fields, headers);
-    let blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
-    let dwldLink = document.createElement("a");
-    let url = URL.createObjectURL(blob);
+    const csvData = this.convertSalesToCSV(sales.data, fields, headers);
+    const blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
+    const dwldLink = document.createElement("a");
+    const url = URL.createObjectURL(blob);
     dwldLink.setAttribute("href", url);
     dwldLink.setAttribute("download", filename + " " + this.formatDate(Date.now()) + ".csv");
     dwldLink.style.visibility = "hidden";
@@ -152,10 +154,10 @@ export class DownloadCsvService {
       'total'
     ];
 
-    let csvData = this.convertBalancesToCSV(balances, fields, headers);
-    let blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
-    let dwldLink = document.createElement("a");
-    let url = URL.createObjectURL(blob);
+    const csvData = this.convertBalancesToCSV(balances, fields, headers);
+    const blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
+    const dwldLink = document.createElement("a");
+    const url = URL.createObjectURL(blob);
     dwldLink.setAttribute("href", url);
     dwldLink.setAttribute("download", filename + " " + this.formatDate(Date.now()) + ".csv");
     dwldLink.style.visibility = "hidden";
@@ -205,10 +207,10 @@ export class DownloadCsvService {
       'total'
     ];
 
-    let csvData = this.convertArqueoXToCSV(arqueoX, fields, headers);
-    let blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
-    let dwldLink = document.createElement("a");
-    let url = URL.createObjectURL(blob);
+    const csvData = this.convertArqueoXToCSV(arqueoX, fields, headers);
+    const blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
+    const dwldLink = document.createElement("a");
+    const url = URL.createObjectURL(blob);
     dwldLink.setAttribute("href", url);
     dwldLink.setAttribute("download", filename + " " + this.formatDate(Date.now()) + ".csv");
     dwldLink.style.visibility = "hidden";
@@ -259,10 +261,10 @@ export class DownloadCsvService {
       'aggregations.total'
     ];
 
-    let csvData = this.convertSalesReportToCSV(salesReport, fields, headers);
-    let blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
-    let dwldLink = document.createElement("a");
-    let url = URL.createObjectURL(blob);
+    const csvData = this.convertSalesReportToCSV(salesReport, fields, headers);
+    const blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
+    const dwldLink = document.createElement("a");
+    const url = URL.createObjectURL(blob);
     dwldLink.setAttribute("href", url);
     dwldLink.setAttribute("download", filename + " " + this.formatDate(Date.now()) + ".csv");
     dwldLink.style.visibility = "hidden";
@@ -309,10 +311,10 @@ export class DownloadCsvService {
       'total'
     ];
 
-    let csvData = this.convertBalanceLinesToCSV(arqueoX, fields, headers);
-    let blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
-    let dwldLink = document.createElement("a");
-    let url = URL.createObjectURL(blob);
+    const csvData = this.convertBalanceLinesToCSV(arqueoX, fields, headers);
+    const blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
+    const dwldLink = document.createElement("a");
+    const url = URL.createObjectURL(blob);
     dwldLink.setAttribute("href", url);
     dwldLink.setAttribute("download", filename + " " + this.formatDate(Date.now()) + ".csv");
     dwldLink.style.visibility = "hidden";
@@ -367,10 +369,10 @@ export class DownloadCsvService {
       'email'
     ];
 
-    let csvData = this.convertCustomersToCSV(customers, fields, headers);
-    let blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
-    let dwldLink = document.createElement("a");
-    let url = URL.createObjectURL(blob);
+    const csvData = this.convertCustomersToCSV(customers, fields, headers);
+    const blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
+    const dwldLink = document.createElement("a");
+    const url = URL.createObjectURL(blob);
     dwldLink.setAttribute("href", url);
     dwldLink.setAttribute("download", filename + " " + this.formatDate(Date.now()) + ".csv");
     dwldLink.style.visibility = "hidden";
@@ -425,10 +427,10 @@ export class DownloadCsvService {
       'stock'
     ];
 
-    let csvData = this.convertProductsToCSV(products, fields, headers);
-    let blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
-    let dwldLink = document.createElement("a");
-    let url = URL.createObjectURL(blob);
+    const csvData = this.convertProductsToCSV(products, fields, headers);
+    const blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
+    const dwldLink = document.createElement("a");
+    const url = URL.createObjectURL(blob);
     dwldLink.setAttribute("href", url);
     dwldLink.setAttribute("download", filename + " " + this.formatDate(Date.now()) + ".csv");
     dwldLink.style.visibility = "hidden";
@@ -475,10 +477,10 @@ export class DownloadCsvService {
       'name'
     ];
 
-    let csvData = this.convertTaxesToCSV(taxes, fields, headers);
-    let blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
-    let dwldLink = document.createElement("a");
-    let url = URL.createObjectURL(blob);
+    const csvData = this.convertTaxesToCSV(taxes, fields, headers);
+    const blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
+    const dwldLink = document.createElement("a");
+    const url = URL.createObjectURL(blob);
     dwldLink.setAttribute("href", url);
     dwldLink.setAttribute("download", filename + " " + this.formatDate(Date.now()) + ".csv");
     dwldLink.style.visibility = "hidden";
@@ -492,12 +494,12 @@ export class DownloadCsvService {
     let str = headers.join(';') + '\r\n';
 
     for (let i = 0; i < orders.length; i++) {
-      let order: Order = orders[i]
-      let line: string = "";
+      const order: Order = orders[i]
+      let line = "";
       line += (line ? ';' : '') + (order.reference || '');
-      if (order.type == 2) {
+      if (order.type === 2) {
         line += (line ? ';' : '') + (this.translate.instant('dpos.sales.operation.refund.label') || '');
-      } else if (order.type == 5) {
+      } else if (order.type === 5) {
         line += (line ? ';' : '') + (this.translate.instant('dpos.sales.operation.rectification.label') || '');
       } else {
         line += (line ? ';' : '') + (this.translate.instant('dpos.sales.operation.order.label') || '');
@@ -520,8 +522,8 @@ export class DownloadCsvService {
     let str = headers.join(';') + '\r\n';
 
     for (let i = 0; i < balances.length; i++) {
-      let balance: Balance = balances[i];
-      let line: string = "";
+      const balance: Balance = balances[i];
+      let line = "";
       line += (line ? ';' : '') + (balance.reference || '');
       line += (line ? ';' : '') + (balance.terminalNumber || '');
       line += (line ? ';' : '') + (this.datePipe.transform(balance.startedAt, 'dd/MM/yyyy HH:mm') || '');
@@ -540,9 +542,9 @@ export class DownloadCsvService {
     let str = headers.join(';') + '\r\n';
 
     for (let i = 0; i < balance.balanceLines.length; i++) {
-      let taxes: BalanceLine = balance.balanceLines[i];
-      let line: string = "";
-      if (taxes.itemType == 1 && taxes.itemValue != -1) {
+      const taxes: BalanceLine = balance.balanceLines[i];
+      let line = "";
+      if (taxes.itemType === 1 && taxes.itemValue !== -1) {
         line += (line ? ';' : '') + (taxes.itemName || '');
         line += (line ? ';' : '') + (this.currencyPipe.transform(taxes.base / Math.pow(10, taxes.decimals), 'EUR', '€') || '');
         line += (line ? ';' : '') + (this.currencyPipe.transform(taxes.tax / Math.pow(10, taxes.decimals), 'EUR', '€') || '');
@@ -556,12 +558,12 @@ export class DownloadCsvService {
 
   public convertSalesReportToCSV(salesReport: SalesReport, fields: string[], headers: string[]) {
 
-    let products: SalesReportAggregations[] = Object.values(salesReport.aggregations);
+    const products: SalesReportAggregations[] = Object.values(salesReport.aggregations);
     let str = headers.join(';') + '\r\n';
 
     for (let i = 0; i < products.length; i++) {
-      let product: SalesReportAggregations = products[i];
-      let line: string = "";
+      const product: SalesReportAggregations = products[i];
+      let line = "";
       line += (line ? ';' : '') + (product.product || '');
       line += (line ? ';' : '') + (this.currencyPipe.transform(product.total / 100000000 / ((product.units ?? 2) / 1000), 'EUR', '€') || '');
       line += (line ? ';' : '') + ((product.units ?? 2) / 1000 || '');
@@ -577,9 +579,9 @@ export class DownloadCsvService {
     let str = headers.join(';') + '\r\n';
 
     for (let i = 0; i < balance.balanceLines.length; i++) {
-      let paymentMethod: BalanceLine = balance.balanceLines[i];
-      let line: string = "";
-      if (paymentMethod.itemType == 2) {
+      const paymentMethod: BalanceLine = balance.balanceLines[i];
+      let line = "";
+      if (paymentMethod.itemType === 2) {
         line += (line ? ';' : '') + (paymentMethod.itemName || '');
         line += (line ? ';' : '') + (paymentMethod.percentage + " %" || '');
         line += (line ? ';' : '') + (this.currencyPipe.transform(paymentMethod.total / Math.pow(10, paymentMethod.decimals), 'EUR', '€') || '');
@@ -595,8 +597,8 @@ export class DownloadCsvService {
     let str = headers.join(';') + '\r\n';
 
     for (let i = 0; i < customers.length; i++) {
-      let customer: Customer = customers[i]
-      let line: string = "";
+      const customer: Customer = customers[i]
+      let line = "";
       line += (line ? ';' : '') + (customer.identityDocument || '');
       line += (line ? ';' : '') + (customer.name || '');
       line += (line ? ';' : '') + (customer.lastName || '');
@@ -613,8 +615,8 @@ export class DownloadCsvService {
     let str = headers.join(';') + '\r\n';
 
     for (let i = 0; i < products.length; i++) {
-      let product: Product = products[i]
-      let line: string = "";
+      const product: Product = products[i]
+      let line = "";
       line += (line ? ';' : '') + (product.reference || '');
       line += (line ? ';' : '') + (product.barcode || '');
       line += (line ? ';' : '') + (product.name || '');
@@ -631,8 +633,8 @@ export class DownloadCsvService {
     let str = headers.join(';') + '\r\n';
 
     for (let i = 0; i < taxes.length; i++) {
-      let tax: Tax = taxes[i]
-      let line: string = "";
+      const tax: Tax = taxes[i]
+      let line = "";
       line += (line ? ';' : '') + (tax.id || '');
       line += (line ? ';' : '') + ((tax.value / 100).toFixed(2) + ' %' || '');
       line += (line ? ';' : '') + (tax.name || '');

@@ -30,7 +30,7 @@
       </button>
     </div>
   </form>
-  <div *ngIf="validationVariable == true" class="d-flex justify-content-center mt-3">
+  <div *ngIf="validationVariable === true" class="d-flex justify-content-center mt-3">
     <div class="text-danger"><b>{{ 'dpos.filter.novalid' | translate }}</b></div>
   </div>
   <div class="card mt-3">
@@ -57,13 +57,13 @@
         </div>
       </div>
       <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage" (closeModal)="closeModal()"></app-modal>
-      <div *ngIf="loadCompleted == false && emptySearch == false" class="d-flex justify-content-center">
+      <div *ngIf="loadCompleted === false && emptySearch === false" class="d-flex justify-content-center">
         <div class="spinner-border text-danger"></div>
       </div>
-      <div *ngIf="loadCompleted && emptySearch == true" class="d-flex justify-content-center">
+      <div *ngIf="loadCompleted && emptySearch === true" class="d-flex justify-content-center">
         <b><i>{{ 'dpos.dashboard.nodata.label' | translate }}</i></b>
       </div>
-      <div class="row" *ngIf="loadCompleted && emptySearch == false">
+      <div class="row" *ngIf="loadCompleted && emptySearch === false">
         <div class="col">
           <div class="table-responsive">
             <table class="table table-hover order-table">
@@ -101,7 +101,7 @@
                 </ng-container>
               </tbody>
             </table>
-            <div *ngIf="loadCompleted && emptySearch == false" class="text-center mt-3">
+            <div *ngIf="loadCompleted && emptySearch === false" class="text-center mt-3">
               <pagination-controls (pageChange)="page = $event" previousLabel="" nextLabel=""></pagination-controls>
             </div>
           </div>

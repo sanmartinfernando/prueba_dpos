@@ -1,7 +1,7 @@
 import { StorageService } from 'src/app/_services/storage.service';
 import { EncryptionService } from './../_services/encryption.service';
 import { DownloadCsvService } from '../_services/download-csv.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { OrderInfo } from '../_models/order-info.model';
 import { PortalUsersService } from '../_services/portal-users.service';
 import { TerminalsService } from '../_services/terminals.service';
@@ -20,32 +20,43 @@ import { ThemeService } from '../_services/theme.service';
 import { UIStateService } from '../_services/ui-state.service';
 
 @Component({
-  selector: 'DPOSW-sales',
+  selector: 'app-dpos-sales',
   templateUrl: './sales.component.html',
 })
-export class SalesComponent implements OnInit {
+export class SalesComponent implements OnInit, OnDestroy {
+
+  private encryptionService = inject(EncryptionService);
+  private ordersService = inject(OrdersService);
+  private downloadCsvService = inject(DownloadCsvService);
+  private storageService = inject(StorageService);
+  private portalUsersService = inject(PortalUsersService);
+  private terminalsService = inject(TerminalsService);
+  private commercesService = inject(CommercesService);
+  private currencyPipe = inject(CurrencyPipe);
+  private sessionService = inject(SessionService);
+  private authService = inject(AuthService);
 
   currentFormats: any;
-  size: number = 10000;
+  size = 10000;
   sales: OrderInfo;
   selectSales = new Array(3);
-  salesTicketBai = new Array;
+  salesTicketBai = [];
   operationN: number;
-  totalSales: number = 0;
+  totalSales = 0;
   totalSalesString: string;
-  page: number = 0;
+  page = 0;
   code: string;
-  loadCompleted: boolean = false;
-  isLoggedIn: boolean = true;
+  loadCompleted = false;
+  isLoggedIn = true;
   Math = Math;
-  validationVariable: boolean = false;
-  commerceId: number = 0;
+  validationVariable = false;
+  commerceId = 0;
   verifactuStatus = VerifactuStatus;
 
   //Parámetros de búsqueda
   public terminalsNumber: string[];
   terminalSelected: string = null;
-  searchCounter: boolean = false;
+  searchCounter = false;
   sinceDate: string;
   sinceDateMilli: number;
   tilDate: string;
@@ -56,17 +67,17 @@ export class SalesComponent implements OnInit {
   translatedTypeVarSearch = new Array(3);
   selTransTypeVarSearch: number = null;
   documentVarSearch: string = null;
-  varSearch: string = '';
-  emptySearch: boolean = false;
-  showModal: boolean = false;
-  modalTitle: string = '';
-  modalMessage: string = '';
+  varSearch = '';
+  emptySearch = false;
+  showModal = false;
+  modalTitle = '';
+  modalMessage = '';
 
   public opTypes: any;
 
   // Checkboxes
   selectedIndices: number[] = [];
-  isAllSelected: boolean = false;
+  isAllSelected = false;
   counter = 0;
   currentLang: string;
   langSubscription: Subscription;
@@ -74,19 +85,9 @@ export class SalesComponent implements OnInit {
   commerces: Commerce[];
 
   constructor(
-    private encryptionService: EncryptionService,
-    private ordersService: OrdersService,
-    private downloadCsvService: DownloadCsvService,
-    private storageService: StorageService,
-    private portalUsersService: PortalUsersService,
-    private terminalsService: TerminalsService,
-    private commercesService: CommercesService,
     private translate: TranslateService,
-    private currencyPipe: CurrencyPipe,
-    private sessionService: SessionService,
     private themeService: ThemeService,
-    private uiStateService: UIStateService,
-    private authService: AuthService
+    private uiStateService: UIStateService
   ) {
 
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
@@ -114,15 +115,15 @@ export class SalesComponent implements OnInit {
   ngOnInit(): void {
     this.loadCompleted = false;
 
-    if (this.sessionService.getItem(SessionService.FROM_DATE) != null) {
+    if (this.sessionService.getItem(SessionService.FROM_DATE) !== null) {
       this.sinceDate = this.formatDate(this.sessionService.getItem(SessionService.FROM_DATE));
     }
 
-    if (this.sessionService.getItem(SessionService.TO_DATE) != null) {
+    if (this.sessionService.getItem(SessionService.TO_DATE) !== null) {
       this.tilDate = this.formatDate(this.sessionService.getItem(SessionService.TO_DATE));
     }
 
-    if (this.sessionService.getItem(SessionService.OP_TYPE) != null) {
+    if (this.sessionService.getItem(SessionService.OP_TYPE) !== null) {
       this.typeVarSearch = this.getTypeVarSearch(this.sessionService.getItem(SessionService.OP_TYPE));
     }
     else {
@@ -130,7 +131,7 @@ export class SalesComponent implements OnInit {
       this.typeVarSearch = this.translate.instant('dpos.filter.all');
     }
 
-    if (this.sessionService.getItem(SessionService.DOC_NUMBER) != null) {
+    if (this.sessionService.getItem(SessionService.DOC_NUMBER) !== null) {
       this.documentVarSearch = this.sessionService.getItem(SessionService.DOC_NUMBER);
     }
 
@@ -142,7 +143,7 @@ export class SalesComponent implements OnInit {
             next: (commerces) => {
               this.commerces = commerces;
               this.sessionService.getCommerceId().subscribe((commerceId) => {
-                if (commerceId != 0) {
+                if (commerceId !== 0) {
                   this.commerceId = commerceId; // Actualizar el valor en el componente
                 } else {
                   this.commerceId = commerces[0].commerceId;
@@ -151,12 +152,12 @@ export class SalesComponent implements OnInit {
                 this.commerceSelected = this.getCommerceNumber(this.commerceId);
                 this.terminalsService.getTerminalList().subscribe({
                   next: (terminals) => {
-                    terminals = terminals.filter(terminal => terminal.commerceId == this.commerceId && terminal.terminalNumber != null);
-                    if (terminals.length != 0) {
+                    terminals = terminals.filter(terminal => terminal.commerceId === this.commerceId && terminal.terminalNumber !== null);
+                    if (terminals.length !== 0) {
                       this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
                     }
                     this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
-                    if (this.sessionService.getItem(SessionService.TERMINAL_NUMBER) == null) {
+                    if (this.sessionService.getItem(SessionService.TERMINAL_NUMBER) === null) {
                       this.terminalSelected = this.terminalsNumber[0];
                       this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
                     } else {
@@ -185,7 +186,7 @@ export class SalesComponent implements OnInit {
   searchSales() {
     this.validationVariable = false;
     this.loadCompleted = false;
-    if (this.terminalSelected == '' || this.typeVarSearch == '') {
+    if (this.terminalSelected === '' || this.typeVarSearch === '') {
       this.terminalSelected = null;
       this.typeVarSearch = null;
     }
@@ -193,7 +194,7 @@ export class SalesComponent implements OnInit {
     this.loadCompleted = false;
     this.sinceDateMilli = Date.parse(this.sinceDate);
 
-    let date = new Date(this.tilDate);
+    const date = new Date(this.tilDate);
     date.setHours(23, 59, 0, 0);
     this.tilDateMilli = date.getTime();
 
@@ -202,11 +203,11 @@ export class SalesComponent implements OnInit {
 
     //Parámetros de búsqueda activos
     //Terminal
-    if (this.terminalSelected != null) {
-      if (this.searchCounter == false) {
+    if (this.terminalSelected !== null) {
+      if (this.searchCounter === false) {
         this.searchCounter = true;
       }
-      if (this.terminalSelected == this.translate.instant('dpos.filter.all')) {
+      if (this.terminalSelected === this.translate.instant('dpos.filter.all')) {
         this.varSearch = this.varSearch + "{'or':[";
         for (let i = 1; i < this.terminalsNumber.length; i++) {
           this.varSearch = this.varSearch + "{'field':'terminal_number','op':'=','value':'" + this.terminalsNumber[i] + "'}";
@@ -221,8 +222,8 @@ export class SalesComponent implements OnInit {
     }
 
     //Commerce id
-    if (this.commerceId != 0) {
-      if (this.searchCounter == false) {
+    if (this.commerceId !== 0) {
+      if (this.searchCounter === false) {
         this.searchCounter = true;
       } else {
         this.varSearch = this.varSearch + ',';
@@ -239,7 +240,7 @@ export class SalesComponent implements OnInit {
         this.openModal();
         return;
       } else {
-        if (this.searchCounter == false) {
+        if (this.searchCounter === false) {
           this.searchCounter = true;
         } else {
           this.varSearch = this.varSearch + ',';
@@ -256,7 +257,7 @@ export class SalesComponent implements OnInit {
         this.openModal();
         return;
       } else {
-        if (this.searchCounter == false) {
+        if (this.searchCounter === false) {
           this.searchCounter = true;
         } else {
           this.varSearch = this.varSearch + ',';
@@ -266,16 +267,16 @@ export class SalesComponent implements OnInit {
     }
 
     //Tipo de operación
-    if (this.typeVarSearch != null) {
-      if (this.searchCounter == false) {
+    if (this.typeVarSearch !== null) {
+      if (this.searchCounter === false) {
         this.searchCounter = true;
       } else {
         this.varSearch = this.varSearch + ',';
       }
-      if (this.typeVarSearch == this.translate.instant('dpos.filter.all')) {
+      if (this.typeVarSearch === this.translate.instant('dpos.filter.all')) {
         this.varSearch = this.varSearch + "{'or':[";
         for (let i = 0; i < this.opTypes.length; i++) {
-          if (i == 0) {
+          if (i === 0) {
             this.varSearch =
               this.varSearch +
               "{'field':'Type','op':'=','value':'" +
@@ -305,7 +306,7 @@ export class SalesComponent implements OnInit {
       }
     }
     //Nº de Documento
-    if (this.documentVarSearch != null) {
+    if (this.documentVarSearch !== null) {
       if (
         this.documentVarSearch.includes('=') ||
         this.documentVarSearch.includes('(') ||
@@ -315,7 +316,7 @@ export class SalesComponent implements OnInit {
         this.loadCompleted = true
         return;
       }
-      if (this.searchCounter == false) {
+      if (this.searchCounter === false) {
         this.searchCounter = true;
       } else {
         this.varSearch = this.varSearch + ',';
@@ -331,16 +332,16 @@ export class SalesComponent implements OnInit {
     this.ordersService.getOrderInfo(this.size, this.varSearch).subscribe(
       (sale) => {
         this.sales = sale;
-        if (this.sales.data.length != 0) {
+        if (this.sales.data.length !== 0) {
           this.operationN = this.sales.data.length;
 
           this.totalSales = 0;
           for (let i = 0; i < this.sales.data.length; i++) {
 
-            if (this.sales.data[i].type == 0) { //Ventas
+            if (this.sales.data[i].type === 0) { //Ventas
               this.totalSales = this.totalSales + Number(this.sales.data[i].total);
             }
-            else if (this.sales.data[i].type == 2) { //Devoluciones
+            else if (this.sales.data[i].type === 2) { //Devoluciones
               this.totalSales = this.totalSales - Number(this.sales.data[i].total);
             }
           }
@@ -353,44 +354,44 @@ export class SalesComponent implements OnInit {
           //Creación de arrays del select del formulario de búsqueda
           //Terminal
           for (let i = 0; i < this.sales.data.length; i++) {
-            let counterSelect: boolean = false;
-            if (i == 0) {
+            let counterSelect = false;
+            if (i === 0) {
               this.selectSales[0][i] = this.sales.data[i].terminalNumber;
             } else {
               for (let z = 0; z <= i; z++) {
-                if (this.selectSales[0][z] == this.sales.data[i].terminalNumber || counterSelect == true) {
+                if (this.selectSales[0][z] === this.sales.data[i].terminalNumber || counterSelect === true) {
                   counterSelect = true;
                 }
-                if (counterSelect == false && z == i) {
+                if (counterSelect === false && z === i) {
                   this.selectSales[0][i] = this.sales.data[i].terminalNumber;
                 }
               }
               counterSelect = false;
             }
             //Tipo de operación
-            if (i == 0) {
+            if (i === 0) {
               this.selectSales[1][i] = this.sales.data[i].type;
             } else {
               for (let z = 0; z <= i; z++) {
-                if (this.selectSales[1][z] == this.sales.data[i].type || counterSelect == true) {
+                if (this.selectSales[1][z] === this.sales.data[i].type || counterSelect === true) {
                   counterSelect = true;
                 }
-                if (counterSelect == false && z == i) {
+                if (counterSelect === false && z === i) {
                   this.selectSales[1][i] = this.sales.data[i].type;
                 }
               }
               counterSelect = false;
             }
             //Nº de documento
-            if (i == 0) {
+            if (i === 0) {
               this.selectSales[2][i] = this.sales.data[i].reference;
             } else {
               for (let z = 0; z <= i; z++) {
-                if (this.selectSales[2][z] == this.sales.data[i].reference || counterSelect == true) {
+                if (this.selectSales[2][z] === this.sales.data[i].reference || counterSelect === true) {
                   counterSelect = true;
                 }
 
-                if (counterSelect == false && z == i) {
+                if (counterSelect === false && z === i) {
                   this.selectSales[2][i] = this.sales.data[i].reference;
                 }
               }
@@ -400,19 +401,19 @@ export class SalesComponent implements OnInit {
           //Eliminación espacios en blanco de arrays
           //Terminal
           for (let i = this.sales.data.length - 1; i >= 0; i--) {
-            if (this.selectSales[0][i] == null) {
+            if (this.selectSales[0][i] === null) {
               this.selectSales[0].splice(i, 1);
             }
           }
           //Tipo de operación
           for (let i = this.sales.data.length - 1; i >= 0; i--) {
-            if (this.selectSales[1][i] == null) {
+            if (this.selectSales[1][i] === null) {
               this.selectSales[1].splice(i, 1);
             }
           }
           //Nº de documento
           for (let i = this.sales.data.length - 1; i >= 0; i--) {
-            if (this.selectSales[2][i] == null) {
+            if (this.selectSales[2][i] === null) {
               this.selectSales[2].splice(i, 1);
             }
           }
@@ -434,13 +435,13 @@ export class SalesComponent implements OnInit {
           this.salesTicketBai = []
           for (let i = 0; i <= this.sales.data.length; i++) {
             if (this.sales.data[i] != null && this.sales.data[i].orderTicketBai != null) {
-              if (this.sales.data[i].orderTicketBai.status == '00' && this.sales.data[i].orderTicketBai.warns.length <= 0) {
+              if (this.sales.data[i].orderTicketBai.status === '00' && this.sales.data[i].orderTicketBai.warns.length <= 0) {
                 this.salesTicketBai[i] = 0
               }
-              if (this.sales.data[i].orderTicketBai.status == '00' && this.sales.data[i].orderTicketBai.warns.length > 0) {
+              if (this.sales.data[i].orderTicketBai.status === '00' && this.sales.data[i].orderTicketBai.warns.length > 0) {
                 this.salesTicketBai[i] = 1
               }
-              if (this.sales.data[i].orderTicketBai.status == '01') {
+              if (this.sales.data[i].orderTicketBai.status === '01') {
                 this.salesTicketBai[i] = 2
               }
             }
@@ -452,8 +453,8 @@ export class SalesComponent implements OnInit {
         this.loadCompleted = true;
       },
       (error) => {
-        if (error.status == 401 || error.status == 500) {
-          this.emptySearch == true;
+        if (error.status === 401 || error.status === 500) {
+          this.emptySearch === true;
           this.loadCompleted = true;
         };
       }
@@ -465,7 +466,7 @@ export class SalesComponent implements OnInit {
     if (event.target.checked) {
       this.selectedIndices = [];
       for (let i = 0; i < this.sales.data.length; i++) {
-        let globalIndex = i;
+        const globalIndex = i;
         this.selectedIndices.push(globalIndex);
       }
       this.counter = this.selectedIndices.length;
@@ -500,8 +501,8 @@ export class SalesComponent implements OnInit {
     this.commerceId = this.getCommerceId();
     this.terminalsService.getTerminalList().subscribe({
       next: (terminals) => {
-        terminals = terminals.filter(terminal => terminal.commerceId == this.commerceId && terminal.terminalNumber != null);
-        if (terminals.length != 0) {
+        terminals = terminals.filter(terminal => terminal.commerceId === this.commerceId && terminal.terminalNumber !== null);
+        if (terminals.length !== 0) {
           this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
         }
         this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
@@ -519,7 +520,7 @@ export class SalesComponent implements OnInit {
 
   onSinceDateChange(): void {
     this.sessionService.setItem(SessionService.FROM_DATE, this.terminalSelected);
-    this.sinceDate = (<HTMLInputElement>(document.getElementById('sinceDate'))).value;
+    this.sinceDate = (document.getElementById('sinceDate') as HTMLInputElement).value;
     if (this.sinceDate.length > 0) {
       this.sinceDateMilli = Date.parse(this.sinceDate);
       this.sessionService.setItem(SessionService.FROM_DATE, this.sinceDateMilli);
@@ -528,7 +529,7 @@ export class SalesComponent implements OnInit {
 
   onTilDateChange(): void {
     this.sessionService.setItem(SessionService.TO_DATE, this.terminalSelected);
-    this.tilDate = (<HTMLInputElement>(document.getElementById('tilDate'))).value;
+    this.tilDate = (document.getElementById('tilDate') as HTMLInputElement).value;
     if (this.tilDate.length > 0) {
       this.tilDateMilli = Date.parse(this.tilDate);
       this.sessionService.setItem(SessionService.TO_DATE, this.tilDateMilli);
@@ -545,7 +546,7 @@ export class SalesComponent implements OnInit {
 
   getTypeVarSearch(opType: number): string {
     let opTypeValue: string = this.translate.instant('dpos.filter.all');
-    if (opType != null) {
+    if (opType !== null) {
       switch (opType) {
         case Order.TYPE_SALE:
           opTypeValue = this.translate.instant('dpos.sales.operation.order.label');
@@ -563,7 +564,7 @@ export class SalesComponent implements OnInit {
 
   getOpType(): number {
     let opType = -1;
-    if (this.typeVarSearch != null) {
+    if (this.typeVarSearch !== null) {
       switch (this.typeVarSearch) {
         case this.translate.instant('dpos.sales.operation.order.label'):
           opType = Order.TYPE_SALE;
@@ -580,16 +581,16 @@ export class SalesComponent implements OnInit {
   }
 
   getCommerceId(): number {
-    const commerce = this.commerces.find(commerce => commerce.commerceNumber == this.commerceSelected);
-    if (commerce != undefined) {
+    const commerce = this.commerces.find(commerce => commerce.commerceNumber === this.commerceSelected);
+    if (commerce !== undefined) {
       return commerce.commerceId;
     }
     return 0;
   }
 
   getTotalBase(orderTaxes: OrderTax[]): number {
-    if (orderTaxes != undefined) {
-      let totalBase: number = 0;
+    if (orderTaxes !== undefined) {
+      let totalBase = 0;
       for (let i = 0; i < orderTaxes.length; i++) {
         totalBase += orderTaxes[i].base / Math.pow(10, orderTaxes[i].decimals);
       }
@@ -599,8 +600,8 @@ export class SalesComponent implements OnInit {
   }
 
   getTotalTaxes(orderTaxes: OrderTax[]): number {
-    if (orderTaxes != undefined) {
-      let totalTaxes: number = 0;
+    if (orderTaxes !== undefined) {
+      let totalTaxes = 0;
       for (let i = 0; i < orderTaxes.length; i++) {
         totalTaxes += orderTaxes[i].total / Math.pow(10, orderTaxes[i].decimals);
       }
@@ -610,8 +611,8 @@ export class SalesComponent implements OnInit {
   }
 
   getCommerceNumber(commerceId: number): string {
-    const commerce = this.commerces.find(commerce => commerce.commerceId == commerceId);
-    if (commerce != undefined) {
+    const commerce = this.commerces.find(commerce => commerce.commerceId === commerceId);
+    if (commerce !== undefined) {
       return commerce.commerceNumber;
     }
     return "";

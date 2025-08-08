@@ -20,5 +20,5 @@ export class Customer {
   postcode: string;
   email: string;
   phone: string;
-  selected: boolean = false;
+  selected = false;
 }

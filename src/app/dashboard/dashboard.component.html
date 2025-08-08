@@ -45,9 +45,9 @@
           <div class="row row-cols-2 row-cols-md-3 row-cols-xl-5 g-3 text-center">
             <div id="salesBorder" class="kpi col d-flex flex-column align-items-center focus" (click)="fillCharKPIs($event)">
               <h6 class="mt-2">{{ 'dpos.dashboard.orders.label' | translate }}</h6>
-              <div *ngIf="ordersResult.total != 0; else noresults">{{ ordersResult.total | currency : 'Eur' : '€' }}
+              <div *ngIf="ordersResult.total !== 0; else noresults">{{ ordersResult.total | currency : 'Eur' : '€' }}
               </div>
-              <small *ngIf="ordersResult.count != 0">
+              <small *ngIf="ordersResult.count !== 0">
                 {{ ordersResult.count }}
                 <ng-container *ngIf="ordersResult.count > 1; else singular">{{ 'dpos.dashboard.operations.label' | translate }}</ng-container>
               </small>
@@ -55,22 +55,22 @@
             <div id="averageTicketBorder" class="kpi col d-flex flex-column align-items-center focus"
               (click)="fillCharKPIs($event)">
               <h6 class="mt-2">{{ 'dpos.dashboard.average.ticket.label' | translate }}</h6>
-              <p *ngIf="avTicketResult != 0; else noresults">{{ avTicketResult | currency : 'Eur' : '€' }}</p>
+              <p *ngIf="avTicketResult !== 0; else noresults">{{ avTicketResult | currency : 'Eur' : '€' }}</p>
             </div>
             <div id="refundsBorder" class="kpi col d-flex flex-column align-items-center focus" (click)="fillCharKPIs($event)">
               <h6 class="mt-2">{{ 'dpos.dashboard.refunds.label' | translate }}</h6>
-              <div *ngIf="refundsResult.total != 0; else noresults">{{ refundsResult.total | currency : 'Eur' : '€' }}
+              <div *ngIf="refundsResult.total !== 0; else noresults">{{ refundsResult.total | currency : 'Eur' : '€' }}
               </div>
-              <small *ngIf="refundsResult.count != 0">
+              <small *ngIf="refundsResult.count !== 0">
                 {{ refundsResult.count }}
                 <ng-container *ngIf="refundsResult.count > 1; else singular">{{ 'dpos.dashboard.operations.label' | translate }}</ng-container>
               </small>
             </div>
             <div id="casmovBorder" class="kpi col d-flex flex-column align-items-center focus" (click)="fillCharKPIs($event)">
               <h6 class="mt-2">{{ 'dpos.dashboard.cashmovement.label' | translate }}</h6>
-              <div *ngIf="cashMovementsResult != 0; else noresults">{{ cashMovementsResult | currency : 'Eur' : '€' }}
+              <div *ngIf="cashMovementsResult !== 0; else noresults">{{ cashMovementsResult | currency : 'Eur' : '€' }}
               </div>
-              <small *ngIf="cashMovementsOperationsResult != 0">
+              <small *ngIf="cashMovementsOperationsResult !== 0">
                 {{ cashMovementsOperationsResult }}
                 <ng-container
                   *ngIf="cashMovementsOperationsResult > 1; else singular">{{ 'dpos.dashboard.operations.label' | translate }}</ng-container>
@@ -84,13 +84,13 @@
           <div class="mt-5">
             <h6>
               <b>{{ 'dpos.dashboard.evokpis.label' | translate }}</b>
-              <ng-container *ngIf="showSalesVar == true || (showSalesVar == false && showRefundsVar == false && showAverageTicketVar == false && showCashMovVar == false && showResultsVar == false)">
+              <ng-container *ngIf="showSalesVar === true || (showSalesVar === false && showRefundsVar === false && showAverageTicketVar === false && showCashMovVar === false && showResultsVar === false)">
                 <b>&nbsp;> {{ 'dpos.dashboard.orders.txt' | translate }}</b>
               </ng-container>
-              <ng-container *ngIf="showRefundsVar == true"><b>&nbsp;> {{ 'dpos.dashboard.refunds.txt' | translate }}</b></ng-container>
-              <ng-container *ngIf="showAverageTicketVar == true"><b>&nbsp;> {{ 'dpos.dashboard.average.ticket.txt' | translate }}</b></ng-container>
-              <ng-container *ngIf="showCashMovVar == true"><b>&nbsp;> {{ 'dpos.dashboard.cashmovements.txt' | translate }}</b></ng-container>
-              <ng-container *ngIf="showResultsVar == true"><b>&nbsp;> {{ 'dpos.dashboard.results.txt' | translate }}</b></ng-container>
+              <ng-container *ngIf="showRefundsVar === true"><b>&nbsp;> {{ 'dpos.dashboard.refunds.txt' | translate }}</b></ng-container>
+              <ng-container *ngIf="showAverageTicketVar === true"><b>&nbsp;> {{ 'dpos.dashboard.average.ticket.txt' | translate }}</b></ng-container>
+              <ng-container *ngIf="showCashMovVar === true"><b>&nbsp;> {{ 'dpos.dashboard.cashmovements.txt' | translate }}</b></ng-container>
+              <ng-container *ngIf="showResultsVar === true"><b>&nbsp;> {{ 'dpos.dashboard.results.txt' | translate }}</b></ng-container>
             </h6>
             <ng-template class="d-flex justify-content-center" #spinner>
               <div class="spinner-border text-danger"></div>

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { User } from '../_models/user.model';
 import { AuthService } from './auth.service';
@@ -10,14 +10,16 @@ import { StringConstants } from '../_rest/string-constants';
 })
 export class StorageService {
 
+  private authService = inject(AuthService);
+
   public userInfo = new BehaviorSubject(this.getUser());
   private loggedin: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
   public loggedin$: Observable<boolean> = this.loggedin.asObservable();
 
-  username: string = '';
+  username = '';
   component: string;
 
-  constructor(private authService: AuthService) {
+  constructor() {
     this.authService.configObservable.subscribe(user => {
       this.saveUser(user);
     });
@@ -53,7 +55,7 @@ export class StorageService {
   }
 
   public updateVerifiedEmail() {
-    let user = this.getUser();
+    const user = this.getUser();
     if (user) {
       user.email_verified = true;
       this.saveUser(user);
@@ -89,7 +91,7 @@ export class StorageService {
   }
 
   private saveUser(user: User): void {
-    if (user != null) {
+    if (user !== null) {
       this.setUsername(user.email);
       window.localStorage.removeItem(StringConstants.USER_KEY);
       window.localStorage.setItem(StringConstants.USER_KEY, JSON.stringify(user));//

@@ -1,5 +1,5 @@
 import { EncryptionService } from './../../_services/encryption.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Order } from 'src/app/_models/order.model';
 import { DownloadPDFService } from 'src/app/_services/download-pdf.service';
@@ -9,26 +9,27 @@ import { ThemeService } from 'src/app/_services/theme.service';
 import { UIStateService } from 'src/app/_services/ui-state.service';
 
 @Component({
-  selector: 'DPOSW-details',
+  selector: 'app-dpos-details',
   templateUrl: './details.component.html',
 })
 export class DetailsComponent implements OnInit {
 
+  private activatedRoute = inject(ActivatedRoute);
+  private downloadPDFService = inject(DownloadPDFService);
+  private ordersService = inject(OrdersService);
+  private encryptionService = inject(EncryptionService);
+  private sessionService = inject(SessionService);
+
   ticket: Order;
   orderId: string;
-  loadCompleted: boolean = false;
-  isLoggedIn: boolean = true;
+  loadCompleted = false;
+  isLoggedIn = true;
   Math = Math;
   salesTicketBai;
   salesVerifactu;
   totalBase: number;
 
   constructor(
-    private activatedRoute: ActivatedRoute,
-    private downloadPDFService: DownloadPDFService,
-    private ordersService: OrdersService,
-    private encryptionService: EncryptionService,
-    private sessionService: SessionService,
     private themeService: ThemeService,
     private uiStateService: UIStateService
   ) {
@@ -38,7 +39,7 @@ export class DetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    let iddecode = this.encryptionService.decode(
+    const iddecode = this.encryptionService.decode(
       this.activatedRoute.snapshot.params['id']
     );
     this.orderId = this.encryptionService.decrypt(iddecode);
@@ -46,12 +47,12 @@ export class DetailsComponent implements OnInit {
       next: (ticketVentas) => {
         this.ticket = ticketVentas;
         this.salesTicketBai = [];
-        if (this.ticket.orderTicketBai != null) {
+        if (this.ticket.orderTicketBai !== null) {
           this.salesTicketBai[0] = this.ticket.orderTicketBai.ticketBaiId;
           this.salesTicketBai[1] = this.ticket.orderTicketBai.url;
         }
         this.salesVerifactu = [];
-        if (this.ticket.orderVerifactu != null) {
+        if (this.ticket.orderVerifactu !== null) {
           this.salesVerifactu[0] = this.ticket.orderVerifactu.url;
           this.salesVerifactu[1] = this.ticket.orderVerifactu.url;
         }
@@ -62,7 +63,7 @@ export class DetailsComponent implements OnInit {
         this.loadCompleted = true;
       },
       error: (error) => {
-        if (error.status == 401 || error.status == 500) {
+        if (error.status === 401 || error.status === 500) {
           this.loadCompleted = true;
         };
       }
@@ -72,7 +73,7 @@ export class DetailsComponent implements OnInit {
   //Calcular valores totales de Orderlines.Subtotal y OrderTaxes.Base
   calculateTotal(orders: any[], propertyName: string): number {
     let total = 0;
-    for (let calculate of orders) {
+    for (const calculate of orders) {
       total += calculate[propertyName] / 100;
     }
     return total;

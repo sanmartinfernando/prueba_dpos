@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Subject, firstValueFrom } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
@@ -14,6 +14,8 @@ import { AuthRequest } from '../_models/auth-request.model';
 })
 export class AuthService {
 
+  private http = inject(HttpClient);
+  
   public configObservable = new Subject<User>();
   public portalUsersToken: string;
   public httpOptions = {
@@ -23,18 +25,18 @@ export class AuthService {
   };
 
   public static handleErrors(response) {
-    if (!(response.status == 200 || response.status == 409)) {
+    if (!(response.status === 200 || response.status === 409)) {
       throw Error(response.statusText);
     }
     return response;
   }
 
-  constructor(private http: HttpClient) { }
+  constructor() { }
 
   async login(UserName: string, Password: string): Promise<string> {
 
-    let urlLogin: string = `${environment.urlAuth}${RestRoutes.AUTH_PORTALUSERS}/login`;
-    var loginRequest = new LoginRequest();
+    const urlLogin = `${environment.urlAuth}${RestRoutes.AUTH_PORTALUSERS}/login`;
+    const loginRequest = new LoginRequest();
     loginRequest.userName = UserName;
     loginRequest.password = Password;
     await fetch(urlLogin, {
@@ -50,15 +52,15 @@ export class AuthService {
       .then(async (result) => {
         this.saveToken(result.token);
         this.saveUserName(loginRequest.userName);
-        let validation = await this.validate();
-        var userInfo = new User();
+        const validation = await this.validate();
+        const userInfo = new User();
         userInfo.user = loginRequest.userName;
         userInfo.pwd = loginRequest.password;
         this.loginEvent(userInfo);
       });
 
-    let urlLogin2: string = `${environment.urlAuth}${RestRoutes.AUTH}/authorize`;
-    var loginRequest2 = new AuthRequest();
+    const urlLogin2 = `${environment.urlAuth}${RestRoutes.AUTH}/authorize`;
+    const loginRequest2 = new AuthRequest();
     loginRequest2.clientKey = 'F0F0427E-FDDF-4A0F-910B-7FE1075BE366';
     loginRequest2.secretKey = 'j5$R8N3DB1my';
     await fetch(urlLogin2, {
@@ -74,18 +76,18 @@ export class AuthService {
       .then(async (result) => {
         window.localStorage.removeItem(StringConstants.TOKEN_KEY2);
         window.localStorage.setItem(StringConstants.TOKEN_KEY2, result.token);
-        let validation = await this.validate();
+        const validation = await this.validate();
       });
     return this.getToken();
   }
 
   async validate(): Promise<object> {
-    let url: string = `${environment.urlAuth}${RestRoutes.AUTH}/validate`;
+    const url = `${environment.urlAuth}${RestRoutes.AUTH}/validate`;
     return firstValueFrom(this.http.post(url, this.httpOptions));
   }
 
   async getUserInfo(): Promise<User> {
-    let urlUser: string = `${environment.urlAuth}${RestRoutes.USER}`;
+    const urlUser = `${environment.urlAuth}${RestRoutes.USER}`;
     return firstValueFrom(this.http.get<User>(urlUser, this.httpOptions));
   }
 

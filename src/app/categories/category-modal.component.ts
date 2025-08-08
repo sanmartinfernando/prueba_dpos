@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AuthService } from '../_services/auth.service';
 import { PortalUsersService } from '../_services/portal-users.service';
@@ -10,11 +10,18 @@ import { Category } from '../_models/category.model';
 
 
 @Component({
-  selector: 'DPOSW-category-modal',
+  selector: 'app-dpos-category-modal',
   templateUrl: './category-modal.component.html',
   styleUrls: []
 })
-export class CategoryModalComponent {
+export class CategoryModalComponent implements OnInit {
+
+  private portalUsersService = inject(PortalUsersService);
+  private storageService = inject(StorageService);
+  private themeService = inject(ThemeService);
+  private sessionService = inject(SessionService);
+  private translate = inject(TranslateService);
+  private authService = inject(AuthService);
 
   Category: Category;
   titlePage: string;
@@ -24,14 +31,8 @@ export class CategoryModalComponent {
   };
 
   constructor(public dialogRef: MatDialogRef<CategoryModalComponent>,
-    private portalUsersService: PortalUsersService,
-    private storageService: StorageService,
-    private themeService: ThemeService,
-    private sessionService: SessionService,
-    private translate: TranslateService,
-    private authService: AuthService,
-    @Inject(MAT_DIALOG_DATA) public data: { id?: string },) {
-      
+    @Inject(MAT_DIALOG_DATA) public data: { id?: string }) {
+
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
     this.idCategory = data.id;
   }

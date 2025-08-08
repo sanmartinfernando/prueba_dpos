@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { AuthService } from '../../_services/auth.service';
 import { StorageService } from '../../_services/storage.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -14,23 +14,25 @@ import { FormBuilder, Validators } from '@angular/forms';
 })
 export class LoginComponent implements OnInit {
 
+  private authService = inject(AuthService);
+  private storageService = inject(StorageService);
+  private formBuilder = inject(FormBuilder);
+  public router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private _pagesService = inject(PagesService);
+
   private userSuscription!: Subscription;
   loginForm;
-  code: string = "password-recovery";
+  code = "password-recovery";
   isLoggedIn = false;
   isLoginFailed = false;
   errorMessage = '';
   roles: string[] = [];
   token: any = [];
   componentSelected: string;
-  loading: boolean = false;
+  loading = false;
 
-  constructor(private authService: AuthService,
-    private storageService: StorageService,
-    private formBuilder: FormBuilder,
-    public router: Router,
-    private route: ActivatedRoute,
-    private _pagesService: PagesService) {
+  constructor() {
 
   }
 
@@ -68,8 +70,8 @@ export class LoginComponent implements OnInit {
   }
 
   navigateLoggedIn() {
-    var params = {};
-    var page = "/dashboard" //"home"
+    const params = {};
+    let page = "/dashboard" //"home"
     this.route.queryParams.subscribe(routeParams => {
       if (routeParams['callbackUrl']) {
         page = routeParams['callbackUrl'];
@@ -79,8 +81,8 @@ export class LoginComponent implements OnInit {
   }
 
   navigateError() {
-    var params = {};
-    var page = "/error"
+    const params = {};
+    const page = "/error"
     this.router.navigate([page], { queryParams: params });
   }
 
@@ -89,7 +91,7 @@ export class LoginComponent implements OnInit {
   }
 
   updateUserData(user: User) {
-    if (user != null) {
+    if (user !== null) {
       this.isLoggedIn = true;
     } else {
       this.isLoggedIn = false;

@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment.dev-inte';
 import { RestRoutes } from '../_rest/rest-routes.config';
@@ -12,6 +12,9 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class SalesReportService {
 
+  private http = inject(HttpClient);
+  private translate = inject(TranslateService);
+
   public httpOptions = {
     headers: new HttpHeaders(
       {
@@ -20,13 +23,13 @@ export class SalesReportService {
     )
   };
 
-  constructor(private http: HttpClient, private translate: TranslateService) { }
+  constructor() { }
 
   public getSalesReport(fromDate: number, toDate: number, terminalNumber?: string, commerceId?: number): Observable<SalesReport> {
     if (fromDate === undefined || fromDate === null || toDate === undefined || toDate === null) {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
     }
-    let urlSalesReport: string = `${environment.urlWS}${RestRoutes.SALES_REPORT}${fromDate}${RestRoutes.PARAM_TODATE}${toDate}`;
+    let urlSalesReport = `${environment.urlWS}${RestRoutes.SALES_REPORT}${fromDate}${RestRoutes.PARAM_TODATE}${toDate}`;
     if (terminalNumber) {
       urlSalesReport += `${RestRoutes.PARAM_TERMINALNUMBER}${terminalNumber}`;
     }

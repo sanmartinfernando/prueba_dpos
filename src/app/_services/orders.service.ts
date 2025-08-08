@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment.dev-inte';
@@ -15,6 +15,9 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class OrdersService {
 
+  private http = inject(HttpClient);
+  private translate = inject(TranslateService);
+
   public httpOptions = {
     headers: new HttpHeaders(
       {
@@ -23,13 +26,13 @@ export class OrdersService {
     )
   };
 
-  constructor(private http: HttpClient, private translate: TranslateService) { }
+  constructor() { }
 
   public getOrderAggregate(searchParams: string): Observable<OrderAggregation[]> {
     if (searchParams === undefined || searchParams === null) {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
     }
-    let urlOrderAggregate: string = `${environment.urlWS}${RestRoutes.ORDERS_AGGREGATE}`;
+    const urlOrderAggregate = `${environment.urlWS}${RestRoutes.ORDERS_AGGREGATE}`;
     return this.http.post<OrderAggregation[]>(urlOrderAggregate, searchParams, this.httpOptions);
   }
 
@@ -37,7 +40,7 @@ export class OrdersService {
     if (searchParams === undefined || searchParams === null) {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
     }
-    let urlOrderAggregate: string = `${environment.urlWS}${RestRoutes.ORDERS_AGGREGATE}`;
+    const urlOrderAggregate = `${environment.urlWS}${RestRoutes.ORDERS_AGGREGATE}`;
     return this.http.post<Top3Aggregation[]>(urlOrderAggregate, searchParams, this.httpOptions);
   }
 
@@ -45,7 +48,7 @@ export class OrdersService {
     if (size === undefined || size === null || searchParams === undefined || searchParams === null) {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
     }
-    let urlOrderInfo: string = `${environment.urlWS}${RestRoutes.ORDERS_INFO}${size}${RestRoutes.PARAM_OFFSET}${searchParams}`;
+    const urlOrderInfo = `${environment.urlWS}${RestRoutes.ORDERS_INFO}${size}${RestRoutes.PARAM_OFFSET}${searchParams}`;
     return this.http.get<OrderInfo>(urlOrderInfo, this.httpOptions);
   }
 
@@ -53,7 +56,7 @@ export class OrdersService {
     if (id === undefined || id === null) {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
     }
-    let urlOrders: string = `${environment.urlWS}${RestRoutes.ORDERS}${id}`;
+    const urlOrders = `${environment.urlWS}${RestRoutes.ORDERS}${id}`;
     return this.http.get<Order>(urlOrders, this.httpOptions);
   }
 }

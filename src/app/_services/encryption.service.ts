@@ -6,7 +6,7 @@ import * as CryptoJS from 'crypto-js';
 })
 export class EncryptionService {
 
-  private key: string = "encrypt!135790";
+  private key = "encrypt!135790";
 
   constructor() { }
 

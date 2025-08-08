@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment.dev-inte';
@@ -14,6 +14,9 @@ import { CustomerResponse } from '../_models/customer-response.model';
 })
 export class CustomersService {
 
+  private http = inject(HttpClient);
+  private translate = inject(TranslateService);
+
   public httpOptions = {
     headers: new HttpHeaders(
       {
@@ -22,13 +25,13 @@ export class CustomersService {
     )
   };
 
-  constructor(private http: HttpClient, private translate: TranslateService) { }
+  constructor() { }
 
   public createCustomer(customer: Customer): Observable<CustomerResponse> {
     if (customer === undefined || customer === null) {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
     }
-    let urlCustomers: string = `${environment.urlClients}${RestRoutes.CUSTOMERS}`;
+    const urlCustomers = `${environment.urlClients}${RestRoutes.CUSTOMERS}`;
     return this.http.post<CustomerResponse>(urlCustomers, customer, this.httpOptions);
   }
 
@@ -36,7 +39,7 @@ export class CustomersService {
     if (customer === undefined || customer === null || id === undefined || id === null) {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
     }
-    let urlCustomers: string = `${environment.urlClients}${RestRoutes.CUSTOMERS}${id}`;
+    const urlCustomers = `${environment.urlClients}${RestRoutes.CUSTOMERS}${id}`;
     return this.http.put<CustomerResponse>(urlCustomers, customer, this.httpOptions);
   }
 
@@ -44,12 +47,12 @@ export class CustomersService {
     if (id === undefined || id === null) {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
     }
-    let urlCustomers: string = `${environment.urlClients}${RestRoutes.CUSTOMERS}${id}`;
+    const urlCustomers = `${environment.urlClients}${RestRoutes.CUSTOMERS}${id}`;
     return this.http.get<CustomerResponse>(urlCustomers, this.httpOptions);
   }
 
   public getCustomers(size: number, searchParams: string): Observable<CustomerInfo> {
-    let urlCustomers: string = `${environment.urlClients}${RestRoutes.CUSTOMERS_INFO}${size}${RestRoutes.PARAM_OFFSET}${searchParams}`;
+    const urlCustomers = `${environment.urlClients}${RestRoutes.CUSTOMERS_INFO}${size}${RestRoutes.PARAM_OFFSET}${searchParams}`;
     return this.http.get<CustomerInfo>(urlCustomers, this.httpOptions);
   }
 }

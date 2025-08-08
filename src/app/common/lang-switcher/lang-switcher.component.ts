@@ -17,7 +17,7 @@ export class LangSwitcherComponent {
     translate.setDefaultLang('es');
 
     let language: string = sessionService.getItem(SessionService.LANGUAGE);
-    language = language != null ? language : 'es';
+    language = language !== null ? language : 'es';
 
     this.translate.use(language).subscribe(() => {
       this.translate.get('dpos.filter.all').subscribe((translation: string) => {
@@ -28,7 +28,7 @@ export class LangSwitcherComponent {
 
   switchLang(event: Event): void {
     const lang = event.target as HTMLSelectElement;
-    let isAllSelected: boolean = this.sessionService.getItem(SessionService.TERMINAL_NUMBER) != null && this.sessionService.getItem(SessionService.TERMINAL_NUMBER) == this.translate.instant('dpos.filter.all');
+    const isAllSelected: boolean = this.sessionService.getItem(SessionService.TERMINAL_NUMBER) !== null && this.sessionService.getItem(SessionService.TERMINAL_NUMBER) === this.translate.instant('dpos.filter.all');
     this.translate.use(lang.value).subscribe(() => {
       this.translate.get('dpos.filter.all').subscribe((translation: string) => {
         if (isAllSelected) {
