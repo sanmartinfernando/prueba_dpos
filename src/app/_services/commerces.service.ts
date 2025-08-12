@@ -24,8 +24,6 @@ export class CommercesService {
     )
   };
 
-  constructor() { }
-
   public getCommerceList(): Observable<Commerce[]> {
     const urlPortalUserCommerces = `${environment.urlWE}${RestRoutes.PORTALUSERS_COMMERCES}`;
     return this.http.get<Commerce[]>(urlPortalUserCommerces, this.httpOptions);

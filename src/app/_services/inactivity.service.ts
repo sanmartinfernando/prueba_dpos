@@ -17,8 +17,6 @@ export class InactivityService {
   private readonly WARNING_TIME = 25 * 60 * 1000;
   private monitoringActive = false;
 
-  constructor() { }
-
   startMonitoring() {
     this.monitoringActive = true;
     this.ngZone.runOutsideAngular(() => {
@@ -38,14 +36,6 @@ export class InactivityService {
     this.timeout = setTimeout(() => {
       this.logout();
     }, this.INACTIVITY_TIME);
-
-    setTimeout(() => {
-      this.showInactivityWarning();
-    }, this.WARNING_TIME);
-  }
-
-  private showInactivityWarning() {
-
   }
 
   public logout() {

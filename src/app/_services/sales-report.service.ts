@@ -23,8 +23,6 @@ export class SalesReportService {
     )
   };
 
-  constructor() { }
-
   public getSalesReport(fromDate: number, toDate: number, terminalNumber?: string, commerceId?: number): Observable<SalesReport> {
     if (fromDate === undefined || fromDate === null || toDate === undefined || toDate === null) {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));

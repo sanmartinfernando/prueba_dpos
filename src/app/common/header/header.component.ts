@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, OnInit, Output, DoCheck, inject } from '@angular/core';
+import { Component, EventEmitter, HostListener, OnInit, Output, inject } from '@angular/core';
 import { PagesService } from 'src/app/_services/pages.service';
 import { Page } from 'src/app/_models/page.model';
 import { StorageService } from 'src/app/_services/storage.service';
@@ -17,7 +17,7 @@ import { UIStateService } from 'src/app/_services/ui-state.service';
   templateUrl: './header.component.html',
   styleUrls: []
 })
-export class HeaderComponent implements OnInit, DoCheck {
+export class HeaderComponent implements OnInit {
 
   private authService = inject(AuthService);
   private portalUsersService = inject(PortalUsersService);
@@ -27,6 +27,7 @@ export class HeaderComponent implements OnInit, DoCheck {
   private themeService = inject(ThemeService);
   private uiStateService = inject(UIStateService);
   public router = inject(Router);
+  private pagesService = inject(PagesService);
 
   @Output() navToggled = new EventEmitter<boolean>();
 
@@ -42,9 +43,9 @@ export class HeaderComponent implements OnInit, DoCheck {
   formSelectEnabled = true;
   logoLoaded = false;
 
-  constructor(private pagesService: PagesService) {
+  constructor() {
 
-    this.pages = pagesService.pages;
+    this.pages = this.pagesService.pages;
 
     this.uiStateService.formSelectEnabled$.subscribe(enabled => {
       this.formSelectEnabled = enabled;
@@ -130,10 +131,6 @@ export class HeaderComponent implements OnInit, DoCheck {
     this.storageService.updateloggin(this.isLoggedIn);
   }
 
-  ngDoCheck() {
-
-  }
-
   component(component: string) {
     this.storageService.setComponent(component);
   }
@@ -149,7 +146,7 @@ export class HeaderComponent implements OnInit, DoCheck {
   }
 
   getCommerce(): Commerce {
-    const commerce = this.commerces.find(commerce => commerce.commerceId === this.commerceSelected);
+    const commerce = this.commerces.find(commerce => commerce.commerceId == this.commerceSelected);
     if (commerce !== undefined) {
       return commerce;
     }

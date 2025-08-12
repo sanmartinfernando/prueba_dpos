@@ -20,14 +20,12 @@ export class PwrecoveryComponent implements OnInit {
   isLoggedIn = false;
   componentSelected: string;
   userLocal = "";
-  user: any = {
-    userName: '',
+  user: { userName: string } = {
+    userName: ''
   }
   text = "";
   text2 = "";
   text3 = "";
-
-  constructor() { }
 
   ngOnInit(): void {
     this.userSuscription = this.storageService.userInfo.subscribe(user => {

@@ -19,6 +19,8 @@ export class DetailsComponent implements OnInit {
   private ordersService = inject(OrdersService);
   private encryptionService = inject(EncryptionService);
   private sessionService = inject(SessionService);
+  private themeService = inject(ThemeService);
+  private uiStateService = inject(UIStateService);
 
   ticket: Order;
   orderId: string;
@@ -29,10 +31,7 @@ export class DetailsComponent implements OnInit {
   salesVerifactu;
   totalBase: number;
 
-  constructor(
-    private themeService: ThemeService,
-    private uiStateService: UIStateService
-  ) {
+  constructor() {
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
     //Bloqueamos el selector de comercio;
     this.uiStateService.setFormSelectEnabled(false);
@@ -57,8 +56,8 @@ export class DetailsComponent implements OnInit {
           this.salesVerifactu[1] = this.ticket.orderVerifactu.url;
         }
         this.totalBase = 0;
-        for (let i = 0; i < this.ticket.orderTaxes.length; i++) {
-          this.totalBase += this.ticket.orderTaxes[i].base / Math.pow(10, this.ticket.orderTaxes[i].decimals);
+        for (const tax of this.ticket.orderTaxes) {
+          this.totalBase += tax.base / Math.pow(10, tax.decimals);
         }
         this.loadCompleted = true;
       },
@@ -68,15 +67,6 @@ export class DetailsComponent implements OnInit {
         };
       }
     });
-  }
-
-  //Calcular valores totales de Orderlines.Subtotal y OrderTaxes.Base
-  calculateTotal(orders: any[], propertyName: string): number {
-    let total = 0;
-    for (const calculate of orders) {
-      total += calculate[propertyName] / 100;
-    }
-    return total;
   }
 
   downloadPDF() {

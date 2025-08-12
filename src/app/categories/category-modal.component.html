@@ -9,8 +9,8 @@
       <form (ngSubmit)="onSubmit()">
         <div class="row mb-12">
           <div class="col-md-12">
-            <label class="form-label">{{ 'dpos.category.modal.form.name' | translate }}</label>
-            <input type="text" class="form-control" name="name" [(ngModel)]="categoryFormData.name">
+            <label class="form-label" for="name">{{ 'dpos.category.modal.form.name' | translate }}</label>
+            <input type="text" class="form-control" name="name" id="name" [(ngModel)]="categoryFormData.name">
           </div>
         </div>
       </form>

@@ -22,8 +22,6 @@ export class TerminalsService {
     )
   };
 
-  constructor() { }
-
   public getTerminalList(): Observable<Terminal[]> {
     const urlPortalUserTerminals = `${environment.urlWE}${RestRoutes.PORTALUSERS_TERMINALS}`;
     return this.http.get<Terminal[]>(urlPortalUserTerminals, this.httpOptions);

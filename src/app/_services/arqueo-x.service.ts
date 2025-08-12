@@ -21,8 +21,6 @@ export class ArqueoXService {
     )
   };
 
-  constructor() { }
-
   public getArqueoX(fromDate: number, toDate: number, terminalNumber?: string, commerceId?: number): Observable<Balance> {
     let urlArqueoX = `${environment.urlWS}${RestRoutes.BALANCES_ARQUEO_X}${fromDate}${RestRoutes.PARAM_TODATE}${toDate}`;
     if (terminalNumber) {

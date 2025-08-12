@@ -28,7 +28,7 @@ export const RestRoutes = {
   BALANCES_ARQUEO_X: `${API}/${BALANCES}/generate/arqueo-x?fromDate=`,
   CASH_MOVEMENTS_AGGREGATE: `${API}/${CASHMOVEMENTS}/aggregate`,
   CUSTOMERS_INFO: `${API}/${CUSTOMERS}?size=`,
-  CUSTOMERS: `${CUSTOMERS}/`,
+  CUSTOMERS: `${CUSTOMERS}`,
   TAXES_INFO: `${API}/${TAXES}?size=`,
   TAXES: `${API}/${TAXES}/`,
   PRODUCTS_INFO: `${API}/${PRODUCTS}?size=`,

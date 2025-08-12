@@ -1,35 +1,35 @@
 <br />
 <div class="container-fluid header-main">
-  <form class="row g-3 mx-1 align-items-end">
-    <div class="col-12 col-md-auto">
-      <label class="form-label">{{ 'dpos.filter.reporttype' | translate }}</label>
-      <select class="form-select" [(ngModel)]="reportVarSearch" name="report" (change)="onReportTypeChange()">
+  <form class="row g-3 px-2">
+    <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+      <label class="form-label" for="report">{{ 'dpos.filter.reporttype' | translate }}</label>
+      <select class="form-select" [(ngModel)]="reportVarSearch" name="report" id="report" (change)="onReportTypeChange()">
         <option selected>{{ 'dpos.reports.taxes.label' | translate }}</option>
         <option>{{ 'dpos.reports.products.label' | translate }}</option>
         <option>{{ 'dpos.reports.paymentmethods.label' | translate }}</option>
       </select>
     </div>
-    <div class="col-12 col-md-auto">
-      <label class="form-label">{{ 'dpos.filter.terminal' | translate }}</label>
+    <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+      <label class="form-label" for="searchTer">{{ 'dpos.filter.terminal' | translate }}</label>
       <select class="form-select" id="searchTer" name="terminal" [(ngModel)]="terminalSelected" (change)="onTerminalChange()">
         <option *ngFor="let terminal of terminalsNumber" [value]="terminal">{{ terminal }}</option>
       </select>
     </div>
-    <div class="col-12 col-md-auto">
-      <label class="form-label">{{ 'dpos.filter.date.from' | translate }}</label>
+    <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+      <label class="form-label" for="sinceDate">{{ 'dpos.filter.date.from' | translate }}</label>
       <input type="date" class="form-control" id="sinceDate" name="sinceDate" [value]="sinceDate" (change)="onSinceDateChange()" />
     </div>
-    <div class="col-12 col-md-auto">
-      <label class="form-label">{{ 'dpos.filter.date.to' | translate }}</label>
+    <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+      <label class="form-label" for="tilDate">{{ 'dpos.filter.date.to' | translate }}</label>
       <input type="date" class="form-control" id="tilDate" name="tilDate" [value]="tilDate" (change)="onTilDateChange()" />
     </div>
-    <div class="col-12 col-md-auto d-flex flex-column flex-md-row gap-2" id="searchButtonsDiv">
+    <div class="col-12 col-md-4 col-lg-4 d-flex flex-wrap gap-2 align-items-end">
       <button type="reset" class="btn btn-outline-danger">
         <i class="fas fa-eraser"></i>
       </button>
-      <a type="button" class="btn btn-primary" (click)="searchReports()">
-        <i class="fas fa-search"></i>&nbsp;&nbsp;{{ 'dpos.action.search' | translate }}
-      </a>
+      <button type="button" class="btn btn-primary" (click)="searchReports()">
+        <i class="fas fa-search"></i>&nbsp;{{ 'dpos.action.search' | translate }}
+      </button>
     </div>
   </form>
   <br />
@@ -41,8 +41,8 @@
         </div>
         <ng-container *ngIf="loadCompleted && emptySearch === false">
           <div class="col-12 col-md-3 text-md-end mt-2 mt-md-0">
-            <button class="btn btn-outline-info">
-              <i class="fa-solid fa-file-csv fa-xl" (click)="downloadReports()"></i>
+            <button class="btn btn-outline-info" (click)="downloadReports()">
+              <i class="fa-solid fa-file-csv fa-xl"></i>
             </button>
           </div>
         </ng-container>

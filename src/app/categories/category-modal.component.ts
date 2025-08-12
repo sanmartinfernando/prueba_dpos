@@ -1,4 +1,4 @@
-import { Component, inject, Inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AuthService } from '../_services/auth.service';
 import { PortalUsersService } from '../_services/portal-users.service';
@@ -22,6 +22,8 @@ export class CategoryModalComponent implements OnInit {
   private sessionService = inject(SessionService);
   private translate = inject(TranslateService);
   private authService = inject(AuthService);
+  public dialogRef = inject(MatDialogRef<CategoryModalComponent>);
+  public data = inject<{ id?: string }>(MAT_DIALOG_DATA);
 
   Category: Category;
   titlePage: string;
@@ -30,11 +32,9 @@ export class CategoryModalComponent implements OnInit {
     name: ''
   };
 
-  constructor(public dialogRef: MatDialogRef<CategoryModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { id?: string }) {
-
+  constructor() {
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
-    this.idCategory = data.id;
+    this.idCategory = this.data.id;
   }
 
   ngOnInit(): void {

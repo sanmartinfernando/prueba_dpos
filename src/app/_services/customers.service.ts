@@ -1,12 +1,11 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment.dev-inte';
 import { RestRoutes } from '../_rest/rest-routes.config';
 import { CustomerInfo } from '../_models/customer-info.model';
 import { Customer } from '../_models/customer.model';
 import { TranslateService } from '@ngx-translate/core';
-import { CustomerResponse } from '../_models/customer-response.model';
 
 
 @Injectable({
@@ -25,30 +24,40 @@ export class CustomersService {
     )
   };
 
-  constructor() { }
-
-  public createCustomer(customer: Customer): Observable<CustomerResponse> {
-    if (customer === undefined || customer === null) {
+  public createCustomer(customer: Customer, commerceId: string): Observable<Customer> {
+    if (customer === undefined || customer === null || commerceId === undefined || commerceId === null) {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
     }
+    
+    let params = new HttpParams();
+    params = params.set('commerceId', commerceId);
+
     const urlCustomers = `${environment.urlClients}${RestRoutes.CUSTOMERS}`;
-    return this.http.post<CustomerResponse>(urlCustomers, customer, this.httpOptions);
+    return this.http.post<Customer>(urlCustomers, customer, {headers: this.httpOptions.headers, params});
   }
 
-  public updateCustomer(id: string, customer: Customer): Observable<CustomerResponse> {
-    if (customer === undefined || customer === null || id === undefined || id === null) {
+  public updateCustomer(customer: Customer, commerceId: string): Observable<Customer> {
+   if (customer === undefined || customer === null || customer.clientId === undefined || customer.clientId === null) {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
     }
-    const urlCustomers = `${environment.urlClients}${RestRoutes.CUSTOMERS}${id}`;
-    return this.http.put<CustomerResponse>(urlCustomers, customer, this.httpOptions);
+
+    let params = new HttpParams();
+    params = params.set('commerceId', commerceId);
+
+    const urlCustomers = `${environment.urlClients}${RestRoutes.CUSTOMERS}/${customer.clientId}`;
+    return this.http.put<Customer>(urlCustomers, customer, {headers: this.httpOptions.headers, params});
   }
 
-  public getCustomer(id: string): Observable<CustomerResponse> {
-    if (id === undefined || id === null) {
+  public getCustomer(customerId: string, commerceId: string): Observable<Customer> {
+    if (customerId === undefined || customerId === null) {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
     }
-    const urlCustomers = `${environment.urlClients}${RestRoutes.CUSTOMERS}${id}`;
-    return this.http.get<CustomerResponse>(urlCustomers, this.httpOptions);
+
+    let params = new HttpParams();
+    params = params.set('commerceId', commerceId);
+
+    const urlCustomers = `${environment.urlClients}${RestRoutes.CUSTOMERS}/${customerId}`;
+    return this.http.get<Customer>(urlCustomers, {headers: this.httpOptions.headers, params});
   }
 
   public getCustomers(size: number, searchParams: string): Observable<CustomerInfo> {

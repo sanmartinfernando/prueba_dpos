@@ -11,7 +11,7 @@
           <div class="col-md-12">
             <div class="row">
               <div class="col-12">
-                <label class="form-label">{{ 'dpos.taxes.modal.form.type' | translate }}</label>
+                <span class="form-label">{{ 'dpos.taxes.modal.form.type' | translate }}</span>
               </div>
             </div>
             <div class="row">
@@ -46,12 +46,14 @@
         </div>
         <div class="row mb-3">
           <div class="col-md-6">
-            <label class="form-label">{{ 'dpos.taxes.modal.form.name' | translate }}</label>
-            <input type="text" class="form-control" name="name" [(ngModel)]="taxFormData.name" [disabled]="isTaxNameDisabled">
+            <label class="form-label">{{ 'dpos.taxes.modal.form.name' | translate }}
+              <input type="text" class="form-control" name="name" [(ngModel)]="taxFormData.name" [disabled]="isTaxNameDisabled">
+            </label>
           </div>
           <div class="col-md-6">
-            <label class="form-label">{{ 'dpos.taxes.modal.form.value' | translate }}</label>
-            <input type="text" class="form-control" name="value" [(ngModel)]="taxValueDisplay" [disabled]="isTaxValueDisabled">
+            <label class="form-label">{{ 'dpos.taxes.modal.form.value' | translate }}
+              <input type="text" class="form-control" name="value" [(ngModel)]="taxValueDisplay" [disabled]="isTaxValueDisabled">
+            </label>
           </div>
         </div>
       </form>

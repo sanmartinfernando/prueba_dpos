@@ -30,6 +30,8 @@ export class ProductDetailsComponent implements OnInit {
   private dialog = inject(MatDialog);
   private translate = inject(TranslateService);
   private authService = inject(AuthService);
+  private uiStateService = inject(UIStateService);
+  private themeService = inject(ThemeService);
 
   loadCompleted = false;
   idProduct: string = null;
@@ -46,8 +48,7 @@ export class ProductDetailsComponent implements OnInit {
   categories: Category[] = [{ id: "0", name: "Todas las categorías" }, { id: "1", name: "Categoria 1" }, { id: "2", name: "Categoria 2" }];
   modifiers: Modifiers[] = [{ id: "0", name: "Punto de la carne", modifiers: "muy hecho, hecho, al punto, crudo" }];
 
-  constructor(private uiStateService: UIStateService,
-    private themeService: ThemeService) {
+  constructor() {
 
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
 
@@ -65,7 +66,7 @@ export class ProductDetailsComponent implements OnInit {
           if (idParam) {
             this.idProduct = this.encryptionService.decode(idParam);
             this.titlePage = this.translate.instant('dpos.product-details.page.edit.title');
-            this.getProduct(this.idProduct);
+            this.getProduct(/*this.idProduct*/);
           } else {
             this.titlePage = this.translate.instant('dpos.product-details.page.add.title');
           }
@@ -92,22 +93,18 @@ export class ProductDetailsComponent implements OnInit {
     }
   }
 
-  public getProduct(idClient: string): void {
+  public getProduct(): void {
     //TODO
   }
 
   public openCategoriesModal(id?: string): void {
     const dialogRef = this.dialog.open(CategoryModalComponent, { data: { id } });
-    dialogRef.afterClosed().subscribe(result => {
-
-    });
+    dialogRef.afterClosed();
   }
 
   public openModifiersModal(id?: string): void {
     const dialogRef = this.dialog.open(ModifiersModalComponent, { data: { id } });
-    dialogRef.afterClosed().subscribe(result => {
-
-    });
+    dialogRef.afterClosed();
   }
 
   public saveProduct(): void {

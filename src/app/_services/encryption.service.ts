@@ -8,8 +8,6 @@ export class EncryptionService {
 
   private key = "encrypt!135790";
 
-  constructor() { }
-
   public encryptData(data: string,): string {
     return CryptoJS.AES.encrypt(data, this.key).toString();
   }

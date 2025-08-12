@@ -29,6 +29,8 @@ export class TaxesComponent implements OnInit, OnDestroy {
   private sessionService = inject(SessionService);
   private themeService = inject(ThemeService);
   private authService = inject(AuthService);
+  private translate = inject(TranslateService);
+  private uiStateService = inject(UIStateService);
 
   size = 10000;
   taxes: Tax[] = [{ id: 1, value: 1000, name: "IVA 10%" }, { id: 2, value: 2100, name: "IVA 21%" }];
@@ -61,12 +63,9 @@ export class TaxesComponent implements OnInit, OnDestroy {
   commerceSelected: string;
   commerces: Commerce[];
 
-  constructor(private translate: TranslateService,
-    private uiStateService: UIStateService) {
-
+  constructor() {
     //Desbloqueamos el selector de comercio;
     this.uiStateService.setFormSelectEnabled(true);
-
     this.currentLang = this.translate.currentLang || 'es';
     this.langSubscription = this.translate.onLangChange.subscribe(event => {
       this.currentLang = event.lang;
@@ -176,9 +175,7 @@ export class TaxesComponent implements OnInit, OnDestroy {
   //Añadir impuesto
   public openTaxesModal(id?: number): void {
     const dialogRef = this.dialog.open(TaxesModalComponent, { data: { id } });
-    dialogRef.afterClosed().subscribe(result => {
-
-    });
+    dialogRef.afterClosed();
   }
 
   //Descargar impuestos

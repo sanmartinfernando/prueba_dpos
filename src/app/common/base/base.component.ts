@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
 
@@ -7,14 +7,9 @@ import { Router } from '@angular/router';
   templateUrl: './base.component.html',
   styleUrls: []
 })
-export class BaseComponent implements OnInit {
+export class BaseComponent {
 
   public router = inject(Router);
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
 
   onError(error?: string) {
     const page = "/error";

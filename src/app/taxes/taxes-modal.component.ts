@@ -1,4 +1,4 @@
-import { Component, inject, Inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AuthService } from '../_services/auth.service';
 import { PortalUsersService } from '../_services/portal-users.service';
@@ -21,6 +21,9 @@ export class TaxesModalComponent implements OnInit {
   private sessionService = inject(SessionService);
   private translate = inject(TranslateService);
   private authService = inject(AuthService);
+  public dialogRef = inject(MatDialogRef<TaxesModalComponent>);
+  private themeService = inject(ThemeService);
+  public data = inject<{ id?: number }>(MAT_DIALOG_DATA);
 
   titlePage: string;
   idTax: number;
@@ -34,12 +37,9 @@ export class TaxesModalComponent implements OnInit {
   isTaxNameDisabled = true;
   isTaxValueDisabled = true;
 
-  constructor(public dialogRef: MatDialogRef<TaxesModalComponent>,
-    private themeService: ThemeService,
-    @Inject(MAT_DIALOG_DATA) public data: { id?: number }) {
-
+  constructor() {
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
-    this.idTax = data.id;
+    this.idTax = this.data.id;
   }
 
   ngOnInit(): void {

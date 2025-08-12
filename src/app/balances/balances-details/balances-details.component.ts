@@ -36,7 +36,7 @@ export class BalancesDetailsComponent implements OnInit {
   loadCompleted = false;
   element = true;
   balancesId: string;
-  index: any;
+  index: number;
 
   base = 0;
   cuota = 0;
@@ -63,14 +63,13 @@ export class BalancesDetailsComponent implements OnInit {
         this.cuota = 0;
         this.total = 0;
         this.pmTotal = 0;
-        for (let i = 0; i < this.balances.balanceLines.length; i++) {
-          const balanceLine = this.balances.balanceLines[i];
+        for (const balanceLine of this.balances.balanceLines) {
           this.base += balanceLine.base / Math.pow(10, balanceLine.decimals);
           this.cuota += balanceLine.tax / Math.pow(10, balanceLine.decimals);
           if (balanceLine.itemType === BalanceLine.TYPE_TAX)
             this.total += balanceLine.total / Math.pow(10, balanceLine.decimals);
           if (balanceLine.itemType === BalanceLine.TYPE_PAYMENT_METHOD)
-            this.pmTotal += balanceLine.total / Math.pow(10, balanceLine.decimals)
+            this.pmTotal += balanceLine.total / Math.pow(10, balanceLine.decimals);
         }
         this.loadCompleted = true;
       },
@@ -84,18 +83,6 @@ export class BalancesDetailsComponent implements OnInit {
 
   downloadPDF() {
     this.downloadPDFService.downloadBalancesFile(this.balancesId);
-  }
-
-  itemType(arr: any[]) {
-    return arr.filter(item => item.ItemType === this.itemTypeTax);
-  }
-
-  itemType2(arr: any[]) {
-    return arr.filter(item => item.ItemType === this.itemTypeTax2);
-  }
-
-  itemType3(arr: any[]) {
-    return arr.filter(item => item.ItemType === this.itemTypeTax3);
   }
 
   getDecimal(x: any) {

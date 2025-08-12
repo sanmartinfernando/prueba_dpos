@@ -34,6 +34,9 @@ export class ReportsComponent implements OnInit, OnDestroy {
   private commercesService = inject(CommercesService);
   private sessionService = inject(SessionService);
   private authService = inject(AuthService);
+  private themeService = inject(ThemeService);
+  public translate = inject(TranslateService);
+  private uiStateService = inject(UIStateService);
 
   size = 10000;
   sales: Balance;
@@ -73,11 +76,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   modalMessage = '';
 
 
-  constructor(
-    private themeService: ThemeService,
-    public translate: TranslateService,
-    private uiStateService: UIStateService
-  ) {
+  constructor() {
 
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
 
@@ -273,9 +272,9 @@ export class ReportsComponent implements OnInit, OnDestroy {
         this.totalUnitsValor = 0;
         if (this.indexProduct !== null && this.indexProduct.length > 0) {
           //Calculo indices totales productos
-          for (let i = 0; i < this.indexProduct.length; i++) {
-            this.totalUnits = this.totalUnits + (this.indexProduct[i].units ?? 2) / Math.pow(10, 3);
-            this.totalUnitsValor = this.totalUnitsValor + this.indexProduct[i].total / Math.pow(10, 8);
+          for (const product of this.indexProduct) {
+            this.totalUnits += (product.units ?? 2) / Math.pow(10, 3);
+            this.totalUnitsValor += product.total / Math.pow(10, 8);
           }
           this.emptySearch = false;
         } else {
@@ -290,12 +289,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
         }
       }
     });
-  }
-
-  //Encriptación
-  sendSalesDetails(id: string) {
-    let code = this.encryptionService.encryptData(id);
-    code = '/details/' + this.encryptionService.encode(code);
   }
 
   //Boton Descargar

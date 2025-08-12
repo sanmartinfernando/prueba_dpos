@@ -410,6 +410,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   height: 28px;
 }
 
+.ng-invalid.ng-touched {
+  border-color: var(--bs-color-red-300);
+}
+
 /*** PAGINACION ***/
 
 .ngx-pagination, .ngx-pagination a  {
@@ -490,6 +494,16 @@ div.ng-star-inserted {
 }
 
 /*** BUTTONS ***/
+
+.btn-edit, .btn-delete {
+  border: none;
+  outline: none;
+  box-shadow: none;
+  background: none;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
 
 .btn {
   --bs-btn-padding-x: 1rem;

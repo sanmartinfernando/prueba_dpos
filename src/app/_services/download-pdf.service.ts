@@ -10,8 +10,6 @@ export class DownloadPDFService {
 
   private http = inject(HttpClient);
 
-  constructor() { }
-
   public downloadBalancesFile(id: string): void {
     const apiUrl = `${environment.urlWS}${RestRoutes.BALANCES}${id}/download`;
     this.http.get(apiUrl, { responseType: 'blob' }).subscribe((response) => {

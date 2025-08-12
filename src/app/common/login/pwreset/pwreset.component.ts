@@ -18,17 +18,16 @@ export class PwresetComponent {
   userLocal = '';
   userPassword = '';
   userConfirmPassword = '';
-  parameters: any = {
+  parameters: {token: string, userName: string, password: string, confirmPassword: string} = {
     token: '',
+    userName: '',
     password: '',
-    confirmPassword: '',
+    confirmPassword: ''
   };
   token: string[];
   response: PwdReset;
   error = [];
   counter: number;
-
-  constructor() { }
 
   resetPW() {
     this.error = [];
@@ -49,24 +48,24 @@ export class PwresetComponent {
         },
         error: (error) => {
           if (error.error.Errors !== null) {
-            for (let i = 0; i < error.error.Errors.length; i++) {
-              if (error.error.Errors[i] === "MinimalLengthNotReached") {
-                this.error.push("La contraseña debe tener al menos " + this.properties.requireMinLength + " caracteres")
+            for (const err of error.error.Errors) {
+              if (err === "MinimalLengthNotReached") {
+                this.error.push("La contraseña debe tener al menos " + this.properties.requireMinLength + " caracteres");
               }
-              if (error.error.Errors[i] === "UppercaseRequired") {
-                this.error.push("La contraseña debe tener al menos 1 mayúscula")
+              if (err === "UppercaseRequired") {
+                this.error.push("La contraseña debe tener al menos 1 mayúscula");
               }
-              if (error.error.Errors[i] === "LowercaseRequired") {
-                this.error.push("La contraseña debe tener al menos 1 minúscula")
+              if (err === "LowercaseRequired") {
+                this.error.push("La contraseña debe tener al menos 1 minúscula");
               }
-              if (error.error.Errors[i] === "SymbolRequired") {
-                this.error.push("La contraseña debe tener al menos 1 símbolo")
+              if (err === "SymbolRequired") {
+                this.error.push("La contraseña debe tener al menos 1 símbolo");
               }
-              if (error.error.Errors[i] === "NumberRequired") {
-                this.error.push("La contraseña debe tener al menos 1 número")
+              if (err === "NumberRequired") {
+                this.error.push("La contraseña debe tener al menos 1 número");
               }
-              if (error.error.Errors[i] === "UsernameFoundInPassword") {
-                this.error.push("El nombre de usuario no puede formar parte de la contraseña")
+              if (err === "UsernameFoundInPassword") {
+                this.error.push("El nombre de usuario no puede formar parte de la contraseña");
               }
             }
             if (error.status === 401 || error.status === 500) {

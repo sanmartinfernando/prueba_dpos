@@ -26,8 +26,6 @@ export class OrdersService {
     )
   };
 
-  constructor() { }
-
   public getOrderAggregate(searchParams: string): Observable<OrderAggregation[]> {
     if (searchParams === undefined || searchParams === null) {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));

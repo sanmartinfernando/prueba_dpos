@@ -1,4 +1,4 @@
-import { Component, inject, Inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AuthService } from '../_services/auth.service';
 import { PortalUsersService } from '../_services/portal-users.service';
@@ -21,6 +21,11 @@ export class ModifiersModalComponent implements OnInit {
   private sessionService = inject(SessionService);
   private translate = inject(TranslateService);
   private authService = inject(AuthService);
+  private themeService = inject(ThemeService);
+  public dialogRef = inject(MatDialogRef<ModifiersModalComponent>);
+  public data = inject<{ id?: string }>(MAT_DIALOG_DATA);
+  
+
 
   titlePage: string;
   idModifiers: string;
@@ -35,12 +40,9 @@ export class ModifiersModalComponent implements OnInit {
 
   modifiers: Modifiers;
 
-  constructor(public dialogRef: MatDialogRef<ModifiersModalComponent>,
-    private themeService: ThemeService,
-    @Inject(MAT_DIALOG_DATA) public data: { id?: string },
-  ) {
+  constructor() {
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
-    this.idModifiers = data.id;
+    this.idModifiers = this.data.id;
   }
 
   ngOnInit(): void {

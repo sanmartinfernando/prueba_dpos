@@ -27,8 +27,6 @@ export class PortalUsersService {
     )
   };
 
-  constructor() { }
-
   public getToken(user: User): Observable<PortalUserToken> {
     const loginRequest = {
       userName: user.user,

@@ -2,31 +2,27 @@
 <div class="container-fluid header-main">
   <form class="row g-3 px-2">
     <div class="col-12 col-sm-6 col-md-4 col-lg-2">
-      <label class="form-label">{{ 'dpos.customers.nif.label' | translate }}</label>
-      <input type="text" class="form-control" name="customerNif" [(ngModel)]="customerNifVarSearch" (change)="onCustomerNifChange()">
+      <label class="form-label" for="customerNif">{{ 'dpos.customers.nif.label' | translate }}</label>
+      <input type="text" class="form-control" name="customerNif" id="customerNif" [(ngModel)]="customerNifVarSearch" (change)="onCustomerNifChange()">
     </div>
     <div class="col-12 col-sm-6 col-md-4 col-lg-2">
-      <label class="form-label">{{ 'dpos.customers.name.label' | translate }}</label>
-      <input type="text" class="form-control" name="customerName" [(ngModel)]="customerNameVarSearch" (change)="onCustomerNameChange()">
+      <label class="form-label" for="customerName">{{ 'dpos.customers.name.label' | translate }}</label>
+      <input type="text" class="form-control" name="customerName" id="customerName" [(ngModel)]="customerNameVarSearch" (change)="onCustomerNameChange()">
     </div>
     <div class="col-12 col-sm-6 col-md-4 col-lg-2">
-      <label class="form-label">{{ 'dpos.customers.lastname.label' | translate }}</label>
-      <input type="text" class="form-control" name="customerLastName" [(ngModel)]="customerLastNameVarSearch" (change)="onCustomerLastNameChange()">
+      <label class="form-label" for="customerPhone">{{ 'dpos.customers.phone.label' | translate }}</label>
+      <input type="text" class="form-control" name="customerPhone" id="customerPhone" [(ngModel)]="customerPhoneVarSearch" (change)="onCustomerPhoneChange()">
     </div>
     <div class="col-12 col-sm-6 col-md-4 col-lg-2">
-      <label class="form-label">{{ 'dpos.customers.phone.label' | translate }}</label>
-      <input type="text" class="form-control" name="customerPhone" [(ngModel)]="customerPhoneVarSearch" (change)="onCustomerPhoneChange()">
+      <label class="form-label" for="customerEmail">{{ 'dpos.customers.mail.label' | translate }}</label>
+      <input type="text" class="form-control" name="customerEmail" id="customerEmail" [(ngModel)]="customerEmailVarSearch" (change)="onCustomerEmailChange()">
     </div>
-    <div class="col-12 col-sm-6 col-md-4 col-lg-2">
-      <label class="form-label">{{ 'dpos.customers.mail.label' | translate }}</label>
-      <input type="text" class="form-control" name="customerEmail" [(ngModel)]="customerEmailVarSearch" (change)="onCustomerEmailChange()">
-    </div>
-    <div class="col-12 col-md-4 col-lg-2 d-flex align-items-end gap-2">
-      <button type="reset" class="btn btn-outline-danger w-100" (click)="cleanFormFields()">
+    <div class="col-12 col-md-4 col-lg-4 d-flex flex-wrap gap-2 align-items-end">
+      <button type="reset" class="btn btn-outline-danger" (click)="cleanFormFields()">
         <i class="fas fa-eraser"></i>
       </button>
-      <button type="button" class="btn btn-primary w-100" (click)="searchCustomers()">
-        <i class="fas fa-search"></i>&nbsp;&nbsp;{{ 'dpos.action.search' | translate }}
+      <button type="button" class="btn btn-primary" (click)="searchCustomers()">
+        <i class="fas fa-search"></i>&nbsp;{{ 'dpos.action.search' | translate }}
       </button>
     </div>
   </form>
@@ -72,7 +68,6 @@
                   <th style="width: 50px;" class="text-center"></th>
                   <th class="text-center">{{ 'dpos.customers.nif.label' | translate }}</th>
                   <th class="text-center">{{ 'dpos.customers.name.label' | translate }}</th>
-                  <th class="text-center">{{ 'dpos.customers.lastname.label' | translate }}</th>
                   <th class="text-center">{{ 'dpos.customers.phone.label' | translate }}</th>
                   <th class="text-center">{{ 'dpos.customers.mail.label' | translate }}</th>
                   <th class="text-center">{{ 'dpos.customers.balance.label' | translate }}</th>
@@ -91,7 +86,6 @@
                     </td>
                     <td class="text-center align-middle">{{ customer.identityDocument }}</td>
                     <td class="text-center align-middle">{{ customer.name }}</td>
-                    <td class="text-center align-middle">{{ customer.lastName }}</td>
                     <td class="text-center align-middle">{{ customer.phone }}</td>
                     <td class="text-center align-middle">{{ customer.email }}</td>
                     <td class="text-center align-middle">

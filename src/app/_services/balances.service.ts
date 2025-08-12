@@ -24,8 +24,6 @@ export class BalancesService {
     )
   };
 
-  constructor() { }
-
   public getBalanceDetail(id: string): Observable<Balance> {
     if (id === undefined || id === null) {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));

@@ -10,6 +10,7 @@ import { Customer } from 'src/app/_models/customer.model';
 import { PortalUsersService } from 'src/app/_services/portal-users.service';
 import { AuthService } from 'src/app/_services/auth.service';
 import { CustomersService } from 'src/app/_services/customers.service';
+import { NgForm } from '@angular/forms';
 
 
 @Component({
@@ -31,6 +32,7 @@ export class CustomerDetailsComponent implements OnInit {
 
   loadCompleted = false;
   idCustomer: string = null;
+  commerceId: string = null;
   titlePage: string;
 
   customer: Customer;
@@ -60,16 +62,16 @@ export class CustomerDetailsComponent implements OnInit {
       this.portalUsersService.getToken(user).subscribe({
         next: (portalUserToken) => {
           this.authService.setPortalUsersToken(portalUserToken.token);
-
+          this.commerceId = this.sessionService.getItem(SessionService.COMMERCE_ID);
           const idParam = this.activatedRoute.snapshot.params['id'];
           if (idParam) {
             this.idCustomer = this.encryptionService.decode(idParam);
-            this.titlePage = this.translate.instant('dpos.customer.details.page.edit.title');
             this.getCustomer(this.idCustomer);
+            this.titlePage = this.translate.instant('dpos.customer.details.page.edit.title');
           } else {
             this.titlePage = this.translate.instant('dpos.customer.details.page.add.title');
+            this.loadCompleted = true;
           }
-          this.loadCompleted = true;
         },
         error: (error) => {
           console.error("Error Portal user token", error);
@@ -79,12 +81,11 @@ export class CustomerDetailsComponent implements OnInit {
   }
 
   public getCustomer(idClient: string): void {
-    this.customersService.getCustomer(idClient).subscribe({
-      next: (customerResponse) => {
-        this.customer = customerResponse.client;
+    this.customersService.getCustomer(idClient, this.commerceId).subscribe({
+      next: (client) => {
+        this.customer = client;
         this.identityDocument = this.customer.identityDocument;
         this.name = this.customer.name;
-        this.lastname = this.customer.lastName;
         this.email = this.customer.email;
         this.phone = this.customer.phone;
         this.address = this.customer.address;
@@ -92,14 +93,24 @@ export class CustomerDetailsComponent implements OnInit {
         this.postcode = this.customer.postcode;
         this.country = this.customer.country;
         this.state = this.customer.state;
+        this.loadCompleted = true;
       },
-      error: (error) => {
-        //TODO: Control de errores
+      error: () => {
+        this.loadCompleted = true;
       }
     });
   }
 
-  public saveCustomer(): void {
+  public saveCustomer(form: NgForm): void {
+
+    if (form.invalid) {
+      Object.keys(form.controls).forEach(field => {
+        const control = form.controls[field];
+        control.markAsTouched({ onlySelf: true });
+      });
+      return;
+    }
+    
     if (this.customer) {
       this.updateCustomer();
     } else {
@@ -109,12 +120,12 @@ export class CustomerDetailsComponent implements OnInit {
 
   private updateCustomer() {
     this.setCustomerFields();
-    this.customersService.updateCustomer(this.customer.clientId, this.customer).subscribe({
-      next: (customerResponse) => {
+    this.customersService.updateCustomer(this.customer, this.commerceId).subscribe({
+      next: (customer) => {
+        console.log(customer);
         this.code = '/customers';
       },
-      error: (error) => {
-        //TODO: Control de errores
+      error: () => {
         this.code = '/customers';
       }
     });
@@ -123,11 +134,13 @@ export class CustomerDetailsComponent implements OnInit {
   private createCustomer() {
     this.customer = new Customer();
     this.setCustomerFields();
-    this.customersService.createCustomer(this.customer).subscribe({
-      next: (customerResponse) => {
+    this.customersService.createCustomer(this.customer, this.commerceId).subscribe({
+      next: (customer) => {
+        console.log(customer);
         this.code = '/customers';
       },
       error: (error) => {
+        console.log(error);
         //TODO: Control de errores
         this.code = '/customers';
       }
@@ -137,7 +150,6 @@ export class CustomerDetailsComponent implements OnInit {
   private setCustomerFields() {
     this.customer.identityDocument = this.identityDocument;
     this.customer.name = this.name;
-    this.customer.lastName = this.lastname;
     this.customer.email = this.email;
     this.customer.phone = this.phone;
     this.customer.address = this.address;

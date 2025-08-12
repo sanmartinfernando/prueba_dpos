@@ -1,93 +1,86 @@
 <br />
 <div class="container-fluid header-main">
-  <div>
-    <form class="d-flex flex-wrap gap-3 mx-1">
-      <div class="flex-grow-1 min-w-200px">
-        <label class="form-label">{{ 'dpos.products.category.form.label' | translate }}</label>
-        <select class="form-select" id="category" name="category">
-        </select>
-      </div>
-      <div class="flex-grow-1 min-w-200px">
-        <label class="form-label">{{ 'dpos.products.name.form.label' | translate }}</label>
-        <input type="text" class="form-control" name="productName" [(ngModel)]="productNameVarSearch" (change)="onProductNameChange()">
-      </div>
-      <div class="flex-grow-1 min-w-200px">
-        <label class="form-label">{{ 'dpos.products.reference.form.label' | translate }}</label>
-        <input type="text" class="form-control" name="productReference" [(ngModel)]="productReferenceVarSearch" (change)="onProductReferenceChange()">
-      </div>
-      <div class="flex-grow-1 min-w-200px">
-        <label class="form-label">{{ 'dpos.products.barcode.form.label' | translate }}</label>
-        <input type="text" class="form-control" name="productBarcode" [(ngModel)]="productBarcodeVarSearch" (change)="onProductBarcodeChange()">
-      </div>
-      <div id="searchButtonsDiv" class="d-flex gap-2 align-items-end flex-wrap">
-        <button type="reset" class="btn btn-outline-danger">
-          <a type="button" (click)="cleanFormFields()"><i class="fas fa-eraser"></i></a>
-        </button>
-        <a type="button" class="btn btn-primary" (click)="searchProducts()">
-          <i class="fas fa-search"></i>&nbsp;&nbsp;{{ 'dpos.action.search' | translate }}
-        </a>
-      </div>
-    </form>
-  </div>
-  <br />
+  <form class="row g-3 px-2">
+    <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+      <label class="form-label" for="category">{{ 'dpos.products.category.form.label' | translate }}</label>
+      <select class="form-select" id="category" name="category">
+      </select>
+    </div>
+    <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+      <label class="form-label" for="productName">{{ 'dpos.products.name.form.label' | translate }}</label>
+      <input type="text" class="form-control" id="productName" name="productName" [(ngModel)]="productNameVarSearch" (change)="onProductNameChange()">
+    </div>
+    <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+      <label class="form-label" for="productReference">{{ 'dpos.products.reference.form.label' | translate }}</label>
+      <input type="text" class="form-control" id="productReference" name="productReference" [(ngModel)]="productReferenceVarSearch" (change)="onProductReferenceChange()">
+    </div>
+    <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+      <label class="form-label" for="productBarcode">{{ 'dpos.products.barcode.form.label' | translate }}</label>
+      <input type="text" class="form-control" id="productBarcode" name="productBarcode" [(ngModel)]="productBarcodeVarSearch" (change)="onProductBarcodeChange()">
+    </div>
+    <div class="col-12 col-md-4 col-lg-4 d-flex flex-wrap gap-2 align-items-end">
+      <button type="reset" class="btn btn-outline-danger" (click)="cleanFormFields()">
+        <i class="fas fa-eraser"></i>
+      </button>
+      <button type="button" class="btn btn-primary" (click)="searchProducts()">
+        <i class="fas fa-search"></i>&nbsp;{{ 'dpos.action.search' | translate }}
+      </button>
+    </div>
+  </form>
   <div class="card mt-3">
     <div class="card-body">
-      <div>
-        <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage" (closeModal)="closeModal()"></app-modal>
+      <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage" (closeModal)="closeModal()"></app-modal>
+      <div class="row mb-4 align-items-center">
+        <div class="col-12 col-md-6">
+          <h5 *ngIf="categorySelected"><b>{{ 'dpos.products.page.title' | translate }}</b></h5>
+        </div>
+        <div class="col-12 col-md-6 text-md-end text-center mt-3 mt-md-0 d-flex flex-wrap gap-2 justify-content-md-end justify-content-center">
+          <button class="btn btn-primary" [routerLink]="code" (click)="addProduct()">{{ 'dpos.products.create.btn' | translate }}</button>
+          <button class="btn btn-primary" (click)="importProducts()">&nbsp;{{ 'dpos.products.import.label' | translate }}</button>
+          <input type="file" #productFileInput style="display: none" accept=".csv" (change)="onProductFileSelected($event)" />
+          <button class="btn btn-outline-info" (click)="downloadCSV()">
+            <i class="fa-solid fa-file-csv fa-xl"></i>
+          </button>
+        </div>
       </div>
-      <div class="col-12">
-        <div class="container">
-          <div class="d-flex justify-content-between align-items-start my-3 flex-wrap gap-2">
-            <div>
-              <h5 *ngIf="categorySelected">{{ 'dpos.products.page.title' | translate }} {{ categorySelected.name }}</h5>
-            </div>
-            <div class="d-flex flex-wrap gap-2">
-              <button class="btn btn-primary" [routerLink]="code" (click)="addProduct()">{{ 'dpos.products.create.btn' | translate }}</button>
-              <button class="btn btn-primary" (click)="importProducts()">&nbsp;{{ 'dpos.products.import.label' | translate }}</button>
-              <input type="file" #productFileInput style="display: none" accept=".csv" (change)="onProductFileSelected($event)" />
-              <button class="btn btn-outline-info">
-                <i class="fa-solid fa-file-csv fa-xl" (click)="downloadCSV()"></i>
-              </button>
-            </div>
-          </div>
+      <div *ngIf="!products || products.length === 0" class="table table-hover">
+        <div class="inner-table-header d-flex justify-content-between align-items-center">
+          <span class="inner-table-title">{{ 'dpos.products.nodata.label' | translate }}</span>
         </div>
-        <div>
-          <div class="table table-hover" *ngIf="!products || products.length === 0">
-            <div class="inner-table-header d-flex justify-content-between align-items-center">
-              <span class="inner-table-title">{{ 'dpos.products.nodata.label' | translate }}</span>
-            </div>
-          </div>
-          <div *ngIf="products && products.length > 0">
-            <div class="table-responsive">
-              <table class="table table-hover">
-                <thead class="text-customer">
-                  <tr>
-                    <th class="text-center align-middle">{{ 'dpos.products.table.column.reference' | translate }}</th>
-                    <th class="text-center align-middle">{{ 'dpos.products.table.column.barcode' | translate }}</th>
-                    <th class="text-center align-middle">{{ 'dpos.products.table.column.name' | translate }}</th>
-                    <th class="text-center align-middle">{{ 'dpos.products.table.column.price' | translate }}</th>
-                    <th class="text-center align-middle">{{ 'dpos.products.table.column.stock' | translate }}</th>
-                    <th class="text-center align-middle">{{ 'dpos.products.table.column.edit' | translate }}</th>
-                    <th class="text-center align-middle">{{ 'dpos.products.table.column.delete' | translate }}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    *ngFor="let product of products | paginate: { id: 'productsList', itemsPerPage: 5, currentPage: currentProductsPage }" [routerLink]="code">
-                    <td class="text-center align-middle">{{ product.reference }}</td>
-                    <td class="text-center align-middle">{{ product.barcode }}</td>
-                    <td class="text-center align-middle">{{ product.name }}</td>
-                    <td class="text-center align-middle">{{ product.price / (Math.pow(10, 2)) | currency : 'Eur' : '€' }}</td>
-                    <td class="text-center align-middle">{{ product.stock }}</td>
-                    <td class="text-center align-middle"><a><i class="fa-solid fa-pen" style="color: #74c0fc" (click)="sendProductDetails(product.id)"></i></a></td>
-                    <td class="text-center align-middle"><a><i class="fa-solid fa-trash" style="color: #FD716E" (click)="deleteProduct(product.id)"></i></a></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <pagination-controls (pageChange)="currentProductsPage = $event" id="productsList" previousLabel="" nextLabel="" class="mt-3 d-flex justify-content-center"></pagination-controls>
-          </div>
+      </div>
+      <div *ngIf="products && products.length > 0">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead class="text-customer">
+              <tr>
+                <th class="text-center align-middle">{{ 'dpos.products.table.column.reference' | translate }}</th>
+                <th class="text-center align-middle">{{ 'dpos.products.table.column.barcode' | translate }}</th>
+                <th class="text-center align-middle">{{ 'dpos.products.table.column.name' | translate }}</th>
+                <th class="text-center align-middle">{{ 'dpos.products.table.column.price' | translate }}</th>
+                <th class="text-center align-middle">{{ 'dpos.products.table.column.stock' | translate }}</th>
+                <th class="text-center align-middle">{{ 'dpos.products.table.column.edit' | translate }}</th>
+                <th class="text-center align-middle">{{ 'dpos.products.table.column.delete' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="let product of products | paginate: { id: 'productsList', itemsPerPage: 5, currentPage: currentProductsPage }" [routerLink]="code">
+                <td class="text-center align-middle">{{ product.reference }}</td>
+                <td class="text-center align-middle">{{ product.barcode }}</td>
+                <td class="text-center align-middle">{{ product.name }}</td>
+                <td class="text-center align-middle">{{ product.price / (Math.pow(10, 2)) | currency : 'EUR' : '€' }}</td>
+                <td class="text-center align-middle">{{ product.stock }}</td>
+                <td class="text-center align-middle">
+                  <button type="button" class="btn-edit" (click)="sendProductDetails(product.id)"><i class="fa-solid fa-pen" style="color: #74c0fc"></i></button>
+                </td>
+                <td class="text-center align-middle">
+                  <button type="button" class="btn-delete" (click)="deleteProduct(product.id)"><i class="fa-solid fa-trash" style="color: #FD716E"></i></button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+        <pagination-controls (pageChange)="currentProductsPage = $event" id="productsList" previousLabel="" nextLabel="" class="mt-3 d-flex justify-content-center"></pagination-controls>
       </div>
     </div>
   </div>

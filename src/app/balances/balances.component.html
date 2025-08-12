@@ -1,27 +1,27 @@
 <br />
 <div class="container-fluid header-main">
   <div>
-    <form class="row gx-3 gy-2 align-items-end mx-1">
-      <div class="col-12 col-sm-6 col-md-3">
-        <label class="form-label">{{ 'dpos.filter.terminal' | translate }}</label>
+    <form class="row g-3 px-2">
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <label class="form-label" for="searchTer">{{ 'dpos.filter.terminal' | translate }}</label>
         <select class="form-select" id="searchTer" name="terminal" [(ngModel)]="terminalSelected" (change)="onTerminalChange()">
           <option *ngFor="let terminal of terminalsNumber" [value]="terminal">{{ terminal }}</option>
         </select>
       </div>
-      <div class="col-6 col-md-3">
-        <label class="form-label">{{ 'dpos.filter.date.from' | translate }}</label>
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <label class="form-label" for="sinceDate">{{ 'dpos.filter.date.from' | translate }}</label>
         <input type="date" class="form-control" id="sinceDate" [value]="sinceDate" (change)="onSinceDateChange()" />
       </div>
-      <div class="col-6 col-md-3">
-        <label class="form-label">{{ 'dpos.filter.date.to' | translate }}</label>
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <label class="form-label" for="tilDate">{{ 'dpos.filter.date.to' | translate }}</label>
         <input type="date" class="form-control" id="tilDate" [value]="tilDate" (change)="onTilDateChange()" />
       </div>
-      <div class="col-12 col-md-3 d-flex justify-content-md-start justify-content-center gap-2 mt-2 mt-md-0">
+      <div class="col-12 col-md-4 col-lg-3 d-flex flex-wrap gap-2 align-items-end justify-content-md-start">
         <button type="reset" class="btn btn-outline-danger">
           <i class="fas fa-eraser"></i>
         </button>
         <button type="button" class="btn btn-primary" (click)="searchBalances()">
-          <i class="fas fa-search"></i>&nbsp;&nbsp;{{ 'dpos.action.search' | translate }}
+          <i class="fas fa-search"></i>&nbsp;{{ 'dpos.action.search' | translate }}
         </button>
       </div>
     </form>

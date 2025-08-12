@@ -1,36 +1,37 @@
-<div class="container-fluid py-3 header-main">
-  <form class="row g-3 align-items-end">
-    <div class="col-md-6 col-lg-2">
+<br />
+<div class="container-fluid header-main">
+  <form class="row g-3 px-2">
+    <div class="col-12 col-sm-6 col-md-4 col-lg-2">
       <label for="searchTer" class="form-label">{{ 'dpos.filter.terminal' | translate }}</label>
       <select class="form-select" id="searchTer" name="terminal" [(ngModel)]="terminalSelected" (change)="onTerminalChange()">
         <option *ngFor="let terminal of terminalsNumber" [value]="terminal">{{ terminal }}</option>
       </select>
     </div>
-    <div class="col-md-6 col-lg-2">
+    <div class="col-12 col-sm-6 col-md-4 col-lg-2">
       <label for="sinceDate" class="form-label">{{ 'dpos.filter.date.from' | translate }}</label>
       <input type="date" class="form-control" id="sinceDate" [value]="sinceDate" (change)="onSinceDateChange()" />
     </div>
-    <div class="col-md-6 col-lg-2">
+    <div class="col-12 col-sm-6 col-md-4 col-lg-2">
       <label for="tilDate" class="form-label">{{ 'dpos.filter.date.to' | translate }}</label>
       <input type="date" class="form-control" id="tilDate" [value]="tilDate" (change)="onTilDateChange()" />
     </div>
-    <div class="col-md-6 col-lg-2">
-      <label class="form-label">{{ 'dpos.filter.operationtype' | translate }}</label>
-      <select class="form-select" name="operation" [(ngModel)]="typeVarSearch" (change)="onOpTypeChange()">
+    <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+      <label class="form-label" for="operation">{{ 'dpos.filter.operationtype' | translate }}</label>
+      <select class="form-select" name="operation" id="operation" [(ngModel)]="typeVarSearch" (change)="onOpTypeChange()">
         <option>{{ 'dpos.filter.all' | translate }}</option>
         <option *ngFor="let type of opTypes">{{ type.name }}</option>
       </select>
     </div>
-    <div class="col-md-6 col-lg-2">
-      <label class="form-label">{{ 'dpos.filter.docnumber' | translate }}</label>
-      <input type="text" class="form-control" name="documentN" [(ngModel)]="documentVarSearch" (change)="onDocNumberChange()">
+    <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+      <label class="form-label" for="documentN">{{ 'dpos.filter.docnumber' | translate }}</label>
+      <input type="text" class="form-control" name="documentN" id="documentN" [(ngModel)]="documentVarSearch" (change)="onDocNumberChange()">
     </div>
-    <div class="col-md-6 col-lg-2 d-flex justify-content-start gap-2">
+    <div class="col-12 col-md-4 col-lg-2 d-flex flex-wrap gap-2 align-items-end">
       <button type="reset" class="btn btn-outline-danger">
         <i class="fas fa-eraser"></i>
       </button>
       <button type="button" class="btn btn-primary" (click)="searchSales()">
-        <i class="fas fa-search"></i>&nbsp;&nbsp;{{ 'dpos.action.search' | translate }}
+        <i class="fas fa-search"></i>&nbsp;{{ 'dpos.action.search' | translate }}
       </button>
     </div>
   </form>
@@ -46,14 +47,12 @@
         <div class="col-md-6 text-md-end mt-2 mt-md-0" *ngIf="loadCompleted && !emptySearch">
           <div class="d-flex flex-column flex-md-row justify-content-md-end align-items-md-center gap-3">
             <div class="d-flex flex-column flex-md-row align-items-md-center">
-              <label class="me-md-2 mb-1 mb-md-0">
-                {{ 'dpos.sales.operations.number.label' | translate }}
-              </label>
-              <input type="text" class="form-control text-center" style="max-width: 120px;" [(ngModel)]="operationN" disabled />
-            </div>
+              <label class="me-md-2 mb-1 mb-md-0" for="operations">{{ 'dpos.sales.operations.number.label' | translate }}</label>
+              <input type="text" class="form-control text-center" id="operations" style="max-width: 120px;" [(ngModel)]="operationN" disabled />
+              </div>
             <div class="d-flex flex-column flex-md-row align-items-md-center">
-              <label class="me-md-2 mb-1 mb-md-0">{{ 'dpos.sales.operations.total.label' | translate }}</label>
-              <input type="text" class="form-control text-center" style="max-width: 120px;" [(ngModel)]="totalSalesString" disabled />
+              <label class="me-md-2 mb-1 mb-md-0" for="totalSalesString">{{ 'dpos.sales.operations.total.label' | translate }}</label>
+              <input type="text" class="form-control text-center" id="totalSalesString" style="max-width: 120px;" [(ngModel)]="totalSalesString" disabled />
             </div>
             <button class="btn btn-outline-info mt-2 mt-md-0" (click)="downloadCSV()">
               <i class="fa-solid fa-file-csv fa-xl"></i>

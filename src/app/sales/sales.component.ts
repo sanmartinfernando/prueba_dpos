@@ -35,8 +35,10 @@ export class SalesComponent implements OnInit, OnDestroy {
   private currencyPipe = inject(CurrencyPipe);
   private sessionService = inject(SessionService);
   private authService = inject(AuthService);
+  private translate = inject(TranslateService);
+  private themeService = inject(ThemeService);
+  private uiStateService = inject(UIStateService);
 
-  currentFormats: any;
   size = 10000;
   sales: OrderInfo;
   selectSales = new Array(3);
@@ -73,7 +75,7 @@ export class SalesComponent implements OnInit, OnDestroy {
   modalTitle = '';
   modalMessage = '';
 
-  public opTypes: any;
+  public opTypes: { name: string; value: number }[];
 
   // Checkboxes
   selectedIndices: number[] = [];
@@ -84,11 +86,7 @@ export class SalesComponent implements OnInit, OnDestroy {
   commerceSelected: string;
   commerces: Commerce[];
 
-  constructor(
-    private translate: TranslateService,
-    private themeService: ThemeService,
-    private uiStateService: UIStateService
-  ) {
+  constructor() {
 
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
 
@@ -336,13 +334,11 @@ export class SalesComponent implements OnInit, OnDestroy {
           this.operationN = this.sales.data.length;
 
           this.totalSales = 0;
-          for (let i = 0; i < this.sales.data.length; i++) {
-
-            if (this.sales.data[i].type === 0) { //Ventas
-              this.totalSales = this.totalSales + Number(this.sales.data[i].total);
-            }
-            else if (this.sales.data[i].type === 2) { //Devoluciones
-              this.totalSales = this.totalSales - Number(this.sales.data[i].total);
+          for (const sale of this.sales.data) {
+            if (sale.type === 0) { // Ventas
+              this.totalSales += Number(sale.total);
+            } else if (sale.type === 2) { // Devoluciones
+              this.totalSales -= Number(sale.total);
             }
           }
           this.totalSalesString = (this.currencyPipe.transform(this.totalSales / (Math.pow(10, 2)), 'EUR', '€') || '');
@@ -454,28 +450,11 @@ export class SalesComponent implements OnInit, OnDestroy {
       },
       (error) => {
         if (error.status === 401 || error.status === 500) {
-          this.emptySearch === true;
+          this.emptySearch = true;
           this.loadCompleted = true;
         };
       }
     );
-  }
-
-  //Checkboxes
-  checkAll(event: any) {
-    if (event.target.checked) {
-      this.selectedIndices = [];
-      for (let i = 0; i < this.sales.data.length; i++) {
-        const globalIndex = i;
-        this.selectedIndices.push(globalIndex);
-      }
-      this.counter = this.selectedIndices.length;
-      this.isAllSelected = true;
-    } else {
-      this.selectedIndices = [];
-      this.counter = 0;
-      this.isAllSelected = false;
-    }
   }
 
   //Encriptación
@@ -591,8 +570,8 @@ export class SalesComponent implements OnInit, OnDestroy {
   getTotalBase(orderTaxes: OrderTax[]): number {
     if (orderTaxes !== undefined) {
       let totalBase = 0;
-      for (let i = 0; i < orderTaxes.length; i++) {
-        totalBase += orderTaxes[i].base / Math.pow(10, orderTaxes[i].decimals);
+      for (const tax of orderTaxes) {
+        totalBase += tax.base / Math.pow(10, tax.decimals);
       }
       return totalBase;
     }
@@ -602,8 +581,8 @@ export class SalesComponent implements OnInit, OnDestroy {
   getTotalTaxes(orderTaxes: OrderTax[]): number {
     if (orderTaxes !== undefined) {
       let totalTaxes = 0;
-      for (let i = 0; i < orderTaxes.length; i++) {
-        totalTaxes += orderTaxes[i].total / Math.pow(10, orderTaxes[i].decimals);
+      for (const tax of orderTaxes) {
+        totalTaxes += tax.total / Math.pow(10, tax.decimals);
       }
       return totalTaxes;
     }

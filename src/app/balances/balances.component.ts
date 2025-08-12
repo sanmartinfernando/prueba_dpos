@@ -288,23 +288,6 @@ export class BalancesComponent implements OnInit, OnDestroy {
     });
   }
 
-  //Checkboxes
-  checkAll(event: any) {
-    if (event.target.checked) {
-      this.selectedIndices = [];
-      for (let i = 0; i < this.balances.length; i++) {
-        const globalIndex = i;
-        this.selectedIndices.push(globalIndex);
-      }
-      this.counter = this.selectedIndices.length;
-      this.isAllSelected = true;
-    } else {
-      this.selectedIndices = [];
-      this.counter = 0;
-      this.isAllSelected = false;
-    }
-  }
-
   //Encriptación
   sendSalesDetails(id: string) {
     this.code = this.encryptionService.encryptData(id)

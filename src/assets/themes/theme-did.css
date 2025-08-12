@@ -319,6 +319,10 @@ select, input[type="date" i], i{
   width: 70px;
 }
 
+.ng-invalid.ng-touched {
+  border-color: red;
+}
+
 /*** PAGINACION ***/
 
 .ngx-pagination {
@@ -376,6 +380,16 @@ p.center {
 }
 
 /*** BUTTONS ***/
+
+.btn-edit, .btn-delete {
+  border: none;
+  outline: none;
+  box-shadow: none;
+  background: none;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
 
 .btn {
   --bs-btn-padding-x: 1rem;

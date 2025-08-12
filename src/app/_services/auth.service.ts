@@ -31,8 +31,6 @@ export class AuthService {
     return response;
   }
 
-  constructor() { }
-
   async login(UserName: string, Password: string): Promise<string> {
 
     const urlLogin = `${environment.urlAuth}${RestRoutes.AUTH_PORTALUSERS}/login`;
@@ -52,7 +50,7 @@ export class AuthService {
       .then(async (result) => {
         this.saveToken(result.token);
         this.saveUserName(loginRequest.userName);
-        const validation = await this.validate();
+        await this.validate();
         const userInfo = new User();
         userInfo.user = loginRequest.userName;
         userInfo.pwd = loginRequest.password;
@@ -76,7 +74,7 @@ export class AuthService {
       .then(async (result) => {
         window.localStorage.removeItem(StringConstants.TOKEN_KEY2);
         window.localStorage.setItem(StringConstants.TOKEN_KEY2, result.token);
-        const validation = await this.validate();
+        await this.validate();
       });
     return this.getToken();
   }
@@ -101,12 +99,12 @@ export class AuthService {
     this.configObservable.next(null);
   }
 
-  public saveUserName(username: any): void {
+  public saveUserName(username: string): void {
     window.localStorage.removeItem(StringConstants.USERNAME_KEY);
     window.localStorage.setItem(StringConstants.USERNAME_KEY, username); //
   }
 
-  public saveToken(token: any): void {
+  public saveToken(token: string): void {
     window.localStorage.removeItem(StringConstants.TOKEN_KEY);
     window.localStorage.setItem(StringConstants.TOKEN_KEY, token); //
   }

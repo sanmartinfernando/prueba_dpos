@@ -12,7 +12,6 @@ export class Customer {
   name: string;
   idType: string;
   identityDocument: string;
-  lastName: string;
   address: string;
   city: string;
   state: string;

@@ -40,7 +40,7 @@
       </ng-container>
       <ul class="navbar-nav d-flex flex-column flex-md-row align-items-start align-items-md-center ms-md-auto px-3 gap-2">
         <li class="mx-3 nav-item pt-2 pb-2">
-          <DOPSW-lang-switcher></DOPSW-lang-switcher>
+          <app-dpos-lang-switcher></app-dpos-lang-switcher>
         </li>
         <li class="mx-3 nav-item pt-2 pb-2 w-100 w-md-auto">
           <select [disabled]="!formSelectEnabled" class="form-select-commerce responsive-input" id="searchCommerce" name="commerce" [(ngModel)]="commerceSelected" (change)="onCommerceChange()" *ngIf="username; else loginLink">
@@ -50,11 +50,11 @@
           </select>
         </li>
         <li class="mx-3 nav-item pt-2 pb-2 w-100 w-md-auto">
-          <a class="btn btn-light d-flex align-items-center gap-2 responsive-button" *ngIf="username" (click)="logOut()" style="cursor: pointer">
+          <button class="btn btn-light d-flex align-items-center gap-2 responsive-button" *ngIf="username" (click)="logOut()" style="cursor: pointer">
             <i class="fa-solid fa-circle-user fa-lg" style="color: #ffbb00;"></i>
             <span>{{ username }}</span>
             <i class="fa-solid fa-arrow-right-from-bracket"></i>
-          </a>
+          </button>
         </li>
         <ng-template #loginLink>
           <li class="mx-3 nav-item pt-2 pb-2">

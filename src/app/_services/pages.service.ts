@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Page } from 'src/app/_models/page.model';
 
@@ -7,6 +7,8 @@ import { Page } from 'src/app/_models/page.model';
   providedIn: 'root'
 })
 export class PagesService {
+
+  public translate = inject(TranslateService);
 
   public pages: Page[] = [
     new Page('0', 'Dashboard', 'dashboard', 'fa-solid fa-square-poll-vertical'),
@@ -18,8 +20,8 @@ export class PagesService {
     //new Page('1','Impuestos','taxes','fa-solid fa-coins')
   ];
 
-  constructor(public translate: TranslateService) {
-    this.translate.onLangChange.subscribe(event => {
+  constructor() {
+    this.translate.onLangChange.subscribe(() => {
       this.pages[0].text = this.translate.instant('dpos.dashboard.page.title');
       this.pages[1].text = this.translate.instant('dpos.sales.page.title');
       this.pages[2].text = this.translate.instant('dpos.balances.page.title');

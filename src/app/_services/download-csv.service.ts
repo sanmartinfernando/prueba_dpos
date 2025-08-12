@@ -5,7 +5,6 @@ import { SalesReport, SalesReportAggregations } from '../_models/sales-report.mo
 import { TranslateService } from '@ngx-translate/core';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Order } from '../_models/order.model';
-import { BalanceLine } from '../_models/balance-line.model';
 import { Customer } from '../_models/customer.model';
 import { Tax } from '../_models/tax.model';
 import { Product } from '../_models/product.model';
@@ -330,7 +329,6 @@ export class DownloadCsvService {
     const headersES = [
       'NIF',
       'Nombre',
-      'Appellidos',
       'Teléfono',
       'Email'
     ];
@@ -338,7 +336,6 @@ export class DownloadCsvService {
     const headersCAT = [
       'NIF',
       'Nom',
-      'Cognoms',
       'Telèfon',
       'Email'
     ];
@@ -346,7 +343,6 @@ export class DownloadCsvService {
     const headersEU = [
       'IFZ',
       'Izena',
-      'Abizenak',
       'Telefonoa',
       'Posta elektronikoa'
     ];
@@ -364,7 +360,6 @@ export class DownloadCsvService {
     const fields = [
       'nif',
       'name',
-      'lastname',
       'phone',
       'email'
     ];
@@ -493,8 +488,7 @@ export class DownloadCsvService {
 
     let str = headers.join(';') + '\r\n';
 
-    for (let i = 0; i < orders.length; i++) {
-      const order: Order = orders[i]
+    for (const order of orders) {
       let line = "";
       line += (line ? ';' : '') + (order.reference || '');
       if (order.type === 2) {
@@ -521,8 +515,7 @@ export class DownloadCsvService {
 
     let str = headers.join(';') + '\r\n';
 
-    for (let i = 0; i < balances.length; i++) {
-      const balance: Balance = balances[i];
+    for (const balance of balances) {
       let line = "";
       line += (line ? ';' : '') + (balance.reference || '');
       line += (line ? ';' : '') + (balance.terminalNumber || '');
@@ -541,8 +534,7 @@ export class DownloadCsvService {
 
     let str = headers.join(';') + '\r\n';
 
-    for (let i = 0; i < balance.balanceLines.length; i++) {
-      const taxes: BalanceLine = balance.balanceLines[i];
+    for (const taxes of balance.balanceLines) {
       let line = "";
       if (taxes.itemType === 1 && taxes.itemValue !== -1) {
         line += (line ? ';' : '') + (taxes.itemName || '');
@@ -561,8 +553,7 @@ export class DownloadCsvService {
     const products: SalesReportAggregations[] = Object.values(salesReport.aggregations);
     let str = headers.join(';') + '\r\n';
 
-    for (let i = 0; i < products.length; i++) {
-      const product: SalesReportAggregations = products[i];
+    for (const product of products) {
       let line = "";
       line += (line ? ';' : '') + (product.product || '');
       line += (line ? ';' : '') + (this.currencyPipe.transform(product.total / 100000000 / ((product.units ?? 2) / 1000), 'EUR', '€') || '');
@@ -578,8 +569,7 @@ export class DownloadCsvService {
 
     let str = headers.join(';') + '\r\n';
 
-    for (let i = 0; i < balance.balanceLines.length; i++) {
-      const paymentMethod: BalanceLine = balance.balanceLines[i];
+    for (const paymentMethod of balance.balanceLines) {
       let line = "";
       if (paymentMethod.itemType === 2) {
         line += (line ? ';' : '') + (paymentMethod.itemName || '');
@@ -596,12 +586,10 @@ export class DownloadCsvService {
 
     let str = headers.join(';') + '\r\n';
 
-    for (let i = 0; i < customers.length; i++) {
-      const customer: Customer = customers[i]
+    for (const customer of customers) {
       let line = "";
       line += (line ? ';' : '') + (customer.identityDocument || '');
       line += (line ? ';' : '') + (customer.name || '');
-      line += (line ? ';' : '') + (customer.lastName || '');
       line += (line ? ';' : '') + (customer.phone || '');
       line += (line ? ';' : '') + (customer.email || '');
       str += line + '\r\n';
@@ -614,8 +602,7 @@ export class DownloadCsvService {
 
     let str = headers.join(';') + '\r\n';
 
-    for (let i = 0; i < products.length; i++) {
-      const product: Product = products[i]
+    for (const product of products) {
       let line = "";
       line += (line ? ';' : '') + (product.reference || '');
       line += (line ? ';' : '') + (product.barcode || '');
@@ -632,8 +619,7 @@ export class DownloadCsvService {
 
     let str = headers.join(';') + '\r\n';
 
-    for (let i = 0; i < taxes.length; i++) {
-      const tax: Tax = taxes[i]
+    for (const tax of taxes) {
       let line = "";
       line += (line ? ';' : '') + (tax.id || '');
       line += (line ? ';' : '') + ((tax.value / 100).toFixed(2) + ' %' || '');

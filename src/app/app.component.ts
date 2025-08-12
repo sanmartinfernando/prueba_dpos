@@ -12,8 +12,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   navIsOpen = true;
 
-  constructor() {}
-
   ngOnInit() {
     // Comienza a monitorear la inactividad cuando se carga el componente
     this.inactivityService.startMonitoring();

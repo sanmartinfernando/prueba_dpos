@@ -24,8 +24,6 @@ export class ProductsService {
     )
   };
 
-  constructor() { }
-
   public getProducts(size: number, searchParams: string): Observable<ProductInfo> {
     if (size === undefined || size === null || searchParams === undefined || searchParams === null) {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));

@@ -213,27 +213,19 @@ export class CustomersComponent implements OnInit, OnDestroy {
 
   private getCustomers() {
     this.emptySearch = true;
-    this.loadCompleted = true;
-    /*
-    this.customersService.getCustomers(this.size, this.varSearch).subscribe(
-      (customers) => {
+    this.loadCompleted = false;
+    this.customersService.getCustomers(this.size, this.varSearch).subscribe({
+      next: (customers) => {
         this.customers = customers.data;
-        if(this.customers.length !== 0) {
-          this.emptySearch = false;
-        } else {
-          this.emptySearch = true;
-        }
+        this.emptySearch = this.customers.length === 0;
         this.loadCompleted = true;
       },
-      (error) => {
+      error: () => {
         this.customers = null;
-        if (error.status === 401 || error.status === 404 ||  error.status === 500) {
-          this.emptySearch = true;
-          this.loadCompleted = true;
-        };
+        this.emptySearch = true;
+        this.loadCompleted = true;
       }
-    );
-    */
+    });
   }
 
   //Checkboxes
@@ -259,7 +251,7 @@ export class CustomersComponent implements OnInit, OnDestroy {
 
   //Eliminar clientes
   deleteCustomers() {
-    this.customers = this.customers.filter(customer => !customer.selected);
+   // this.customers = this.customers.filter(customer => !customer.selected);
     if (this.customers.length === 0) {
       this.emptySearch = true;
     }
@@ -289,19 +281,18 @@ export class CustomersComponent implements OnInit, OnDestroy {
 
       if (errors.length <= 0) {
         const customers: Customer[] = [];
-        for (let i = 0; i < rows.length; i++) {
+        for (const row of rows) {
           const customer: Customer = new Customer();
-          customer.clientId = i.toString();
-          customer.identityDocument = rows[i][0];
-          customer.name = rows[i][1];
-          customer.lastName = rows[i][2];
-          customer.email = rows[i][3];
-          customer.phone = rows[i][4];
-          customer.address = rows[i][5];
-          customer.city = rows[i][6];
-          customer.postcode = rows[i][7];
-          customer.country = rows[i][8];
-          customer.state = rows[i][9];
+          customer.clientId = (customers.length+1).toString();
+          customer.identityDocument = row[0];
+          customer.name = row[1];
+          customer.email = row[2];
+          customer.phone = row[3];
+          customer.address = row[4];
+          customer.city = row[5];
+          customer.postcode = row[6];
+          customer.country = row[7];
+          customer.state = row[8];
           customers.push(customer);
         }
 

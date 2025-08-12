@@ -217,7 +217,7 @@ export class DashboardComponent implements OnInit {
   }
 
   @HostListener('window:resize', ['$event'])
-  onResize(event) {
+  onResize() {
     this.updateView();
   }
 
@@ -235,7 +235,7 @@ export class DashboardComponent implements OnInit {
   /**
    * Función que añade el caracter % en el value del chart Top más vendidos
    */
-  public formatPercentageLabel(value: any) {
+  public formatPercentageLabel(value: number) {
     return value + '%';
   }
 
@@ -268,8 +268,8 @@ export class DashboardComponent implements OnInit {
     this.colorsKPI = [];
     this.monthVarSearch = (document.getElementById('monthDate') as HTMLInputElement).value;
     if (this.monthVarSearch !== this.translate.instant('dpos.filter.all')) {
-      for (let i = 0; i < this.kpiDataset.length; i++) {
-        this.colorsKPI.push({ name: this.kpiDataset[i].name, value: this.colors[0] });
+      for (const kpi of this.kpiDataset) {
+        this.colorsKPI.push({ name: kpi.name, value: this.colors[0] });
       }
     }
     this.monthVarSearch = null;
@@ -330,7 +330,7 @@ export class DashboardComponent implements OnInit {
   }
 
   //Método de dibujado de gráfico de evolución de KPI
-  public fillCharKPIs(event: any) {
+  public fillCharKPIs(event: MouseEvent) {
 
     this.loadedKPIChart = false;
     this.emptyKPIChart = true;
@@ -399,8 +399,8 @@ export class DashboardComponent implements OnInit {
     this.idEvo[1].$match.type = 0;
 
     //Actualzamos los colores de las barras
-    for (let i = 0; i < this.colorsKPI.length; i++) {
-      this.colorsKPI[i].value = this.colors[0];
+    for (const color of this.colorsKPI) {
+      color.value = this.colors[0];
     }
     //Se inicializan los valore
     this.resetKpiDataset();
@@ -409,8 +409,8 @@ export class DashboardComponent implements OnInit {
     this.ordersService.getOrderAggregate(this.idEvo).subscribe((aggregationsEvo) => {
       if (aggregationsEvo.length !== 0) {
         //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
-        for (let i = 0; i < aggregationsEvo.length; i++) {
-          this.kpiDataset[aggregationsEvo[i]._id - 1].value = aggregationsEvo[i].total / 100;
+        for (const aggregation of aggregationsEvo) {
+          this.kpiDataset[aggregation._id - 1].value = aggregation.total / 100;
         }
 
         //Se actualiza el array de datos del gráfico para que se dibujen los nuevos datos introducidos
@@ -436,15 +436,15 @@ export class DashboardComponent implements OnInit {
     this.ordersService.getOrderAggregate(this.idEvo).subscribe((aggregationsEvo) => {
       if (aggregationsEvo.length !== 0) {
         //Actualzamos los colores de las barras
-        for (let i = 0; i < this.colorsKPI.length; i++) {
-          this.colorsKPI[i].value = this.colors[2];
-        }
+        this.colorsKPI.forEach(color => {
+          color.value = this.colors[2];
+        });
         //Se inicializan los valores del array
         this.resetKpiDataset();
 
         //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
-        for (let i = 0; i < aggregationsEvo.length; i++) {
-          this.kpiDataset[aggregationsEvo[i]._id - 1].value = aggregationsEvo[i].total / 100;
+        for (const aggregation of aggregationsEvo) {
+          this.kpiDataset[aggregation._id - 1].value = aggregation.total / 100;
         }
         //Se actualiza el array de datos del gráfico para que se dibujen los nuevos datos introducidos
         this.kpiDataset = [...this.kpiDataset];
@@ -468,15 +468,15 @@ export class DashboardComponent implements OnInit {
     this.ordersService.getOrderAggregate(this.idEvo).subscribe((aggregationsEvo) => {
       if (aggregationsEvo.length !== 0) {
         //Actualzamos los colores de las barras
-        for (let i = 0; i < this.colorsKPI.length; i++) {
-          this.colorsKPI[i].value = this.colors[1];
-        }
+        this.colorsKPI.forEach(color => {
+          color.value = this.colors[1];
+        });
         //Se inicializan los valores
         this.resetKpiDataset();
 
         //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
-        for (let i = 0; i < aggregationsEvo.length; i++) {
-          this.kpiDataset[aggregationsEvo[i]._id - 1].value = aggregationsEvo[i].avg / 100;
+        for (const aggregation of aggregationsEvo) {
+          this.kpiDataset[aggregation._id - 1].value = aggregation.avg / 100;
         }
         //Se actualiza el array de datos del gráfico para que se dibujen los nuevos datos introducidos
         this.kpiDataset = [...this.kpiDataset];
@@ -501,9 +501,9 @@ export class DashboardComponent implements OnInit {
     this.cashMovementsService.getCashMovementsAggregate(this.idEvoCM).subscribe((aggregationsEvoIn) => {
       if (aggregationsEvoIn.length !== 0) {
         //Actualzamos los colores de las barras
-        for (let i = 0; i < this.colorsKPI.length; i++) {
-          this.colorsKPI[i].value = this.colors[3];
-        }
+        this.colorsKPI.forEach(color => {
+          color.value = this.colors[3];
+        });
         //Se inicializan los arrays
         this.resetKpiDataset();
         for (let i = 0; i < this.kpiDataset.length; i++) {
@@ -511,12 +511,12 @@ export class DashboardComponent implements OnInit {
           valueGraphArrayOut[i] = 0;
         }
         //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
-        for (let i = 0; i < aggregationsEvoIn.length; i++) {
-          //Se separan los datos dependiendo de su id (0 movimiento in en el if y 1 movimiento out en el else)
-          if (aggregationsEvoIn[i]._id.type === 0) {
-            valueGraphArrayIn[aggregationsEvoIn[i]._id.month - 1] = aggregationsEvoIn[i].total / 100;
+        for (const aggregation of aggregationsEvoIn) {
+          // Se separan los datos dependiendo de su id (0 movimiento in en el if y 1 movimiento out en el else)
+          if (aggregation._id.type === 0) {
+            valueGraphArrayIn[aggregation._id.month - 1] = aggregation.total / 100;
           } else {
-            valueGraphArrayOut[aggregationsEvoIn[i]._id.month - 1] = aggregationsEvoIn[i].total / 100;
+            valueGraphArrayOut[aggregation._id.month - 1] = aggregation.total / 100;
           }
         }
         //Se rellena el array de datos del gráfico en el apartado value de cada elemento con la diferencia entre movimientos in y out
@@ -549,12 +549,12 @@ export class DashboardComponent implements OnInit {
     this.cashMovementsService.getCashMovementsAggregate(this.idEvoCM).subscribe((aggregationsEvoIn) => {
       if (aggregationsEvoIn.length !== 0) {
         //Se rellena el array de datos del gráfico en el apartado value de cada elemento con el dato obtenido de la consulta
-        for (let i = 0; i < aggregationsEvoIn.length; i++) {
-          //Se separan los datos dependiendo de su id (0 movimiento in en el if y 1 movimiento out en el else)
-          if (aggregationsEvoIn[i]._id.type === 0) {
-            valueGraphArrayIn[aggregationsEvoIn[i]._id.month - 1] = aggregationsEvoIn[i].total / 100;
+        for (const aggregation of aggregationsEvoIn) {
+          // Se separan los datos dependiendo de su id (0 movimiento in en el if y 1 movimiento out en el else)
+          if (aggregation._id.type === 0) {
+            valueGraphArrayIn[aggregation._id.month - 1] = aggregation.total / 100;
           } else {
-            valueGraphArrayOut[aggregationsEvoIn[i]._id.month - 1] = aggregationsEvoIn[i].total / 100;
+            valueGraphArrayOut[aggregation._id.month - 1] = aggregation.total / 100;
           }
         }
         //Se rellena el array de datos del gráfico en el apartado value de cada elemento con la diferencia entre movimientos in y out
@@ -569,28 +569,24 @@ export class DashboardComponent implements OnInit {
       this.ordersService.getOrderAggregate(this.idEvoResults).subscribe((aggregationsEvoOrder) => {
         if (aggregationsEvoOrder.length !== 0) {
           //Actualzamos los colores de las barras
-          for (let i = 0; i < this.colorsKPI.length; i++) {
-            this.colorsKPI[i].value = this.colors[4];
-          }
+          this.colorsKPI.forEach(color => {
+            color.value = this.colors[4];
+          });
           //Inicializamos los arrays
           this.resetKpiDataset();
           for (let i = 0; i < this.kpiDataset.length; i++) {
             valueGraphArraySales[i] = 0;
             valueGraphArrayRefunds[i] = 0;
           }
-          let totalSales = 0;
-          let totalRefunds = 0;
 
           //Se clasifican los datos obtenidos según el tipo ( 0 ventas, 2 devoluciones y 5 rectificaciones) en el array de resultados
-          for (let i = 0; i < aggregationsEvoOrder.length; i++) {
-            switch (aggregationsEvoOrder[i]._id.type) {
-              case 0:
-                valueGraphArraySales[aggregationsEvoOrder[i]._id.month - 1] = aggregationsEvoOrder[i].total / 100;
-                totalSales += aggregationsEvoOrder[i].total / 100;
+          for (const aggregation of aggregationsEvoOrder) {
+            switch (aggregation._id.type) {
+              case 0://Sales
+                valueGraphArraySales[aggregation._id.month - 1] = aggregation.total / 100;
                 break;
-              case 2:
-                valueGraphArrayRefunds[aggregationsEvoOrder[i]._id.month - 1] = aggregationsEvoOrder[i].total / 100;
-                totalRefunds += aggregationsEvoOrder[i].total / 100;
+              case 2://Refunds
+                valueGraphArrayRefunds[aggregation._id.month - 1] = aggregation.total / 100;
                 break;
             }
           }
@@ -638,16 +634,15 @@ export class DashboardComponent implements OnInit {
         let outDecimals = 0;
         let outCount = 0;
 
-        for (let i = 0; i < aggregationsCM.length; i++) {
-          const cashMovement = aggregationsCM[i];
+        for (const cashMovement of aggregationsCM) {
           if (cashMovement._id === 0) {
-            inTotal = aggregationsCM[0].total;
-            inDecimals = aggregationsCM[0].decimals;
-            inCount = aggregationsCM[0].count;
+            inTotal = cashMovement.total;
+            inDecimals = cashMovement.decimals;
+            inCount = cashMovement.count;
           } else if (cashMovement._id === 1) {
-            ouTotal = aggregationsCM[0].total;
-            outDecimals = aggregationsCM[0].decimals;
-            outCount = aggregationsCM[0].count;
+            ouTotal = cashMovement.total;
+            outDecimals = cashMovement.decimals;
+            outCount = cashMovement.count;
           }
         }
 
@@ -660,32 +655,31 @@ export class DashboardComponent implements OnInit {
             if (aggregation.length !== 0) {
               this.aggregations = aggregation;
               //Bucle para recorrer el objeto respuesta
-              for (let i = 0; i < this.aggregations.length; i++) {
-                //If para comprobar si existen datos y el objeto no está vacio
-                if (this.aggregations[i].total !== null) {
-                  //Switch para comprobar si existen datos de ventas (id 0), de devoluciones (id 2) o rectificaciones (id 5)
-                  switch (this.aggregations[i]._id) {
-                    case 0: //Ventas
-                      //Para cada caso se rellena el array de resultados tanto del total con los decimales ya aplicados como del conteo de nº de operaciones
-                      this.ordersResult.total += this.aggregations[i].total / this.Math.pow(10, this.aggregations[i].decimals);
-                      this.ordersResult.count += this.aggregations[i].count;
-                      //Calculo del ticket medio
-                      this.avTicketResult += this.aggregations[i].avg / 100;
+              for (const aggregation of this.aggregations) {
+                // If para comprobar si existen datos y el objeto no está vacio
+                if (aggregation.total !== null) {
+                  // Switch para comprobar si existen datos de ventas (id 0), de devoluciones (id 2) o rectificaciones (id 5)
+                  switch (aggregation._id) {
+                    case 0: // Ventas
+                      // Para cada caso se rellena el array de resultados tanto del total con los decimales ya aplicados como del conteo de nº de operaciones
+                      this.ordersResult.total += aggregation.total / Math.pow(10, aggregation.decimals);
+                      this.ordersResult.count += aggregation.count;
+                      // Calculo del ticket medio
+                      this.avTicketResult += aggregation.avg / 100;
                       break;
-                    case 2: //Devoluciones
-                      this.refundsResult.total += this.aggregations[i].total / this.Math.pow(10, this.aggregations[i].decimals);
-                      this.refundsResult.count += this.aggregations[i].count;
+                    case 2: // Devoluciones
+                      this.refundsResult.total += aggregation.total / Math.pow(10, aggregation.decimals);
+                      this.refundsResult.count += aggregation.count;
                       break;
-                    case 5: //Rectificaciones
-                      this.rectificationsResult.total += this.aggregations[i].total / this.Math.pow(10, this.aggregations[i].decimals);
-                      this.rectificationsResult.count += this.aggregations[i].count;
+                    case 5: // Rectificaciones
+                      this.rectificationsResult.total += aggregation.total / Math.pow(10, aggregation.decimals);
+                      this.rectificationsResult.count += aggregation.count;
                       break;
                   }
                 }
               }
 
               this.balanceResult = this.ordersResult.total - this.refundsResult.total + this.cashMovementsResult;
-              this.avTicketResult = this.avTicketResult;
             }
           }
         );
@@ -757,8 +751,9 @@ export class DashboardComponent implements OnInit {
               if (this.datasetTop3.length >= 3) {
                 const dataName: string = 'Resto (' + (totalQuantity - sumaTP) + ' uds)';
                 const dataValue: number = Math.round(((totalQuantity - sumaTP) / totalQuantity) * 100);
+                this.colorsTop3.push({ name: dataName, value: this.colors[4] });
                 const data = new DataSetTop3(dataName, dataValue);
-                this.datasetTop3.push();
+                this.datasetTop3.push(data);
               }
 
               this.datasetTop3 = [...this.datasetTop3];
@@ -787,44 +782,43 @@ export class DashboardComponent implements OnInit {
     this.ordersService.getOrderAggregate(this.idPM).subscribe((aggregationsPM) => {
       if (aggregationsPM.length !== 0) {
         //Se reinicia el array de datos del gráfico
-        for (let i = 0; i < this.datasetPM.length; i++) {
-          this.datasetPM[i].value = 0;
-        }
+        this.datasetPM.forEach(item => {
+          item.value = 0;
+        });
         //Se realiza la suma del número total de operaciones para, posteriormente, hacer el % de cada método de pago sobre el total
         let totalPM = 0;
-        for (let i = 0; i < aggregationsPM.length; i++) {
-          totalPM = totalPM + aggregationsPM[i].count;
+        for (const aggregation of aggregationsPM) {
+          totalPM += aggregation.count;
         }
         //Se recorre el objeto respuesta
-        for (let i = 0; i < aggregationsPM.length; i++) {
-          //Se rellena el array que alimenta al gráfico con cada tipo de método de pago
-          switch (aggregationsPM[i]._id) {
+        for (const aggregation of aggregationsPM) {
+          switch (aggregation._id) {
             case 'Tarjeta':
-              this.datasetPM[1].value = Math.round((aggregationsPM[i].count / totalPM) * 100);
+              this.datasetPM[1].value = Math.round((aggregation.count / totalPM) * 100);
               this.datasetPM[1].name = 'Tarjeta';
               break;
             case 'Efectivo':
-              this.datasetPM[0].value = Math.round((aggregationsPM[i].count / totalPM) * 100);
+              this.datasetPM[0].value = Math.round((aggregation.count / totalPM) * 100);
               this.datasetPM[0].name = 'Efectivo';
               break;
             case 'Vales':
-              this.datasetPM[2].value = Math.round((aggregationsPM[i].count / totalPM) * 100);
+              this.datasetPM[2].value = Math.round((aggregation.count / totalPM) * 100);
               this.datasetPM[2].name = 'Vales';
               break;
             case 'Virtual':
-              this.datasetPM[3].value = Math.round((aggregationsPM[i].count / totalPM) * 100);
+              this.datasetPM[3].value = Math.round((aggregation.count / totalPM) * 100);
               this.datasetPM[3].name = 'Virtual';
               break;
             case 'Otros':
-              this.datasetPM[4].value = Math.round((aggregationsPM[i].count / totalPM) * 100);
+              this.datasetPM[4].value = Math.round((aggregation.count / totalPM) * 100);
               this.datasetPM[4].name = 'Otros';
               break;
             case 'Bono Denda':
-              this.datasetPM[5].value = Math.round((aggregationsPM[i].count / totalPM) * 100);
+              this.datasetPM[5].value = Math.round((aggregation.count / totalPM) * 100);
               this.datasetPM[5].name = 'Bono Denda';
               break;
             case 'Rectificación':
-              this.datasetPM[6].value = Math.round((aggregationsPM[i].count / totalPM) * 100);
+              this.datasetPM[6].value = Math.round((aggregation.count / totalPM) * 100);
               this.datasetPM[6].name = 'Rectificación';
               break;
           }

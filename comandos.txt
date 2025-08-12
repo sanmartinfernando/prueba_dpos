@@ -45,3 +45,5 @@ ng add @angular-eslint/schematics #para instalarlo en VS Code
 ng lint
 npx eslint . --ext .ts,.html --fix #corrige problemas de codigo estatico que no requieren intervención manual
 npx eslint . --ext .ts,.html #revisa lo que no se puede corregir automaticamente
+
+ng-openapigen #para generar a partir de un yalm

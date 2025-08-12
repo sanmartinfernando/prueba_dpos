@@ -6,6 +6,8 @@ import { SecurityConstants } from './security-constants.config';
 import { Router } from '@angular/router';
 import { catchError, Observable, throwError } from 'rxjs';
 import { InactivityService } from '../_services/inactivity.service';
+import { ErrorResponse } from '../_models/error-response.model';
+import { TranslateService } from '@ngx-translate/core';
 
 
 @Injectable()
@@ -14,8 +16,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
   private authService = inject(AuthService);
   private router = inject(Router); 
   private inactivityService = inject(InactivityService);
-
-  constructor() { }
+  private translate = inject(TranslateService);
 
   public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let authReq = req;
@@ -56,7 +57,13 @@ export class HttpRequestInterceptor implements HttpInterceptor {
 
     return next.handle(authReq).pipe(
       catchError((error: HttpErrorResponse) => {
-        if (error.status === 401) {
+        const apiError: ErrorResponse = {
+          StatusCode: error.status,
+          ErrorCode: error.error?.ErrorCode ?? 0,
+          ErrorCodeId: error.error?.ErrorCodeId ?? 'Default',
+          Message: error.error?.Message ?? this.translate.instant('dpos.error.msg.api')
+        };
+        if (apiError.StatusCode === 401) {
           console.warn('Error 401 no autorizado, redirigiendo o cerrando sesión...');
           this.inactivityService.logout();
           this.router.navigate(['/login']);

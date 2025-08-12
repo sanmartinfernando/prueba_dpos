@@ -24,8 +24,6 @@ export class TaxesService {
     )
   };
 
-  constructor() { }
-
   public getTaxes(size: number, searchParams: string): Observable<TaxInfo> {
     if (size === undefined || size === null || searchParams === undefined || searchParams === null) {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));

@@ -28,13 +28,9 @@ export class LoginComponent implements OnInit {
   isLoginFailed = false;
   errorMessage = '';
   roles: string[] = [];
-  token: any = [];
+  token: [] = [];
   componentSelected: string;
   loading = false;
-
-  constructor() {
-
-  }
 
   ngOnInit(): void {
     this.userSuscription = this.storageService.userInfo.subscribe(user => {
@@ -56,14 +52,14 @@ export class LoginComponent implements OnInit {
     this.isLoginFailed = false;
 
     this.authService.login(username, pw)
-      .then((result) => {
+      .then(() => {
         this.isLoginFailed = false;
         this.isLoggedIn = true;
         this.storageService.updateloggin(this.isLoggedIn)
         this.loading = false;
         this.navigateLoggedIn();
         return;
-      }).catch((err) => {
+      }).catch(() => {
         this.isLoginFailed = true;
         this.loading = false;
       });

@@ -23,8 +23,6 @@ export class CashMovementsService {
     )
   };
 
-  constructor() { }
-
   public getCashMovementsAggregate(searchParams: string): Observable<OrderAggregation[]> {
     if (searchParams === undefined || searchParams === null) {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
