@@ -7,6 +7,7 @@
   <div class="modal-body">
     <div class="container my-3">
       <form (ngSubmit)="onSubmit()">
+        <!-- Sección para seleccionar el tipo de impuesto mediante radio buttons -->
         <div class="row mb-3">
           <div class="col-md-12">
             <div class="row">
@@ -44,23 +45,31 @@
             </div>
           </div>
         </div>
+        <!-- Campos para el nombre y valor del impuesto -->
         <div class="row mb-3">
           <div class="col-md-6">
-            <label class="form-label">{{ 'dpos.taxes.modal.form.name' | translate }}
+            <label class="form-label">
+              {{ 'dpos.taxes.modal.form.name' | translate }}
               <input type="text" class="form-control" name="name" [(ngModel)]="taxFormData.name" [disabled]="isTaxNameDisabled">
             </label>
           </div>
           <div class="col-md-6">
-            <label class="form-label">{{ 'dpos.taxes.modal.form.value' | translate }}
-              <input type="text" class="form-control" name="value" [(ngModel)]="taxValueDisplay" [disabled]="isTaxValueDisabled">
+            <label class="form-label">
+              {{ 'dpos.taxes.modal.form.value' | translate }}
+              <input type="text" class="form-control" name="value" [(ngModel)]="taxValueDisplay" [disabled]="isTaxValueDisabled"> <!-- Puede estar deshabilitado según estado -->
             </label>
           </div>
         </div>
       </form>
     </div>
   </div>
+  <!-- Pie del modal con botones para cancelar o enviar el formulario -->
   <div class="modal-footer">
-    <button class="btn btn-outline-danger" (click)="close()">{{ 'dpos.action.cancel' | translate }}</button>
-    <button type="submit" class="btn btn-primary">{{ 'dpos.action.create' | translate }}</button>
+    <button class="btn btn-outline-danger" (click)="close()">
+      {{ 'dpos.action.cancel' | translate }}
+    </button>
+    <button type="submit" class="btn btn-primary">
+      {{ 'dpos.action.create' | translate }}
+    </button>
   </div>
 </div>

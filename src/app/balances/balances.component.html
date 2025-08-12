@@ -1,60 +1,66 @@
 <br />
 <div class="container-fluid header-main">
-  <div>
-    <form class="row g-3 px-2">
-      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-        <label class="form-label" for="searchTer">{{ 'dpos.filter.terminal' | translate }}</label>
-        <select class="form-select" id="searchTer" name="terminal" [(ngModel)]="terminalSelected" (change)="onTerminalChange()">
-          <option *ngFor="let terminal of terminalsNumber" [value]="terminal">{{ terminal }}</option>
-        </select>
-      </div>
-      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-        <label class="form-label" for="sinceDate">{{ 'dpos.filter.date.from' | translate }}</label>
-        <input type="date" class="form-control" id="sinceDate" [value]="sinceDate" (change)="onSinceDateChange()" />
-      </div>
-      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-        <label class="form-label" for="tilDate">{{ 'dpos.filter.date.to' | translate }}</label>
-        <input type="date" class="form-control" id="tilDate" [value]="tilDate" (change)="onTilDateChange()" />
-      </div>
-      <div class="col-12 col-md-4 col-lg-3 d-flex flex-wrap gap-2 align-items-end justify-content-md-start">
-        <button type="reset" class="btn btn-outline-danger">
-          <i class="fas fa-eraser"></i>
-        </button>
-        <button type="button" class="btn btn-primary" (click)="searchBalances()">
-          <i class="fas fa-search"></i>&nbsp;{{ 'dpos.action.search' | translate }}
-        </button>
-      </div>
-    </form>
-  </div>
+  <!-- Formulario filtro, botones limpiar y buscar -->
+  <form class="row g-3 px-2">
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <label for="searchTer" class="form-label">{{ 'dpos.filter.terminal' | translate }}</label>
+      <select class="form-select" id="searchTer" name="terminal" [(ngModel)]="terminalSelected"
+        (change)="onTerminalChange()">
+        <option *ngFor="let terminal of terminalsNumber" [value]="terminal">{{ terminal }}</option>
+      </select>
+    </div>
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <label for="sinceDate" class="form-label">{{ 'dpos.filter.date.from' | translate }}</label>
+      <input type="date" class="form-control" id="sinceDate" [value]="sinceDate" (change)="onSinceDateChange()" />
+    </div>
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <label for="tilDate" class="form-label">{{ 'dpos.filter.date.to' | translate }}</label>
+      <input type="date" class="form-control" id="tilDate" [value]="tilDate" (change)="onTilDateChange()" />
+    </div>
+    <div class="col-12 col-md-4 col-lg-3 d-flex flex-wrap gap-2 align-items-end justify-content-md-start">
+      <button type="reset" class="btn btn-outline-danger">
+        <i class="fas fa-eraser"></i>
+      </button>
+      <button type="button" class="btn btn-primary" (click)="searchBalances()">
+        <i class="fas fa-search"></i>&nbsp;{{ 'dpos.action.search' | translate }}
+      </button>
+    </div>
+  </form>
   <br />
+  <!-- Card que contiene el listado de cierres de caja -->
   <div class="card">
     <div class="card-body">
       <div class="row mb-4 align-items-center">
         <div>
-          <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage" (closeModal)="closeModal()"></app-modal>
+          <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage"
+            (closeModal)="closeModal()"></app-modal>
         </div>
+        <!-- Título principal -->
         <div class="col">
-          <h5><b>{{'dpos.balances.title.label' | translate}}</b></h5>
+          <h5><b>{{ 'dpos.balances.title.label' | translate }}</b></h5>
         </div>
+        <!-- Botón exportar CSV, solo visible si carga se ha completado y hay resultados -->
         <div class="col-12 col-md-3 text-md-end text-center" *ngIf="loadCompleted && !emptySearch">
           <button class="btn btn-outline-info justify-content-center" (click)="downloadCSV()">
             <i class="fa-solid fa-file-csv fa-xl"></i>
           </button>
         </div>
       </div>
+      <!-- Spinner de carga mientras no hay resultados -->
       <div *ngIf="!loadCompleted && !emptySearch" class="d-flex justify-content-center my-3">
         <div class="spinner-border text-danger"></div>
       </div>
+      <!-- Mensaje cuando no hay datos tras búsqueda -->
       <div *ngIf="loadCompleted && emptySearch" class="d-flex justify-content-center my-3">
         <b><i>{{ 'dpos.dashboard.nodata.label' | translate }}</i></b>
       </div>
+      <!-- Tabla de cierres de caja, visible si la carga se ha completado y hay resultados -->
       <div class="row" *ngIf="loadCompleted && !emptySearch">
         <div class="col">
           <div class="table-responsive">
             <table class="table table-hover order-table" data-pagination="true" data-page-size="10">
               <thead class="text-customer">
                 <tr>
-                  <th class="text-center"></th>
                   <th class="text-start">{{ 'dpos.balances.document.label' | translate }}</th>
                   <th class="text-center">{{ 'dpos.balances.terminal.label' | translate }}</th>
                   <th class="text-start">{{ 'dpos.balances.datefrom.label' | translate }}</th>
@@ -64,20 +70,15 @@
                   <th class="text-end">{{ 'dpos.balances.total.label' | translate }}</th>
                 </tr>
               </thead>
+              <!-- Plantilla vacía para cuando no hay datos -->
               <ng-template #empty>
-                <td colspan="8">
-                  <b>{{ 'dpos.balances.noresults.label' | translate }}</b>
-                </td>
+                <td colspan="8"><b>{{ 'dpos.balances.noresults.label' | translate }}</b></td>
               </ng-template>
               <tbody>
+                <!-- Contenedor que muestra filas de la tabla solo si la carga se ha completado y hay datos -->
                 <ng-container *ngIf="loadCompleted; else empty">
-                  <tr *ngFor="let balance of balances | paginate : { itemsPerPage: 10, currentPage: page }; index as i" [routerLink]="code" (click)="sendSalesDetails(balance.balanceId)" style="cursor: pointer;">
-                    <td class="text-center align-middle">
-                      <input class="form-check-input" type="checkbox" [checked]="isAllSelected" (click)="$event.stopPropagation()" />
-                    </td>
-                    <td class="text-start align-middle" id="massivetransfer">
-                      <span class="table-title">{{ balance.reference }}</span>
-                    </td>
+                  <tr *ngFor="let balance of balances | paginate : { itemsPerPage: 10, currentPage: page }; index as i" (click)="sendSalesDetails(balance.balanceId)" style="cursor: pointer;">
+                    <td class="text-start align-middle" id="massivetransfer"><span class="table-title">{{ balance.reference }}</span></td>
                     <td class="text-center align-middle">{{ balance.terminalNumber }}</td>
                     <td class="text-start align-middle">{{ balance.startedAt | date : "dd/MM/yyyy HH:mm" }}</td>
                     <td class="text-start align-middle">{{ balance.finishedAt | date : "dd/MM/yyyy HH:mm" }}</td>

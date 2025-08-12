@@ -1,21 +1,24 @@
 <div class="modal-backdrop"></div>
 <div class="modal-small-content">
+  <!-- Header con título y botón cerrar -->
   <div class="modal-header">
     <h2>{{ titlePage }}</h2>
     <button class="modal-close-button" (click)="close()">×</button>
   </div>
+  <!-- Cuerpo del modal con formulario -->
   <div class="modal-body">
     <div class="container my-3">
       <form (ngSubmit)="onSubmit()">
         <div class="row mb-12">
           <div class="col-md-12">
-            <label class="form-label" for="name">{{ 'dpos.category.modal.form.name' | translate }}</label>
-            <input type="text" class="form-control" name="name" id="name" [(ngModel)]="categoryFormData.name">
+            <label for="name" class="form-label">{{ 'dpos.category.modal.form.name' | translate }}</label>
+            <input type="text" class="form-control" id="name" name="name" [(ngModel)]="categoryFormData.name" />
           </div>
         </div>
       </form>
     </div>
   </div>
+  <!-- Footer con botones cancelar y crear (submit) -->
   <div class="modal-footer">
     <button class="btn btn-outline-danger" (click)="close()">{{ 'dpos.action.cancel' | translate }}</button>
     <button type="submit" class="btn btn-primary">{{ 'dpos.action.create' | translate }}</button>

@@ -1,5 +1,6 @@
 <br />
 <div class="container-fluid header-main">
+  <!-- Formulario para filtrar y buscar reportes -->
   <form class="row g-3 px-2">
     <div class="col-12 col-sm-6 col-md-3 col-lg-2">
       <label class="form-label" for="report">{{ 'dpos.filter.reporttype' | translate }}</label>
@@ -23,6 +24,7 @@
       <label class="form-label" for="tilDate">{{ 'dpos.filter.date.to' | translate }}</label>
       <input type="date" class="form-control" id="tilDate" name="tilDate" [value]="tilDate" (change)="onTilDateChange()" />
     </div>
+    <!-- Botones para resetear y buscar -->
     <div class="col-12 col-md-4 col-lg-4 d-flex flex-wrap gap-2 align-items-end">
       <button type="reset" class="btn btn-outline-danger">
         <i class="fas fa-eraser"></i>
@@ -39,6 +41,7 @@
         <div class="col">
           <h5><b>{{ reportVarSearch }}</b></h5>
         </div>
+        <!-- Botón para descargar reporte en CSV, visible solo si carga completada y no hay resultados vacíos -->
         <ng-container *ngIf="loadCompleted && emptySearch === false">
           <div class="col-12 col-md-3 text-md-end mt-2 mt-md-0">
             <button class="btn btn-outline-info" (click)="downloadReports()">
@@ -47,16 +50,21 @@
           </div>
         </ng-container>
       </div>
+      <!-- Spinner de carga mientras se esperan datos -->
       <div *ngIf="loadCompleted === false && emptySearch === false" class="d-flex justify-content-center">
         <div class="spinner-border text-danger"></div>
       </div>
+      <!-- Mensaje cuando no hay datos encontrados -->
       <div *ngIf="loadCompleted && emptySearch === true" class="d-flex justify-content-center">
         <b><i>{{ 'dpos.dashboard.nodata.label' | translate }}</i></b>
       </div>
+      <!-- Modal para mensajes -->
       <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage" (closeModal)="closeModal()"></app-modal>
+      <!-- Mensaje para indicar que se debe seleccionar un tipo de reporte -->
       <div class="row" *ngIf="reportVarSearch === null">
         <b>{{ 'dpos.reports.selectreport.label' | translate }}</b>
       </div>
+      <!-- Tabla de 'Impuestos' -->
       <div class="row" *ngIf="reportVarSearch === translate.instant('dpos.reports.taxes.label') && loadCompleted && emptySearch === false">
         <div class="col">
           <div class="table-responsive">
@@ -93,14 +101,15 @@
                 </ng-container>
               </tbody>
             </table>
+            <!-- Controles de paginación -->
             <div class="text-center mt-3">
               <pagination-controls (pageChange)="page = $event" previousLabel="" nextLabel=""></pagination-controls>
             </div>
           </div>
         </div>
       </div>
-      <div class="row"
-        *ngIf="reportVarSearch === translate.instant('dpos.reports.products.label') && loadCompleted && emptySearch === false">
+      <!-- Tabla de 'Productos' -->
+      <div class="row" *ngIf="reportVarSearch === translate.instant('dpos.reports.products.label') && loadCompleted && emptySearch === false">
         <div class="col">
           <div class="table-responsive">
             <table class="table table-hover order-table" data-pagination="true" data-page-size="10">
@@ -119,8 +128,7 @@
               </ng-template>
               <tbody>
                 <ng-container *ngIf="emptySearch === false; else empty">
-                  <tr
-                    *ngFor="let product of indexProduct | paginate : { itemsPerPage: 10, currentPage: page }; index as z">
+                  <tr *ngFor="let product of indexProduct | paginate : { itemsPerPage: 10, currentPage: page }; index as z">
                     <td class="text-start align-middle">{{ product.product }}</td>
                     <td class="text-end align-middle">{{ product.total / 100000000 / ( (product.units ?? 2) / 1000) | currency : "Eur" : "€" }}</td>
                     <td class="text-end align-middle">{{ (product.units ?? 2) / 1000 }}</td>
@@ -135,12 +143,14 @@
                 </ng-container>
               </tbody>
             </table>
+            <!-- Controles de paginación -->
             <div class="text-center mt-3">
               <pagination-controls (pageChange)="page = $event" previousLabel="" nextLabel=""></pagination-controls>
             </div>
           </div>
         </div>
       </div>
+      <!-- Tabla de 'Métodos de pago' -->
       <div class="row" *ngIf="reportVarSearch === translate.instant('dpos.reports.paymentmethods.label') && loadCompleted && emptySearch === false">
         <div class="col">
           <div class="table-responsive">
@@ -177,6 +187,7 @@
                 </ng-container>
               </tbody>
             </table>
+            <!-- Controles de paginación -->
             <div class="text-center mt-3">
               <pagination-controls (pageChange)="page = $event" previousLabel="" nextLabel=""></pagination-controls>
             </div>

@@ -13,6 +13,7 @@ import { Subscription } from 'rxjs/internal/Subscription';
 import { SessionService } from '../_services/session.service';
 import { ThemeService } from '../_services/theme.service';
 import { UIStateService } from '../_services/ui-state.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -34,11 +35,11 @@ export class BalancesComponent implements OnInit, OnDestroy {
   private translate = inject(TranslateService);
   private uiStateService = inject(UIStateService);
   private authService = inject(AuthService);
+  private router = inject(Router);
 
   Math = Math;
   balances: Balance[];
   page = 0;
-  code: string;
   loadCompleted = false;
   mismatch = [];
 
@@ -290,8 +291,9 @@ export class BalancesComponent implements OnInit, OnDestroy {
 
   //Encriptación
   sendSalesDetails(id: string) {
-    this.code = this.encryptionService.encryptData(id)
-    this.code = '/balances-details/' + this.encryptionService.encode(this.code);
+    const encryptedId = this.encryptionService.encryptData(id);
+    const route:string = '/balances-details/' + this.encryptionService.encode(encryptedId);
+    this.router.navigate([route]);
   }
 
   //Boton Descargar CSV

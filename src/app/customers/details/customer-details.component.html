@@ -1,90 +1,98 @@
 <br />
 <div class="container-fluid header-main">
   <div class="d-flex justify-content-between mb-2">
+    <!-- Enlace para volver a la página de clientes -->
     <a [routerLink]="['/customers']" type="button" style="text-decoration: none;">
       <i class="fa-solid fa-angle-left"></i> {{ 'dpos.customers.page.back' | translate }}
     </a>
   </div>
   <div class="card my-4">
     <div class="card-body">
+      <!-- Indicador de carga: se muestra el spinner mientras se cargan los datos -->
       <div *ngIf="!loadCompleted" class="d-flex justify-content-center">
         <div class="spinner-border text-danger"></div>
       </div>
+      <!-- Título de la página -->
       <div class="col mb-4">
         <h5><b>{{ titlePage }}</b></h5>
       </div>
+      <!-- Formulario visible solo cuando la carga ha finalizado -->
       <div *ngIf="loadCompleted" class="row">
         <div class="col">
-          <form #clientForm="ngForm" (ngSubmit)="saveCustomer(clientForm)">
+          <form [formGroup]="clientForm" (ngSubmit)="saveCustomer()">
             <div class="row g-3">
+              <!-- Columna derecha con campos de documento de identidad, nombre, email y teléfono -->
               <div class="col-md-6">
                 <div class="mb-3">
                   <label for="identityDocument" class="form-label">{{ 'dpos.customers.nif.column' | translate }}</label>
-                  <input type="text" class="form-control" id="identityDocument" [(ngModel)]="identityDocument" name="identityDocument" required #identityDocumentCtrl="ngModel"/>
-                  <div *ngIf="identityDocumentCtrl.invalid && identityDocumentCtrl.touched" class="text-danger">
-                    {{ 'dpos.customers.details.form.mandatory' | translate }}      
+                  <input type="text" class="form-control" id="identityDocument" formControlName="identityDocument"
+                    name="identityDocument" />
+                  <div *ngIf="clientForm.get('identityDocument')?.invalid && clientForm.get('identityDocument')?.touched" class="text-danger">
+                    {{ 'dpos.customers.details.form.mandatory' | translate }}
                   </div>
                 </div>
                 <div class="mb-3">
                   <label for="name" class="form-label">{{ 'dpos.customers.name.column' | translate }}</label>
-                  <input type="text" class="form-control" id="name" [(ngModel)]="name" name="name" required #nameCtrl="ngModel"/>
-                  <div *ngIf="nameCtrl.invalid && nameCtrl.touched" class="text-danger">
-                    {{ 'dpos.customers.details.form.mandatory' | translate }}  
+                  <input type="text" class="form-control" id="name" formControlName="name" name="name" />
+                  <div *ngIf="clientForm.get('name')?.invalid && clientForm.get('name')?.touched" class="text-danger">
+                    {{ 'dpos.customers.details.form.mandatory' | translate }}
                   </div>
                 </div>
                 <div class="mb-3">
                   <label for="email" class="form-label">{{ 'dpos.customers.email.column' | translate }}</label>
-                  <input type="email" class="form-control" id="email" [(ngModel)]="email" name="email" required #emailCtrl="ngModel"/>
-                  <div *ngIf="emailCtrl.invalid && emailCtrl.touched" class="text-danger">
-                    {{ 'dpos.customers.details.form.mandatory' | translate }}  
+                  <input type="email" class="form-control" id="email" formControlName="email" name="email" />
+                  <div *ngIf="clientForm.get('email')?.invalid && clientForm.get('email')?.touched" class="text-danger">
+                    {{ 'dpos.customers.details.form.mandatory' | translate }}
                   </div>
                 </div>
                 <div class="mb-3">
                   <label for="phone" class="form-label">{{ 'dpos.customers.phone.column' | translate }}</label>
-                  <input type="text" class="form-control" id="phone" [(ngModel)]="phone" name="phone" required #phoneCtrl="ngModel"/>
-                  <div *ngIf="phoneCtrl.invalid && phoneCtrl.touched" class="text-danger">
-                    {{ 'dpos.customers.details.form.mandatory' | translate }}  
+                  <input type="text" class="form-control" id="phone" formControlName="phone" name="phone" />
+                  <div *ngIf="clientForm.get('phone')?.invalid && clientForm.get('phone')?.touched" class="text-danger">
+                    {{ 'dpos.customers.details.form.mandatory' | translate }}
                   </div>
                 </div>
               </div>
+              <!-- Columna derecha con campos de dirección, ciudad, código postal, país y estado -->
               <div class="col-md-6">
                 <div class="mb-3">
                   <label for="address" class="form-label">{{ 'dpos.customers.address.column' | translate }}</label>
-                  <input type="text" class="form-control" id="address" [(ngModel)]="address" name="address" required #addressCtrl="ngModel"/>
-                  <div *ngIf="addressCtrl.invalid && addressCtrl.touched" class="text-danger">
-                    {{ 'dpos.customers.details.form.mandatory' | translate }}  
+                  <input type="text" class="form-control" id="address" formControlName="address" name="address" />
+                  <div *ngIf="clientForm.get('address')?.invalid && clientForm.get('address')?.touched" class="text-danger">
+                    {{ 'dpos.customers.details.form.mandatory' | translate }}
                   </div>
                 </div>
                 <div class="mb-3">
                   <label for="city" class="form-label">{{ 'dpos.customers.city.column' | translate }}</label>
-                  <input type="text" class="form-control" id="city" [(ngModel)]="city" name="city" required #cityCtrl="ngModel"/>
-                  <div *ngIf="cityCtrl.invalid && cityCtrl.touched" class="text-danger">
-                    {{ 'dpos.customers.details.form.mandatory' | translate }}  
+                  <input type="text" class="form-control" id="city" formControlName="city" name="city" />
+                  <div *ngIf="clientForm.get('city')?.invalid && clientForm.get('city')?.touched" class="text-danger">
+                    {{ 'dpos.customers.details.form.mandatory' | translate }}
                   </div>
                 </div>
                 <div class="mb-3">
                   <label for="postcode" class="form-label">{{ 'dpos.customers.postcode.column' | translate }}</label>
-                  <input type="text" class="form-control" id="postcode" [(ngModel)]="postcode" name="postcode" required #postcodeCtrl="ngModel"/>
-                  <div *ngIf="postcodeCtrl.invalid && postcodeCtrl.touched" class="text-danger">
-                    {{ 'dpos.customers.details.form.mandatory' | translate }}  
+                  <input type="text" class="form-control" id="postcode" formControlName="postcode" name="postcode" />
+                  <div *ngIf="clientForm.get('postcode')?.invalid && clientForm.get('postcode')?.touched" class="text-danger">
+                    {{ 'dpos.customers.details.form.mandatory' | translate }}
                   </div>
                 </div>
                 <div class="mb-3">
                   <label for="country" class="form-label">{{ 'dpos.customers.country.column' | translate }}</label>
-                  <input type="text" class="form-control" id="country" [(ngModel)]="country" name="country" required #countryCtrl="ngModel"/>
-                  <div *ngIf="countryCtrl.invalid && countryCtrl.touched" class="text-danger">
-                    {{ 'dpos.customers.details.form.mandatory' | translate }}  
+                  <input type="text" class="form-control" id="country" formControlName="country" name="country" />
+                  <div *ngIf="clientForm.get('country')?.invalid && clientForm.get('country')?.touched" class="text-danger">
+                    {{ 'dpos.customers.details.form.mandatory' | translate }}
                   </div>
                 </div>
                 <div class="mb-3">
                   <label for="state" class="form-label">{{ 'dpos.customers.state.column' | translate }}</label>
-                  <input type="text" class="form-control" id="state" [(ngModel)]="state" name="state" required #stateCtrl="ngModel"/>
-                  <div *ngIf="stateCtrl.invalid && stateCtrl.touched" class="text-danger">
-                    {{ 'dpos.customers.details.form.mandatory' | translate }}  
+                  <input type="text" class="form-control" id="state" formControlName="state" name="state" />
+                  <div *ngIf="clientForm.get('state')?.invalid && clientForm.get('state')?.touched" class="text-danger">
+                    {{ 'dpos.customers.details.form.mandatory' | translate }}
                   </div>
                 </div>
               </div>
             </div>
+            <!-- Botones de Cancelar y Guardar -->
             <div class="d-flex justify-content-end mt-4">
               <a [routerLink]="['/customers']" type="button" style="text-decoration: none;">
                 <button type="button" class="btn btn-outline-danger me-2">{{ 'dpos.action.cancel' | translate }}</button>

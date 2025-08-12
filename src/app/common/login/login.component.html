@@ -4,6 +4,7 @@
     <span *ngIf="!isLoggedIn">{{ 'dpos.login.accountdetails.label' | translate }}</span>
     <div class="mt-3">
       <form *ngIf="!isLoggedIn" [formGroup]="loginForm" (ngSubmit)="loginForm.valid && onSubmit()" novalidate>
+        <!-- Campo usuario -->
         <div class="my-3">
           <label for="username" class="form-label">{{ 'dpos.login.username.label' | translate }}</label>
           <input type="username" class="form-control" formControlName="username" />
@@ -11,9 +12,10 @@
             {{ 'dpos.login.username.required.label' | translate }}
           </div>
         </div>
+        <!-- Campo contraseña -->
         <div class="my-3">
           <label for="password" class="form-label">{{ 'dpos.login.password.label' | translate }}</label>
-          <input type="password" matInput class="form-control" placeholder="" formControlName="pw" minlength="4" />
+          <input type="password" matInput class="form-control" formControlName="pw" minlength="4" />
           <div style="padding: 5px;">
             <a [routerLink]="code"><small>{{ 'dpos.login.password.forget.label' | translate }}</small></a>
           </div>
@@ -26,12 +28,14 @@
             </div>
           </div>
         </div>
+        <!-- Botón de envío, deshabilitado si formulario inválido -->
         <div class="my-3 text-center">
           <button [disabled]="!loginForm.valid" type="submit" class="btn button">
             <span *ngIf="loading">{{ 'dpos.login.loading.btn' | translate }}</span>
             <span *ngIf="!loading">{{ 'dpos.login.login.btn' | translate }}</span>
           </button>
         </div>
+        <!-- Mensaje error global en login fallido -->
         <div *ngIf="isLoginFailed" class="alert alert-danger" role="alert">
           {{ 'dpos.login.login.failed.label' | translate }} {{ errorMessage }}
         </div>

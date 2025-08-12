@@ -1,7 +1,5 @@
 <app-dpos-header (navToggled)="onNavToggled($event)" [class.nav-open]="navIsOpen"></app-dpos-header>
-
 <div class="py-6 px-3 body-content" [class.nav-open]="navIsOpen">
   <router-outlet></router-outlet>
 </div>
-
 <app-dpos-footer [class.nav-open]="navIsOpen"></app-dpos-footer>

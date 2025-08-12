@@ -1,5 +1,6 @@
 <br />
 <div class="container-fluid header-main">
+  <!-- Barra superior con botón de volver y botón para descargar PDF, visible solo si 'loadCompleted' es true -->
   <div class="d-flex justify-content-between mb-2" *ngIf="loadCompleted">
     <a [routerLink]="['/balances']" type="button" style="text-decoration: none;">
       <i class="fa-solid fa-angle-left"></i>{{'dpos.balances-details.back.btn' | translate}}
@@ -8,23 +9,26 @@
       <i class="fa-solid fa-file-pdf fa-xl"></i>
     </button>
   </div>
+  <!-- Contenedor principal centrado con card de los detalles del cierre de caja -->
   <div class="col-12 col-sm-8 offset-sm-2 col-lg-4 offset-lg-4">
     <div class="card card-customer">
+      <!-- Cabecera del card con info del comercio y fecha -->
       <div class="card-header d-flex">
         <div class="d-flex flex-column justify-content-between">
-          <h4 class="card-title"> {{ balances.balanceCommerce?.name }}</h4>
+          <h4 class="card-title">{{ balances.balanceCommerce?.name }}</h4>
         </div>
         <div class="flex-fill text-end">
           <span id="lblcomercial_cif" class="small">{{ balances.balanceCommerce?.nif }}</span><br />
           <span id="lblcomercial_address" class="small">{{ balances.balanceCommerce?.address }}</span><br />
           <span id="lblcomercial_email" class="small">{{ balances.balanceCommerce?.email }}</span><br />
-          <span id="lbldate" type="date" class="small text-customer">{{ balances.finishedAt | date : "dd/MM/yyyy HH:mm:ss" }}</span>
+          <span id="lbldate" class="small text-customer">{{ balances.finishedAt | date : "dd/MM/yyyy HH:mm:ss" }}</span>
         </div>
       </div>
+      <!-- Body: Información principal -->
       <div class="card-body">
         <div class="d-flex">
           <div class="flex-fill">
-            <span><b>{{ 'dpos.balances-details.balance.label' | translate }}{{ " " + balances.reference }}</b></span>
+            <span><b>{{ 'dpos.balances-details.balance.label' | translate }} {{ balances.reference }}</b></span>
           </div>
         </div>
         <div class="row px-2 pt-2 pb-1">
@@ -90,98 +94,38 @@
           </div>
         </div>
       </div>
+      <!-- Body: Cuadre de caja -->
       <div class="card-body">
         <div class="d-flex">
           <div class="row flex-fill">
             <div class="col text-start">
-              <span><span><b>{{ 'dpos.balances-details.cashbalance.label' | translate }}</b></span></span>
+              <span><b>{{ 'dpos.balances-details.cashbalance.label' | translate }}</b></span>
             </div>
             <div class="col text-end">
               <span><b>{{ 'dpos.balances-details.cashbalance.import.label' | translate }}</b></span>
             </div>
           </div>
         </div>
-        <div class="row px-2 pt-2 pb-1">
+        <div class="row px-2 pt-2 pb-1" *ngFor="let item of [
+          {label: 'dpos.balances-details.cashbalance.initial.label', value: balances.opening},
+          {label: 'dpos.balances-details.cashbalance.sells.label', value: balances.sales},
+          {label: 'dpos.balances-details.cashbalance.in.label', value: balances.in},
+          {label: 'dpos.balances-details.cashbalance.out.label', value: balances.out},
+          {label: 'dpos.balances-details.cashbalance.refund.label', value: balances.refunds},
+          {label: 'dpos.balances-details.cashbalance.cashcalculated.label', value: balances.autoCashRecount},
+          {label: 'dpos.balances-details.cashbalance.effectivecount.label', value: balances.manualCashRecount},
+          {label: 'dpos.balances-details.cashbalance.mismatch.label', value: (balances.autoCashRecount - balances.manualCashRecount)},
+          {label: 'dpos.balances-details.cashbalance.cashwithdrawal.label', value: (balances.manualCashRecount - balances.nextOpening)},
+          {label: 'dpos.balances-details.cashbalance.deposit.label', value: balances.nextOpening}]">
           <div class="col text-start">
-            <span>{{ 'dpos.balances-details.cashbalance.initial.label' | translate }}</span>
+            <span>{{ item.label | translate }}</span>
           </div>
           <div class="col text-end">
-            <span>{{ balances.opening / Math.pow(10, balances.decimals) | currency : "Eur" : "€" }}</span>
-          </div>
-        </div>
-        <div class="row px-2 pb-1">
-          <div class="col text-start">
-            <span>{{'dpos.balances-details.cashbalance.sells.label' | translate}}</span>
-          </div>
-          <div class="col text-end">
-            <span>{{ balances.sales / Math.pow(10, balances.decimals) | currency : "Eur" : "€" }}</span>
-          </div>
-        </div>
-        <div class="row px-2 pb-1">
-          <div class="col text-start">
-            <span>{{ 'dpos.balances-details.cashbalance.in.label' | translate }}</span>
-          </div>
-          <div class="col text-end">
-            <span>{{ balances.in / Math.pow(10, balances.decimals) | currency : "Eur" : "€" }}</span>
-          </div>
-        </div>
-        <div class="row px-2 pb-1">
-          <div class="col text-start">
-            <span>{{ 'dpos.balances-details.cashbalance.out.label' | translate }}</span>
-          </div>
-          <div class="col text-end">
-            <span>{{ balances.out / Math.pow(10, balances.decimals) | currency : "Eur" : "€" }}</span>
-          </div>
-        </div>
-        <div class="row px-2 pb-1">
-          <div class="col text-start">
-            <span>{{ 'dpos.balances-details.cashbalance.refund.label' | translate }}</span>
-          </div>
-          <div class="col text-end">
-            <span>{{ balances.refunds / Math.pow(10, balances.decimals) | currency : "Eur" : "€" }}</span>
-          </div>
-        </div>
-        <div class="row px-2 pb-1">
-          <div class="col text-start">
-            <span>{{ 'dpos.balances-details.cashbalance.cashcalculated.label' | translate }}</span>
-          </div>
-          <div class="col text-end">
-            <span>{{ balances.autoCashRecount / Math.pow(10, balances.decimals) | currency : "Eur" : "€" }}</span>
-          </div>
-        </div>
-        <div class="row px-2 pb-1">
-          <div class="col text-start">
-            <span>{{ 'dpos.balances-details.cashbalance.effectivecount.label' | translate }}</span>
-          </div>
-          <div class="col text-end">
-            <span>{{ balances.manualCashRecount / Math.pow(10, balances.decimals) | currency : "Eur" : "€" }}</span>
-          </div>
-        </div>
-        <div class="row px-2 pb-1">
-          <div class="col text-start">
-            <span>{{ 'dpos.balances-details.cashbalance.mismatch.label' | translate }}</span>
-          </div>
-          <div class="col text-end">
-            <span>{{ (balances.autoCashRecount - balances.manualCashRecount) / Math.pow(10, balances.decimals) | currency : "Eur" : "€" }}</span>
-          </div>
-        </div>
-        <div class="row px-2 pb-1">
-          <div class="col text-start">
-            <span>{{ 'dpos.balances-details.cashbalance.cashwithdrawal.label' | translate }}</span>
-          </div>
-          <div class="col text-end">
-            <span>{{ (balances.manualCashRecount - balances.nextOpening) / Math.pow(10, balances.decimals) | currency : "Eur" : "€" }}</span>
-          </div>
-        </div>
-        <div class="row px-2 pb-1">
-          <div class="col text-start">
-            <span>{{ 'dpos.balances-details.cashbalance.deposit.label' | translate }}</span>
-          </div>
-          <div class="col text-end">
-            <span>{{ balances.nextOpening / Math.pow(10, balances.decimals) | currency : "Eur" : "€" }}</span>
+            <span>{{ item.value / Math.pow(10, balances.decimals) | currency : "Eur" : "€" }}</span>
           </div>
         </div>
       </div>
+      <!-- Body: Resumen por tipo de impuestos -->
       <div class="card-body">
         <div class="d-flex">
           <div class="row flex-fill">
@@ -190,7 +134,7 @@
             </div>
           </div>
         </div>
-        <div class="row ">
+        <div class="row">
           <div class="table-responsive">
             <table class="table table-borderless" data-pagination="true" data-page-size="10">
               <thead>
@@ -203,7 +147,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let taxes of balances.balanceLines; index as i">
+                <tr *ngFor="let taxes of balances.balanceLines">
                   <ng-container *ngIf="taxes.itemName.substring(0, 3) === 'IVA'">
                     <td>{{ taxes.itemName }}</td>
                     <td></td>
@@ -224,6 +168,7 @@
           </div>
         </div>
       </div>
+      <!-- Body: Resumen de métodos de pago -->
       <div class="card-body">
         <div class="d-flex">
           <div class="row flex-fill">
@@ -232,7 +177,7 @@
             </div>
           </div>
         </div>
-        <div class="row ">
+        <div class="row">
           <div class="table-responsive">
             <table class="table table-borderless" data-pagination="true" data-page-size="10">
               <thead>
@@ -245,22 +190,18 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let paymentmethod of balances.balanceLines; index as i">
-                  <ng-container
-                    *ngIf="paymentmethod.itemName.substring(0,3) === 'Efe' || paymentmethod.itemName.substring(0,3) === 'Tar' || paymentmethod.itemName.substring(0,3) === 'Val' || paymentmethod.itemName.substring(0,3) === 'Vir' || paymentmethod.itemName.substring(0,3) === 'Otr' || paymentmethod.itemName.substring(0,3) === 'Bon' || paymentmethod.itemName.substring(0,3) === 'Rec'">
-                    <td>{{paymentmethod.itemName}}</td>
+                <tr *ngFor="let paymentmethod of balances.balanceLines">
+                  <ng-container *ngIf="paymentmethod.itemName.substring(0,3) === 'EFT' || paymentmethod.itemName === 'RETC' || paymentmethod.itemName === 'RETS' || paymentmethod.itemName === 'RETH' || paymentmethod.itemName === 'RETTR'">
+                    <td>{{ paymentmethod.itemName }}</td>
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td class="text-end">{{ paymentmethod.total / Math.pow(10, paymentmethod.decimals) | currency : "Eur": "€" }}</td>
+                    <td class="text-end">{{ paymentmethod.total / Math.pow(10, paymentmethod.decimals) | currency : "Eur" : "€" }}</td>
                   </ng-container>
                 </tr>
                 <tr>
-                  <td>{{ 'dpos.balances-details.paymentmethod.total.label' | translate }}</td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td class="text-end">{{ pmTotal | currency : "Eur" : "€" }}</td>
+                  <td colspan="4" class="text-end"><b>{{ 'dpos.balances-details.paymentmethod.total.label' | translate }}</b></td>
+                  <td class="text-end"><b>{{ balances.total / Math.pow(10, balances.decimals) | currency : "Eur" : "€" }}</b></td>
                 </tr>
               </tbody>
             </table>

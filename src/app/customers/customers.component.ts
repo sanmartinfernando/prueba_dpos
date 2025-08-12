@@ -13,6 +13,7 @@ import { ThemeService } from '../_services/theme.service';
 import { UIStateService } from '../_services/ui-state.service';
 import { CustomersService } from '../_services/customers.service';
 import { Customer } from '../_models/customer.model';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -32,6 +33,7 @@ export class CustomersComponent implements OnInit, OnDestroy {
   private themeService = inject(ThemeService);
   private uiStateService = inject(UIStateService);
   private authService = inject(AuthService);
+  private router = inject(Router);
 
   size = 10000;
   customers: Customer[] = [];
@@ -241,17 +243,19 @@ export class CustomersComponent implements OnInit, OnDestroy {
 
   //Encriptación
   sendCustomerDetails(id: string) {
+    let route: string;
     if (!id) {
-      this.code = '/customer-details'
+      route = '/customer-details';
     } else {
-      this.code = this.encryptionService.encryptData(id);
-      this.code = '/customer-details/' + this.encryptionService.encode(this.code);
+      const encryptedId = this.encryptionService.encryptData(id);
+      route = '/customer-details/' + this.encryptionService.encode(encryptedId);
     }
+    this.router.navigate([route]);
   }
 
   //Eliminar clientes
   deleteCustomers() {
-   // this.customers = this.customers.filter(customer => !customer.selected);
+    this.customers = this.customers.filter(customer => !customer.selected);
     if (this.customers.length === 0) {
       this.emptySearch = true;
     }

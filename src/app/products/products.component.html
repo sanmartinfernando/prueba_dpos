@@ -1,5 +1,6 @@
 <br />
 <div class="container-fluid header-main">
+  <!-- Formulario de búsqueda para filtrar productos -->
   <form class="row g-3 px-2">
     <div class="col-12 col-sm-6 col-md-4 col-lg-2">
       <label class="form-label" for="category">{{ 'dpos.products.category.form.label' | translate }}</label>
@@ -12,12 +13,13 @@
     </div>
     <div class="col-12 col-sm-6 col-md-4 col-lg-2">
       <label class="form-label" for="productReference">{{ 'dpos.products.reference.form.label' | translate }}</label>
-      <input type="text" class="form-control" id="productReference" name="productReference" [(ngModel)]="productReferenceVarSearch" (change)="onProductReferenceChange()">
+      <input type="text" class="form-control" id="productReference" name="productReference"[(ngModel)]="productReferenceVarSearch" (change)="onProductReferenceChange()">
     </div>
     <div class="col-12 col-sm-6 col-md-4 col-lg-2">
       <label class="form-label" for="productBarcode">{{ 'dpos.products.barcode.form.label' | translate }}</label>
       <input type="text" class="form-control" id="productBarcode" name="productBarcode" [(ngModel)]="productBarcodeVarSearch" (change)="onProductBarcodeChange()">
     </div>
+    <!-- Botones para limpiar formulario y buscar productos -->
     <div class="col-12 col-md-4 col-lg-4 d-flex flex-wrap gap-2 align-items-end">
       <button type="reset" class="btn btn-outline-danger" (click)="cleanFormFields()">
         <i class="fas fa-eraser"></i>
@@ -27,9 +29,12 @@
       </button>
     </div>
   </form>
+  <!-- Contenido principal de productos y opciones -->
   <div class="card mt-3">
     <div class="card-body">
+      <!-- Modal para mostrar mensajes o alertas -->
       <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage" (closeModal)="closeModal()"></app-modal>
+      <!-- Encabezado y botones para crear, importar y descargar productos -->
       <div class="row mb-4 align-items-center">
         <div class="col-12 col-md-6">
           <h5 *ngIf="categorySelected"><b>{{ 'dpos.products.page.title' | translate }}</b></h5>
@@ -43,11 +48,13 @@
           </button>
         </div>
       </div>
+      <!-- Mensaje cuando no hay productos para mostrar -->
       <div *ngIf="!products || products.length === 0" class="table table-hover">
         <div class="inner-table-header d-flex justify-content-between align-items-center">
           <span class="inner-table-title">{{ 'dpos.products.nodata.label' | translate }}</span>
         </div>
       </div>
+      <!-- Tabla con listado de productos -->
       <div *ngIf="products && products.length > 0">
         <div class="table-responsive">
           <table class="table table-hover">
@@ -63,23 +70,28 @@
               </tr>
             </thead>
             <tbody>
-              <tr
-                *ngFor="let product of products | paginate: { id: 'productsList', itemsPerPage: 5, currentPage: currentProductsPage }" [routerLink]="code">
-                <td class="text-center align-middle">{{ product.reference }}</td>
+              <!-- Iteración paginada de productos -->
+              <tr *ngFor="let product of products | paginate: { id: 'productsList', itemsPerPage: 5, currentPage: currentProductsPage }" [routerLink]="code">
+                <td class="text-center align-middle"><span class="table-title">{{ product.reference }}</span></td>
                 <td class="text-center align-middle">{{ product.barcode }}</td>
                 <td class="text-center align-middle">{{ product.name }}</td>
                 <td class="text-center align-middle">{{ product.price / (Math.pow(10, 2)) | currency : 'EUR' : '€' }}</td>
                 <td class="text-center align-middle">{{ product.stock }}</td>
                 <td class="text-center align-middle">
-                  <button type="button" class="btn-edit" (click)="sendProductDetails(product.id)"><i class="fa-solid fa-pen" style="color: #74c0fc"></i></button>
+                  <button type="button" class="btn-edit" (click)="sendProductDetails(product.id)">
+                    <i class="fa-solid fa-pen" style="color: #74c0fc"></i>
+                  </button>
                 </td>
                 <td class="text-center align-middle">
-                  <button type="button" class="btn-delete" (click)="deleteProduct(product.id)"><i class="fa-solid fa-trash" style="color: #FD716E"></i></button>
+                  <button type="button" class="btn-delete" (click)="deleteProduct(product.id)">
+                    <i class="fa-solid fa-trash" style="color: #FD716E"></i>
+                  </button>
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
+        <!-- Controles de paginación -->
         <pagination-controls (pageChange)="currentProductsPage = $event" id="productsList" previousLabel="" nextLabel="" class="mt-3 d-flex justify-content-center"></pagination-controls>
       </div>
     </div>

@@ -6,6 +6,7 @@
   </div>
   <div class="modal-body">
     <div class="container">
+      <!-- Formulario para introducir el grupo de modificadores y el listado de modificadores -->
       <form (ngSubmit)="onSubmit()">
         <div class="row g-3">
           <div class="col-12">
@@ -48,6 +49,7 @@
       </form>
     </div>
   </div>
+  <!-- Footer del modal con botones para cancelar y guardar -->
   <div class="modal-footer">
     <button class="btn btn-outline-danger" (click)="close()">{{'dpos.action.cancel' | translate}}</button>
     <button type="submit" class="btn btn-primary">{{'dpos.action.save' | translate}}</button>

@@ -18,6 +18,7 @@ import { VerifactuStatus } from '../_models/order-verifactu.model';
 import { OrderTax } from '../_models/order-tax.model';
 import { ThemeService } from '../_services/theme.service';
 import { UIStateService } from '../_services/ui-state.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dpos-sales',
@@ -38,6 +39,7 @@ export class SalesComponent implements OnInit, OnDestroy {
   private translate = inject(TranslateService);
   private themeService = inject(ThemeService);
   private uiStateService = inject(UIStateService);
+  private router = inject(Router);
 
   size = 10000;
   sales: OrderInfo;
@@ -47,7 +49,6 @@ export class SalesComponent implements OnInit, OnDestroy {
   totalSales = 0;
   totalSalesString: string;
   page = 0;
-  code: string;
   loadCompleted = false;
   isLoggedIn = true;
   Math = Math;
@@ -459,8 +460,9 @@ export class SalesComponent implements OnInit, OnDestroy {
 
   //Encriptación
   sendSalesDetails(id: string) {
-    this.code = this.encryptionService.encryptData(id);
-    this.code = '/details/' + this.encryptionService.encode(this.code);
+    const encryptedId = this.encryptionService.encryptData(id);
+    const route:string = '/details/' + this.encryptionService.encode(encryptedId);
+    this.router.navigate([route]);
   }
 
   //Boton Descargar

@@ -10,7 +10,7 @@ import { Customer } from 'src/app/_models/customer.model';
 import { PortalUsersService } from 'src/app/_services/portal-users.service';
 import { AuthService } from 'src/app/_services/auth.service';
 import { CustomersService } from 'src/app/_services/customers.service';
-import { NgForm } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 
 @Component({
@@ -29,6 +29,7 @@ export class CustomerDetailsComponent implements OnInit {
   private translate = inject(TranslateService);
   private themeService = inject(ThemeService);
   private authService = inject(AuthService);
+  private fb = inject(FormBuilder);
 
   loadCompleted = false;
   idCustomer: string = null;
@@ -38,23 +39,26 @@ export class CustomerDetailsComponent implements OnInit {
   customer: Customer;
   code: string;
 
-  identityDocument: string;
-  name: string;
-  lastname: string;
-  email: string;
-  phone: string;
-  address: string;
-  city: string;
-  postcode: string;
-  country: string;
-  state: string;
-
+  clientForm: FormGroup;
+  
   constructor() {
 
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
 
     //Bloqueamos el selector de comercio;
     this.uiStateService.setFormSelectEnabled(false);
+
+    this.clientForm = this.fb.group({
+      name: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
+      identityDocument: ['', [Validators.required, Validators.pattern(/^(?:[0-9]{8}[A-Z]|[XYZ][0-9]{7}[A-Z]|[KLM][0-9]{7}[A-Z]|[ABCDEFGHJNPQRSUVW][0-9]{7}[A-Z0-9])$/)]],
+      address: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ0-9 ,.\-/]+$/)]],
+      city: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
+      state: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
+      country: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
+      postcode: ['', [Validators.required, Validators.pattern(/^(?:0[1-9]|[1-4][0-9]|5[0-2])\d{3}$/)]],
+      email: ['', [Validators.required, Validators.email]],
+      phone: ['', [Validators.required, Validators.pattern(/^(?:\+34|0034|34)?(?:\d{9}|\d{3}\d{3}\d{3})$/)]],
+    });
   }
 
   ngOnInit(): void {
@@ -84,15 +88,17 @@ export class CustomerDetailsComponent implements OnInit {
     this.customersService.getCustomer(idClient, this.commerceId).subscribe({
       next: (client) => {
         this.customer = client;
-        this.identityDocument = this.customer.identityDocument;
-        this.name = this.customer.name;
-        this.email = this.customer.email;
-        this.phone = this.customer.phone;
-        this.address = this.customer.address;
-        this.city = this.customer.city;
-        this.postcode = this.customer.postcode;
-        this.country = this.customer.country;
-        this.state = this.customer.state;
+        this.clientForm.setValue({
+          identityDocument: this.customer.identityDocument,
+          name: this.customer.name,
+          email: this.customer.email,
+          phone: this.customer.phone,
+          address: this.customer.address,
+          city: this.customer.city,
+          postcode: this.customer.postcode,
+          country: this.customer.country,
+          state: this.customer.state
+        });
         this.loadCompleted = true;
       },
       error: () => {
@@ -101,16 +107,12 @@ export class CustomerDetailsComponent implements OnInit {
     });
   }
 
-  public saveCustomer(form: NgForm): void {
-
-    if (form.invalid) {
-      Object.keys(form.controls).forEach(field => {
-        const control = form.controls[field];
-        control.markAsTouched({ onlySelf: true });
-      });
-      return;
+  public saveCustomer(): void {
+    if (this.clientForm.invalid) {
+      // Marcar todos los controles como tocados para mostrar errores
+      this.clientForm.markAllAsTouched();
+      return; // evitar submit si está inválido
     }
-    
     if (this.customer) {
       this.updateCustomer();
     } else {
@@ -148,14 +150,14 @@ export class CustomerDetailsComponent implements OnInit {
   }
 
   private setCustomerFields() {
-    this.customer.identityDocument = this.identityDocument;
-    this.customer.name = this.name;
-    this.customer.email = this.email;
-    this.customer.phone = this.phone;
-    this.customer.address = this.address;
-    this.customer.city = this.city;
-    this.customer.postcode = this.postcode;
-    this.customer.country = this.country;
-    this.customer.state = this.state;
+    this.customer.identityDocument = this.clientForm.get('identityDocument').value;
+    this.customer.name = this.clientForm.get('name').value;
+    this.customer.email = this.clientForm.get('email').value;
+    this.customer.phone = this.clientForm.get('phone').value;
+    this.customer.address = this.clientForm.get('address').value;
+    this.customer.city = this.clientForm.get('city').value;
+    this.customer.postcode = this.clientForm.get('postcode').value;
+    this.customer.country = this.clientForm.get('country').value;
+    this.customer.state = this.clientForm.get('state').value;
   }
 }

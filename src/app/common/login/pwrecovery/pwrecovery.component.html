@@ -6,14 +6,14 @@
         <label class="mb-3" for="username">{{ 'dpos.pwrecovery.username.label' | translate }}</label>
         <input type="username" class="form-control" [(ngModel)]="userLocal" name="user" />
         <div class="mt-3">
-          <button type="submit" class="btn button" (click)="sendUSerPwRec()" [disabled]=disabled>{{ 'dpos.action.accept' | translate }}</button>
+          <button type="submit" class="btn button" (click)="sendUSerPwRec()" [disabled]="disabled">{{ 'dpos.action.accept' | translate }}</button>
         </div>
         <div class="mt-3">
-          <div class="card-body" *ngIf="text.length>0">
-            <countdown class="h1 d-flex justify-content-center text-danger" [config]="{ leftTime: 120, format: 'mm:ss' }" (event)="onTimerFinished($event)" />
+          <div class="card-body" *ngIf="text.length > 0">
+            <countdown class="h1 d-flex justify-content-center text-danger" [config]="{ leftTime: 120, format: 'mm:ss' }" (event)="onTimerFinished($event)"></countdown>
           </div>
-          <span class="text-success">{{ text }}</span><br>
-          <span class="text-success">{{ text2 }}</span><br>
+          <span class="text-success">{{ text }}</span><br />
+          <span class="text-success">{{ text2 }}</span><br />
           <span class="text-success">{{ text3 }}</span>
         </div>
       </div>
