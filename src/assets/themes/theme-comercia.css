@@ -444,6 +444,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   border-radius: 20px;
 }
 
+.pagination-next a:after,
+.pagination-next a:before {
+  background-color: var(--bs-color-black-200);
+  color: var(--bs-color-grey-300);
+  border-radius: 4px;
+}
+
 /*** CHARTS ***/
 
 ngx-charts-bar-vertical ngx-charts-chart .ngx-charts-outer .ngx-charts .bar-chart.chart .ng-star-inserted .ng-star-inserted .ng-star-inserted .textDataLabel{
