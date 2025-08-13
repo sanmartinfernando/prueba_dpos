@@ -350,13 +350,21 @@ select[multiple]::-webkit-scrollbar {
   border-color: #ced4da;
 }
 
+.form-control:focus {
+  background-color: var(--bs-color-black-200);
+  color: var(--bs-color-white-100);
+  opacity: 1;   
+  box-shadow: none;  
+  border-color: var(--bs-color-white-100);
+}
+
 .form-check-label {
   color: var(--bs-color-white-100);
 }
 
 .form-select option {
   color: var(--bs-color-white-100);
-  background-color: var(--bs-color-black-100);
+  background-color: var(--bs-color-black-200);
 }
 
 .form-select-commerce {
@@ -416,7 +424,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 /*** PAGINACION ***/
 
-.ngx-pagination, .ngx-pagination a  {
+.ngx-pagination  {
   padding: 0;
   font-size: 0.8rem;
   color: var(--bs-color-grey-300);
@@ -428,11 +436,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   color: var(--bs-color-grey-300);
 }
 
-.ngx-pagination .current{
+.ngx-pagination .current, .ngx-pagination li a:hover{
   padding: 0px 9px !important;
   background: transparent !important;
-  color: var(--bs-color-white-100);
-  border: 1px solid var(--bs-color-black-200);
+  color: var(--bs-color-white-200);
+  border: 1px solid var(--bs-color-white-200);
   border-radius: 20px;
 }
 

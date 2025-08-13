@@ -267,12 +267,25 @@ footer{
   min-width: 150px;
 }
 
+.form-control:focus {
+  background-color: var(--bs-color-white-100);
+  color: var(--bs-color-black-100);
+  opacity: 1;
+  box-shadow: none;  
+  border-color: var(--bs-color-black-100);
+}
+
 .form-control:disabled {
   background-color: #e9ecef;
   color: #6c757d;
   opacity: 1;
   cursor: not-allowed;
   border-color: #ced4da;
+}
+
+.form-select option {
+  color: var(--bs-color-black-100);
+  background-color: var(--bs-color-white-100);
 }
 
 .form-check-label {
@@ -334,7 +347,7 @@ select, input[type="date" i], i{
   font-size: 0.8rem;
 }
 
-.ngx-pagination .current{
+.ngx-pagination .current, .ngx-pagination li a:hover{
   padding: 0px 9px !important;
   background: transparent !important;
   color: var(--bs-color-grey-300) !important;
