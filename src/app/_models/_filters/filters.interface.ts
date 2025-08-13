@@ -1,3 +1,6 @@
+/**
+ * Define un filtro para agregar campos específicos.
+ */
 interface AddFields {
   $addFields: {
     created_at_formatted: {
@@ -6,12 +9,16 @@ interface AddFields {
   };
 }
 
-
+/**
+ * Define un filtro para descomponer un array en resultados individuales.
+ */
 interface Unwind {
   $unwind: string;
 }
 
-
+/**
+ * Define un filtro para filtrar los resultados según condiciones específicas.
+ */
 interface Match {
   $match: {
     terminal_number: { $in: string[] };
@@ -21,10 +28,12 @@ interface Match {
   };
 }
 
-
+/**
+ * Define un filtro para agrupar los resultados y calcular totales, promedios, conteos u otros valores agregados.
+ */
 interface Group {
   $group: {
-    _id: string | { $month: string } | { month: { $month: string }; type: string }; 
+    _id: string | { $month: string } | { month: { $month: string }; type: string };
     count?: { $sum: number };
     avg?: { $avg: string };
     total?: { $sum: string };
@@ -37,7 +46,9 @@ interface Group {
   };
 }
 
-
+/**
+ * Define un filtro para ordenar los resultados según campos específicos.
+ */
 interface Sort {
   $sort: {
     _id?: number;
@@ -45,10 +56,14 @@ interface Sort {
   };
 }
 
-
+/**
+ * Define un paso de agregación para limitar el número de resultados devueltos.
+ */
 interface Limit {
   $limit: number;
 }
 
-
+/**
+ * Tipo que representa cualquier paso de agregación posible en un filtro.
+ */
 export type FilterStep = AddFields | Unwind | Match | Group | Sort | Limit;

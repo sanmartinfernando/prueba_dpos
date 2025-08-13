@@ -1,8 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Commerce } from '../_models/commerce.model';
 
+/**
+ * Servicio encargado de gestionar la carga y activación de temas CSS
+ * asociados a diferentes comercios.
+ */
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
+
   private themes = new Map<string, string>([
     [Commerce.RESELLER_DID, 'theme-did'],
     [Commerce.RESELLER_ABANCA, 'theme-abanca'],
@@ -22,23 +27,29 @@ export class ThemeService {
     this.preloadAllThemes();
   }
 
+  /**
+   * Precarga todos los temas en el DOM como enlaces <link> deshabilitados.
+   * Esto permite activarlos posteriormente sin recargar la página.
+   */
   private preloadAllThemes(): void {
     const head = document.head;
-
     this.themes.forEach((themeName, reseller) => {
       const link = document.createElement('link');
       link.rel = 'stylesheet';
       link.href = `assets/themes/${themeName}.css`;
       link.dataset['theme'] = reseller;
-      link.disabled = true; // Todos deshabilitados al inicio
+      link.disabled = true;
       head.appendChild(link);
     });
   }
 
+  /**
+   * Activa el tema correspondiente al comercio indicado y
+   * desactiva el resto de temas cargados.
+   * @param resellerName Nombre del comercio cuyo tema se desea activar.
+   */
   public loadTheme(resellerName: string): void {
-    const allLinks = document.querySelectorAll<HTMLLinkElement>('link[data-theme]');
-    allLinks.forEach(link => {
-      link.disabled = link.dataset['theme'] !== resellerName;
-    });
+    document.querySelectorAll<HTMLLinkElement>('link[data-theme]')
+      .forEach(link => link.disabled = link.dataset['theme'] !== resellerName);
   }
 }

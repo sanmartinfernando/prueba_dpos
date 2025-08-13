@@ -1,3 +1,6 @@
+/**
+ * BalanceCommerce representa la información detallada de un comercio asociado a un cierre de caja.
+ */
 export class BalanceCommerce {
   
   balanceCommerceId: string;

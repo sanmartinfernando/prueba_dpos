@@ -1,9 +1,9 @@
 1. para instalar las cosas, requiere tener instalado node
 npm install -g @angular/cli
 npm install
+
 2. para lanzar la web de desarrollo
 ng serve
-
 
 # comandos angular 
 ng serve <--- carga la web para desarrollo

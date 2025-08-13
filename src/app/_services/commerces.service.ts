@@ -1,35 +1,42 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.dev-inte';
 import { RestRoutes } from '../_rest/rest-routes.config';
-import { BehaviorSubject } from 'rxjs';
 import { Commerce } from '../_models/commerce.model';
 
-@Injectable({
-  providedIn: 'root'
-})
+/**
+ * Servicio para gestionar operaciones relacionadas con comercios.
+ */
+@Injectable({ providedIn: 'root' })
 export class CommercesService {
 
   private http = inject(HttpClient);
 
   private commerceId = new BehaviorSubject<number>(0);
   public commerceId$ = this.commerceId.asObservable();
+
   public httpOptions = {
-    headers: new HttpHeaders(
-      {
-        'accept': 'text/plain',
-        'api-version': '4'
-      }
-    )
+    headers: new HttpHeaders({
+      'accept': 'text/plain',
+      'api-version': '4'
+    })
   };
 
+  /**
+   * Obtiene la lista de comercios asociados al usuario.
+   * @returns Observable con un array de objetos Commerce.
+   */
   public getCommerceList(): Observable<Commerce[]> {
-    const urlPortalUserCommerces = `${environment.urlWE}${RestRoutes.PORTALUSERS_COMMERCES}`;
-    return this.http.get<Commerce[]>(urlPortalUserCommerces, this.httpOptions);
+    const url = `${environment.urlWE}${RestRoutes.PORTALUSERS_COMMERCES}`;
+    return this.http.get<Commerce[]>(url, this.httpOptions);
   }
 
-  public setCommerceId(commerceId: number) {
+  /**
+   * Actualiza el comercio seleccionado.
+   * @param commerceId Id del comercio a establecer.
+   */
+  public setCommerceId(commerceId: number): void {
     this.commerceId.next(commerceId);
   }
 }

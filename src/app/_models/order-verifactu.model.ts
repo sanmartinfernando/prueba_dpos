@@ -1,3 +1,6 @@
+/**
+ * Estados posibles de un proceso Verifactu.
+ */
 export enum VerifactuStatus {
   Pending = "PENDING",
   Processing = "PROCESSING",
@@ -8,7 +11,10 @@ export enum VerifactuStatus {
   Failed = "FAILED"
 }
 
-
+/**
+ * Representa la información de Verifactu asociada a una venta,
+ * incluyendo identificadores, URL, estados y advertencias.
+ */
 export class OrderVerifactu {
 
   orderVerifactuId: string;

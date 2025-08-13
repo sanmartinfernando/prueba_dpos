@@ -1,3 +1,7 @@
+/**
+ * Representa una línea de venta, incluyendo información del producto, cantidades,
+ * precios, impuestos, descuentos, modificadores y notas de cocina.
+ */
 export class OrderLine {
   
   orderLineId: string;

@@ -1,3 +1,7 @@
+/**
+ * Representa un elemento con un nombre y un valor numérico,
+ * utilizado para mostrar los tres productos más vendidos.
+ */
 export class DataSetTop3 {
   
   public name: string;

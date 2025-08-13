@@ -7,61 +7,66 @@ import { CustomerInfo } from '../_models/customer-info.model';
 import { Customer } from '../_models/customer.model';
 import { TranslateService } from '@ngx-translate/core';
 
-
-@Injectable({
-  providedIn: 'root'
-})
+/**
+ * Servicio para gestionar operaciones relacionadas con clientes.
+ */
+@Injectable({ providedIn: 'root' })
 export class CustomersService {
 
   private http = inject(HttpClient);
   private translate = inject(TranslateService);
 
   public httpOptions = {
-    headers: new HttpHeaders(
-      {
-        'Content-type': 'application/json'
-      }
-    )
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json'
+    })
   };
 
-  public createCustomer(customer: Customer, commerceId: string): Observable<Customer> {
-    if (customer === undefined || customer === null || commerceId === undefined || commerceId === null) {
-      return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
-    }
-    
-    let params = new HttpParams();
-    params = params.set('commerceId', commerceId);
-
-    const urlCustomers = `${environment.urlClients}${RestRoutes.CUSTOMERS}`;
-    return this.http.post<Customer>(urlCustomers, customer, {headers: this.httpOptions.headers, params});
-  }
-
-  public updateCustomer(customer: Customer, commerceId: string): Observable<Customer> {
-   if (customer === undefined || customer === null || customer.clientId === undefined || customer.clientId === null) {
+  /**
+   * Crea o actualiza un cliente según tenga definido el clientId.
+   * Si clientId no existe, se realiza un POST; de lo contrario, un PUT.
+   * @param customer Objeto Customer con los datos del cliente.
+   * @param commerceId Id del comercio asociado.
+   * @returns Observable con el cliente creado o actualizado.
+   */
+  public saveCustomer(customer: Customer, commerceId: string): Observable<Customer> {
+    if (!customer || !commerceId || (customer.clientId === null)) {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
     }
 
-    let params = new HttpParams();
-    params = params.set('commerceId', commerceId);
+    const params = new HttpParams().set('commerceId', commerceId);
+    const url = customer.clientId
+      ? `${environment.urlClients}${RestRoutes.CUSTOMERS}/${customer.clientId}`
+      : `${environment.urlClients}${RestRoutes.CUSTOMERS}`;
 
-    const urlCustomers = `${environment.urlClients}${RestRoutes.CUSTOMERS}/${customer.clientId}`;
-    return this.http.put<Customer>(urlCustomers, customer, {headers: this.httpOptions.headers, params});
+    return customer.clientId
+      ? this.http.put<Customer>(url, customer, { headers: this.httpOptions.headers, params })
+      : this.http.post<Customer>(url, customer, { headers: this.httpOptions.headers, params });
   }
 
+  /**
+   * Obtiene un cliente específico por su ID.
+   * @param customerId Id del cliente a obtener.
+   * @param commerceId Id del comercio asociado.
+   * @returns Observable con el cliente obtenido.
+   */
   public getCustomer(customerId: string, commerceId: string): Observable<Customer> {
-    if (customerId === undefined || customerId === null) {
+    if (!customerId) {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
     }
-
-    let params = new HttpParams();
-    params = params.set('commerceId', commerceId);
-
-    const urlCustomers = `${environment.urlClients}${RestRoutes.CUSTOMERS}/${customerId}`;
-    return this.http.get<Customer>(urlCustomers, {headers: this.httpOptions.headers, params});
+    const params = new HttpParams().set('commerceId', commerceId);
+    const url = `${environment.urlClients}${RestRoutes.CUSTOMERS}/${customerId}`;
+    return this.http.get<Customer>(url, { headers: this.httpOptions.headers, params });
   }
 
+  /**
+   * Obtiene un listado de clientes con información agregada según los parámetros de búsqueda.
+   * @param size Cantidad de resultados a obtener.
+   * @param searchParams Parámetros de búsqueda y paginación.
+   * @returns Observable con información de clientes.
+   */
   public getCustomers(size: number, searchParams: string): Observable<CustomerInfo> {
-    const urlCustomers = `${environment.urlClients}${RestRoutes.CUSTOMERS_INFO}${size}${RestRoutes.PARAM_OFFSET}${searchParams}`;
-    return this.http.get<CustomerInfo>(urlCustomers, this.httpOptions);
+    const url = `${environment.urlClients}${RestRoutes.CUSTOMERS_INFO}${size}${RestRoutes.PARAM_OFFSET}${searchParams}`;
+    return this.http.get<CustomerInfo>(url, this.httpOptions);
   }
 }

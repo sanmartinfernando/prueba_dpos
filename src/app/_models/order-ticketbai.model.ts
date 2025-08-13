@@ -1,3 +1,7 @@
+/**
+ * Representa un ticketBAI de una venta, incluyendo información del terminal,
+ * aplicación, vendedor, fechas, estados, epígrafes y advertencias.
+ */
 export class OrderTicketBai {
   
   ticketBaiId: string;

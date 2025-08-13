@@ -1,3 +1,6 @@
+/**
+ * Representa un cliente con información como su identificador y datos de contacto.
+ */
 export class Customer {
 
   static readonly NO_ID = "-1";

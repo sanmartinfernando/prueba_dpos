@@ -5,7 +5,10 @@ import { OrderTax } from "./order-tax.model";
 import { OrderTicketBai } from "./order-ticketbai.model";
 import { OrderVerifactu } from "./order-verifactu.model";
 
-
+/**
+ * Representa una venta, incluyendo detalles de sus líneas, pagos, impuestos,
+ * cliente, comercio, ticketBAI, Verifactu, descuentos y estado.
+ */
 export class Order {
 
   static readonly TYPE_SALE = 0;

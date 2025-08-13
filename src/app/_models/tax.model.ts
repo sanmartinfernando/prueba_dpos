@@ -1,3 +1,6 @@
+/**
+ * Representa un impuesto con sus propiedades, tipos y valores.
+ */
 export class Tax {
 
   static readonly EXEMPT_NAME = "Exento";

@@ -4,26 +4,30 @@ import { Observable } from 'rxjs';
 import { User } from '../_models/user.model';
 import { StorageService } from '../_services/storage.service';
 
+/**
+ * AuthGuard protege rutas que requieren autenticación.
+ * Implementa CanActivate para determinar si un usuario puede acceder a una ruta.
+ */
 @Injectable()
 export class AuthGuard implements CanActivate {
 
-    private router = inject(Router); 
+    private router = inject(Router);
     private storageService = inject(StorageService);
     private user: User;
 
     /**
-     * Constructor.
-     * Se suscribe a la información del usuario almacenada para mantener el estado de autenticación.
+     * Inicializa el AuthGuard y suscribe la información del usuario
+     * desde el StorageService para mantener el estado de autenticación.
      */
     constructor() {
         this.storageService.userInfo.subscribe(user => this.user = user);
     }
 
     /**
-     * Verifica si el usuario actual está autenticado para permitir el acceso a una ruta.
-     * Si no está autenticado, redirige a la página de inicio de sesión.
+     * Determina si el usuario actual puede activar una ruta protegida.
+     * Redirige al login si el usuario no está autenticado.
      * 
-     * @returns `true` si el usuario está autenticado, de lo contrario `false`.
+     * @returns `true` si el usuario está autenticado, `false` en caso contrario.
      */
     canActivate(): Promise<boolean> | Observable<boolean> | boolean {
         if (this.user) {

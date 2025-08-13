@@ -122,7 +122,7 @@ export class CustomerDetailsComponent implements OnInit {
 
   private updateCustomer() {
     this.setCustomerFields();
-    this.customersService.updateCustomer(this.customer, this.commerceId).subscribe({
+    this.customersService.saveCustomer(this.customer, this.commerceId).subscribe({
       next: (customer) => {
         console.log(customer);
         this.code = '/customers';
@@ -136,7 +136,7 @@ export class CustomerDetailsComponent implements OnInit {
   private createCustomer() {
     this.customer = new Customer();
     this.setCustomerFields();
-    this.customersService.createCustomer(this.customer, this.commerceId).subscribe({
+    this.customersService.saveCustomer(this.customer, this.commerceId).subscribe({
       next: (customer) => {
         console.log(customer);
         this.code = '/customers';

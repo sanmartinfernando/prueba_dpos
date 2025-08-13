@@ -1,6 +1,9 @@
 import { Terminal } from "./terminal.model";
 
-
+/**
+ * Representa un comercio con su identificador, datos de contacto,
+ * información fiscal y terminal asociado.
+ */
 export class Commerce {
 
     public static readonly RESELLER_DID: string = 'DID';

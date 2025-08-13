@@ -57,7 +57,7 @@
             </option>
           </select>
         </li>
-        <!-- Botón de cerrar sesiónF -->
+        <!-- Botón de cerrar sesión -->
         <li class="mx-3 nav-item pt-2 pb-2 w-100 w-md-auto">
           <button class="btn btn-light d-flex align-items-center gap-2 responsive-button" *ngIf="username" (click)="logOut()" style="cursor: pointer">
             <i class="fa-solid fa-circle-user fa-lg" style="color: #ffbb00;"></i>
@@ -67,7 +67,7 @@
         </li>
         <!-- Link a login, si no hay usuario -->
         <ng-template #loginLink>
-          <li class="mx-3 nav-item pt-2 pb-2">
+          <li class="mx-4 nav-item pt-2 pb-2 w-100 w-md-auto">
             <a class="btn" routerLink="/login">{{ 'dpos.login.btn' | translate }}</a>
           </li>
         </ng-template>

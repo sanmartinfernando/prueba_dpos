@@ -4,97 +4,130 @@ import { User } from '../_models/user.model';
 import { AuthService } from './auth.service';
 import { StringConstants } from '../_rest/string-constants';
 
-
-@Injectable({
-  providedIn: 'root'
-})
+/**
+ * Servicio para gestionar el almacenamiento de datos del usuario
+ * en localStorage y sessionStorage, manteniendo estados reactivos
+ * para la información de usuario y el estado de sesión.
+ */
+@Injectable({ providedIn: 'root' })
 export class StorageService {
 
   private authService = inject(AuthService);
 
-  public userInfo = new BehaviorSubject(this.getUser());
-  private loggedin: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
+  public userInfo = new BehaviorSubject<User | null>(this.getUser());
+  private loggedin = new BehaviorSubject<boolean>(null);
   public loggedin$: Observable<boolean> = this.loggedin.asObservable();
 
-  username = '';
-  component: string;
+  public username = '';
+  private component: string;
 
   constructor() {
-    this.authService.configObservable.subscribe(user => {
-      this.saveUser(user);
-    });
+    this.authService.configObservable.subscribe(user => this.saveUser(user));
   }
-  set(key: string, item: object) {
+
+  /**
+   * Almacena un objeto en localStorage.
+   * @param key Clave para el elemento.
+   * @param item Objeto a guardar.
+   */
+  public set(key: string, item: object): void {
     localStorage.setItem(key, JSON.stringify(item));
   }
-  get(key: string) {
+
+  /**
+   * Obtiene un valor desde localStorage.
+   * @param key Clave del elemento.
+   * @returns Valor almacenado o null si no existe.
+   */
+  public get(key: string): any {
     const cacheItem = localStorage.getItem(key);
-    if (cacheItem !== null) {
-      const record = JSON.parse(cacheItem);
-      return record;
-    }
-    return null;
+    return cacheItem ? JSON.parse(cacheItem) : null;
   }
-  remove(key: string) {
+
+  /**
+   * Elimina un elemento de localStorage.
+   * @param key Clave del elemento.
+   */
+  public remove(key: string): void {
     localStorage.removeItem(key);
   }
 
-  public setUsername(username: string) {
+  /**
+   * Guarda el nombre de usuario en memoria y localStorage.
+   * @param username Nombre de usuario.
+   */
+  public setUsername(username: string): void {
     this.username = username;
-    window.localStorage.setItem(StringConstants.USERNAME_KEY, username);
+    localStorage.setItem(StringConstants.USERNAME_KEY, username);
   }
 
-  public getUsername() {
-    return window.localStorage.getItem(StringConstants.USERNAME_KEY);
+  /**
+   * Obtiene el nombre de usuario desde localStorage.
+   * @returns Nombre de usuario o null si no existe.
+   */
+  public getUsername(): string | null {
+    return localStorage.getItem(StringConstants.USERNAME_KEY);
   }
 
+  /**
+   * Limpia todos los datos de localStorage y sessionStorage.
+   */
   public clean(): void {
-    window.localStorage.clear();
+    localStorage.clear();
     sessionStorage.clear();
     this.userInfo.next(null);
   }
 
-  public updateVerifiedEmail() {
-    const user = this.getUser();
-    if (user) {
-      user.email_verified = true;
-      this.saveUser(user);
-    }
+  /**
+   * Obtiene la información del usuario desde localStorage.
+   * @returns Usuario o null si no existe.
+   */
+  public getUser(): User | null {
+    const user = localStorage.getItem(StringConstants.USER_KEY);
+    return user ? JSON.parse(user) : null;
   }
 
-  public getUser(): any {
-    const user = window.localStorage.getItem(StringConstants.USER_KEY);
-    if (user) {
-      return JSON.parse(user);
-    }
-    return null;
-  }
-
+  /**
+   * Indica si existe un usuario en sesión.
+   * @returns true si hay usuario, false en caso contrario.
+   */
   public isLoggedIn(): boolean {
-    const user = window.localStorage.getItem(StringConstants.USER_KEY);
-    if (user) {
-      return true;
-    }
-    return false;
+    return !!localStorage.getItem(StringConstants.USER_KEY);
   }
 
-  public setComponent(component: string) {
+  /**
+   * Define el nombre del componente actual.
+   * @param component Nombre del componente.
+   */
+  public setComponent(component: string): void {
     this.component = component;
   }
 
-  public getComponent() {
+  /**
+   * Obtiene el nombre del componente actual.
+   * @returns Nombre del componente.
+   */
+  public getComponent(): string {
     return this.component;
   }
 
-  public updateloggin(logginupdated) {
-    this.loggedin.next(logginupdated)
+  /**
+   * Actualiza el estado de sesión.
+   * @param logginupdated Nuevo valor de estado.
+   */
+  public updateloggin(logginupdated: boolean): void {
+    this.loggedin.next(logginupdated);
   }
 
+  /**
+   * Guarda la información del usuario y actualiza el estado.
+   * @param user Usuario a guardar.
+   */
   private saveUser(user: User): void {
-    if (user !== null) {
+    if (user) {
       this.setUsername(user.email);
-      window.localStorage.removeItem(StringConstants.USER_KEY);
-      window.localStorage.setItem(StringConstants.USER_KEY, JSON.stringify(user));//
+      localStorage.removeItem(StringConstants.USER_KEY);
+      localStorage.setItem(StringConstants.USER_KEY, JSON.stringify(user));
     }
     this.userInfo.next(user);
   }

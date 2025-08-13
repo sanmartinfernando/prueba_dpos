@@ -1,7 +1,18 @@
 import { APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA, LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { CurrencyPipe, DatePipe, registerLocaleData } from '@angular/common';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { QRCodeModule } from 'angularx-qrcode';
+import { CountdownComponent } from 'ngx-countdown';
+import { MatDialogModule } from '@angular/material/dialog';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './common/header/header.component';
@@ -13,42 +24,36 @@ import { ReportsComponent } from './reports/reports.component';
 import { ErrorComponent } from './common/error/error.component';
 import { LoginComponent } from './common/login/login.component';
 import { BaseComponent } from './common/base/base.component';
-import { httpInterceptorProviders } from './_rest/http.interceptor';
-import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UnauthorizedComponent } from './common/unauthorized/unauthorized.component';
 import { BalancesComponent } from './balances/balances.component';
 import { DetailsComponent } from './sales/details/details.component';
-import {NgxPaginationModule} from 'ngx-pagination';
 import { BalancesDetailsComponent } from './balances/balances-details/balances-details.component';
-import { CurrencyPipe, DatePipe } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { NgxChartsModule }from '@swimlane/ngx-charts';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { AuthGuard } from './_guard/auth.guard';
-import { QRCodeModule } from 'angularx-qrcode';
 import { PwrecoveryComponent } from './common/login/pwrecovery/pwrecovery.component';
 import { PwresetComponent } from './common/login/pwreset/pwreset.component';
-import { CountdownComponent } from 'ngx-countdown';
-import { registerLocaleData } from '@angular/common';
-import localeEs from '@angular/common/locales/es';
 import { ModalComponent } from './modal/modal.component';
 import { CookiesPolicyComponent } from './common/footer/cookies-policy.component';
 import { PrivacyPolicyComponent } from './common/footer/privacy-policy.component';
 import { UseConditionsComponent } from './common/footer/use-conditions.component';
-import { SessionService } from './_services/session.service';
 import { CustomersComponent } from './customers/customers.component';
 import { CustomerDetailsComponent } from './customers/details/customer-details.component';
 import { ProductsComponent } from './products/products.component';
 import { ProductDetailsComponent } from './products/details/product-details.component';
 import { TaxesComponent } from './taxes/taxes.component';
 import { TaxesModalComponent } from './taxes/taxes-modal.component';
-import { MatDialogModule } from '@angular/material/dialog';
 import { CategoryModalComponent } from './categories/category-modal.component';
 import { ModifiersModalComponent } from './modifiers/modifiers-modal.component';
 
+import { httpInterceptorProviders } from './_rest/http.interceptor';
+import { AuthGuard } from './_guard/auth.guard';
+import { SessionService } from './_services/session.service';
+
+import localeEs from '@angular/common/locales/es';
 registerLocaleData(localeEs);
 
+/**
+ * Módulo raíz de la aplicación.
+ * Configura componentes, módulos, proveedores y la inicialización de traducciones y configuración regional.
+ */
 @NgModule({ declarations: [
         AppComponent,
         ModalComponent,
@@ -125,13 +130,22 @@ registerLocaleData(localeEs);
     })
 export class AppModule { }
 
-// AOT compilation support for ngx-translate loader
+/**
+ * Crea un cargador de traducciones HTTP.
+ * @param http Cliente HTTP para cargar archivos de traducción.
+ * @returns Instancia de TranslateHttpLoader configurada.
+ */
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
 
+/**
+ * Configura el idioma inicial de la aplicación según la sesión del usuario.
+ * @param session Servicio de sesión para obtener el idioma almacenado.
+ * @param translate Servicio de traducción para aplicar el idioma.
+ * @returns Función que inicializa el idioma.
+ */
 export function setupTranslateFactory(session: SessionService, translate: TranslateService) {
-
   let language: string = session.getItem(SessionService.LANGUAGE);
   language = language !== null ? language : 'es';
   return () => translate.use(language).toPromise();

@@ -171,6 +171,10 @@ label.me-2 {
   color: var(--bs-color-white-100);
 }
 
+.infoSales {
+  color: var(--bs-color-white-100);
+}
+
 /*** HEADER ***/
 
 .navbar {
@@ -386,6 +390,13 @@ select[multiple]::-webkit-scrollbar {
   height: 38px;
   color: var(--bs-color-white-100);
   min-width: 150px;
+}
+
+.form-select-commerce:focus {
+  border: none;
+  border-bottom: 2px solid #000;
+  border-radius: 0;
+  border-color: var(--bs-color-white-100);
 }
 
 .form-select-commerce option {

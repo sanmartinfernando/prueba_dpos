@@ -1,7 +1,10 @@
 import { BalanceCommerce } from "./balance-commerce.model";
 import { BalanceLine } from "./balance-line.model";
 
-
+/**
+ * Representa un cierre de caja que incluye información de ventas, devoluciones,
+ * movimientos de caja, líneas de detalle y datos del terminal.
+ */
 export class Balance {
 
   static readonly REPORT_TYPE_TAXES = 0;

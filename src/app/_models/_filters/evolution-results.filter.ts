@@ -1,6 +1,8 @@
 import { FilterStep } from "./filters.interface";
 
-
+/**
+ * EvolutionResultsFilter construye filtros para el gráfico de evolución de cierres de caja.
+ */
 export class EvolutionResultsFilter {
 
   public idEvoResults: FilterStep[];
@@ -9,6 +11,14 @@ export class EvolutionResultsFilter {
   private fromDate: number;
   private toDate: number;
 
+  /**
+   * Inicializa un nuevo filtro para el gráfico de evolución de cierres de caja.
+   * 
+   * @param commerceId - Identificador del comercio.
+   * @param terminalsId - Lista de identificadores de terminales (opcional).
+   * @param fromDate - Fecha de inicio del filtro en milisegundos (opcional, valor por defecto: 1704063600000).
+   * @param toDate - Fecha de fin del filtro en milisegundos (opcional, valor por defecto: 1735686000000).
+   */
   constructor(commerceId: number, terminalsId?: string[], fromDate?: number, toDate?: number) {
 
     this.terminalsId = terminalsId;
@@ -60,6 +70,11 @@ export class EvolutionResultsFilter {
     ];
   }
 
+  /**
+   * Convierte el filtro de evolución de cierres de caja a JSON.
+   * 
+   * @returns Una cadena JSON que representa el filtro de evolución de cierres de caja.
+   */
   toJSON(): string {
     return JSON.stringify(this.idEvoResults);
   }

@@ -1,6 +1,8 @@
 import { FilterStep } from "./filters.interface";
 
-
+/**
+ * Top3Filter construye filtros para obtener los tres productos más vendidos.
+ */
 export class Top3Filter {
 
   public idTop3: FilterStep[];
@@ -9,6 +11,14 @@ export class Top3Filter {
   private fromDate: number;
   private toDate: number;
 
+  /**
+   * Inicializa un nuevo filtro para la consulta de obtener los tres productos más vendidos.
+   * 
+   * @param commerceId - Identificador del comercio.
+   * @param terminalsId - Lista de identificadores de terminales (opcional).
+   * @param fromDate - Fecha de inicio del filtro en milisegundos (opcional, valor por defecto: 1704063600000).
+   * @param toDate - Fecha de fin del filtro en milisegundos (opcional, valor por defecto: 1735686000000).
+   */
   constructor(commerceId: number, terminalsId?: string[], fromDate?: number, toDate?: number) {
 
     this.terminalsId = terminalsId;
@@ -50,6 +60,11 @@ export class Top3Filter {
     ];
   }
 
+  /**
+   * Convierte el filtro de consulta de los tres productos más vendidos a JSON.
+   * 
+   * @returns Una cadena JSON que representa el filtro de consulta de los tres productos más vendidos.
+   */
   toJSON(): string {
     return JSON.stringify(this.idTop3);
   }

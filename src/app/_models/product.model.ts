@@ -2,7 +2,9 @@ import { Category } from "./category.model";
 import { Modifiers } from "./modifiers.model";
 import { Tax } from "./tax.model";
 
-
+/**
+ * Representa un producto con sus propiedades, impuestos, categorías y modificadores asociados.
+ */
 export class Product {
 
   static readonly NO_ID = "-1";

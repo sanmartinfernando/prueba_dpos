@@ -6,34 +6,39 @@ import { RestRoutes } from '../_rest/rest-routes.config';
 import { SalesReport } from '../_models/sales-report.model';
 import { TranslateService } from '@ngx-translate/core';
 
-
-@Injectable({
-  providedIn: 'root'
-})
+/**
+ * Servicio para la obtención de reportes de ventas.
+ * Permite filtrar por fechas, número de terminal y comercio.
+ */
+@Injectable({ providedIn: 'root' })
 export class SalesReportService {
 
   private http = inject(HttpClient);
   private translate = inject(TranslateService);
 
   public httpOptions = {
-    headers: new HttpHeaders(
-      {
-        'Content-type': 'application/json'
-      }
-    )
+    headers: new HttpHeaders({ 'Content-type': 'application/json' })
   };
 
+  /**
+   * Obtiene el reporte de ventas filtrado por fecha y opcionalmente por terminal y comercio.
+   * @param fromDate Fecha inicial en formato numérico.
+   * @param toDate Fecha final en formato numérico.
+   * @param terminalNumber Número de terminal opcional.
+   * @param commerceId Identificador de comercio opcional.
+   * @returns Observable con el reporte de ventas.
+   */
   public getSalesReport(fromDate: number, toDate: number, terminalNumber?: string, commerceId?: number): Observable<SalesReport> {
-    if (fromDate === undefined || fromDate === null || toDate === undefined || toDate === null) {
+    if (fromDate == null || toDate == null) {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
     }
-    let urlSalesReport = `${environment.urlWS}${RestRoutes.SALES_REPORT}${fromDate}${RestRoutes.PARAM_TODATE}${toDate}`;
+    let url = `${environment.urlWS}${RestRoutes.SALES_REPORT}${fromDate}${RestRoutes.PARAM_TODATE}${toDate}`;
     if (terminalNumber) {
-      urlSalesReport += `${RestRoutes.PARAM_TERMINALNUMBER}${terminalNumber}`;
+      url += `${RestRoutes.PARAM_TERMINALNUMBER}${terminalNumber}`;
     }
     if (commerceId) {
-      urlSalesReport += `${RestRoutes.PARAM_COMMERCEID}${commerceId}`;
+      url += `${RestRoutes.PARAM_COMMERCEID}${commerceId}`;
     }
-    return this.http.post<SalesReport>(urlSalesReport, this.httpOptions);
+    return this.http.post<SalesReport>(url, this.httpOptions);
   }
 }

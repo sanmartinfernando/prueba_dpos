@@ -9,52 +9,72 @@ import { OrderInfo } from '../_models/order-info.model';
 import { Order } from '../_models/order.model';
 import { TranslateService } from '@ngx-translate/core';
 
-
-@Injectable({
-  providedIn: 'root'
-})
+/**
+ * Servicio para la gestión y obtención de información relacionada con ventas,
+ * incluyendo agregaciones, detalles y datos resumidos.
+ */
+@Injectable({ providedIn: 'root' })
 export class OrdersService {
 
   private http = inject(HttpClient);
   private translate = inject(TranslateService);
 
-  public httpOptions = {
-    headers: new HttpHeaders(
-      {
-        'Content-type': 'application/json'
-      }
-    )
+  private readonly httpOptions = {
+    headers: new HttpHeaders({
+      'Content-type': 'application/json'
+    })
   };
 
+  /**
+   * Obtiene agregaciones de ventas.
+   * @param searchParams Parámetros de búsqueda en formato string.
+   * @returns Observable con la lista de agregaciones de ventas.
+   */
   public getOrderAggregate(searchParams: string): Observable<OrderAggregation[]> {
-    if (searchParams === undefined || searchParams === null) {
+    if (!searchParams) {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
     }
-    const urlOrderAggregate = `${environment.urlWS}${RestRoutes.ORDERS_AGGREGATE}`;
-    return this.http.post<OrderAggregation[]>(urlOrderAggregate, searchParams, this.httpOptions);
+    const url = `${environment.urlWS}${RestRoutes.ORDERS_AGGREGATE}`;
+    return this.http.post<OrderAggregation[]>(url, searchParams, this.httpOptions);
   }
 
+  /**
+   * Obtiene el top 3 de agregaciones de ventas.
+   * @param searchParams Parámetros de búsqueda en formato string.
+   * @returns Observable con el top 3 de agregaciones de ventas.
+   */
   public getOrderTop3Aggregate(searchParams: string): Observable<Top3Aggregation[]> {
-    if (searchParams === undefined || searchParams === null) {
+    if (!searchParams) {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
     }
-    const urlOrderAggregate = `${environment.urlWS}${RestRoutes.ORDERS_AGGREGATE}`;
-    return this.http.post<Top3Aggregation[]>(urlOrderAggregate, searchParams, this.httpOptions);
+    const url = `${environment.urlWS}${RestRoutes.ORDERS_AGGREGATE}`;
+    return this.http.post<Top3Aggregation[]>(url, searchParams, this.httpOptions);
   }
 
+  /**
+   * Obtiene información detallada de ventas.
+   * @param size Cantidad de registros a obtener.
+   * @param searchParams Parámetros de búsqueda en formato string.
+   * @returns Observable con la información de las ventas.
+   */
   public getOrderInfo(size: number, searchParams: string): Observable<OrderInfo> {
-    if (size === undefined || size === null || searchParams === undefined || searchParams === null) {
+    if (size == null || !searchParams) {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
     }
-    const urlOrderInfo = `${environment.urlWS}${RestRoutes.ORDERS_INFO}${size}${RestRoutes.PARAM_OFFSET}${searchParams}`;
-    return this.http.get<OrderInfo>(urlOrderInfo, this.httpOptions);
+    const url = `${environment.urlWS}${RestRoutes.ORDERS_INFO}${size}${RestRoutes.PARAM_OFFSET}${searchParams}`;
+    return this.http.get<OrderInfo>(url, this.httpOptions);
   }
 
+  /**
+   * Obtiene el detalle de una venta específica.
+   * @param id Identificador único de la venta.
+   * @returns Observable con los datos de la venta.
+   */
   public getOrderDetail(id: string): Observable<Order> {
-    if (id === undefined || id === null) {
+    if (!id) {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
     }
-    const urlOrders = `${environment.urlWS}${RestRoutes.ORDERS}${id}`;
-    return this.http.get<Order>(urlOrders, this.httpOptions);
+    const url = `${environment.urlWS}${RestRoutes.ORDERS}${id}`;
+    return this.http.get<Order>(url, this.httpOptions);
   }
 }
