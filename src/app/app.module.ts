@@ -21,10 +21,7 @@ import { LangSwitcherComponent } from './common/lang-switcher/lang-switcher.comp
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SalesComponent } from './sales/sales.component';
 import { ReportsComponent } from './reports/reports.component';
-import { ErrorComponent } from './common/error/error.component';
 import { LoginComponent } from './common/login/login.component';
-import { BaseComponent } from './common/base/base.component';
-import { UnauthorizedComponent } from './common/unauthorized/unauthorized.component';
 import { BalancesComponent } from './balances/balances.component';
 import { DetailsComponent } from './sales/details/details.component';
 import { BalancesDetailsComponent } from './balances/balances-details/balances-details.component';
@@ -73,10 +70,7 @@ registerLocaleData(localeEs);
         ModifiersModalComponent,
         ProductsComponent,
         ProductDetailsComponent,
-        ErrorComponent,
         LoginComponent,
-        BaseComponent,
-        UnauthorizedComponent,
         BalancesComponent,
         DetailsComponent,
         BalancesDetailsComponent,

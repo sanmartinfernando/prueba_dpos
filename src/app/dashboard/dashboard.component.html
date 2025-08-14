@@ -122,7 +122,7 @@
           </ng-template>
           <ng-container *ngIf="loadedTPChart; else spinner">
             <div class="inner-chart">
-              <ngx-charts-bar-horizontal [view]="viewTop3" [results]="datasetTop3" [animations]="true"
+              <ngx-charts-bar-horizontal [results]="datasetTop3" [animations]="true"
                 [showDataLabel]="true" [xAxis]="false" [yAxis]="true" [customColors]="colorsTop3"
                 [dataLabelFormatting]="formatPercentageLabel" *ngIf="!emptyKPIChart; else noTop3Data">
               </ngx-charts-bar-horizontal>
@@ -140,7 +140,7 @@
           <ng-template #noPMData><br /><b><i>{{ 'dpos.dashboard.nodata.label' | translate }}</i></b></ng-template>
           <ng-container *ngIf="loadedPMChart; else spinner">
             <div class="inner-chart">
-              <ngx-charts-pie-chart [view]="viewPM" [results]="datasetPM" [doughnut]="true" [labels]="true"
+              <ngx-charts-pie-chart [results]="datasetPM" [doughnut]="true" [labels]="true"
                 [arcWidth]="0.5" [customColors]="colorsPM" *ngIf="!emptyKPIChart; else noPMData">
               </ngx-charts-pie-chart>
             </div>

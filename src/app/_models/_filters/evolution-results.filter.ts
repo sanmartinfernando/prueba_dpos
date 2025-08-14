@@ -75,7 +75,7 @@ export class EvolutionResultsFilter {
    * 
    * @returns Una cadena JSON que representa el filtro de evolución de cierres de caja.
    */
-  toJSON(): string {
+  public toJSON(): string {
     return JSON.stringify(this.idEvoResults);
   }
 }

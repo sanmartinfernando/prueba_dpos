@@ -77,7 +77,7 @@
               <tbody>
                 <!-- Contenedor que muestra filas de la tabla solo si la carga se ha completado y hay datos -->
                 <ng-container *ngIf="loadCompleted; else empty">
-                  <tr *ngFor="let balance of balances | paginate : { itemsPerPage: 10, currentPage: page }; index as i" (click)="sendSalesDetails(balance.balanceId)" style="cursor: pointer;">
+                  <tr *ngFor="let balance of balances | paginate : { itemsPerPage: 10, currentPage: page }; index as i" (click)="sendBalanceDetails(balance.balanceId)" style="cursor: pointer;">
                     <td class="text-start align-middle" id="massivetransfer"><span class="table-title">{{ balance.reference }}</span></td>
                     <td class="text-center align-middle">{{ balance.terminalNumber }}</td>
                     <td class="text-start align-middle">{{ balance.startedAt | date : "dd/MM/yyyy HH:mm" }}</td>

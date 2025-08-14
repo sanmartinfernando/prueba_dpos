@@ -5,11 +5,9 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { SalesComponent } from './sales/sales.component';
 import { DetailsComponent } from './sales/details/details.component';
 import { ReportsComponent } from './reports/reports.component';
-import { ErrorComponent } from './common/error/error.component';
 import { LoginComponent } from './common/login/login.component';
 import { PwrecoveryComponent } from './common/login/pwrecovery/pwrecovery.component';
 import { PwresetComponent } from './common/login/pwreset/pwreset.component';
-import { UnauthorizedComponent } from './common/unauthorized/unauthorized.component';
 import { BalancesComponent } from './balances/balances.component';
 import { BalancesDetailsComponent } from './balances/balances-details/balances-details.component';
 import { CustomersComponent } from './customers/customers.component';
@@ -30,8 +28,6 @@ const routes: Routes = [
   { path: 'cookies-policy', component: CookiesPolicyComponent, title: 'Política de cookies' },
   { path: 'use-conditions', component: UseConditionsComponent, title: 'Condiciones de uso' },
   { path: 'privacy-policy', component: PrivacyPolicyComponent, title: 'Política de privacidad' },
-  { path: 'error', component: ErrorComponent },
-  { path: 'unauthorized', component: UnauthorizedComponent },
   { path: 'login', component: LoginComponent, title: 'DPOS - Login' },
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard], title: 'DPOS - Dashboard' },
   { path: 'sales', component: SalesComponent, canActivate: [AuthGuard], title: 'DPOS - Ventas' },

@@ -51,7 +51,7 @@ export class OrdersFilter {
    * 
    * @returns Una cadena JSON que representa el filtro de ventas.
    */
-  toJSON(): string {
+  public toJSON(): string {
     return JSON.stringify(this.idOrders);
   }
 }

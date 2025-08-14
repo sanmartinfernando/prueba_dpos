@@ -29,7 +29,7 @@ export class AuthGuard implements CanActivate {
      * 
      * @returns `true` si el usuario está autenticado, `false` en caso contrario.
      */
-    canActivate(): Promise<boolean> | Observable<boolean> | boolean {
+    public canActivate(): Promise<boolean> | Observable<boolean> | boolean {
         if (this.user) {
             return true;
         }

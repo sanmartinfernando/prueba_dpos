@@ -5,22 +5,25 @@
     <h2>{{ titlePage }}</h2>
     <button class="modal-close-button" (click)="close()">×</button>
   </div>
-  <!-- Cuerpo del modal con formulario -->
-  <div class="modal-body">
-    <div class="container my-3">
-      <form (ngSubmit)="onSubmit()">
+  <form [formGroup]="categoryForm" (ngSubmit)="saveCategory()">
+    <!-- Cuerpo del modal con formulario -->
+    <div class="modal-body">
+      <div class="container my-3">
         <div class="row mb-12">
           <div class="col-md-12">
             <label for="name" class="form-label">{{ 'dpos.category.modal.form.name' | translate }}</label>
-            <input type="text" class="form-control" id="name" name="name" [(ngModel)]="categoryFormData.name" />
+            <input type="text" class="form-control" id="name" formControlName="name" name="name" />
+            <div *ngIf="categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched" class="text-danger">
+              {{ 'dpos.customers.details.form.mandatory' | translate }}
+            </div>
           </div>
         </div>
-      </form>
+      </div>
     </div>
-  </div>
-  <!-- Footer con botones cancelar y crear (submit) -->
-  <div class="modal-footer">
-    <button class="btn btn-outline-danger" (click)="close()">{{ 'dpos.action.cancel' | translate }}</button>
-    <button type="submit" class="btn btn-primary">{{ 'dpos.action.create' | translate }}</button>
-  </div>
+    <!-- Footer con botones cancelar y crear (submit) -->
+    <div class="modal-footer">
+      <button class="btn btn-outline-danger" (click)="close()">{{ 'dpos.action.cancel' | translate }}</button>
+      <button type="submit" class="btn btn-primary">{{ 'dpos.action.create' | translate }}</button>
+    </div>
+  </form>
 </div>

@@ -1,29 +1,33 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { AuthService } from '../../_services/auth.service';
-import { StorageService } from '../../_services/storage.service';
+import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PagesService } from 'src/app/_services/pages.service';
+import { FormBuilder, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { User } from '../../_models/user.model';
-import { FormBuilder, Validators } from '@angular/forms';
+import { AuthService } from '../../_services/auth.service';
+import { StorageService } from '../../_services/storage.service';
+import { PagesService } from 'src/app/_services/pages.service';
 
-
+/**
+ * Componente de inicio de sesión que valida las credenciales del usuario,
+ * gestiona el estado de autenticación y redirige a las páginas correspondientes.
+ */
 @Component({
   selector: 'app-login',
-  templateUrl: './login.component.html',
+  templateUrl: './login.component.html'
 })
 export class LoginComponent implements OnInit {
 
   private authService = inject(AuthService);
   private storageService = inject(StorageService);
   private formBuilder = inject(FormBuilder);
-  public router = inject(Router);
   private route = inject(ActivatedRoute);
-  private _pagesService = inject(PagesService);
+  private pagesService = inject(PagesService);
+  public router = inject(Router);
 
-  private userSuscription!: Subscription;
+  private userSubscription!: Subscription;
+
   loginForm;
-  code = "password-recovery";
+  code = 'password-recovery';
   isLoggedIn = false;
   isLoginFailed = false;
   errorMessage = '';
@@ -32,8 +36,11 @@ export class LoginComponent implements OnInit {
   componentSelected: string;
   loading = false;
 
+  /**
+   * Inicializa el formulario de inicio de sesión y suscribe el estado del usuario.
+   */
   ngOnInit(): void {
-    this.userSuscription = this.storageService.userInfo.subscribe(user => {
+    this.userSubscription = this.storageService.userInfo.subscribe(user => {
       this.updateUserData(user);
     });
     if (this.storageService.isLoggedIn()) {
@@ -46,51 +53,46 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  onSubmit(): void {
+  /**
+   * Envía el formulario de inicio de sesión y valida las credenciales.
+   */
+  public onSubmit(): void {
     this.loading = true;
     const { username, pw } = this.loginForm.value;
     this.isLoginFailed = false;
-
     this.authService.login(username, pw)
       .then(() => {
-        this.isLoginFailed = false;
         this.isLoggedIn = true;
-        this.storageService.updateloggin(this.isLoggedIn)
+        this.storageService.updateloggin(true);
         this.loading = false;
         this.navigateLoggedIn();
-        return;
-      }).catch(() => {
+      })
+      .catch(() => {
         this.isLoginFailed = true;
         this.loading = false;
       });
   }
 
-  navigateLoggedIn() {
+  /**
+   * Redirige al usuario autenticado a la página correspondiente.
+   */
+  private navigateLoggedIn(): void {
+    let page = '/dashboard';
     const params = {};
-    let page = "/dashboard" //"home"
     this.route.queryParams.subscribe(routeParams => {
       if (routeParams['callbackUrl']) {
         page = routeParams['callbackUrl'];
       }
     });
+
     this.router.navigate([page], { queryParams: params });
   }
 
-  navigateError() {
-    const params = {};
-    const page = "/error"
-    this.router.navigate([page], { queryParams: params });
-  }
-
-  reloadPage(): void {
-    this.navigateLoggedIn();
-  }
-
-  updateUserData(user: User) {
-    if (user !== null) {
-      this.isLoggedIn = true;
-    } else {
-      this.isLoggedIn = false;
-    }
+  /**
+   * Actualiza el estado de sesión según la información del usuario.
+   * @param user Datos del usuario.
+   */
+  private updateUserData(user: User): void {
+    this.isLoggedIn = !!user;
   }
 }

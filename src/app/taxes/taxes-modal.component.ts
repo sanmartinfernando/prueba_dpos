@@ -1,14 +1,18 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../_services/auth.service';
 import { PortalUsersService } from '../_services/portal-users.service';
 import { SessionService } from '../_services/session.service';
 import { StorageService } from '../_services/storage.service';
 import { ThemeService } from '../_services/theme.service';
-import { TranslateService } from '@ngx-translate/core';
+
 import { Tax } from '../_models/tax.model';
 
-
+/**
+ * Componente modal para crear o editar impuestos.
+ * Permite configurar tipo, nombre y valor del impuesto.
+ */
 @Component({
   selector: 'app-dpos-taxes-modal',
   templateUrl: './taxes-modal.component.html',
@@ -16,38 +20,41 @@ import { Tax } from '../_models/tax.model';
 })
 export class TaxesModalComponent implements OnInit {
 
-  private portalUsersService = inject(PortalUsersService);
-  private storageService = inject(StorageService);
-  private sessionService = inject(SessionService);
-  private translate = inject(TranslateService);
   private authService = inject(AuthService);
-  public dialogRef = inject(MatDialogRef<TaxesModalComponent>);
+  private portalUsersService = inject(PortalUsersService);
+  private sessionService = inject(SessionService);
+  private storageService = inject(StorageService);
   private themeService = inject(ThemeService);
+  private translate = inject(TranslateService);
+
+  public dialogRef = inject(MatDialogRef<TaxesModalComponent>);
   public data = inject<{ id?: number }>(MAT_DIALOG_DATA);
 
-  titlePage: string;
-  idTax: number;
-  taxFormData = {
+  public titlePage: string;
+  public idTax: number;
+  public Tax: Tax;
+  public isTaxNameDisabled = true;
+  public isTaxValueDisabled = true;
+
+  public taxFormData = {
     taxType: '-1',
     name: 'EXENTO',
     value: 0
   };
-
-  Tax: Tax;
-  isTaxNameDisabled = true;
-  isTaxValueDisabled = true;
 
   constructor() {
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
     this.idTax = this.data.id;
   }
 
+  /**
+   * Inicializa el modal, cargando datos si se está editando un impuesto.
+   */
   ngOnInit(): void {
     this.storageService.userInfo.subscribe((user) => {
       this.portalUsersService.getToken(user).subscribe({
         next: (portalUserToken) => {
           this.authService.setPortalUsersToken(portalUserToken.token);
-
           if (this.idTax) {
             this.titlePage = this.translate.instant('dpos.taxes.modal.title.edit');
             this.getTax();
@@ -56,66 +63,71 @@ export class TaxesModalComponent implements OnInit {
           }
         },
         error: (error) => {
-          console.error("Error Portal user token", error);
+          console.error('Error Portal user token', error);
         }
       });
     });
   }
 
-  public updateTaxForm() {
+  /**
+   * Actualiza el formulario según el tipo de impuesto seleccionado.
+   */
+  public updateTaxForm(): void {
     if (this.taxFormData.taxType === '-1') {
-      this.taxFormData = {
-        taxType: '-1',
-        name: 'EXENTO',
-        value: 0
-      };
+      this.taxFormData = { taxType: '-1', name: 'EXENTO', value: 0 };
       this.isTaxNameDisabled = true;
       this.isTaxValueDisabled = true;
     } else if (this.taxFormData.taxType === '-2') {
-      this.taxFormData = {
-        taxType: '-2',
-        name: 'NO SUJETO',
-        value: 0
-      };
+      this.taxFormData = { taxType: '-2', name: 'NO SUJETO', value: 0 };
       this.isTaxNameDisabled = true;
       this.isTaxValueDisabled = true;
     } else {
-      this.taxFormData = {
-        taxType: this.taxFormData.taxType,
-        name: '',
-        value: 0
-      };
+      this.taxFormData = { taxType: this.taxFormData.taxType, name: '', value: 0 };
       this.isTaxNameDisabled = false;
       this.isTaxValueDisabled = false;
     }
   }
 
-  public onSubmit() {
+  /**
+   * Envía el formulario y cierra el modal.
+   */
+  public onSubmit(): void {
     this.dialogRef.close();
   }
 
+  /**
+   * Cierra el modal sin guardar cambios.
+   */
   public close(): void {
     this.dialogRef.close();
   }
 
-  private getTax() {
+  /**
+   * Obtiene los datos del impuesto a editar.
+   */
+  private getTax(): void {
     this.loadTaxData();
   }
 
-  private loadTaxData() {
-    this.taxFormData = {
-      taxType: '0',
-      name: 'IVA 10%',
-      value: 1000
-    };
+  /**
+   * Carga datos de ejemplo para el impuesto.
+   */
+  private loadTaxData(): void {
+    this.taxFormData = { taxType: '0', name: 'IVA 10%', value: 1000 };
     this.isTaxNameDisabled = false;
     this.isTaxValueDisabled = false;
   }
 
+  /**
+   * Devuelve el valor del impuesto formateado en porcentaje.
+   */
   get taxValueDisplay(): string {
     return (this.taxFormData.value / 100).toFixed(2) + '%';
   }
 
+  /**
+   * Asigna el valor del impuesto a partir de un porcentaje formateado.
+   */
   set taxValueDisplay(displayValue: string) {
     const clean = displayValue.replace('%', '').replace(',', '.');
     const parsed = parseFloat(clean);

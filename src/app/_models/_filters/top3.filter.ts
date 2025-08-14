@@ -65,7 +65,7 @@ export class Top3Filter {
    * 
    * @returns Una cadena JSON que representa el filtro de consulta de los tres productos más vendidos.
    */
-  toJSON(): string {
+  public toJSON(): string {
     return JSON.stringify(this.idTop3);
   }
 }

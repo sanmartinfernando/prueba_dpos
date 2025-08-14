@@ -1,14 +1,18 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
+
 import { AuthService } from '../_services/auth.service';
 import { PortalUsersService } from '../_services/portal-users.service';
 import { SessionService } from '../_services/session.service';
 import { StorageService } from '../_services/storage.service';
 import { ThemeService } from '../_services/theme.service';
-import { TranslateService } from '@ngx-translate/core';
 import { Modifiers } from '../_models/modifiers.model';
 
-
+/**
+ * Modal para gestionar modificadores de productos, permitiendo
+ * agregar o editarlos y cerrar el diálogo.
+ */
 @Component({
   selector: 'app-dpos-modifiers-modal',
   templateUrl: './modifiers-modal.component.html',
@@ -16,20 +20,21 @@ import { Modifiers } from '../_models/modifiers.model';
 })
 export class ModifiersModalComponent implements OnInit {
 
-  private portalUsersService = inject(PortalUsersService);
-  private storageService = inject(StorageService);
-  private sessionService = inject(SessionService);
-  private translate = inject(TranslateService);
   private authService = inject(AuthService);
+  private portalUsersService = inject(PortalUsersService);
+  private sessionService = inject(SessionService);
+  private storageService = inject(StorageService);
   private themeService = inject(ThemeService);
+  private translate = inject(TranslateService);
+
   public dialogRef = inject(MatDialogRef<ModifiersModalComponent>);
   public data = inject<{ id?: string }>(MAT_DIALOG_DATA);
-  
 
+  public titlePage: string;
+  public idModifiers: string;
+  public modifiers: Modifiers;
 
-  titlePage: string;
-  idModifiers: string;
-  modifiersFormData = {
+  public modifiersFormData = {
     name: '',
     modifier1: '',
     modifier2: '',
@@ -38,13 +43,14 @@ export class ModifiersModalComponent implements OnInit {
     modifier5: ''
   };
 
-  modifiers: Modifiers;
-
   constructor() {
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
     this.idModifiers = this.data.id;
   }
 
+  /**
+   * Inicializa el modal cargando datos según corresponda.
+   */
   ngOnInit(): void {
     this.storageService.userInfo.subscribe((user) => {
       this.portalUsersService.getToken(user).subscribe({
@@ -58,25 +64,37 @@ export class ModifiersModalComponent implements OnInit {
           }
         },
         error: (error) => {
-          console.error("Error Portal user token", error);
+          console.error('Error Portal user token', error);
         }
       });
     });
   }
 
-  public onSubmit() {
+  /**
+   * Envía el formulario y cierra el modal.
+   */
+  public onSubmit(): void {
     this.dialogRef.close();
   }
 
+  /**
+   * Cierra el modal sin guardar cambios.
+   */
   public close(): void {
     this.dialogRef.close();
   }
 
-  private getModifiers() {
+  /**
+   * Obtiene los datos de modificadores existentes.
+   */
+  private getModifiers(): void {
     this.loadModifiersData();
   }
 
-  private loadModifiersData() {
+  /**
+   * Carga datos de modificadores en el formulario.
+   */
+  private loadModifiersData(): void {
     this.modifiersFormData = {
       name: 'Punto de la Carne',
       modifier1: 'Muy crudo',

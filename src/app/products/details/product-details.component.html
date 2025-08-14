@@ -28,7 +28,7 @@
               <div class="col-md-8 mb-3">
                 <label for="category" class="form-label">{{ 'dpos.product-details.form.category' | translate }}</label>
                 <select class="form-select" id="category" name="category" multiple [(ngModel)]="categoryIdSelected">
-                  <option class="multiple-option" *ngFor="let category of categories" [value]="category.id">{{
+                  <option class="multiple-option" *ngFor="let category of categories" [value]="category.categoryId">{{
                     category.name }}</option>
                 </select>
               </div>

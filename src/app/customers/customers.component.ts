@@ -1,21 +1,26 @@
-import { StorageService } from 'src/app/_services/storage.service';
-import { EncryptionService } from '../_services/encryption.service';
-import { DownloadCsvService } from '../_services/download-csv.service';
-import { Component, ElementRef, OnInit, ViewChild, OnDestroy, inject } from '@angular/core';
-import { PortalUsersService } from '../_services/portal-users.service';
-import { CommercesService } from '../_services/commerces.service';
-import { AuthService } from '../_services/auth.service';
+import { Component, ElementRef, OnInit, OnDestroy, ViewChild, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/internal/Subscription';
-import { Commerce } from '../_models/commerce.model';
+
+import { AuthService } from '../_services/auth.service';
+import { CommercesService } from '../_services/commerces.service';
+import { CustomersService } from '../_services/customers.service';
+import { DownloadCsvService } from '../_services/download-csv.service';
+import { EncryptionService } from '../_services/encryption.service';
+import { PortalUsersService } from '../_services/portal-users.service';
 import { SessionService } from '../_services/session.service';
+import { StorageService } from '../_services/storage.service';
 import { ThemeService } from '../_services/theme.service';
 import { UIStateService } from '../_services/ui-state.service';
-import { CustomersService } from '../_services/customers.service';
+
+import { Commerce } from '../_models/commerce.model';
 import { Customer } from '../_models/customer.model';
-import { Router } from '@angular/router';
 
-
+/**
+ * Componente para la gestión de clientes.
+ * Permite búsqueda, importación, exportación, alta y baja de clientes.
+ */
 @Component({
   selector: 'app-dpos-customers',
   templateUrl: './customers.component.html',
@@ -35,6 +40,8 @@ export class CustomersComponent implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private router = inject(Router);
 
+  Math: Math;
+
   size = 10000;
   customers: Customer[] = [];
   page = 0;
@@ -42,10 +49,8 @@ export class CustomersComponent implements OnInit, OnDestroy {
   loadCompleted = false;
   validationVariable = false;
   commerceId = 0;
-  Math = Math;
   masterSelected = false;
 
-  //Parámetros de búsqueda
   public terminalsNumber: string[];
   terminalSelected: string = null;
   searchCounter = false;
@@ -63,7 +68,6 @@ export class CustomersComponent implements OnInit, OnDestroy {
 
   @ViewChild('customerFileInput') customerFileInput!: ElementRef<HTMLInputElement>;
 
-  // Checkboxes
   selectedIndices: number[] = [];
   isAllSelected = false;
   counter = 0;
@@ -75,10 +79,7 @@ export class CustomersComponent implements OnInit, OnDestroy {
   commerces: Commerce[];
 
   constructor() {
-
-    //Desbloqueamos el selector de comercio;
     this.uiStateService.setFormSelectEnabled(true);
-
     this.currentLang = this.translate.currentLang || 'es';
     this.langSubscription = this.translate.onLangChange.subscribe(event => {
       this.currentLang = event.lang;
@@ -86,308 +87,273 @@ export class CustomersComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
+  /**
+   * Libera recursos.
+   */
+  ngOnDestroy(): void {
     this.langSubscription.unsubscribe();
   }
 
+  /**
+   * Inicializa el componente cargando datos de sesión, comercios y clientes.
+   */
   ngOnInit(): void {
     this.loadCompleted = false;
-
-    if (this.sessionService.getItem(SessionService.CUSTOMER_NIF) !== null) {
-      this.customerNifVarSearch = this.sessionService.getItem(SessionService.CUSTOMER_NIF);
-    }
-    if (this.sessionService.getItem(SessionService.CUSTOMER_NAME) !== null) {
-      this.customerNameVarSearch = this.sessionService.getItem(SessionService.CUSTOMER_NAME);
-    }
-    if (this.sessionService.getItem(SessionService.CUSTOMER_LASTNAME) !== null) {
-      this.customerLastNameVarSearch = this.sessionService.getItem(SessionService.CUSTOMER_LASTNAME);
-    }
-    if (this.sessionService.getItem(SessionService.CUSTOMER_PHONE) !== null) {
-      this.customerPhoneVarSearch = this.sessionService.getItem(SessionService.CUSTOMER_PHONE);
-    }
-    if (this.sessionService.getItem(SessionService.CUSTOMER_EMAIL) !== null) {
-      this.customerEmailVarSearch = this.sessionService.getItem(SessionService.CUSTOMER_EMAIL);
-    }
-
-    this.storageService.userInfo.subscribe((user) => {
+    this.restoreSearchParams();
+    this.storageService.userInfo.subscribe(user => {
       this.portalUsersService.getToken(user).subscribe({
-        next: (portalUserToken) => {
+        next: portalUserToken => {
           this.authService.setPortalUsersToken(portalUserToken.token);
-          this.commercesService.getCommerceList().subscribe({
-            next: (commerces) => {
-              this.commerces = commerces;
-              this.sessionService.getCommerceId().subscribe((commerceId) => {
-                if (commerceId !== 0) {
-                  this.commerceId = commerceId; // Actualizar el valor en el componente
-                } else {
-                  this.commerceId = commerces[0].commerceId;
-                  this.sessionService.setItem(SessionService.COMMERCE_ID, this.commerceId);
-                }
-                this.themeService.loadTheme(this.getCommerceResellerName(commerces));
-                this.commerceSelected = this.getCommerceNumber(this.commerceId);
-                this.searchCustomers();
-              });
-            },
-            error: (error) => {
-              console.error("Error Commerces: ", error);
-            }
-          });
+          this.loadCommerces();
         },
-        error: (error) => {
-          console.error("Error Portal user token", error);
-        }
+        error: error => console.error('Error Portal user token', error)
       });
     });
   }
 
-  searchCustomers() {
+  /**
+   * Ejecuta la búsqueda de clientes con los filtros actuales.
+   */
+  public searchCustomers(): void {
     this.validationVariable = false;
     this.loadCompleted = false;
-
-    //Comienzo query búsqueda
     this.varSearch = "&qs={'and':[";
+    const filters = [
+      { field: 'CommerceId', value: this.commerceId, op: '=' },
+      { field: 'NIF', value: this.customerNifVarSearch, op: '=*.*' },
+      { field: 'Name', value: this.customerNameVarSearch, op: '=*.*' },
+      { field: 'LastName', value: this.customerLastNameVarSearch, op: '=*.*' },
+      { field: 'Phone', value: this.customerPhoneVarSearch, op: '=*.*' },
+      { field: 'Email', value: this.customerEmailVarSearch, op: '=*.*' }
+    ].filter(f => f.value);
 
-    //Commerce id
-    if (this.commerceId !== 0) {
-      if (this.searchCounter === false) {
-        this.searchCounter = true;
-      } else {
-        this.varSearch = this.varSearch + ',';
-      }
-      this.varSearch =
-        this.varSearch + "{'field':'CommerceId','op':'=','value':'" + this.commerceId + "'}";
-    }
-
-    //NIF
-    if (this.customerNifVarSearch !== null && this.customerNifVarSearch !== "") {
-      if (this.searchCounter === false) {
-        this.searchCounter = true;
-      } else {
-        this.varSearch = this.varSearch + ',';
-      }
-      this.varSearch = this.varSearch + "{'field':'NIF','op':'=*.*','value':'" + this.customerNifVarSearch + "'}";
-    }
-
-    //Nombre
-    if (this.customerNameVarSearch !== null && this.customerNameVarSearch !== "") {
-      if (this.searchCounter === false) {
-        this.searchCounter = true;
-      } else {
-        this.varSearch = this.varSearch + ',';
-      }
-      this.varSearch = this.varSearch + "{'field':'Name','op':'=*.*','value':'" + this.customerNameVarSearch + "'}";
-    }
-
-    //Apellidos
-    if (this.customerLastNameVarSearch !== null && this.customerLastNameVarSearch !== "") {
-      if (this.searchCounter === false) {
-        this.searchCounter = true;
-      } else {
-        this.varSearch = this.varSearch + ',';
-      }
-      this.varSearch = this.varSearch + "{'field':'LastName','op':'=*.*','value':'" + this.customerLastNameVarSearch + "'}";
-    }
-
-    //Telefono
-    if (this.customerPhoneVarSearch !== null && this.customerPhoneVarSearch !== "") {
-      if (this.searchCounter === false) {
-        this.searchCounter = true;
-      } else {
-        this.varSearch = this.varSearch + ',';
-      }
-      this.varSearch = this.varSearch + "{'field':'Phone','op':'=*.*','value':'" + this.customerPhoneVarSearch + "'}";
-    }
-
-    //Email
-    if (this.customerEmailVarSearch !== null && this.customerEmailVarSearch !== "") {
-      if (this.searchCounter === false) {
-        this.searchCounter = true;
-      } else {
-        this.varSearch = this.varSearch + ',';
-      }
-      this.varSearch = this.varSearch + "{'field':'Email','op':'=*.*','value':'" + this.customerEmailVarSearch + "'}";
-    }
-
-    this.varSearch = this.varSearch + ']}';
-    this.searchCounter = false;
+    this.varSearch += filters.map(f => `{'field':'${f.field}','op':'${f.op}','value':'${f.value}'}`).join(',');
+    this.varSearch += ']}';
     this.getCustomers();
   }
 
-  private getCustomers() {
+  /**
+   * Verifica si todos los clientes están seleccionados.
+   */
+  public checkIfAllSelected(): void {
+    this.masterSelected = this.customers.every(c => c.selected);
+  }
+
+  /**
+   * Navega a la vista de detalle de un cliente.
+   * @param id Identificador del cliente
+   */
+  public sendCustomerDetails(id: string): void {
+    const route = id
+      ? `/customer-details/${this.encryptionService.encode(this.encryptionService.encryptData(id))}`
+      : '/customer-details';
+    this.router.navigate([route]);
+  }
+
+  /**
+   * Elimina los clientes seleccionados de la lista.
+   */
+  public deleteCustomers(): void {
+    this.customers = this.customers.filter(c => !c.selected);
+    this.emptySearch = this.customers.length === 0;
+  }
+
+  /**
+   * Lanza la acción para añadir un nuevo cliente.
+   */
+  public addCustomer(): void {
+    this.sendCustomerDetails(null);
+  }
+
+  /**
+   * Abre el selector de archivos para importar clientes.
+   */
+  public importCustomers(): void {
+    this.customerFileInput.nativeElement.click();
+  }
+
+  /**
+   * Procesa un archivo CSV con datos de clientes.
+   * @param event Evento de selección de archivo
+   */
+  public onCustomerFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
+
+    const reader = new FileReader();
+    reader.onload = () => this.processImportedCSV(reader.result as string);
+    reader.readAsText(input.files[0]);
+  }
+
+  /**
+   * Descarga la lista de clientes en formato CSV.
+   */
+  public downloadCSV(): void {
+    this.downloadCsvService.downloadCustomersFile(
+      this.customers,
+      this.translate.instant('dpos.customers.page.title'),
+      this.currentLang
+    );
+  }
+
+  /**
+   * Cierra la ventana modal.
+   */
+  public closeModal(): void {
+    this.showModal = false;
+  }
+  
+  /**
+   * Guarda en la sesión el NIF del cliente introducido en el campo de búsqueda.
+   */
+  public onCustomerNifChange(): void {
+    this.sessionService.setItem(SessionService.CUSTOMER_NIF, this.customerNifVarSearch);
+  }
+
+  /**
+   * Guarda en la sesión el nombre del cliente introducido en el campo de búsqueda.
+   */
+  public onCustomerNameChange(): void {
+    this.sessionService.setItem(SessionService.CUSTOMER_NAME, this.customerNameVarSearch);
+  }
+
+  /**
+   * Guarda en la sesión el teléfono del cliente introducido en el campo de búsqueda.
+   */
+  public onCustomerPhoneChange(): void {
+    this.sessionService.setItem(SessionService.CUSTOMER_PHONE, this.customerPhoneVarSearch);
+  }
+
+  /**
+   * Guarda en la sesión el email del cliente introducido en el campo de búsqueda.
+   */
+  public onCustomerEmailChange(): void {
+    this.sessionService.setItem(SessionService.CUSTOMER_EMAIL, this.customerEmailVarSearch);
+  }
+
+  /**
+   * Limpia todos los campos de búsqueda y sincroniza los cambios en la sesión.
+   */
+  public cleanFormFields(): void {
+    this.customerNifVarSearch = '';
+    this.customerNameVarSearch = '';
+    this.customerLastNameVarSearch = '';
+    this.customerPhoneVarSearch = '';
+    this.customerEmailVarSearch = '';
+    this.onCustomerNifChange();
+    this.onCustomerNameChange();
+    this.onCustomerPhoneChange();
+    this.onCustomerEmailChange();
+  }
+  
+  /**
+   * Restaura los parámetros de búsqueda desde la sesión.
+   */
+  private restoreSearchParams(): void {
+    this.customerNifVarSearch = this.sessionService.getItem(SessionService.CUSTOMER_NIF) ?? null;
+    this.customerNameVarSearch = this.sessionService.getItem(SessionService.CUSTOMER_NAME) ?? null;
+    this.customerLastNameVarSearch = this.sessionService.getItem(SessionService.CUSTOMER_LASTNAME) ?? null;
+    this.customerPhoneVarSearch = this.sessionService.getItem(SessionService.CUSTOMER_PHONE) ?? null;
+    this.customerEmailVarSearch = this.sessionService.getItem(SessionService.CUSTOMER_EMAIL) ?? null;
+  }
+
+  /**
+   * Carga la lista de comercios y configura el comercio activo.
+   */
+  private loadCommerces(): void {
+    this.commercesService.getCommerceList().subscribe({
+      next: commerces => {
+        this.commerces = commerces;
+        this.sessionService.getCommerceId().subscribe(commerceId => {
+          this.commerceId = commerceId || commerces[0].commerceId;
+          if (!commerceId) {
+            this.sessionService.setItem(SessionService.COMMERCE_ID, this.commerceId);
+          }
+          this.themeService.loadTheme(this.getCommerceResellerName(commerces));
+          this.commerceSelected = this.getCommerceNumber(this.commerceId);
+          this.searchCustomers();
+        });
+      },
+      error: error => console.error('Error Commerces: ', error)
+    });
+  }
+  
+  /**
+   * Obtiene la lista de clientes desde la llamada al servicio correspondiente.
+   */
+  private getCustomers(): void {
     this.emptySearch = true;
     this.loadCompleted = false;
     this.customersService.getCustomers(this.size, this.varSearch).subscribe({
-      next: (customers) => {
+      next: customers => {
         this.customers = customers.data;
         this.emptySearch = this.customers.length === 0;
         this.loadCompleted = true;
       },
       error: () => {
-        this.customers = null;
+        this.customers = [];
         this.emptySearch = true;
         this.loadCompleted = true;
       }
     });
   }
+  
+  /**
+   * Procesa y agrega clientes desde el contenido de un CSV.
+   */
+  private processImportedCSV(text: string): void {
+    const { rows, errors } = this.parseCSV(text);
+    if (errors.length > 0) return;
 
-  //Checkboxes
-  selectAllCustomers() {
-    for (const customer of this.customers) {
-      customer.selected = this.masterSelected;
-    }
+    const imported = rows.map((row, i) => ({
+      clientId: (i + 1).toString(),
+      identityDocument: row[0],
+      name: row[1],
+      email: row[2],
+      phone: row[3],
+      address: row[4],
+      city: row[5],
+      postcode: row[6],
+      country: row[7],
+      state: row[8]
+    } as Customer));
+
+    this.showModal = true;
+    this.modalTitle = 'Importación de clientes';
+    this.modalMessage = 'Clientes importados correctamente';
+    this.customers = [...(this.customers || []), ...imported];
+    this.emptySearch = this.customers.length === 0;
   }
 
-  checkIfAllSelected() {
-    this.masterSelected = this.customers.every(c => c.selected);
+  /**
+   * Obtiene el ID del comercio correspondiente al número de comercio seleccionado.
+   * @returns El ID del comercio o 0 si no se encuentra.
+   */
+  private getCommerceId(): number {
+    return this.commerces.find(c => c.commerceNumber === this.commerceSelected)?.commerceId ?? 0;
   }
 
-  //Encriptación
-  sendCustomerDetails(id: string) {
-    let route: string;
-    if (!id) {
-      route = '/customer-details';
-    } else {
-      const encryptedId = this.encryptionService.encryptData(id);
-      route = '/customer-details/' + this.encryptionService.encode(encryptedId);
-    }
-    this.router.navigate([route]);
+  /**
+   * Obtiene el número de comercio correspondiente al ID de comercio especificado.
+   * @param commerceId - ID del comercio.
+   * @returns El número de comercio o cadena vacía si no se encuentra.
+   */
+  private getCommerceNumber(commerceId: number): string {
+    return this.commerces.find(c => c.commerceId === commerceId)?.commerceNumber ?? '';
   }
 
-  //Eliminar clientes
-  deleteCustomers() {
-    this.customers = this.customers.filter(customer => !customer.selected);
-    if (this.customers.length === 0) {
-      this.emptySearch = true;
-    }
-  }
-
-  //Añadir cliente
-  addCustomer() {
-    this.sendCustomerDetails(null);
-  }
-
-  //Importar clientes
-  importCustomers() {
-    this.customerFileInput.nativeElement.click();
-  }
-
-  onCustomerFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (!input.files?.length) return;
-
-    const file = input.files[0];
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      const text = reader.result as string;
-
-      const { rows, errors } = this.parseCSV(text);
-
-      if (errors.length <= 0) {
-        const customers: Customer[] = [];
-        for (const row of rows) {
-          const customer: Customer = new Customer();
-          customer.clientId = (customers.length+1).toString();
-          customer.identityDocument = row[0];
-          customer.name = row[1];
-          customer.email = row[2];
-          customer.phone = row[3];
-          customer.address = row[4];
-          customer.city = row[5];
-          customer.postcode = row[6];
-          customer.country = row[7];
-          customer.state = row[8];
-          customers.push(customer);
-        }
-
-        this.showModal = true;
-        this.modalTitle = 'Importación de clientes';
-        this.modalMessage = 'Clientes importados correctamente';
-
-        if (!this.customers)
-          this.customers = [];
-
-        this.customers.push(...customers);
-
-        if (this.customers.length > 0)
-          this.emptySearch = false;
-      }
-    };
-
-    reader.readAsText(file);
-  }
-
-  //Descargar clientes
-  downloadCSV() {
-    this.downloadCsvService.downloadCustomersFile(this.customers, this.translate.instant('dpos.customers.page.title'), this.currentLang);
-  }
-
-  closeModal() {
-    this.showModal = false;
-  }
-
-  onCommerceChange(): void {
-    this.commerceId = this.getCommerceId();
-    this.searchCustomers();
-  }
-
-  onCustomerNifChange(): void {
-    this.sessionService.setItem(SessionService.CUSTOMER_NIF, this.customerNifVarSearch);
-  }
-
-  onCustomerNameChange(): void {
-    this.sessionService.setItem(SessionService.CUSTOMER_NAME, this.customerNameVarSearch);
-  }
-
-  onCustomerLastNameChange(): void {
-    this.sessionService.setItem(SessionService.CUSTOMER_LASTNAME, this.customerLastNameVarSearch);
-  }
-
-  onCustomerPhoneChange(): void {
-    this.sessionService.setItem(SessionService.CUSTOMER_PHONE, this.customerPhoneVarSearch);
-  }
-
-  onCustomerEmailChange(): void {
-    this.sessionService.setItem(SessionService.CUSTOMER_EMAIL, this.customerEmailVarSearch);
-  }
-
-  getCommerceId(): number {
-    const commerce = this.commerces.find(commerce => commerce.commerceNumber === this.commerceSelected);
-    if (commerce !== undefined) {
-      return commerce.commerceId;
-    }
-    return 0;
-  }
-
-  getCommerceNumber(commerceId: number): string {
-    const commerce = this.commerces.find(commerce => commerce.commerceId === commerceId);
-    if (commerce !== undefined) {
-      return commerce.commerceNumber;
-    }
-    return "";
-  }
-
-  cleanFormFields(): void {
-    this.customerNifVarSearch = "";
-    this.customerNameVarSearch = "";
-    this.customerLastNameVarSearch = "";
-    this.customerPhoneVarSearch = "";
-    this.customerEmailVarSearch = "";
-    this.sessionService.setItem(SessionService.CUSTOMER_NIF, this.customerNifVarSearch);
-    this.sessionService.setItem(SessionService.CUSTOMER_NAME, this.customerNameVarSearch);
-    this.sessionService.setItem(SessionService.CUSTOMER_LASTNAME, this.customerLastNameVarSearch);
-    this.sessionService.setItem(SessionService.CUSTOMER_PHONE, this.customerPhoneVarSearch);
-    this.sessionService.setItem(SessionService.CUSTOMER_EMAIL, this.customerEmailVarSearch);
-  }
-
+  /**
+   * Obtiene el nombre del reseller asociado al comercio activo.
+   * @param commerces - Lista de comercios disponibles.
+   * @returns El nombre del reseller o `null` si no se encuentra.
+   */
   private getCommerceResellerName(commerces: Commerce[]): string {
-    const commerce = commerces.find(commerce => commerce.commerceId === this.commerceId);
-    if (commerce !== undefined) {
-      return commerce.resellerName;
-    }
-    return null;
+    return commerces.find(c => c.commerceId === this.commerceId)?.resellerName ?? null;
   }
 
+  /**
+   * Parsea un CSV en filas y columnas.
+   */
   private parseCSV(csv: string): { rows: string[][], errors: string[] } {
     const rows: string[][] = [];
     const errors: string[] = [];
@@ -397,17 +363,11 @@ export class CustomersComponent implements OnInit, OnDestroy {
 
     for (let i = 0; i < csv.length; i++) {
       const char = csv[i];
-
       if (char === '"') {
-        if (insideQuotes && csv[i + 1] === '"') {
-          currentValue += '"';
-          i++;
-        } else {
-          insideQuotes = !insideQuotes;
-        }
+        if (insideQuotes && csv[i + 1] === '"') { currentValue += '"'; i++; }
+        else { insideQuotes = !insideQuotes; }
       } else if (char === ',' && !insideQuotes) {
-        currentRow.push(currentValue);
-        currentValue = '';
+        currentRow.push(currentValue); currentValue = '';
       } else if ((char === '\n' || char === '\r') && !insideQuotes) {
         if (char === '\r' && csv[i + 1] === '\n') i++;
         currentRow.push(currentValue);
@@ -418,20 +378,15 @@ export class CustomersComponent implements OnInit, OnDestroy {
         currentValue += char;
       }
     }
-
     if (currentValue !== '' || currentRow.length > 0) {
       currentRow.push(currentValue);
       rows.push(currentRow);
     }
 
-    // Validación de filas incompletas
     const expectedLength = rows[0]?.length ?? 0;
-
     rows.forEach((row, index) => {
       if (row.length !== expectedLength) {
-        errors.push(
-          `Error en la fila ${index + 1}: se esperaban ${expectedLength} columnas pero hay ${row.length}.`
-        );
+        errors.push(`Error en la fila ${index + 1}: se esperaban ${expectedLength} columnas pero hay ${row.length}.`);
       }
     });
 

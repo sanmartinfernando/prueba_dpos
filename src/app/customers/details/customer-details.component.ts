@@ -1,18 +1,23 @@
-import { StorageService } from 'src/app/_services/storage.service';
-import { EncryptionService } from '../../_services/encryption.service';
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { UIStateService } from 'src/app/_services/ui-state.service';
-import { SessionService } from 'src/app/_services/session.service';
-import { ThemeService } from 'src/app/_services/theme.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
-import { Customer } from 'src/app/_models/customer.model';
-import { PortalUsersService } from 'src/app/_services/portal-users.service';
+
 import { AuthService } from 'src/app/_services/auth.service';
 import { CustomersService } from 'src/app/_services/customers.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { EncryptionService } from 'src/app/_services/encryption.service';
+import { PortalUsersService } from 'src/app/_services/portal-users.service';
+import { SessionService } from 'src/app/_services/session.service';
+import { StorageService } from 'src/app/_services/storage.service';
+import { ThemeService } from 'src/app/_services/theme.service';
+import { UIStateService } from 'src/app/_services/ui-state.service';
 
+import { Customer } from 'src/app/_models/customer.model';
 
+/**
+ * Componente para gestionar el detalle de clientes.
+ * Permite visualizar, crear y editar datos de clientes asociados a un comercio.
+ */
 @Component({
   selector: 'app-dpos-customer-details',
   templateUrl: './customer-details.component.html',
@@ -40,14 +45,10 @@ export class CustomerDetailsComponent implements OnInit {
   code: string;
 
   clientForm: FormGroup;
-  
+
   constructor() {
-
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
-
-    //Bloqueamos el selector de comercio;
     this.uiStateService.setFormSelectEnabled(false);
-
     this.clientForm = this.fb.group({
       name: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
       identityDocument: ['', [Validators.required, Validators.pattern(/^(?:[0-9]{8}[A-Z]|[XYZ][0-9]{7}[A-Z]|[KLM][0-9]{7}[A-Z]|[ABCDEFGHJNPQRSUVW][0-9]{7}[A-Z0-9])$/)]],
@@ -61,6 +62,9 @@ export class CustomerDetailsComponent implements OnInit {
     });
   }
 
+  /**
+   * Inicializa el componente cargando el token de usuario y, si corresponde, los datos del cliente.
+   */
   ngOnInit(): void {
     this.storageService.userInfo.subscribe((user) => {
       this.portalUsersService.getToken(user).subscribe({
@@ -78,26 +82,30 @@ export class CustomerDetailsComponent implements OnInit {
           }
         },
         error: (error) => {
-          console.error("Error Portal user token", error);
+          console.error('Error Portal user token', error);
         }
       });
     });
   }
 
+  /**
+   * Obtiene los datos de un cliente por su ID y los asigna al formulario.
+   * @param idClient Identificador del cliente.
+   */
   public getCustomer(idClient: string): void {
     this.customersService.getCustomer(idClient, this.commerceId).subscribe({
       next: (client) => {
         this.customer = client;
         this.clientForm.setValue({
-          identityDocument: this.customer.identityDocument,
-          name: this.customer.name,
-          email: this.customer.email,
-          phone: this.customer.phone,
-          address: this.customer.address,
-          city: this.customer.city,
-          postcode: this.customer.postcode,
-          country: this.customer.country,
-          state: this.customer.state
+          identityDocument: client.identityDocument,
+          name: client.name,
+          email: client.email,
+          phone: client.phone,
+          address: client.address,
+          city: client.city,
+          postcode: client.postcode,
+          country: client.country,
+          state: client.state
         });
         this.loadCompleted = true;
       },
@@ -107,11 +115,13 @@ export class CustomerDetailsComponent implements OnInit {
     });
   }
 
+  /**
+   * Guarda los datos del cliente, creando o actualizando según corresponda.
+   */
   public saveCustomer(): void {
     if (this.clientForm.invalid) {
-      // Marcar todos los controles como tocados para mostrar errores
       this.clientForm.markAllAsTouched();
-      return; // evitar submit si está inválido
+      return;
     }
     if (this.customer) {
       this.updateCustomer();
@@ -120,44 +130,33 @@ export class CustomerDetailsComponent implements OnInit {
     }
   }
 
-  private updateCustomer() {
+  /**
+   * Actualiza un cliente existente.
+   */
+  private updateCustomer(): void {
     this.setCustomerFields();
     this.customersService.saveCustomer(this.customer, this.commerceId).subscribe({
-      next: (customer) => {
-        console.log(customer);
-        this.code = '/customers';
-      },
-      error: () => {
-        this.code = '/customers';
-      }
+      next: () => this.code = '/customers',
+      error: () => this.code = '/customers'
     });
   }
 
-  private createCustomer() {
+  /**
+   * Crea un nuevo cliente.
+   */
+  private createCustomer(): void {
     this.customer = new Customer();
     this.setCustomerFields();
     this.customersService.saveCustomer(this.customer, this.commerceId).subscribe({
-      next: (customer) => {
-        console.log(customer);
-        this.code = '/customers';
-      },
-      error: (error) => {
-        console.log(error);
-        //TODO: Control de errores
-        this.code = '/customers';
-      }
+      next: () => this.code = '/customers',
+      error: () => this.code = '/customers'
     });
   }
 
-  private setCustomerFields() {
-    this.customer.identityDocument = this.clientForm.get('identityDocument').value;
-    this.customer.name = this.clientForm.get('name').value;
-    this.customer.email = this.clientForm.get('email').value;
-    this.customer.phone = this.clientForm.get('phone').value;
-    this.customer.address = this.clientForm.get('address').value;
-    this.customer.city = this.clientForm.get('city').value;
-    this.customer.postcode = this.clientForm.get('postcode').value;
-    this.customer.country = this.clientForm.get('country').value;
-    this.customer.state = this.clientForm.get('state').value;
+  /**
+   * Asigna los valores del formulario al objeto `Customer`.
+   */
+  private setCustomerFields(): void {
+    Object.assign(this.customer, this.clientForm.value);
   }
 }

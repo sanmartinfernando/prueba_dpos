@@ -65,7 +65,7 @@ export class EvolutionFilter {
    * 
    * @returns Una cadena JSON que representa el filtro de evolución.
    */
-  toJSON(): string {
+  public toJSON(): string {
     return JSON.stringify(this.idEvo);
   }
 }

@@ -51,7 +51,7 @@ export class PaymentMethodsFilter {
    * 
    * @returns Una cadena JSON que representa el filtro de métodos de pago.
    */
-  toJSON(): string {
+  public toJSON(): string {
     return JSON.stringify(this.idPaymentMethods);
   }
 }

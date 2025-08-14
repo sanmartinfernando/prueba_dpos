@@ -1,20 +1,23 @@
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { Subscription } from 'rxjs/internal/Subscription';
+import { TranslateService } from '@ngx-translate/core';
 import { StorageService } from 'src/app/_services/storage.service';
 import { DownloadCsvService } from '../_services/download-csv.service';
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { PortalUsersService } from '../_services/portal-users.service';
 import { CommercesService } from '../_services/commerces.service';
 import { AuthService } from '../_services/auth.service';
-import { TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs/internal/Subscription';
-import { Commerce } from '../_models/commerce.model';
 import { SessionService } from '../_services/session.service';
 import { ThemeService } from '../_services/theme.service';
 import { UIStateService } from '../_services/ui-state.service';
+import { Commerce } from '../_models/commerce.model';
 import { Tax } from '../_models/tax.model';
 import { TaxesModalComponent } from './taxes-modal.component';
-import { MatDialog } from '@angular/material/dialog';
 
-
+/**
+ * Componente encargado de gestionar la visualización, filtrado, edición, eliminación
+ * y descarga de impuestos.
+ */
 @Component({
   selector: 'app-dpos-taxes',
   templateUrl: './taxes.component.html',
@@ -33,7 +36,10 @@ export class TaxesComponent implements OnInit, OnDestroy {
   private uiStateService = inject(UIStateService);
 
   size = 10000;
-  taxes: Tax[] = [{ id: 1, value: 1000, name: "IVA 10%" }, { id: 2, value: 2100, name: "IVA 21%" }];
+  taxes: Tax[] = [
+    { id: 1, value: 1000, name: "IVA 10%" },
+    { id: 2, value: 2100, name: "IVA 21%" }
+  ];
   page = 0;
   code: string;
   loadCompleted = false;
@@ -41,8 +47,7 @@ export class TaxesComponent implements OnInit, OnDestroy {
 
   masterSelected = false;
 
-  //Parámetros de búsqueda
-  public terminalsNumber: string[];
+  terminalsNumber: string[];
   terminalSelected: string = null;
   searchCounter = false;
   varSearch: string = null;
@@ -52,7 +57,6 @@ export class TaxesComponent implements OnInit, OnDestroy {
   modalTitle = '';
   modalMessage = '';
 
-  // Checkboxes
   selectedIndices: number[] = [];
   isAllSelected = false;
   counter = 0;
@@ -64,7 +68,6 @@ export class TaxesComponent implements OnInit, OnDestroy {
   commerces: Commerce[];
 
   constructor() {
-    //Desbloqueamos el selector de comercio;
     this.uiStateService.setFormSelectEnabled(true);
     this.currentLang = this.translate.currentLang || 'es';
     this.langSubscription = this.translate.onLangChange.subscribe(event => {
@@ -73,24 +76,28 @@ export class TaxesComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Cancela la suscripción del listener de cambio de idioma al destruir el componente.
+   */
   ngOnDestroy() {
     this.langSubscription.unsubscribe();
   }
 
+  /**
+   * Inicializa el componente cargando comercios, tokens y configuraciones de sesión.
+   */
   ngOnInit(): void {
     this.loadCompleted = false;
-    this.storageService.userInfo.subscribe((user) => {
+    this.storageService.userInfo.subscribe(user => {
       this.portalUsersService.getToken(user).subscribe({
-        next: (portalUserToken) => {
+        next: portalUserToken => {
           this.authService.setPortalUsersToken(portalUserToken.token);
           this.commercesService.getCommerceList().subscribe({
-            next: (commerces) => {
+            next: commerces => {
               this.commerces = commerces;
-              this.sessionService.getCommerceId().subscribe((commerceId) => {
-                if (commerceId !== 0) {
-                  this.commerceId = commerceId; // Actualizar el valor en el componente
-                } else {
-                  this.commerceId = commerces[0].commerceId;
+              this.sessionService.getCommerceId().subscribe(commerceId => {
+                this.commerceId = commerceId !== 0 ? commerceId : commerces[0].commerceId;
+                if (commerceId === 0) {
                   this.sessionService.setItem(SessionService.COMMERCE_ID, this.commerceId);
                 }
                 this.themeService.loadTheme(this.getCommerceResellerName(commerces));
@@ -98,175 +105,97 @@ export class TaxesComponent implements OnInit, OnDestroy {
                 this.searchTaxes();
               });
             },
-            error: (error) => {
-              console.error("Error Commerces: ", error);
-            }
+            error: error => console.error("Error Commerces: ", error)
           });
         },
-        error: (error) => {
-          console.error("Error Portal user token", error);
-        }
+        error: error => console.error("Error Portal user token", error)
       });
     });
   }
 
-  searchTaxes() {
-    this.loadCompleted = false;
-    //Comienzo query búsqueda
-    this.varSearch = "&qs={'and':[";
-    //Commerce id
-    if (this.commerceId !== 0) {
-      if (this.searchCounter === false) {
-        this.searchCounter = true;
-      } else {
-        this.varSearch = this.varSearch + ',';
-      }
-      this.varSearch =
-        this.varSearch + "{'field':'CommerceId','op':'=','value':'" + this.commerceId + "'}";
-    }
-    this.varSearch = this.varSearch + ']}';
-    this.searchCounter = false;
-    this.getTaxes();
-  }
-
-  private getTaxes() {
-    this.loadCompleted = true;
-    /*
-    this.taxesService.getTaxes(this.size, this.varSearch).subscribe(
-      (taxes) => {
-        this.taxes = taxes.data;
-        if(this.taxes.length !== 0) {
-          this.emptySearch = false;
-        } else {
-          this.emptySearch = true;
-        }
-        this.loadCompleted = true;
-      },
-      (error) => {
-        this.taxes = null;
-        if (error.status === 401 || error.status === 404 ||  error.status === 500) {
-          this.emptySearch = true;
-          this.loadCompleted = true;
-        };
-      }
-    );
-    */
-  }
-
-  //Checkboxes
-  selectAllTaxes() {
-    for (const tax of this.taxes) {
-      tax.selected = this.masterSelected;
-    }
-  }
-
-  checkIfAllSelected() {
+  /**
+   * Verifica si todos los impuestos están seleccionados.
+   */
+  public checkIfAllSelected() {
     this.masterSelected = this.taxes.every(c => c.selected);
   }
 
-  //Eliminar impuestos
-  deleteTaxes() {
+  /**
+   * Elimina los impuestos seleccionados.
+   */
+  public deleteTaxes() {
     this.taxes = this.taxes.filter(tax => !tax.selected);
     if (this.taxes.length === 0) {
       this.emptySearch = true;
     }
   }
 
-  //Añadir impuesto
+  /**
+   * Abre el modal para agregar o editar un impuesto.
+   * @param id Identificador del impuesto a editar (opcional).
+   */
   public openTaxesModal(id?: number): void {
     const dialogRef = this.dialog.open(TaxesModalComponent, { data: { id } });
     dialogRef.afterClosed();
   }
 
-  //Descargar impuestos
-  downloadCSV() {
-    this.downloadCsvService.downloadTaxesFile(this.taxes, this.translate.instant('dpos.taxes.page.title'), this.currentLang);
+  /**
+   * Descarga la lista de impuestos en formato CSV.
+   */
+  public downloadCSV() {
+    this.downloadCsvService.downloadTaxesFile(
+      this.taxes,
+      this.translate.instant('dpos.taxes.page.title'),
+      this.currentLang
+    );
   }
 
-  openModal() {
-    this.showModal = true;
-  }
-
-  closeModal() {
+  /**
+   * Cierra el modal de mensajes.
+   */
+  public closeModal() {
     this.showModal = false;
   }
 
-  onCommerceChange(): void {
-    this.commerceId = this.getCommerceId();
-    this.searchTaxes();
-  }
-
-  getCommerceId(): number {
-    const commerce = this.commerces.find(commerce => commerce.commerceNumber === this.commerceSelected);
-    if (commerce !== undefined) {
-      return commerce.commerceId;
-    }
-    return 0;
-  }
-
-  getCommerceNumber(commerceId: number): string {
-    const commerce = this.commerces.find(commerce => commerce.commerceId === commerceId);
-    if (commerce !== undefined) {
-      return commerce.commerceNumber;
-    }
-    return "";
-  }
-
-  private getCommerceResellerName(commerces: Commerce[]): string {
-    const commerce = commerces.find(commerce => commerce.commerceId === this.commerceId);
-    if (commerce !== undefined) {
-      return commerce.resellerName;
-    }
-    return null;
-  }
-
-  private parseCSV(csv: string): { rows: string[][], errors: string[] } {
-    const rows: string[][] = [];
-    const errors: string[] = [];
-    let currentRow: string[] = [];
-    let currentValue = '';
-    let insideQuotes = false;
-
-    for (let i = 0; i < csv.length; i++) {
-      const char = csv[i];
-
-      if (char === '"') {
-        if (insideQuotes && csv[i + 1] === '"') {
-          currentValue += '"';
-          i++;
-        } else {
-          insideQuotes = !insideQuotes;
-        }
-      } else if (char === ',' && !insideQuotes) {
-        currentRow.push(currentValue);
-        currentValue = '';
-      } else if ((char === '\n' || char === '\r') && !insideQuotes) {
-        if (char === '\r' && csv[i + 1] === '\n') i++;
-        currentRow.push(currentValue);
-        rows.push(currentRow);
-        currentRow = [];
-        currentValue = '';
+  /**
+   * Genera la query de búsqueda de impuestos y lanza la obtención de resultados.
+   */
+  private searchTaxes() {
+    this.loadCompleted = false;
+    this.varSearch = "&qs={'and':[";
+    if (this.commerceId !== 0) {
+      if (this.searchCounter) {
+        this.varSearch += ',';
       } else {
-        currentValue += char;
+        this.searchCounter = true;
       }
+      this.varSearch += `{'field':'CommerceId','op':'=','value':'${this.commerceId}'}`;
     }
+    this.varSearch += ']}';
+    this.searchCounter = false;
+    this.getTaxes();
+  }
 
-    if (currentValue !== '' || currentRow.length > 0) {
-      currentRow.push(currentValue);
-      rows.push(currentRow);
-    }
+  /**
+   * Obtiene la lista de impuestos.
+   */
+  private getTaxes() {
+    this.loadCompleted = true;
+  }
 
-    // Validación de filas incompletas
-    const expectedLength = rows[0]?.length ?? 0;
+  /**
+   * Obtiene el número de comercio dado un ID.
+   */
+  private getCommerceNumber(commerceId: number): string {
+    const commerce = this.commerces.find(c => c.commerceId === commerceId);
+    return commerce ? commerce.commerceNumber : "";
+  }
 
-    rows.forEach((row, index) => {
-      if (row.length !== expectedLength) {
-        errors.push(
-          `Error en la fila ${index + 1}: se esperaban ${expectedLength} columnas pero hay ${row.length}.`
-        );
-      }
-    });
-
-    return { rows, errors };
+  /**
+   * Obtiene el nombre del reseller de un comercio.
+   */
+  private getCommerceResellerName(commerces: Commerce[]): string {
+    const commerce = commerces.find(c => c.commerceId === this.commerceId);
+    return commerce ? commerce.resellerName : null;
   }
 }

@@ -78,7 +78,6 @@
                   <th class="text-center">{{ 'dpos.customers.name.label' | translate }}</th>
                   <th class="text-center">{{ 'dpos.customers.phone.label' | translate }}</th>
                   <th class="text-center">{{ 'dpos.customers.mail.label' | translate }}</th>
-                  <th class="text-center">{{ 'dpos.customers.balance.label' | translate }}</th>
                 </tr>
               </thead>
               <ng-template #empty>
@@ -96,7 +95,6 @@
                     <td class="text-center align-middle">{{ customer.name }}</td>
                     <td class="text-center align-middle">{{ customer.phone }}</td>
                     <td class="text-center align-middle">{{ customer.email }}</td>
-                    <td class="text-center align-middle">{{ 0 / Math.pow(10, 2) | currency : "EUR" : "€" }}</td>
                   </tr>
                 </ng-container>
               </tbody>

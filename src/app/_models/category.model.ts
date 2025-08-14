@@ -3,6 +3,6 @@
  */
 export class Category {
 
-  id: string;
+  categoryId: string;
   name: string;
 }

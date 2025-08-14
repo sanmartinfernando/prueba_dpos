@@ -16,7 +16,10 @@ import { SessionService } from '../_services/session.service';
 import { ThemeService } from '../_services/theme.service';
 import { UIStateService } from '../_services/ui-state.service';
 
-
+/**
+ * Componente encargado de gestionar y mostrar informes.
+ * Permite filtrar por fechas, terminales y tipo de informe, así como descargar resultados en CSV.
+ */
 @Component({
   selector: 'app-dpos-reports',
   templateUrl: './reports.component.html',
@@ -54,8 +57,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   totalPercentage = 0;
   totalValuePercentage = 0;
 
-  //Parámetros de búsqueda
-  public terminalsNumber: string[];
+  terminalsNumber: string[];
   terminalSelected: string = null;
   reportVarSearch: string = this.translate.instant('dpos.reports.taxes.label');;
   searchCounter = false;
@@ -75,14 +77,13 @@ export class ReportsComponent implements OnInit, OnDestroy {
   modalTitle = '';
   modalMessage = '';
 
-
+  /**
+   * Constructor del componente.
+   * Inicializa el tema, el estado de la UI y la suscripción a cambios de idioma.
+   */
   constructor() {
-
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
-
-    //Desbloqueamos el selector de comercio;
     this.uiStateService.setFormSelectEnabled(true);
-
     this.currentLang = this.translate.currentLang || 'es';
     this.langSubscription = this.translate.onLangChange.subscribe(event => {
       this.currentLang = event.lang;
@@ -91,24 +92,28 @@ export class ReportsComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Método que se ejecuta al destruirse el componente, cancelando la suscripción a cambios de idioma.
+   */
   ngOnDestroy() {
     this.langSubscription.unsubscribe();
   }
 
+  /**
+   * Inicializa datos de fechas, tipo de informe, terminales y comercios.
+   */
   ngOnInit(): void {
     this.loadCompleted = false;
-
     if (this.sessionService.getItem(SessionService.FROM_DATE) !== null) {
       this.sinceDate = this.formatDate(this.sessionService.getItem(SessionService.FROM_DATE));
     }
-
     if (this.sessionService.getItem(SessionService.TO_DATE) !== null) {
       this.tilDate = this.formatDate(this.sessionService.getItem(SessionService.TO_DATE));
     }
-
     if (this.sessionService.getItem(SessionService.REPORT_TYPE) !== null) {
       this.reportVarSearch = this.getReportVarSearch(this.sessionService.getItem(SessionService.REPORT_TYPE));
-    } else {
+    }
+    else {
       this.sessionService.setItem(SessionService.REPORT_TYPE, -1);
       this.reportVarSearch = this.translate.instant('dpos.reports.taxes.label');
     }
@@ -117,12 +122,11 @@ export class ReportsComponent implements OnInit, OnDestroy {
       this.portalUsersService.getToken(user).subscribe({
         next: (portalUserToken) => {
           this.authService.setPortalUsersToken(portalUserToken.token);
-
           this.commercesService.getCommerceList().subscribe({
             next: (commerces) => {
               this.sessionService.getCommerceId().subscribe((commerceId) => {
                 if (commerceId !== 0) {
-                  this.commerceId = commerceId; // Actualizar el valor en el componente
+                  this.commerceId = commerceId;
                 } else {
                   this.commerceId = commerces[0].commerceId;
                   this.sessionService.setItem(SessionService.COMMERCE_ID, this.commerceId);
@@ -160,11 +164,13 @@ export class ReportsComponent implements OnInit, OnDestroy {
     });
   }
 
-  //Método de búsqueda
-  searchReports() {
-    this.loadCompleted = false;
+  /**
+   * Lleva a cabo la búsqueda de informes según los parámetros de fecha, terminal y tipo.
+   * Valida rangos de fecha y decide qué tipo de informe cargar.
+   */
+  public searchReports() {
 
-    //Seteamos por defecto el año actual
+    this.loadCompleted = false;
     const yearDate = new Date(new Date().getFullYear(), 0);
     if (this.sinceDateMilli > 0) {
       this.sinceDateMilli = Date.parse(this.sinceDate);
@@ -176,7 +182,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
     if (this.tilDateMilli > 0) {
       const date = new Date(this.tilDate);
-      // Establecer la hora a las 23:59
       date.setHours(23, 59, 0, 0);
       this.tilDateMilli = date.getTime();
     } else {
@@ -185,7 +190,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
       this.sessionService.setItem(SessionService.TO_DATE, this.tilDateMilli);
     }
 
-    //Desde fecha
     if (this.sinceDateMilli > 0) {
       if (this.sinceDateMilli > this.tilDateMilli && this.tilDateMilli > 0) {
         this.modalTitle = this.translate.instant('dpos.modal.fromDate.title');
@@ -195,7 +199,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
       }
     }
 
-    //Hasta fecha
     if (this.tilDateMilli > 0) {
       if (this.tilDateMilli < this.sinceDateMilli && this.sinceDateMilli > 0) {
         this.modalTitle = this.translate.instant('dpos.filter.toDate.title');
@@ -205,18 +208,90 @@ export class ReportsComponent implements OnInit, OnDestroy {
       }
     }
 
-    //Cierre y reseteo de parámetros
     this.varSearch += ']}';
     this.searchCounter = false;
-    //Llamada API
     if (this.reportVarSearch === this.translate.instant('dpos.reports.taxes.label') || this.reportVarSearch === this.translate.instant('dpos.reports.paymentmethods.label')) {
       this.getArqueoX();
-    } else {//Productos
+    } else {
       this.getSalesReport();
     }
   }
 
+  /**
+   * Descarga el informe actual en formato CSV según el tipo de informe.
+   */
+  public downloadReports() {
+    if (this.reportVarSearch === this.translate.instant('dpos.reports.taxes.label')) {
+      this.downloadCsvService.downloadArqueoXFile(this.sales, this.translate.instant('dpos.reports.taxes.label'), this.currentLang);
+    } else if (this.reportVarSearch === this.translate.instant('dpos.reports.products.label')) {
+      this.downloadCsvService.downloadSalesReportFile(this.salesReports, this.translate.instant('dpos.reports.products.label'), this.currentLang);
+    } else if (this.reportVarSearch === this.translate.instant('dpos.reports.paymentmethods.label')) {
+      this.downloadCsvService.downloadPaymentMethodsFile(this.sales, this.translate.instant('dpos.reports.paymentmethods.label'), this.currentLang);
+    }
+  }
+
+  /**
+   * Evento al cambiar el terminal seleccionado.
+   * Actualiza el valor en la sesión.
+   */
+  public onTerminalChange(): void {
+    this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
+  }
+
+  /**
+   * Evento al cambiar la fecha inicial.
+   * Actualiza la fecha en la sesión y la almacena en milisegundos.
+   */
+  public onSinceDateChange(): void {
+    this.sessionService.setItem(SessionService.FROM_DATE, this.terminalSelected);
+    this.sinceDate = (document.getElementById('sinceDate') as HTMLInputElement).value;
+    if (this.sinceDate.length > 0) {
+      this.sinceDateMilli = Date.parse(this.sinceDate);
+      this.sessionService.setItem(SessionService.FROM_DATE, this.sinceDateMilli);
+    }
+  }
+
+  /**
+   * Evento al cambiar la fecha final.
+   * Actualiza la fecha en la sesión y la almacena en milisegundos.
+   */
+  public onTilDateChange(): void {
+    this.sessionService.setItem(SessionService.TO_DATE, this.terminalSelected);
+    this.tilDate = (document.getElementById('tilDate') as HTMLInputElement).value;
+    if (this.tilDate.length > 0) {
+      this.tilDateMilli = Date.parse(this.tilDate);
+      this.sessionService.setItem(SessionService.TO_DATE, this.tilDateMilli);
+    }
+  }
+
+  /**
+   * Evento al cambiar el tipo de informe.
+   * Actualiza el tipo en la sesión.
+   */
+  public onReportTypeChange(): void {
+    this.sessionService.setItem(SessionService.REPORT_TYPE, this.getReportType());
+  }
+
+  /**
+   * Cierra el modal mostrado en la interfaz.
+   */
+  public closeModal() {
+    this.showModal = false;
+  }
+
+  /**
+   * Abre el modal en la interfaz.
+   */
+  private openModal() {
+    this.showModal = true;
+  }
+
+  /**
+   * Obtiene datos del Arqueo X desde el servicio correspondiente.
+   * Calcula totales de base, cuota, impuestos y porcentajes.
+   */
   private getArqueoX() {
+    
     this.loadCompleted = false;
     this.arqueoXService.getArqueoX(this.sinceDateMilli, this.tilDateMilli, this.terminalSelected === this.translate.instant('dpos.filter.all') ? null : this.terminalSelected, this.commerceId).subscribe({
       next: (arqueo) => {
@@ -227,7 +302,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
         this.totalPercentage = 0;
         this.totalValuePercentage = 0;
         if (this.sales !== null && this.sales.balanceLines.length > 0) {
-          //Calculo de indicadores totales informes
           for (let i = 0; this.sales.balanceLines !== null && i < this.sales.balanceLines.length; i++) {
             if (this.sales.balanceLines[i].itemType === 1 && this.sales.balanceLines[i].itemValue !== -1) {
               this.totalBase = this.totalBase + this.sales.balanceLines[i].base / Math.pow(10, this.sales.balanceLines[i].decimals);
@@ -262,6 +336,10 @@ export class ReportsComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Obtiene el informe de ventas desde el servicio correspondiente.
+   * Calcula totales de unidades y valor.
+   */
   private getSalesReport() {
     this.loadCompleted = false;
     this.salesReportService.getSalesReport(this.sinceDateMilli, this.tilDateMilli, this.terminalSelected === this.translate.instant('dpos.filter.all') ? null : this.terminalSelected, this.commerceId).subscribe({
@@ -271,7 +349,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
         this.totalUnits = 0;
         this.totalUnitsValor = 0;
         if (this.indexProduct !== null && this.indexProduct.length > 0) {
-          //Calculo indices totales productos
           for (const product of this.indexProduct) {
             this.totalUnits += (product.units ?? 2) / Math.pow(10, 3);
             this.totalUnitsValor += product.total / Math.pow(10, 8);
@@ -291,61 +368,12 @@ export class ReportsComponent implements OnInit, OnDestroy {
     });
   }
 
-  //Boton Descargar
-  downloadReports() {
-    if (this.reportVarSearch === this.translate.instant('dpos.reports.taxes.label')) {
-      this.downloadCsvService.downloadArqueoXFile(this.sales, this.translate.instant('dpos.reports.taxes.label'), this.currentLang);
-    } else if (this.reportVarSearch === this.translate.instant('dpos.reports.products.label')) {
-      this.downloadCsvService.downloadSalesReportFile(this.salesReports, this.translate.instant('dpos.reports.products.label'), this.currentLang);
-    } else if (this.reportVarSearch === this.translate.instant('dpos.reports.paymentmethods.label')) {
-      this.downloadCsvService.downloadPaymentMethodsFile(this.sales, this.translate.instant('dpos.reports.paymentmethods.label'), this.currentLang);
-    }
-  }
-
-  openModal() {
-    this.showModal = true;
-  }
-
-  closeModal() {
-    this.showModal = false;
-  }
-
-  onTerminalChange(): void {
-    this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
-  }
-
-  onSinceDateChange(): void {
-    this.sessionService.setItem(SessionService.FROM_DATE, this.terminalSelected);
-    this.sinceDate = (document.getElementById('sinceDate') as HTMLInputElement).value;
-    if (this.sinceDate.length > 0) {
-      this.sinceDateMilli = Date.parse(this.sinceDate);
-      this.sessionService.setItem(SessionService.FROM_DATE, this.sinceDateMilli);
-    }
-  }
-
-  onTilDateChange(): void {
-    this.sessionService.setItem(SessionService.TO_DATE, this.terminalSelected);
-    this.tilDate = (document.getElementById('tilDate') as HTMLInputElement).value;
-    if (this.tilDate.length > 0) {
-      this.tilDateMilli = Date.parse(this.tilDate);
-      this.sessionService.setItem(SessionService.TO_DATE, this.tilDateMilli);
-    }
-  }
-
-  onReportTypeChange(): void {
-    this.sessionService.setItem(SessionService.REPORT_TYPE, this.getReportType());
-  }
-
-  // Método para convertir timestamp a formato dd/mm/yyyy
-  formatDate(timestamp: number): string {
-    const date = new Date(timestamp);
-    const day = String(date.getDate()).padStart(2, '0'); // Obtener día (con 2 dígitos)
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Obtener mes (agregar 1 porque getMonth empieza desde 0)
-    const year = date.getFullYear(); // Obtener el año
-    return `${year}-${month}-${day}`;
-  }
-
-  getReportVarSearch(reportType: number): string {
+  /**
+   * Devuelve el nombre traducido del tipo de informe según su identificador.
+   * @param reportType Tipo de informe.
+   * @returns Nombre traducido del tipo de informe.
+   */
+  private getReportVarSearch(reportType: number): string {
     let reportTypeValue: string = this.translate.instant('dpos.reports.taxes.label');
     if (reportType !== null) {
       switch (reportType) {
@@ -363,7 +391,11 @@ export class ReportsComponent implements OnInit, OnDestroy {
     return reportTypeValue;
   }
 
-  getReportType(): number {
+  /**
+   * Devuelve el identificador del tipo de informe según su nombre traducido.
+   * @returns Tipo de informe.
+   */
+  private getReportType(): number {
     let reportType = -1;
     if (this.reportVarSearch !== null) {
       switch (this.reportVarSearch) {
@@ -379,5 +411,18 @@ export class ReportsComponent implements OnInit, OnDestroy {
       }
     }
     return reportType;
+  }
+
+  /**
+   * Formatea un timestamp en formato YYYY-MM-DD.
+   * @param timestamp Fecha en milisegundos.
+   * @returns Fecha formateada como string.
+   */
+  private formatDate(timestamp: number): string {
+    const date = new Date(timestamp);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${year}-${month}-${day}`;
   }
 }

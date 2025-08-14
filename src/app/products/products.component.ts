@@ -1,22 +1,25 @@
 import { Component, ElementRef, OnInit, ViewChild, OnDestroy, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs/internal/Subscription';
 import { EncryptionService } from '../_services/encryption.service';
 import { SessionService } from '../_services/session.service';
 import { StorageService } from '../_services/storage.service';
 import { ThemeService } from '../_services/theme.service';
 import { UIStateService } from '../_services/ui-state.service';
-import { TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs/internal/Subscription';
 import { CommercesService } from '../_services/commerces.service';
 import { PortalUsersService } from '../_services/portal-users.service';
 import { AuthService } from '../_services/auth.service';
+import { DownloadCsvService } from '../_services/download-csv.service';
 import { Commerce } from '../_models/commerce.model';
 import { Product } from '../_models/product.model';
 import { Category } from '../_models/category.model';
-import { MatDialog } from '@angular/material/dialog';
-import { DownloadCsvService } from '../_services/download-csv.service';
 
-
+/**
+ * Componente para la gestión de productos:
+ * permite búsqueda, filtrado, importación, exportación y manipulación de datos de productos.
+ */
 @Component({
   selector: 'app-dpos-products',
   templateUrl: './products.component.html',
@@ -41,26 +44,34 @@ export class ProductsComponent implements OnInit, OnDestroy {
   loadCompleted = false;
   size = 10000;
   code: string;
-  Math = Math
+  Math = Math;
+
   productNameVarSearch: string = null;
   productReferenceVarSearch: string = null;
   productBarcodeVarSearch: string = null;
+
   commerces: Commerce[];
   commerceId = 0;
   commerceSelected: string;
+
   currentCategoryPage = 1;
   categorySelected: Category;
-  categories: Category[] = [{ id: "0", name: "Todas las categorías" }, { id: "1", name: "Categoria 1" }, { id: "2", name: "Categoria 2" }];
+  categories: Category[] = [
+    { categoryId: "0", name: "Todas las categorías" },
+    { categoryId: "1", name: "Categoria 1" },
+    { categoryId: "2", name: "Categoria 2" }
+  ];
 
   currentProductsPage = 1;
-  products: Product[] = [{ id: "1", name: "Producto 1", price: 1000, reference: "Referencia 1", barcode: "Codigo de barras 1", stock: 10 },
-  { id: "2", name: "Producto 2", price: 2000, reference: "Referencia 2", barcode: "Codigo de barras 2", stock: 20 },
-  { id: "3", name: "Producto 3", price: 3000, reference: "Referencia 3", barcode: "Codigo de barras 3", stock: 30 },
-  { id: "4", name: "Producto 4", price: 4000, reference: "Referencia 4", barcode: "Codigo de barras 4", stock: 40 },
-  { id: "5", name: "Producto 5", price: 5000, reference: "Referencia 5", barcode: "Codigo de barras 5", stock: 50 },
-  { id: "6", name: "Producto 6", price: 6000, reference: "Referencia 6", barcode: "Codigo de barras 6", stock: 60 },
-  { id: "7", name: "Producto 7", price: 7000, reference: "Referencia 7", barcode: "Codigo de barras 7", stock: 70 },
-  { id: "8", name: "Producto 8", price: 8000, reference: "Referencia 8", barcode: "Codigo de barras 8", stock: 80 }
+  products: Product[] = [
+    { id: "1", name: "Producto 1", price: 1000, reference: "Referencia 1", barcode: "Codigo de barras 1", stock: 10 },
+    { id: "2", name: "Producto 2", price: 2000, reference: "Referencia 2", barcode: "Codigo de barras 2", stock: 20 },
+    { id: "3", name: "Producto 3", price: 3000, reference: "Referencia 3", barcode: "Codigo de barras 3", stock: 30 },
+    { id: "4", name: "Producto 4", price: 4000, reference: "Referencia 4", barcode: "Codigo de barras 4", stock: 40 },
+    { id: "5", name: "Producto 5", price: 5000, reference: "Referencia 5", barcode: "Codigo de barras 5", stock: 50 },
+    { id: "6", name: "Producto 6", price: 6000, reference: "Referencia 6", barcode: "Codigo de barras 6", stock: 60 },
+    { id: "7", name: "Producto 7", price: 7000, reference: "Referencia 7", barcode: "Codigo de barras 7", stock: 70 },
+    { id: "8", name: "Producto 8", price: 8000, reference: "Referencia 8", barcode: "Codigo de barras 8", stock: 80 }
   ];
 
   currentLang: string;
@@ -74,8 +85,6 @@ export class ProductsComponent implements OnInit, OnDestroy {
   modalMessage = '';
 
   constructor() {
-
-    //Desbloqueamos el selector de comercio;
     this.uiStateService.setFormSelectEnabled(true);
     this.currentLang = this.translate.currentLang || 'es';
     this.langSubscription = this.translate.onLangChange.subscribe(event => {
@@ -83,173 +92,147 @@ export class ProductsComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Inicializa la carga de datos, categorías y configuración inicial del componente.
+   */
   ngOnInit(): void {
     this.loadCompleted = false;
-    if (this.sessionService.getItem(SessionService.PRODUCT_NAME) !== null) {
-      this.productNameVarSearch = this.sessionService.getItem(SessionService.PRODUCT_NAME);
-    }
-    if (this.sessionService.getItem(SessionService.PRODUCT_REFERENCE) !== null) {
-      this.productReferenceVarSearch = this.sessionService.getItem(SessionService.PRODUCT_REFERENCE);
-    }
-    if (this.sessionService.getItem(SessionService.PRODUCT_BARCODE) !== null) {
-      this.productBarcodeVarSearch = this.sessionService.getItem(SessionService.PRODUCT_BARCODE);
-    }
-    this.storageService.userInfo.subscribe((user) => {
+    this.productNameVarSearch = this.sessionService.getItem(SessionService.PRODUCT_NAME) || null;
+    this.productReferenceVarSearch = this.sessionService.getItem(SessionService.PRODUCT_REFERENCE) || null;
+    this.productBarcodeVarSearch = this.sessionService.getItem(SessionService.PRODUCT_BARCODE) || null;
+    this.storageService.userInfo.subscribe(user => {
       this.portalUsersService.getToken(user).subscribe({
-        next: (portalUserToken) => {
+        next: portalUserToken => {
           this.authService.setPortalUsersToken(portalUserToken.token);
           this.commercesService.getCommerceList().subscribe({
-            next: (commerces) => {
+            next: commerces => {
               this.commerces = commerces;
-              this.sessionService.getCommerceId().subscribe((commerceId) => {
-                if (commerceId !== 0) {
-                  this.commerceId = commerceId; // Actualizar el valor en el componente
-                } else {
-                  this.commerceId = commerces[0].commerceId;
+              this.sessionService.getCommerceId().subscribe(commerceId => {
+                this.commerceId = commerceId !== 0 ? commerceId : commerces[0].commerceId;
+                if (commerceId === 0) {
                   this.sessionService.setItem(SessionService.COMMERCE_ID, this.commerceId);
                 }
                 this.themeService.loadTheme(this.getCommerceResellerName(commerces));
                 this.commerceSelected = this.getCommerceNumber(this.commerceId);
-
                 this.categorySelected = this.categories[0];
                 this.searchProducts();
               });
             },
-            error: (error) => {
-              console.error("Error Commerces: ", error);
-            }
+            error: error => console.error("Error Commerces: ", error)
           });
         },
-        error: (error) => {
-          console.error("Error Portal user token", error);
-        }
+        error: error => console.error("Error Portal user token", error)
       });
     });
   }
 
+  /**
+   * Libera recursos al destruir el componente.
+   */
   ngOnDestroy() {
     this.langSubscription.unsubscribe();
   }
 
-  onProductNameChange(): void {
+  /**
+   * Guarda el valor de búsqueda del nombre del producto en la sesión.
+   */
+  public onProductNameChange(): void {
     this.sessionService.setItem(SessionService.PRODUCT_NAME, this.productNameVarSearch);
   }
 
-  onProductReferenceChange(): void {
+  /**
+   * Guarda el valor de búsqueda de referencia del producto en la sesión.
+   */
+  public onProductReferenceChange(): void {
     this.sessionService.setItem(SessionService.PRODUCT_REFERENCE, this.productReferenceVarSearch);
   }
 
-  onProductBarcodeChange(): void {
+  /**
+   * Guarda el valor de búsqueda de código de barras del producto en la sesión.
+   */
+  public onProductBarcodeChange(): void {
     this.sessionService.setItem(SessionService.PRODUCT_BARCODE, this.productBarcodeVarSearch);
   }
 
-  cleanFormFields(): void {
+  /**
+   * Limpia los campos de búsqueda y resetea valores en sesión.
+   */
+  public cleanFormFields(): void {
     this.productNameVarSearch = "";
     this.productReferenceVarSearch = "";
     this.productBarcodeVarSearch = "";
-    this.sessionService.setItem(SessionService.CUSTOMER_NIF, this.productNameVarSearch);
-    this.sessionService.setItem(SessionService.CUSTOMER_NAME, this.productReferenceVarSearch);
-    this.sessionService.setItem(SessionService.CUSTOMER_LASTNAME, this.productBarcodeVarSearch);
+    this.sessionService.setItem(SessionService.CUSTOMER_NIF, "");
+    this.sessionService.setItem(SessionService.CUSTOMER_NAME, "");
+    this.sessionService.setItem(SessionService.CUSTOMER_LASTNAME, "");
   }
 
-  getCommerceNumber(commerceId: number): string {
-    const commerce = this.commerces.find(commerce => commerce.commerceId === commerceId);
-    if (commerce !== undefined) {
-      return commerce.commerceNumber;
-    }
-    return "";
-  }
-
-  searchProducts() {
+  /**
+   * Genera la consulta de búsqueda y obtiene los productos.
+   */
+  public searchProducts() {
     this.validationVariable = false;
     this.loadCompleted = false;
-
-    //Comienzo query búsqueda
     this.varSearch = "&qs={'and':[";
-
-    //Commerce id
-    if (this.commerceId !== 0) {
-      if (this.searchCounter === false) {
+    const filters = [
+      { field: 'CommerceId', value: this.commerceId },
+      { field: 'name', value: this.productNameVarSearch },
+      { field: 'reference', value: this.productReferenceVarSearch },
+      { field: 'barcode', value: this.productBarcodeVarSearch }
+    ];
+    filters.forEach(filter => {
+      if (filter.value !== null && filter.value !== "" && filter.value !== 0) {
+        if (this.searchCounter) this.varSearch += ',';
         this.searchCounter = true;
-      } else {
-        this.varSearch = this.varSearch + ',';
+        this.varSearch += `{'field':'${filter.field}','op':'=*.*','value':'${filter.value}'}`;
       }
-      this.varSearch =
-        this.varSearch + "{'field':'CommerceId','op':'=','value':'" + this.commerceId + "'}";
-    }
-
-    //Nombre Producto
-    if (this.productNameVarSearch !== null && this.productNameVarSearch !== "") {
-      if (this.searchCounter === false) {
-        this.searchCounter = true;
-      } else {
-        this.varSearch = this.varSearch + ',';
-      }
-      this.varSearch = this.varSearch + "{'field':'name','op':'=*.*','value':'" + this.productNameVarSearch + "'}";
-    }
-
-    //Referencia Producto
-    if (this.productReferenceVarSearch !== null && this.productReferenceVarSearch !== "") {
-      if (this.searchCounter === false) {
-        this.searchCounter = true;
-      } else {
-        this.varSearch = this.varSearch + ',';
-      }
-      this.varSearch = this.varSearch + "{'field':'reference','op':'=*.*','value':'" + this.productReferenceVarSearch + "'}";
-    }
-
-    //Codigo de barras
-    if (this.productBarcodeVarSearch !== null && this.productBarcodeVarSearch !== "") {
-      if (this.searchCounter === false) {
-        this.searchCounter = true;
-      } else {
-        this.varSearch = this.varSearch + ',';
-      }
-      this.varSearch = this.varSearch + "{'field':'barcode','op':'=*.*','value':'" + this.productBarcodeVarSearch + "'}";
-    }
-
-    this.varSearch = this.varSearch + ']}';
+    });
+    this.varSearch += ']}';
     this.searchCounter = false;
     this.getProducts();
   }
 
-  public onCategoryChange(): void {
-    //  this.getModels();
-  }
-
-  //Añadir product
-  addProduct() {
+  /**
+   * Inicia el flujo para agregar un nuevo producto.
+   */
+  public addProduct() {
     this.sendProductDetails(null);
   }
 
-  //Encriptación
-  sendProductDetails(id: string) {
-    if (!id) {
-      this.code = '/product-details'
-    } else {
-      this.code = this.encryptionService.encryptData(id);
-      this.code = '/product-details/' + this.encryptionService.encode(this.code);
-    }
+  /**
+   * Envía los detalles de un producto, con cifrado si aplica.
+   */
+  public sendProductDetails(id: string) {
+    this.code = !id
+      ? '/product-details'
+      : `/product-details/${this.encryptionService.encode(this.encryptionService.encryptData(id))}`;
   }
 
-  //Eliminar productos
-  deleteProduct(productId: string) {
-    this.products = this.products.filter(product => product.id !== productId);
-    if (this.products.length === 0) {
-      this.emptySearch = true;
-    }
+  /**
+   * Elimina un producto de la lista por su ID.
+   */
+  public deleteProduct(productId: string) {
+    this.products = this.products.filter(p => p.id !== productId);
+    if (!this.products.length) this.emptySearch = true;
   }
 
-  downloadCSV() {
+  /**
+   * Descarga el listado de productos en formato CSV.
+   */
+  public downloadCSV() {
     this.downloadCsvService.downloadProductsFile(this.products, this.translate.instant('dpos.products.page.title'), this.currentLang);
   }
 
-  //Importar clientes
-  importProducts() {
+  /**
+   * Abre el selector de archivos para importar productos.
+   */
+  public importProducts() {
     this.productFileInput.nativeElement.click();
   }
 
-  onProductFileSelected(event: Event) {
+  /**
+   * Procesa el archivo CSV de productos.
+   */
+  public onProductFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (!input.files?.length) return;
     const file = input.files[0];
@@ -257,70 +240,57 @@ export class ProductsComponent implements OnInit, OnDestroy {
     reader.onload = () => {
       const text = reader.result as string;
       const { rows, errors } = this.parseCSV(text);
-      if (errors.length <= 0) {
-        const products: Product[] = [];
-        for (let i = 0; i < rows.length; i++) {
-          const product: Product = new Product();
-          product.id = i.toString();
-          product.reference = rows[i][0];
-          product.barcode = rows[i][1];
-          product.name = rows[i][2];
-          product.price = Number(rows[i][3]);
-          product.stock = Number(rows[i][4]);
-          products.push(product);
-        }
+      if (!errors.length) {
+        const products: Product[] = rows.map((row, i) => ({
+          id: i.toString(),
+          reference: row[0],
+          barcode: row[1],
+          name: row[2],
+          price: Number(row[3]),
+          stock: Number(row[4])
+        }));
         this.showModal = true;
         this.modalTitle = 'Importación de productos';
         this.modalMessage = 'Productos importados correctamente';
-
-        if (!this.products)
-          this.products = [];
-
-        this.products.push(...products);
-
-        if (this.products.length > 0)
-          this.emptySearch = false;
+        this.products = [...(this.products || []), ...products];
+        if (this.products.length) this.emptySearch = false;
       }
     };
     reader.readAsText(file);
   }
 
-  closeModal() {
+  /**
+   * Cierra el modal de mensajes.
+   */
+  public closeModal() {
     this.showModal = false;
   }
 
+  /**
+   * Devuelve el número de comercio según su ID.
+   */
+  private getCommerceNumber(commerceId: number): string {
+    return this.commerces.find(c => c.commerceId === commerceId)?.commerceNumber || "";
+  }
+
+  /**
+   * Obtiene el nombre del comercio para el comercio actual.
+   */
   private getCommerceResellerName(commerces: Commerce[]): string {
-    const commerce = commerces.find(commerce => commerce.commerceId === this.commerceId);
-    if (commerce !== undefined) {
-      return commerce.resellerName;
-    }
-    return null;
+    return commerces.find(c => c.commerceId === this.commerceId)?.resellerName || null;
   }
 
+  /**
+   * Obtiene los productos a través de la llamada al servicio correspondiente.
+   */
   private getProducts() {
-    /*
-    this.productsService.getProducts(this.size, this.varSearch).subscribe(
-      (products) => {
-        this.products = products.data;
-        if(this.products.length !== 0) {
-          this.emptySearch = false;
-        } else {
-          this.emptySearch = true;
-        }
-        this.loadCompleted = true;
-      },
-      (error) => {
-        this.products = null;
-        if (error.status === 401 || error.status === 404 ||  error.status === 500) {
-          this.emptySearch = true;
-          this.loadCompleted = true;
-        };
-      }
-    );
-    */
+    this.loadCompleted = true;
   }
 
-  private parseCSV(csv: string): { rows: string[][], errors: string[] } {
+  /**
+   * Parsea un texto CSV a un array de filas y valida su consistencia.
+   */
+  private parseCSV(csv: string): { rows: string[][]; errors: string[] } {
     const rows: string[][] = [];
     const errors: string[] = [];
     let currentRow: string[] = [];
@@ -329,7 +299,6 @@ export class ProductsComponent implements OnInit, OnDestroy {
 
     for (let i = 0; i < csv.length; i++) {
       const char = csv[i];
-
       if (char === '"') {
         if (insideQuotes && csv[i + 1] === '"') {
           currentValue += '"';
@@ -351,19 +320,15 @@ export class ProductsComponent implements OnInit, OnDestroy {
       }
     }
 
-    if (currentValue !== '' || currentRow.length > 0) {
+    if (currentValue || currentRow.length) {
       currentRow.push(currentValue);
       rows.push(currentRow);
     }
 
-    // Validación de filas incompletas
     const expectedLength = rows[0]?.length ?? 0;
-
     rows.forEach((row, index) => {
       if (row.length !== expectedLength) {
-        errors.push(
-          `Error en la fila ${index + 1}: se esperaban ${expectedLength} columnas pero hay ${row.length}.`
-        );
+        errors.push(`Error en la fila ${index + 1}: se esperaban ${expectedLength} columnas pero hay ${row.length}.`);
       }
     });
 

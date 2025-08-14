@@ -79,7 +79,7 @@ export class EvolutionCMFilter {
    * 
    * @returns Una cadena JSON que representa el filtro de evolución de movimientos de efectivo.
    */
-  toJSON(): string {
+  public toJSON(): string {
     return JSON.stringify(this.idEvoCashMovement);
   }
 }

@@ -51,7 +51,7 @@ export class CashMovementsFilter {
    * 
    * @returns Una cadena JSON que representa el filtro de movimientos de caja.
    */
-  toJSON(): string {
+  public toJSON(): string {
     return JSON.stringify(this.idCashMovement);
   }
 }
