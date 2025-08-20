@@ -1,5 +1,3 @@
-import { Category } from "./category.model";
-import { Modifiers } from "./modifiers.model";
 import { Tax } from "./tax.model";
 
 /**
@@ -15,14 +13,14 @@ export class Product {
   name: string;
   price: number;
   type: number;
-  favourite: boolean;
+  favourite: boolean = false;
   categories: string[] = [];
   modifiers: string[] = [];
   epigraph: string;
-  noticeKitchen: boolean;
+  noticeKitchen: boolean = false;
   unitMeasurement: number;
   stock: number;
-  noticeBar: boolean;
+  noticeBar: boolean = false;
 
   barcode?: string;
   reference?: string;

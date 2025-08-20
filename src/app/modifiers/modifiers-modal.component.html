@@ -31,22 +31,37 @@
           <div class="col-md-6 mb-3">
             <label class="form-label" for="modifier1">{{ 'dpos.modifiers-modal.form.modifier1' | translate }}</label>
             <input type="text" class="form-control" id="modifier1" formControlName="modifier1" name="modifier1" />
+            <div *ngIf="modifiersForm.get('modifier1')?.invalid && modifiersForm.get('modifier1')?.touched" class="text-danger">
+              {{ 'dpos.customers.details.form.mandatory' | translate }}
+            </div>
           </div>
           <div class="col-md-6 mb-3">
             <label class="form-label" for="modifier2">{{ 'dpos.modifiers-modal.form.modifier2' | translate }}</label>
             <input type="text" class="form-control" id="modifier2" formControlName="modifier2" name="modifier2" />
+            <div *ngIf="modifiersForm.get('modifier2')?.invalid && modifiersForm.get('modifier2')?.touched" class="text-danger">
+              {{ 'dpos.customers.details.form.mandatory' | translate }}
+            </div>
           </div>
           <div class="col-md-6 mb-3">
             <label class="form-label" for="modifier3">{{ 'dpos.modifiers-modal.form.modifier3' | translate }}</label>
             <input type="text" class="form-control" id="modifier3" formControlName="modifier3" name="modifier3" />
+            <div *ngIf="modifiersForm.get('modifier3')?.invalid && modifiersForm.get('modifier3')?.touched" class="text-danger">
+              {{ 'dpos.customers.details.form.mandatory' | translate }}
+            </div>
           </div>
           <div class="col-md-6 mb-3">
             <label class="form-label" for="modifier4">{{ 'dpos.modifiers-modal.form.modifier4' | translate }}</label>
             <input type="text" class="form-control" id="modifier4" formControlName="modifier4" name="modifier4" />
+            <div *ngIf="modifiersForm.get('modifier4')?.invalid && modifiersForm.get('modifier4')?.touched" class="text-danger">
+              {{ 'dpos.customers.details.form.mandatory' | translate }}
+            </div>
           </div>
           <div class="col-md-6 mb-3">
             <label class="form-label" for="modifier5">{{ 'dpos.modifiers-modal.form.modifier5' | translate }}</label>
             <input type="text" class="form-control" id="modifier5" formControlName="modifier5" name="modifier5" />
+            <div *ngIf="modifiersForm.get('modifier5')?.invalid && modifiersForm.get('modifier5')?.touched" class="text-danger">
+              {{ 'dpos.customers.details.form.mandatory' | translate }}
+            </div>
           </div>
         </div>
       </div>

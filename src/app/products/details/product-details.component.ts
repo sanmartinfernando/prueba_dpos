@@ -15,6 +15,7 @@ import { Modifiers } from '../../_models/modifiers.model';
 import { CategoryModalComponent } from 'src/app/categories/category-modal.component';
 import { ModifiersModalComponent } from 'src/app/modifiers/modifiers-modal.component';
 import { ProductsService } from 'src/app/_services/products.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 /**
  * Componente que gestiona la vista y edición de detalles de un producto,
@@ -27,6 +28,7 @@ import { ProductsService } from 'src/app/_services/products.service';
 export class ProductDetailsComponent implements OnInit {
 
   private authService = inject(AuthService);
+  private fb = inject(FormBuilder);
   private encryptionService = inject(EncryptionService);
   private portalUsersService = inject(PortalUsersService);
   private sessionService = inject(SessionService);
@@ -55,9 +57,26 @@ export class ProductDetailsComponent implements OnInit {
 
   public modifiers: Modifiers[] = [];
 
+  public productForm: FormGroup;
+
   constructor() {
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
     this.uiStateService.setFormSelectEnabled(false);
+
+    this.productForm = this.fb.group({
+      name: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
+      categories: [[], [Validators.required, Validators.pattern(/^\bcategory:\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\b$/)]],
+      modifiers: ['', [Validators.required, Validators.pattern(/^\bmodifier:\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\b$/)]],
+      stock: ['', [Validators.required]],
+      epigraph: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
+      barcode: ['',[Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
+      reference: ['',[Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
+      priceType: ['', [Validators.required]],
+      price: ['', [Validators.required]],
+      taxes: ['',[Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
+      unitMeasurement: ['', [Validators.required]],
+      description: ['',[Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,250}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]]
+    });
   }
 
   /**
@@ -150,9 +169,13 @@ export class ProductDetailsComponent implements OnInit {
   }
 
   /**
-   * Guarda el producto actual, ya sea creándolo o actualizándolo.
+   * Envía el formulario de producto, y volvemos a la pantalla de listado de productos.
    */
   public saveProduct(): void {
+    if (this.productForm.invalid) {
+      this.productForm.markAllAsTouched();
+      return;
+    }
     if (this.product) {
       this.updateProduct();
     } else {
@@ -166,13 +189,11 @@ export class ProductDetailsComponent implements OnInit {
    * @returns {string} Cadena con los nombres de las categorías seleccionadas,
    *                   o una cadena vacía si no hay categorías seleccionadas.
    */
-  public getSelectedCategoryNames(): string {
-    if (!this.categoryIdSelected || this.categoryIdSelected.length === 0) {
-      return '';
-    }
+  public getSelectedCategoryNames(selectedIds: string[]): string {
+    if (!selectedIds || selectedIds.length === 0) return '';
     return this.categories
-      .filter(c => this.categoryIdSelected.includes(c.categoryId))
-      .map(c => c.name)
+      .filter(cat => selectedIds.includes(cat.categoryId))
+      .map(cat => cat.name)
       .join(', ');
   }
 
@@ -182,26 +203,36 @@ export class ProductDetailsComponent implements OnInit {
    * @returns {string} Nombre del modificador seleccionado,
    *                   o una cadena vacía si no hay modificador seleccionado.
    */
-  public getSelectedModifiersName(): string {
-    if (!this.modifiersIdSelected) {
-      return '';
-    }
-    const modifier = this.modifiers.find(m => m.modifierId === this.modifiersIdSelected);
-    return modifier ? modifier.name : '';
+  public getSelectedModifiersName(selectedId: string): string {
+    const mod = this.modifiers.find(m => m.modifierId === selectedId);
+    return mod ? mod.name : '';
   }
 
   /**
    * Actualiza un producto existente.
    */
   private updateProduct(): void {
-    this.code = '/products';
+    this.setProductFields();
+    /*
+    this.productsService.saveProduct(this.product, this.commerceId).subscribe({
+      next: () => this.code = '/products',
+      error: () => this.code = '/products'
+    });
+    */
   }
 
   /**
    * Crea un nuevo producto.
    */
   private createProduct(): void {
-    this.code = '/products';
+    this.product = new Product();
+    this.setProductFields();
+    /*
+    this.productsService.saveProduct(this.product, this.commerceId).subscribe({
+      next: () => this.code = '/products',
+      error: () => this.code = '/products'
+    });
+    */
   }
 
   /**
@@ -232,5 +263,12 @@ export class ProductDetailsComponent implements OnInit {
         //TODO
       }
     });
+  }
+
+  /**
+   * Asigna los valores del formulario al objeto `Product`.
+   */
+  private setProductFields(): void {
+    Object.assign(this.product, this.productForm.value);
   }
 }
