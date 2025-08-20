@@ -6,7 +6,7 @@ export class Modifiers {
 
   static readonly MODIFIERS_SEPARATOR = ";";
 
-  id: string;
+  modifierId: string;
   name: string;
-  modifiers: string;
+  modifiers: string[];
 }

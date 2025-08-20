@@ -7,6 +7,7 @@ const BALANCES = 'Balances';
 const CASHMOVEMENTS = 'CashMovements';
 const CUSTOMERS = 'client';
 const CATEGORIES = 'category';
+const MODIFIERS = 'modifier';
 const PRODUCTS = 'Products';
 const TAXES = 'Taxes';
 
@@ -41,6 +42,8 @@ export const RestRoutes = {
   CUSTOMERS_INFO: `${API}/${CUSTOMERS}?size=`,
 
   CATEGORIES: `${CATEGORIES}`,
+
+  MODIFIERS: `${MODIFIERS}`,
 
   PRODUCTS: `${API}/${PRODUCTS}/`,
   PRODUCTS_INFO: `${API}/${PRODUCTS}?size=`,

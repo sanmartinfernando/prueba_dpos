@@ -14,6 +14,7 @@ import { Category } from 'src/app/_models/category.model';
 import { Modifiers } from '../../_models/modifiers.model';
 import { CategoryModalComponent } from 'src/app/categories/category-modal.component';
 import { ModifiersModalComponent } from 'src/app/modifiers/modifiers-modal.component';
+import { ProductsService } from 'src/app/_services/products.service';
 
 /**
  * Componente que gestiona la vista y edición de detalles de un producto,
@@ -34,6 +35,7 @@ export class ProductDetailsComponent implements OnInit {
   private uiStateService = inject(UIStateService);
   private activatedRoute = inject(ActivatedRoute);
   private translate = inject(TranslateService);
+  private productsService = inject(ProductsService);
   private dialog = inject(MatDialog);
 
   public loadCompleted = false;
@@ -48,15 +50,10 @@ export class ProductDetailsComponent implements OnInit {
   public salesEndDate: string;
   public salesEndDateMilli: number;
 
-  public categories: Category[] = [
-    { categoryId: '0', name: 'Todas las categorías' },
-    { categoryId: '1', name: 'Categoria 1' },
-    { categoryId: '2', name: 'Categoria 2' }
-  ];
+  public categories: Category[] = [];
+  public commerceId: string = null;
 
-  public modifiers: Modifiers[] = [
-    { id: '0', name: 'Punto de la carne', modifiers: 'muy hecho, hecho, al punto, crudo' }
-  ];
+  public modifiers: Modifiers[] = [];
 
   constructor() {
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
@@ -71,6 +68,7 @@ export class ProductDetailsComponent implements OnInit {
       this.portalUsersService.getToken(user).subscribe({
         next: (portalUserToken) => {
           this.authService.setPortalUsersToken(portalUserToken.token);
+          this.commerceId = this.sessionService.getItem(SessionService.COMMERCE_ID);
           const idParam = this.activatedRoute.snapshot.params['id'];
           if (idParam) {
             this.idProduct = this.encryptionService.decode(idParam);
@@ -79,6 +77,8 @@ export class ProductDetailsComponent implements OnInit {
           } else {
             this.titlePage = this.translate.instant('dpos.product-details.page.add.title');
           }
+          this.getAllCategories();
+          this.getAllModifiers();
           this.loadCompleted = true;
         },
         error: (error) => {
@@ -101,7 +101,13 @@ export class ProductDetailsComponent implements OnInit {
    */
   public openCategoriesModal(id?: string): void {
     const dialogRef = this.dialog.open(CategoryModalComponent, { data: { id } });
-    dialogRef.afterClosed();
+    dialogRef.afterClosed().subscribe(category => {
+      if (category) {
+        this.getAllCategories();
+      } else {
+        //TODO Error
+      }
+    });
   }
 
   /**
@@ -110,7 +116,35 @@ export class ProductDetailsComponent implements OnInit {
    */
   public openModifiersModal(id?: string): void {
     const dialogRef = this.dialog.open(ModifiersModalComponent, { data: { id } });
-    dialogRef.afterClosed();
+    dialogRef.afterClosed().subscribe(modifier => {
+      if (modifier) {
+        this.getAllModifiers();
+      } else {
+        //TODO Error
+      }
+    });
+  }
+
+  /**
+   * Abre la acción de edición para una categoría sin disparar la selección en el mat-select.
+   *
+   * @param category - Objeto de la categoría seleccionada que se desea editar.
+   * @param event - Evento del clic en el botón de editar. Se detiene la propagación
+   *                para evitar que el mat-option cambie el estado de selección.
+   */
+  public editCategory(category: any, event: MouseEvent) {
+    event.stopPropagation();
+  }
+
+  /**
+   * Abre la acción de edición para un modificador sin disparar la selección en el mat-select.
+   *
+   * @param modifier - Objeto del modificador seleccionado que se desea editar.
+   * @param event - Evento del clic en el botón de editar. Se detiene la propagación
+   *                para evitar que el mat-option cambie el estado de selección.
+   */
+  public editModifier(modifier: any, event: MouseEvent) {
+    event.stopPropagation();
   }
 
   /**
@@ -125,6 +159,36 @@ export class ProductDetailsComponent implements OnInit {
   }
 
   /**
+   * Devuelve los nombres de las categorías seleccionadas en forma de cadena separada por comas.
+   *
+   * @returns {string} Cadena con los nombres de las categorías seleccionadas,
+   *                   o una cadena vacía si no hay categorías seleccionadas.
+   */
+  public getSelectedCategoryNames(): string {
+    if (!this.categoryIdSelected || this.categoryIdSelected.length === 0) {
+      return '';
+    }
+    return this.categories
+      .filter(c => this.categoryIdSelected.includes(c.categoryId))
+      .map(c => c.name)
+      .join(', ');
+  }
+
+  /**
+   * Devuelve el nombre del modificador seleccionado.
+   *
+   * @returns {string} Nombre del modificador seleccionado,
+   *                   o una cadena vacía si no hay modificador seleccionado.
+   */
+  public getSelectedModifiersName(): string {
+    if (!this.modifiersIdSelected) {
+      return '';
+    }
+    const modifier = this.modifiers.find(m => m.modifierId === this.modifiersIdSelected);
+    return modifier ? modifier.name : '';
+  }
+
+  /**
    * Actualiza un producto existente.
    */
   private updateProduct(): void {
@@ -136,5 +200,35 @@ export class ProductDetailsComponent implements OnInit {
    */
   private createProduct(): void {
     this.code = '/products';
+  }
+
+  /**
+   * Devuelve el listado de categorías para el comercio seleccionado.
+   */
+  private getAllCategories() {
+    this.productsService.getAllCategories(this.commerceId.toString()).subscribe({
+      next: (categories) => {
+        this.categories = categories;
+        const category: Category = {categoryId: "0", name: this.translate.instant('dpos.filter.all')};
+        this.categories.unshift(category);
+      },
+      error: () => {
+        //TODO
+      }
+    });
+  }
+
+  /**
+   * Devuelve el listado de modificadores para el comercio seleccionado.
+   */
+  private getAllModifiers() {
+    this.productsService.getAllModifiers(this.commerceId.toString()).subscribe({
+      next: (modifiers) => {
+        this.modifiers = modifiers;
+      },
+      error: () => {
+        //TODO
+      }
+    });
   }
 }

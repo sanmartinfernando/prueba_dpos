@@ -4,7 +4,8 @@
   <form class="row g-3 px-2">
     <div class="col-12 col-sm-6 col-md-4 col-lg-2">
       <label class="form-label" for="category">{{ 'dpos.products.category.form.label' | translate }}</label>
-      <select class="form-select" id="category" name="category">
+      <select class="form-select" id="category" name="category" [(ngModel)]="categorySelected">
+        <option *ngFor="let category of categories" [value]="category.categoryId">{{ category.name }}</option>
       </select>
     </div>
     <div class="col-12 col-sm-6 col-md-4 col-lg-2">
@@ -40,7 +41,7 @@
           <h5 *ngIf="categorySelected"><b>{{ 'dpos.products.page.title' | translate }}</b></h5>
         </div>
         <div class="col-12 col-md-6 text-md-end text-center mt-3 mt-md-0 d-flex flex-wrap gap-2 justify-content-md-end justify-content-center">
-          <button class="btn btn-primary" [routerLink]="code" (click)="addProduct()">{{ 'dpos.products.create.btn' | translate }}</button>
+          <button class="btn btn-primary" (click)="addProduct()">{{ 'dpos.products.create.btn' | translate }}</button>
           <button class="btn btn-primary" (click)="importProducts()">&nbsp;{{ 'dpos.products.import.label' | translate }}</button>
           <input type="file" #productFileInput style="display: none" accept=".csv" (change)="onProductFileSelected($event)" />
           <button class="btn btn-outline-info" (click)="downloadCSV()">
@@ -71,7 +72,7 @@
             </thead>
             <tbody>
               <!-- Iteración paginada de productos -->
-              <tr *ngFor="let product of products | paginate: { id: 'productsList', itemsPerPage: 5, currentPage: currentProductsPage }" [routerLink]="code">
+              <tr *ngFor="let product of products | paginate: { id: 'productsList', itemsPerPage: 5, currentPage: currentProductsPage }">
                 <td class="text-center align-middle"><span class="table-title">{{ product.reference }}</span></td>
                 <td class="text-center align-middle">{{ product.barcode }}</td>
                 <td class="text-center align-middle">{{ product.name }}</td>

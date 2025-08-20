@@ -117,8 +117,8 @@ export class CategoryModalComponent implements OnInit {
   private updateCategory(): void {
     this.setCategoryFields();
     this.productsService.saveCategory(this.category, this.commerceId).subscribe({
-      next: () => this.dialogRef.close(),
-      error: () => this.dialogRef.close()
+      next: (savedCategory) => this.dialogRef.close(savedCategory),
+      error: () => this.dialogRef.close(null)
     });
   }
 
@@ -129,8 +129,8 @@ export class CategoryModalComponent implements OnInit {
     this.category = new Category();
     this.setCategoryFields();
     this.productsService.saveCategory(this.category, this.commerceId).subscribe({
-      next: () => this.dialogRef.close(),
-      error: () => this.dialogRef.close()
+      next: (savedCategory) => this.dialogRef.close(savedCategory),
+      error: () => this.dialogRef.close(null)
     });
   }
 

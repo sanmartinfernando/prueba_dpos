@@ -35,6 +35,9 @@ export class SessionService {
   static readonly PRODUCT_REFERENCE = 'productReference';
   static readonly PRODUCT_BARCODE = 'productBarcode';
 
+  // Keys de categorías
+  static readonly CATEGORY_ID = 'categoryId';
+
   private commerceId = new BehaviorSubject<number>(this.getItem(SessionService.COMMERCE_ID) || 0);
   private commerce = new BehaviorSubject<Commerce>(this.getItem(SessionService.COMMERCE) || null);
 

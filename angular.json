@@ -45,6 +45,7 @@
               "src/web.config"
             ],
             "styles": [
+              "@angular/material/prebuilt-themes/cyan-orange.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/assets/themes/theme-did.css"
             ],
@@ -143,6 +144,7 @@
               }
             ],
             "styles": [
+              "@angular/material/prebuilt-themes/cyan-orange.css",
               "src/assets/themes/theme-did.css"
             ],
             "scripts": []

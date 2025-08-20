@@ -27,10 +27,19 @@
             <div class="row">
               <div class="col-md-8 mb-3">
                 <label for="category" class="form-label">{{ 'dpos.product-details.form.category' | translate }}</label>
-                <select class="form-select" id="category" name="category" multiple [(ngModel)]="categoryIdSelected">
-                  <option class="multiple-option" *ngFor="let category of categories" [value]="category.categoryId">{{
-                    category.name }}</option>
-                </select>
+                <mat-form-field appearance="fill" class="w-100">
+                  <mat-select [(value)]="categoryIdSelected" id="category" name="category" class="custom-mat-form-select" multiple>
+                    <mat-select-trigger>{{ getSelectedCategoryNames() }}</mat-select-trigger>
+                    <mat-option *ngFor="let category of categories" [value]="category.categoryId">
+                      <div class="d-flex align-items-center w-100">
+                        <span class="custom-mat-form-span">{{ category.name }}</span>
+                        <button mat-icon-button class="custom-mat-form-icon ms-auto" (click)="editCategory(category, $event)">
+                          <mat-icon>edit</mat-icon>
+                        </button>
+                      </div>
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
               </div>
               <div class="col-md-4 mb-3 d-flex align-items-end justify-content-end">
                 <button class="btn btn-secondary min-btn-width" (click)="openCategoriesModal()">
@@ -41,9 +50,19 @@
             <div class="row">
               <div class="col-md-8 mb-3">
                 <label for="modifiers" class="form-label">{{ 'dpos.product-details.form.modifiers' | translate }}</label>
-                <select class="form-select" id="modifiers" name="modifiers" [(ngModel)]="modifiersIdSelected">
-                  <option *ngFor="let modifier of modifiers" [value]="modifier.id">{{ modifier.name }}</option>
-                </select>
+                <mat-form-field appearance="fill" class="w-100">
+                  <mat-select [(value)]="modifiersIdSelected" id="modifiers" name="modifiers" class="custom-mat-form-select">
+                    <mat-select-trigger>{{ getSelectedModifiersName() }}</mat-select-trigger>
+                    <mat-option *ngFor="let modifier of modifiers" [value]="modifier.modifierId">
+                      <div class="d-flex align-items-center w-100">
+                        <span class="custom-mat-form-span">{{ modifier.name }}</span>
+                        <button mat-icon-button class="custom-mat-form-icon" (click)="editModifier(modifier, $event)">
+                          <mat-icon>edit</mat-icon>
+                        </button>
+                      </div>
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
               </div>
               <div class="col-md-4 mb-3 d-flex align-items-end justify-content-end">
                 <button class="btn btn-secondary min-btn-width" (click)="openModifiersModal()">

@@ -10,6 +10,10 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { QRCodeModule } from 'angularx-qrcode';
 import { CountdownComponent } from 'ngx-countdown';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
@@ -87,6 +91,10 @@ registerLocaleData(localeEs);
         ReactiveFormsModule,
         RouterModule,
         MatDialogModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatIconModule,
+        MatButtonModule,
         FormsModule,
         NgxChartsModule,
         BrowserAnimationsModule,

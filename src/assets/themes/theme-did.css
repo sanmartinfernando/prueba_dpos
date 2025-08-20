@@ -20,11 +20,12 @@
   .responsive-button {
     width: 100%;
   }
-}
-
-@media (max-width: 768px) {
   .header-main, .footer-main {
     padding: 5px 10px 5px 10px !important;
+  }
+  .modal-content {
+    width: 95vw;
+    max-height: 95vh;
   }
 }
 
@@ -246,6 +247,96 @@ footer{
   border-bottom: 8px solid var(--bs-color-grey-200);
   padding: 1rem;
   cursor:pointer;
+}
+
+/** MAT FORMS **/
+
+.mat-mdc-form-field-subscript-wrapper {
+  height: 0px;
+}
+
+.mat-mdc-text-field-wrapper {
+  height: 38px !important;
+  background-color: var(--bs-color-white-100) !important;
+  color: var(--bs-color-black-100) !important;
+  box-shadow: 0 3px 10px -12px #00000008, 0 3px 10px 0 #00000008, 0 3px 10px -5px #00000008 !important;
+  border: 1px solid var(--bs-color-grey-100) !important;
+  border-radius: 10px !important;
+}
+
+.mdc-line-ripple {
+  border: none !important;
+}
+
+.mdc-line-ripple::after {
+  color: var(--bs-color-white-100) !important;
+  border: none !important;
+}
+
+.mdc-line-ripple:before {
+  color: var(--bs-color-white-100) !important;
+  border: none !important;
+}
+
+.mat-mdc-select {
+  background: none !important;
+}
+
+.mat-mdc-select:hover {
+  background: none !important;
+}
+
+.mat-mdc-select-arrow {
+  color:var(--bs-color-black-100) !important;
+}
+
+.mat-mdc-select-arrow:hover {
+  color:var(--bs-color-black-100) !important;
+}
+
+.mat-mdc-select-arrow:active {
+  color:var(--bs-color-black-100) !important;
+}
+
+.mat-mdc-select-panel {
+  background-color: var(--bs-color-white-100) !important;
+  color: var(--bs-color-black-100) !important;
+}
+
+.mat-mdc-option {
+  background-color: var(--bs-color-white-100) !important;
+  color: var(--bs-color-black-100) !important;
+}
+
+.mat-pseudo-checkbox {
+background-color: var(--bs-color-white-100) !important;
+border-color: var(--bs-color-black-100) !important;
+}
+
+.mat-mdc-option-pseudo-checkbox  {
+  background-color: var(--bs-color-white-100) !important;
+  border-color: var(--bs-color-black-100) !important;
+}
+
+.mat-pseudo-checkbox-checked {
+  background-color: var(--bs-color-white-100) !important;
+  border-color: var(--bs-color-black-100) !important;
+}
+
+.custom-mat-form-span {
+  background-color: var(--bs-color-white-100) !important;
+  color: var(--bs-color-black-100) !important;
+}
+
+.custom-mat-form-icon {
+  background-color: var(--bs-color-white-100) !important;
+  color: var(--bs-color-black-100) !important;
+}
+
+.custom-mat-form-select {
+  background-color: var(--bs-color-white-100) !important;
+  color: var(--bs-color-black-100) !important;
+  height: 38px !important;
 }
 
 /*** FIELD FORMS ***/
@@ -915,8 +1006,9 @@ ul.list-icons li i, ul.list-icons li span, ul.list-icons li svg {
   background-color: #fff;
   border-radius: 5px;
   width: 550px;
-  height: 680px;
   max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
   z-index: 1001;
 }
@@ -975,7 +1067,7 @@ ul.list-icons li i, ul.list-icons li span, ul.list-icons li svg {
 }
 
 .modal-body {
-  max-height: 600px; 
+  max-height: calc(80vh - 100px); 
   overflow-y: auto;
   padding-top: 10px;
 }

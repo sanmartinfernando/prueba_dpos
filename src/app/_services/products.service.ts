@@ -7,6 +7,7 @@ import { ProductInfo } from '../_models/product-info.model';
 import { Product } from '../_models/product.model';
 import { TranslateService } from '@ngx-translate/core';
 import { Category } from '../_models/category.model';
+import { Modifiers } from '../_models/modifiers.model';
 
 /**
  * Servicio para gestionar la obtención de productos y sus detalles.
@@ -75,7 +76,7 @@ export class ProductsService {
    * Obtiene una categoría específica por su ID.
    * @param categoryId Id de la categoría a obtener.
    * @param commerceId Id del comercio asociado.
-   * @returns Observable con el cliente obtenido.
+   * @returns Observable con la categoría obtenida.
    */
   public getCategory(categoryId: string, commerceId: string): Observable<Category> {
     if (!categoryId) {
@@ -84,5 +85,70 @@ export class ProductsService {
     const params = new HttpParams().set('commerceId', commerceId);
     const url = `${environment.urlProducts}${RestRoutes.CATEGORIES}/${categoryId}`;
     return this.http.get<Category>(url, { headers: this.httpOptions.headers, params });
+  }
+
+  /**
+   * Obtiene el listado de categorías de un comercio.
+   * @param commerceId Id del comercio asociado.
+   * @returns Observable con el listado de categorías.
+   */
+  public getAllCategories(commerceId: string): Observable<Category[]> {
+    if (!commerceId) {
+      return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
+    }
+    const params = new HttpParams().set('commerceId', commerceId);
+    const url = `${environment.urlProducts}${RestRoutes.CATEGORIES}/all`;
+    return this.http.get<Category[]>(url, { headers: this.httpOptions.headers, params });
+  }
+
+  /**
+   * Crea o actualiza un modificador según tenga definido el ID.
+   * Si el ID no existe, se realiza un POST; de lo contrario, un PUT.
+   * @param modifiers Objeto Modifier con los datos del modificador.
+   * @param commerceId ID del comercio asociado.
+   * @returns Observable con el modificador creado o actualizado.
+   */
+  public saveModifier(modifiers: Modifiers, commerceId: string): Observable<Modifiers> {
+    if (!modifiers || !commerceId || (modifiers.modifierId === null)) {
+      return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
+    }
+
+    const params = new HttpParams().set('commerceId', commerceId);
+    const url = modifiers.modifierId
+      ? `${environment.urlProducts}${RestRoutes.MODIFIERS}/${modifiers.modifierId}`
+      : `${environment.urlProducts}${RestRoutes.MODIFIERS}`;
+
+    return modifiers.modifierId
+      ? this.http.put<Modifiers>(url, modifiers, { headers: this.httpOptions.headers, params })
+      : this.http.post<Modifiers>(url, modifiers, { headers: this.httpOptions.headers, params });
+  }
+
+  /**
+   * Obtiene un modificador específico por su ID.
+   * @param modifierId Id del modificador a obtener.
+   * @param commerceId Id del comercio asociado.
+   * @returns Observable con el modificador obtenido.
+   */
+  public getModifier(modifierId: string, commerceId: string): Observable<Modifiers> {
+    if (!modifierId) {
+      return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
+    }
+    const params = new HttpParams().set('commerceId', commerceId);
+    const url = `${environment.urlProducts}${RestRoutes.MODIFIERS}/${modifierId}`;
+    return this.http.get<Modifiers>(url, { headers: this.httpOptions.headers, params });
+  }
+
+  /**
+   * Obtiene el listado de modificadores de un comercio.
+   * @param commerceId Id del comercio asociado.
+   * @returns Observable con el listado de modificadores.
+   */
+  public getAllModifiers(commerceId: string): Observable<Modifiers[]> {
+    if (!commerceId) {
+      return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
+    }
+    const params = new HttpParams().set('commerceId', commerceId);
+    const url = `${environment.urlProducts}${RestRoutes.MODIFIERS}/all`;
+    return this.http.get<Modifiers[]>(url, { headers: this.httpOptions.headers, params });
   }
 }

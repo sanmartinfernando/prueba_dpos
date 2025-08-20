@@ -4,10 +4,10 @@
     <h2>{{ titlePage }}</h2>
     <button class="modal-close-button" (click)="close()">×</button>
   </div>
-  <div class="modal-body">
-    <div class="container">
-      <!-- Formulario para introducir el grupo de modificadores y el listado de modificadores -->
-      <form (ngSubmit)="onSubmit()">
+  <!-- Formulario para introducir el grupo de modificadores y el listado de modificadores -->
+  <form [formGroup]="modifiersForm" (ngSubmit)="saveModifiers()">
+    <div class="modal-body">
+      <div class="container">
         <div class="row g-3">
           <div class="col-12">
             <h5>{{ 'dpos.modifiers-modal.group.title' | translate }}</h5>
@@ -17,7 +17,10 @@
           </div>
           <div class="col-12">
             <label class="form-label" for="name">{{ 'dpos.modifiers-modal.form.name' | translate }}</label>
-            <input type="text" class="form-control" name="name" id="name" [(ngModel)]="modifiersFormData.name">
+            <input type="text" class="form-control" id="name" formControlName="name" name="name" />
+            <div *ngIf="modifiersForm.get('name')?.invalid && modifiersForm.get('name')?.touched" class="text-danger">
+              {{ 'dpos.customers.details.form.mandatory' | translate }}
+            </div>
           </div>
           <div class="col-12">
             <h5>{{ 'dpos.modifiers-modal.item.title' | translate }}</h5>
@@ -25,33 +28,33 @@
           <div class="col-12">
             <p>{{ 'dpos.modifiers-modal.item.description' | translate }}</p>
           </div>
-          <div class="col-12">
+          <div class="col-md-6 mb-3">
             <label class="form-label" for="modifier1">{{ 'dpos.modifiers-modal.form.modifier1' | translate }}</label>
-            <input type="text" class="form-control" name="modifier1" id="modifier1" [(ngModel)]="modifiersFormData.modifier1">
+            <input type="text" class="form-control" id="modifier1" formControlName="modifier1" name="modifier1" />
           </div>
-          <div class="col-12">
+          <div class="col-md-6 mb-3">
             <label class="form-label" for="modifier2">{{ 'dpos.modifiers-modal.form.modifier2' | translate }}</label>
-            <input type="text" class="form-control" name="modifier2" id="modifier2" [(ngModel)]="modifiersFormData.modifier2">
+            <input type="text" class="form-control" id="modifier2" formControlName="modifier2" name="modifier2" />
           </div>
-          <div class="col-12">
+          <div class="col-md-6 mb-3">
             <label class="form-label" for="modifier3">{{ 'dpos.modifiers-modal.form.modifier3' | translate }}</label>
-            <input type="text" class="form-control" name="modifier3" id="modifier3" [(ngModel)]="modifiersFormData.modifier3">
+            <input type="text" class="form-control" id="modifier3" formControlName="modifier3" name="modifier3" />
           </div>
-          <div class="col-12">
+          <div class="col-md-6 mb-3">
             <label class="form-label" for="modifier4">{{ 'dpos.modifiers-modal.form.modifier4' | translate }}</label>
-            <input type="text" class="form-control" name="modifier4" id="modifier4" [(ngModel)]="modifiersFormData.modifier4">
+            <input type="text" class="form-control" id="modifier4" formControlName="modifier4" name="modifier4" />
           </div>
-          <div class="col-12">
+          <div class="col-md-6 mb-3">
             <label class="form-label" for="modifier5">{{ 'dpos.modifiers-modal.form.modifier5' | translate }}</label>
-            <input type="text" class="form-control" name="modifier5" id="modifier5" [(ngModel)]="modifiersFormData.modifier5">
+            <input type="text" class="form-control" id="modifier5" formControlName="modifier5" name="modifier5" />
           </div>
         </div>
-      </form>
+      </div>
     </div>
-  </div>
-  <!-- Footer del modal con botones para cancelar y guardar -->
-  <div class="modal-footer">
-    <button class="btn btn-outline-danger" (click)="close()">{{'dpos.action.cancel' | translate}}</button>
-    <button type="submit" class="btn btn-primary">{{'dpos.action.save' | translate}}</button>
-  </div>
+    <!-- Footer del modal con botones para cancelar y guardar -->
+    <div class="modal-footer">
+      <button class="btn btn-outline-danger" (click)="close()">{{'dpos.action.cancel' | translate}}</button>
+      <button type="submit" class="btn btn-primary">{{'dpos.action.save' | translate}}</button>
+    </div>
+  </form>
 </div>

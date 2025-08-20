@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild, OnDestroy, inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/internal/Subscription';
@@ -15,6 +15,7 @@ import { DownloadCsvService } from '../_services/download-csv.service';
 import { Commerce } from '../_models/commerce.model';
 import { Product } from '../_models/product.model';
 import { Category } from '../_models/category.model';
+import { ProductsService } from '../_services/products.service';
 
 /**
  * Componente para la gestión de productos:
@@ -38,12 +39,13 @@ export class ProductsComponent implements OnInit, OnDestroy {
   private sessionService = inject(SessionService);
   private authService = inject(AuthService);
   private themeService = inject(ThemeService);
+  private productsService = inject(ProductsService);
+  private router = inject(Router);
 
   @ViewChild('productFileInput') productFileInput!: ElementRef<HTMLInputElement>;
 
   loadCompleted = false;
   size = 10000;
-  code: string;
   Math = Math;
 
   productNameVarSearch: string = null;
@@ -55,12 +57,8 @@ export class ProductsComponent implements OnInit, OnDestroy {
   commerceSelected: string;
 
   currentCategoryPage = 1;
-  categorySelected: Category;
-  categories: Category[] = [
-    { categoryId: "0", name: "Todas las categorías" },
-    { categoryId: "1", name: "Categoria 1" },
-    { categoryId: "2", name: "Categoria 2" }
-  ];
+  categorySelected: string;
+  categories: Category[] = [{categoryId: "0", name:""}];
 
   currentProductsPage = 1;
   products: Product[] = [
@@ -114,7 +112,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
                 }
                 this.themeService.loadTheme(this.getCommerceResellerName(commerces));
                 this.commerceSelected = this.getCommerceNumber(this.commerceId);
-                this.categorySelected = this.categories[0];
+                this.getAllCategories();
                 this.searchProducts();
               });
             },
@@ -202,9 +200,11 @@ export class ProductsComponent implements OnInit, OnDestroy {
    * Envía los detalles de un producto, con cifrado si aplica.
    */
   public sendProductDetails(id: string) {
-    this.code = !id
+    const code = !id
       ? '/product-details'
       : `/product-details/${this.encryptionService.encode(this.encryptionService.encryptData(id))}`;
+
+    this.router.navigate([code]);
   }
 
   /**
@@ -264,6 +264,28 @@ export class ProductsComponent implements OnInit, OnDestroy {
    */
   public closeModal() {
     this.showModal = false;
+  }
+
+  /**
+   * Devuelve el listado de categorías para el comercio seleccionado.
+   */
+  private getAllCategories() {
+    this.productsService.getAllCategories(this.commerceId.toString()).subscribe({
+      next: (categories) => {
+        this.categories = categories;
+        const category: Category = {categoryId: "0", name: this.translate.instant('dpos.filter.all')};
+        this.categories.unshift(category);
+        if (this.sessionService.getItem(SessionService.CATEGORY_ID) === null) {
+          this.categorySelected = this.categories[0].categoryId;
+          this.sessionService.setItem(SessionService.CATEGORY_ID, this.categories[0].categoryId);
+        } else {
+          this.categorySelected = this.categories.find(category => category.categoryId === this.sessionService.getItem(SessionService.CATEGORY_ID)).categoryId;
+        }
+      },
+      error: () => {
+        //TODO
+      }
+    });
   }
 
   /**
