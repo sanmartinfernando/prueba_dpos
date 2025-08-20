@@ -3,7 +3,6 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment.dev-inte';
 import { RestRoutes } from '../_rest/rest-routes.config';
-import { ProductInfo } from '../_models/product-info.model';
 import { Product } from '../_models/product.model';
 import { TranslateService } from '@ngx-translate/core';
 import { Category } from '../_models/category.model';

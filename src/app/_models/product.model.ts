@@ -15,7 +15,7 @@ export enum UnitMeasurement {
  * Mapa que asocia cada valor de {@link UnitMeasurement}
  * con su representación textual abreviada.
  */
-export const UnitMeasurementLabel: { [key in UnitMeasurement]: string } = {
+export const UnitMeasurementLabel: Record<UnitMeasurement, string> = {
   [UnitMeasurement.Unit]: "ud.",
   [UnitMeasurement.Kilogram]: "kg.",
   [UnitMeasurement.Meter]: "m.",
@@ -35,7 +35,7 @@ export enum PriceType {
  * Mapa que asocia cada valor de {@link PriceType}
  * con su representación textual abreviada.
  */
-export const PriceTypeLabel: { [key in PriceType]: string } = {
+export const PriceTypeLabel: Record<PriceType, string> = {
   [PriceType.Normal]: "Precio fijo",
   [PriceType.Variable]: "Precio variable"
 };
@@ -51,14 +51,14 @@ export class Product {
   name: string;
   price: number;
   type: PriceType;
-  favourite: boolean = false;
+  favourite = false;
   categories: string[] = [];
   modifiers: string[] = [];
   epigraph: string;
-  noticeKitchen: boolean = false;
+  noticeKitchen = false;
   unitMeasurement: number;
   stock: number;
-  noticeBar: boolean = false;
+  noticeBar = false;
 
   barcode?: string;
   reference?: string;
