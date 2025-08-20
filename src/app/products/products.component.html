@@ -79,12 +79,12 @@
                 <td class="text-center align-middle">{{ product.price / (Math.pow(10, 2)) | currency : 'EUR' : '€' }}</td>
                 <td class="text-center align-middle">{{ product.stock }}</td>
                 <td class="text-center align-middle">
-                  <button type="button" class="btn-edit" (click)="sendProductDetails(product.id)">
+                  <button type="button" class="btn-edit" (click)="sendProductDetails(product.productId)">
                     <i class="fa-solid fa-pen" style="color: #74c0fc"></i>
                   </button>
                 </td>
                 <td class="text-center align-middle">
-                  <button type="button" class="btn-delete" (click)="deleteProduct(product.id)">
+                  <button type="button" class="btn-delete" (click)="deleteProduct(product.productId)">
                     <i class="fa-solid fa-trash" style="color: #FD716E"></i>
                   </button>
                 </td>

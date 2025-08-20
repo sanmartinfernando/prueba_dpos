@@ -11,24 +11,26 @@ export class Product {
   static readonly TYPE_NORMAL = 0;
   static readonly TYPE_VARIABLE_PRICE = 1;
 
-  id: string;
+  productId: string;
   name: string;
   price: number;
-  salePrice?: number;
-  type?: number;
-  favourite?: boolean;
+  type: number;
+  favourite: boolean;
+  categories: string[] = [];
+  modifiers: string[] = [];
+  epigraph: string;
+  noticeKitchen: boolean;
+  unitMeasurement: number;
   stock: number;
-  barcode: string;
-  reference: string;
+  noticeBar: boolean;
+
+  barcode?: string;
+  reference?: string;
   description?: string;
   tax?: Tax;
   taxExemptCode?: string;
-  categories?: Category[] = [];
-  modifiers?: Modifiers[];
   taxRegimen?: string;
-  epigraph?: string;
-  noticeKitchen?: boolean;
-  unitMeasurement?: number;
+  salePrice?: number;
   startSalesPrice?: number;
   endSalesPrice?: number;
   decorationCategory?: string;

@@ -62,14 +62,14 @@ export class ProductsComponent implements OnInit, OnDestroy {
 
   currentProductsPage = 1;
   products: Product[] = [
-    { id: "1", name: "Producto 1", price: 1000, reference: "Referencia 1", barcode: "Codigo de barras 1", stock: 10 },
-    { id: "2", name: "Producto 2", price: 2000, reference: "Referencia 2", barcode: "Codigo de barras 2", stock: 20 },
-    { id: "3", name: "Producto 3", price: 3000, reference: "Referencia 3", barcode: "Codigo de barras 3", stock: 30 },
-    { id: "4", name: "Producto 4", price: 4000, reference: "Referencia 4", barcode: "Codigo de barras 4", stock: 40 },
-    { id: "5", name: "Producto 5", price: 5000, reference: "Referencia 5", barcode: "Codigo de barras 5", stock: 50 },
-    { id: "6", name: "Producto 6", price: 6000, reference: "Referencia 6", barcode: "Codigo de barras 6", stock: 60 },
-    { id: "7", name: "Producto 7", price: 7000, reference: "Referencia 7", barcode: "Codigo de barras 7", stock: 70 },
-    { id: "8", name: "Producto 8", price: 8000, reference: "Referencia 8", barcode: "Codigo de barras 8", stock: 80 }
+    { productId: "1", name: "Producto 1", price: 1000, reference: "Referencia 1", barcode: "Codigo de barras 1", stock: 10, type:0, favourite: true, categories: ["1", "2"], modifiers: ["1", "2"], epigraph:"Epígrafe 1", noticeKitchen: true, unitMeasurement: 0, noticeBar:true},
+    { productId: "2", name: "Producto 2", price: 2000, reference: "Referencia 2", barcode: "Codigo de barras 2", stock: 20, type:0, favourite: true, categories: ["1", "2"], modifiers: ["1", "2"], epigraph:"Epígrafe 2", noticeKitchen: true, unitMeasurement: 0, noticeBar:true},
+    { productId: "3", name: "Producto 3", price: 3000, reference: "Referencia 3", barcode: "Codigo de barras 3", stock: 30, type:0, favourite: true, categories: ["1", "2"], modifiers: ["1", "2"], epigraph:"Epígrafe 3", noticeKitchen: true, unitMeasurement: 0, noticeBar:true},
+    { productId: "4", name: "Producto 4", price: 4000, reference: "Referencia 4", barcode: "Codigo de barras 4", stock: 40, type:0, favourite: true, categories: ["1", "2"], modifiers: ["1", "2"], epigraph:"Epígrafe 4", noticeKitchen: true, unitMeasurement: 0, noticeBar:true},
+    { productId: "5", name: "Producto 5", price: 5000, reference: "Referencia 5", barcode: "Codigo de barras 5", stock: 50, type:0, favourite: true, categories: ["1", "2"], modifiers: ["1", "2"], epigraph:"Epígrafe 5", noticeKitchen: true, unitMeasurement: 0, noticeBar:true},
+    { productId: "6", name: "Producto 6", price: 6000, reference: "Referencia 6", barcode: "Codigo de barras 6", stock: 60, type:0, favourite: true, categories: ["1", "2"], modifiers: ["1", "2"], epigraph:"Epígrafe 6", noticeKitchen: true, unitMeasurement: 0, noticeBar:true},
+    { productId: "7", name: "Producto 7", price: 7000, reference: "Referencia 7", barcode: "Codigo de barras 7", stock: 70, type:0, favourite: true, categories: ["1", "2"], modifiers: ["1", "2"], epigraph:"Epígrafe 7", noticeKitchen: true, unitMeasurement: 0, noticeBar:true},
+    { productId: "8", name: "Producto 8", price: 8000, reference: "Referencia 8", barcode: "Codigo de barras 8", stock: 80, type:0, favourite: true, categories: ["1", "2"], modifiers: ["1", "2"], epigraph:"Epígrafe 8", noticeKitchen: true, unitMeasurement: 0, noticeBar:true}
   ];
 
   currentLang: string;
@@ -211,7 +211,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
    * Elimina un producto de la lista por su ID.
    */
   public deleteProduct(productId: string) {
-    this.products = this.products.filter(p => p.id !== productId);
+    this.products = this.products.filter(p => p.productId !== productId);
     if (!this.products.length) this.emptySearch = true;
   }
 
@@ -240,14 +240,22 @@ export class ProductsComponent implements OnInit, OnDestroy {
     reader.onload = () => {
       const text = reader.result as string;
       const { rows, errors } = this.parseCSV(text);
+      //TODO
       if (!errors.length) {
         const products: Product[] = rows.map((row, i) => ({
-          id: i.toString(),
+          productId: i.toString(),
           reference: row[0],
           barcode: row[1],
           name: row[2],
           price: Number(row[3]),
-          stock: Number(row[4])
+          stock: Number(row[4]), type:0, 
+          favourite: true, 
+          categories: ["1", "2"], 
+          modifiers: ["1", "2"], 
+          epigraph:"Epígrafe 1", 
+          noticeKitchen: true, 
+          unitMeasurement: 0, 
+          noticeBar:true
         }));
         this.showModal = true;
         this.modalTitle = 'Importación de productos';
