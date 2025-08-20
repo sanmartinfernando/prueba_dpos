@@ -128,23 +128,25 @@ export class ProductDetailsComponent implements OnInit {
   /**
    * Abre la acción de edición para una categoría sin disparar la selección en el mat-select.
    *
-   * @param category - Objeto de la categoría seleccionada que se desea editar.
+   * @param category - ID de la categoría seleccionada que se desea editar.
    * @param event - Evento del clic en el botón de editar. Se detiene la propagación
    *                para evitar que el mat-option cambie el estado de selección.
    */
-  public editCategory(category: any, event: MouseEvent) {
+  public editCategory(categoryId: string, event: MouseEvent) {
     event.stopPropagation();
+    this.openCategoriesModal(categoryId);
   }
 
   /**
    * Abre la acción de edición para un modificador sin disparar la selección en el mat-select.
    *
-   * @param modifier - Objeto del modificador seleccionado que se desea editar.
+   * @param modifier - ID del modificador seleccionado que se desea editar.
    * @param event - Evento del clic en el botón de editar. Se detiene la propagación
    *                para evitar que el mat-option cambie el estado de selección.
    */
-  public editModifier(modifier: any, event: MouseEvent) {
+  public editModifier(modifierId: string, event: MouseEvent) {
     event.stopPropagation();
+    this.openModifiersModal(modifierId);
   }
 
   /**
