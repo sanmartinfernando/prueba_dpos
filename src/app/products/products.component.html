@@ -61,23 +61,23 @@
           <table class="table table-hover">
             <thead class="text-customer">
               <tr>
-                <th class="text-center align-middle">{{ 'dpos.products.table.column.reference' | translate }}</th>
-                <th class="text-center align-middle">{{ 'dpos.products.table.column.barcode' | translate }}</th>
-                <th class="text-center align-middle">{{ 'dpos.products.table.column.name' | translate }}</th>
-                <th class="text-center align-middle">{{ 'dpos.products.table.column.price' | translate }}</th>
-                <th class="text-center align-middle">{{ 'dpos.products.table.column.stock' | translate }}</th>
-                <th class="text-center align-middle">{{ 'dpos.products.table.column.edit' | translate }}</th>
-                <th class="text-center align-middle">{{ 'dpos.products.table.column.delete' | translate }}</th>
+                <th>{{ 'dpos.products.table.column.reference' | translate }}</th>
+                <th>{{ 'dpos.products.table.column.barcode' | translate }}</th>
+                <th>{{ 'dpos.products.table.column.name' | translate }}</th>
+                <th class="text-center">{{ 'dpos.products.table.column.stock' | translate }}</th>
+                <th class="text-end">{{ 'dpos.products.table.column.price' | translate }}</th>
+                <th class="text-center">{{ 'dpos.products.table.column.edit' | translate }}</th>
+                <th class="text-center">{{ 'dpos.products.table.column.delete' | translate }}</th>
               </tr>
             </thead>
             <tbody>
               <!-- Iteración paginada de productos -->
               <tr *ngFor="let product of products | paginate: { id: 'productsList', itemsPerPage: 5, currentPage: currentProductsPage }">
-                <td class="text-center align-middle"><span class="table-title">{{ product.reference }}</span></td>
-                <td class="text-center align-middle">{{ product.barcode }}</td>
-                <td class="text-center align-middle">{{ product.name }}</td>
-                <td class="text-center align-middle">{{ product.price / (Math.pow(10, 2)) | currency : 'EUR' : '€' }}</td>
+                <td class="align-middle"><span class="table-title">{{ product.reference }}</span></td>
+                <td class="align-middle">{{ product.barcode }}</td>
+                <td class="align-middle">{{ product.name }}</td>
                 <td class="text-center align-middle">{{ product.stock }}</td>
+                <td class="text-end align-middle">{{ product.price / (Math.pow(10, 2)) | currency : 'EUR' : '€' }}</td>
                 <td class="text-center align-middle">
                   <button type="button" class="btn-edit" (click)="sendProductDetails(product.productId)">
                     <i class="fa-solid fa-pen" style="color: #74c0fc"></i>

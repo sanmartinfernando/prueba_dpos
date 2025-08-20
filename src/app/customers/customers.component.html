@@ -74,10 +74,13 @@
               <thead class="text-customer">
                 <tr>
                   <th style="width: 50px;" class="text-center"></th>
-                  <th class="text-center">{{ 'dpos.customers.nif.label' | translate }}</th>
-                  <th class="text-center">{{ 'dpos.customers.name.label' | translate }}</th>
+                  <th>{{ 'dpos.customers.nif.label' | translate }}</th>
+                  <th>{{ 'dpos.customers.name.label' | translate }}</th>
+                  <th>{{ 'dpos.customers.address.label' | translate }}</th>
+                  <th>{{ 'dpos.customers.city.label' | translate }}</th>
+                  <th>{{ 'dpos.customers.state.label' | translate }}</th>
+                  <th>{{ 'dpos.customers.mail.label' | translate }}</th>
                   <th class="text-center">{{ 'dpos.customers.phone.label' | translate }}</th>
-                  <th class="text-center">{{ 'dpos.customers.mail.label' | translate }}</th>
                 </tr>
               </thead>
               <ng-template #empty>
@@ -91,10 +94,13 @@
                     <td class="text-center align-middle">
                       <input class="form-check-input" type="checkbox" [(ngModel)]="customer.selected" (change)="checkIfAllSelected()" (click)="$event.stopPropagation()" />
                     </td>
-                    <td class="text-center align-middle"><span class="table-title">{{ customer.identityDocument }}</span></td>
-                    <td class="text-center align-middle">{{ customer.name }}</td>
+                    <td class="align-middle"><span class="table-title">{{ customer.identityDocument }}</span></td>
+                    <td class="align-middle">{{ customer.name }}</td>
+                    <td class="align-middle">{{ customer.address }}</td>
+                    <td class="align-middle">{{ customer.city }}</td>
+                    <td class="align-middle">{{ customer.state }}</td>
+                    <td class="align-middle">{{ customer.email }}</td>
                     <td class="text-center align-middle">{{ customer.phone }}</td>
-                    <td class="text-center align-middle">{{ customer.email }}</td>
                   </tr>
                 </ng-container>
               </tbody>
