@@ -104,18 +104,25 @@
               <label for="reference" class="form-label">{{ 'dpos.product-details.form.reference' | translate }}</label>
               <input type="text" class="form-control" id="reference" formControlName="reference" name="reference" />
             </div>
-            <div class="mb-3">
-              <label for="priceType" class="form-label">{{ 'dpos.product-details.form.price.type' | translate }}</label>
-              <input type="text" class="form-control" id="priceType" formControlName="priceType" name="priceType" />
-              <div *ngIf="productForm.get('priceType')?.invalid && productForm.get('priceType')?.touched" class="text-danger">
-                {{ 'dpos.customers.details.form.mandatory' | translate }}
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="priceType" class="form-label">{{ 'dpos.product-details.form.price.type' | translate }}</label>
+                <select id="priceType" class="form-select" formControlName="priceType" name="priceType">
+                  <option *ngFor="let option of priceTypeOptions" [value]="option.value">
+                    {{ option.label }}
+                  </option>
+                </select>
+                <div *ngIf="productForm.get('priceType')?.invalid && productForm.get('priceType')?.touched" class="text-danger">
+                  {{ 'dpos.customers.details.form.mandatory' | translate }}
+                </div>
               </div>
-            </div>
-            <div class="mb-3">
-              <label for="price" class="form-label">{{ 'dpos.product-details.form.price' | translate }}</label>
-              <input type="text" class="form-control" id="price" formControlName="price" name="price" />
-              <div *ngIf="productForm.get('price')?.invalid && productForm.get('price')?.touched" class="text-danger">
-                {{ 'dpos.customers.details.form.mandatory' | translate }}
+
+              <div class="col-md-6">
+                <label for="price" class="form-label">{{ 'dpos.product-details.form.price' | translate }}</label>
+                <input type="text" class="form-control" id="price" formControlName="price" name="price" />
+                <div *ngIf="productForm.get('price')?.invalid && productForm.get('price')?.touched" class="text-danger">
+                  {{ 'dpos.customers.details.form.mandatory' | translate }}
+                </div>
               </div>
             </div>
             <div class="mb-3">
@@ -124,7 +131,11 @@
             </div>
             <div class="mb-3">
               <label for="unitMeasurement" class="form-label">{{ 'dpos.product-details.form.unitMeasurement' | translate }}</label>
-              <input type="text" class="form-control" id="unitMeasurement" formControlName="unitMeasurement" name="unitMeasurement" />
+              <select id="unitMeasurement" class="form-select" formControlName="unitMeasurement" name="unitMeasurement">
+                <option *ngFor="let option of unitMeasurementOptions" [value]="option.value">
+                  {{ option.label }}
+                </option>
+              </select>
               <div *ngIf="productForm.get('unitMeasurement')?.invalid && productForm.get('unitMeasurement')?.touched" class="text-danger">
                 {{ 'dpos.customers.details.form.mandatory' | translate }}
               </div>

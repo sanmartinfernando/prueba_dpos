@@ -1,18 +1,56 @@
 import { Tax } from "./tax.model";
 
 /**
+ * Enumeración que representa las unidades de medida disponibles
+ * para productos.
+ */
+export enum UnitMeasurement {
+  Unit = 0,
+  Kilogram = 1,
+  Meter = 2,
+  Liter = 3
+}
+
+/**
+ * Mapa que asocia cada valor de {@link UnitMeasurement}
+ * con su representación textual abreviada.
+ */
+export const UnitMeasurementLabel: { [key in UnitMeasurement]: string } = {
+  [UnitMeasurement.Unit]: "ud.",
+  [UnitMeasurement.Kilogram]: "kg.",
+  [UnitMeasurement.Meter]: "m.",
+  [UnitMeasurement.Liter]: "l."
+};
+
+/**
+ * Enumeración que representa los tipos de precio (fijo o variable) disponibles
+ * para productos.
+ */
+export enum PriceType {
+  Normal = 0,
+  Variable = 1
+}
+
+/**
+ * Mapa que asocia cada valor de {@link PriceType}
+ * con su representación textual abreviada.
+ */
+export const PriceTypeLabel: { [key in PriceType]: string } = {
+  [PriceType.Normal]: "Precio fijo",
+  [PriceType.Variable]: "Precio variable"
+};
+
+/**
  * Representa un producto con sus propiedades, impuestos, categorías y modificadores asociados.
  */
 export class Product {
 
   static readonly NO_ID = "-1";
-  static readonly TYPE_NORMAL = 0;
-  static readonly TYPE_VARIABLE_PRICE = 1;
 
   productId: string;
   name: string;
   price: number;
-  type: number;
+  type: PriceType;
   favourite: boolean = false;
   categories: string[] = [];
   modifiers: string[] = [];

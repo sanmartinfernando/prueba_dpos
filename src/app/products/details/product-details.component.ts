@@ -9,7 +9,7 @@ import { SessionService } from 'src/app/_services/session.service';
 import { StorageService } from 'src/app/_services/storage.service';
 import { ThemeService } from 'src/app/_services/theme.service';
 import { UIStateService } from 'src/app/_services/ui-state.service';
-import { Product } from '../../_models/product.model';
+import { PriceType, PriceTypeLabel, Product, UnitMeasurement, UnitMeasurementLabel } from '../../_models/product.model';
 import { Category } from 'src/app/_models/category.model';
 import { Modifiers } from '../../_models/modifiers.model';
 import { CategoryModalComponent } from 'src/app/categories/category-modal.component';
@@ -59,6 +59,20 @@ export class ProductDetailsComponent implements OnInit {
 
   public productForm: FormGroup;
 
+  public unitMeasurementOptions = Object.values(UnitMeasurement)
+    .filter(value => typeof value === 'number')
+    .map(value => ({
+      value: value as UnitMeasurement,
+      label: UnitMeasurementLabel[value as UnitMeasurement]
+    }));
+
+  public priceTypeOptions = Object.values(PriceType)
+    .filter(value => typeof value === 'number')
+    .map(value => ({
+      value: value as PriceType,
+      label: PriceTypeLabel[value as PriceType]
+    }));
+    
   constructor() {
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
     this.uiStateService.setFormSelectEnabled(false);
@@ -71,18 +85,42 @@ export class ProductDetailsComponent implements OnInit {
       epigraph: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
       barcode: ['',[Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
       reference: ['',[Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
-      priceType: ['', [Validators.required]],
+      priceType: ['0', [Validators.required]],
       price: ['', [Validators.required]],
       taxes: ['',[Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
       unitMeasurement: ['', [Validators.required]],
       description: ['',[Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,250}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]]
     });
+
+    const initialPriceType = Number(this.productForm.get('priceType')?.value);
+    const numericType = Number(initialPriceType);
+    if (numericType === PriceType.Variable) {
+      console.log("variable");
+      this.productForm.get('price')?.reset();
+      this.productForm.get('price')?.disable();
+      this.productForm.get('price')?.setValue(0);
+    } else {
+      this.productForm.get('price')?.enable();
+      this.productForm.get('price')?.setValue(null);
+    }
   }
 
   /**
    * Inicializa el componente obteniendo información del producto si existe.
    */
   ngOnInit(): void {
+    this.productForm.get('priceType')?.valueChanges.subscribe(type => {
+      const numericType = Number(type);
+      if (numericType === PriceType.Variable) {
+        this.productForm.get('price')?.reset();
+        this.productForm.get('price')?.disable();
+        this.productForm.get('price')?.setValue(0);
+      } else {
+        this.productForm.get('price')?.enable();
+        this.productForm.get('price')?.setValue(null);
+      }
+    });
+
     this.storageService.userInfo.subscribe((user) => {
       this.portalUsersService.getToken(user).subscribe({
         next: (portalUserToken) => {
