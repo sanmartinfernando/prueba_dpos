@@ -52,15 +52,6 @@ export class AuthService {
   }
 
   /**
-   * Valida el token actual con el backend.
-   * @returns Promise con la respuesta de validación.
-   */
-  public async validate(): Promise<object> {
-    const url = `${environment.urlAuth}${RestRoutes.AUTH}/validate`;
-    return firstValueFrom(this.http.post(url, this.httpOptions));
-  }
-
-  /**
    * Obtiene la información del usuario autenticado.
    * @returns Promise con un objeto User.
    */
@@ -163,7 +154,6 @@ export class AuthService {
 
     this.saveToken(result.token);
     this.saveUserName(userName);
-    await this.validate();
 
     const userInfo = new User();
     userInfo.user = userName;
@@ -189,6 +179,5 @@ export class AuthService {
       .then((res) => res.json());
 
     window.localStorage.setItem(StringConstants.TOKEN_KEY2, result.token);
-    await this.validate();
   }
 }
