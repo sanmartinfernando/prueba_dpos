@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import * as CryptoJS from 'crypto-js';
 
 /**
+ * @class EncryptionService
+ * @description
  * Servicio para encriptar, desencriptar y codificar/decodificar cadenas de texto
  * utilizando AES y transformaciones personalizadas.
  */
@@ -12,6 +14,7 @@ export class EncryptionService {
 
   /**
    * Encripta una cadena de texto utilizando AES.
+   * 
    * @param data Cadena a encriptar.
    * @returns Cadena encriptada en formato base64.
    */
@@ -21,6 +24,7 @@ export class EncryptionService {
 
   /**
    * Desencripta una cadena previamente encriptada con AES.
+   * 
    * @param passwordToDecrypt Cadena encriptada a desencriptar.
    * @returns Cadena original en texto plano.
    */
@@ -30,6 +34,7 @@ export class EncryptionService {
 
   /**
    * Codifica una cadena reemplazando caracteres especiales por secuencias personalizadas.
+   * 
    * @param stringToEncode Cadena a codificar.
    * @returns Cadena codificada.
    */
@@ -43,6 +48,7 @@ export class EncryptionService {
 
   /**
    * Decodifica una cadena previamente codificada con el método encode().
+   * 
    * @param stringToEncode Cadena codificada a decodificar.
    * @returns Cadena original.
    */

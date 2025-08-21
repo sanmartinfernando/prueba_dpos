@@ -1,4 +1,6 @@
 /**
+ * @class OrderPayment
+ * @description
  * Representa un pago de una venta, incluyendo información como el importe, moneda, tarjeta,
  * estado de la transacción, tipo de pago y fechas de creación y actualización.
  */

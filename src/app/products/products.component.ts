@@ -1,16 +1,12 @@
 import { Component, ElementRef, OnInit, ViewChild, OnDestroy, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { EncryptionService } from '../_services/encryption.service';
 import { SessionService } from '../_services/session.service';
-import { StorageService } from '../_services/storage.service';
 import { ThemeService } from '../_services/theme.service';
 import { UIStateService } from '../_services/ui-state.service';
 import { CommercesService } from '../_services/commerces.service';
-import { PortalUsersService } from '../_services/portal-users.service';
-import { AuthService } from '../_services/auth.service';
 import { DownloadCsvService } from '../_services/download-csv.service';
 import { Commerce } from '../_models/commerce.model';
 import { Product } from '../_models/product.model';
@@ -18,6 +14,8 @@ import { Category } from '../_models/category.model';
 import { ProductsService } from '../_services/products.service';
 
 /**
+ * @class ProductsComponent
+ * @description
  * Componente para la gestión de productos:
  * permite búsqueda, filtrado, importación, exportación y manipulación de datos de productos.
  */
@@ -28,16 +26,11 @@ import { ProductsService } from '../_services/products.service';
 export class ProductsComponent implements OnInit, OnDestroy {
 
   private encryptionService = inject(EncryptionService);
-  private activatedRoute = inject(ActivatedRoute);
-  private portalUsersService = inject(PortalUsersService);
   private downloadCsvService = inject(DownloadCsvService);
   private commercesService = inject(CommercesService);
-  private storageService = inject(StorageService);
-  private dialog = inject(MatDialog);
   private translate = inject(TranslateService);
   private uiStateService = inject(UIStateService);
   private sessionService = inject(SessionService);
-  private authService = inject(AuthService);
   private themeService = inject(ThemeService);
   private productsService = inject(ProductsService);
   private router = inject(Router);
@@ -98,29 +91,22 @@ export class ProductsComponent implements OnInit, OnDestroy {
     this.productNameVarSearch = this.sessionService.getItem(SessionService.PRODUCT_NAME) || null;
     this.productReferenceVarSearch = this.sessionService.getItem(SessionService.PRODUCT_REFERENCE) || null;
     this.productBarcodeVarSearch = this.sessionService.getItem(SessionService.PRODUCT_BARCODE) || null;
-    this.storageService.userInfo.subscribe(user => {
-      this.portalUsersService.getToken(user).subscribe({
-        next: portalUserToken => {
-          this.authService.setPortalUsersToken(portalUserToken.token);
-          this.commercesService.getCommerceList().subscribe({
-            next: commerces => {
-              this.commerces = commerces;
-              this.sessionService.getCommerceId().subscribe(commerceId => {
-                this.commerceId = commerceId !== 0 ? commerceId : commerces[0].commerceId;
-                if (commerceId === 0) {
-                  this.sessionService.setItem(SessionService.COMMERCE_ID, this.commerceId);
-                }
-                this.themeService.loadTheme(this.getCommerceResellerName(commerces));
-                this.commerceSelected = this.getCommerceNumber(this.commerceId);
-                this.getAllCategories();
-                this.searchProducts();
-              });
-            },
-            error: error => console.error("Error Commerces: ", error)
-          });
-        },
-        error: error => console.error("Error Portal user token", error)
-      });
+
+    this.commercesService.getCommerceList().subscribe({
+      next: commerces => {
+        this.commerces = commerces;
+        this.sessionService.getCommerceId().subscribe(commerceId => {
+          this.commerceId = commerceId !== 0 ? commerceId : commerces[0].commerceId;
+          if (commerceId === 0) {
+            this.sessionService.setItem(SessionService.COMMERCE_ID, this.commerceId);
+          }
+          this.themeService.loadTheme(this.getCommerceResellerName(commerces));
+          this.commerceSelected = this.getCommerceNumber(this.commerceId);
+          this.getAllCategories();
+          this.searchProducts();
+        });
+      },
+      error: error => console.error("Error Commerces: ", error)
     });
   }
 

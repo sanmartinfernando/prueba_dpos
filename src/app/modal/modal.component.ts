@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 /**
+ * @class ModalComponent
+ * @description
  * Componente de modal reutilizable que muestra un título, un mensaje
  * y permite cerrar el modal mediante un evento de salida.
  */

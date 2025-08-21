@@ -3,19 +3,18 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { TranslateService } from '@ngx-translate/core';
 import { Balance } from '../_models/balance.model';
-import { AuthService } from '../_services/auth.service';
 import { BalancesService } from '../_services/balances.service';
 import { CommercesService } from '../_services/commerces.service';
 import { DownloadCsvService } from '../_services/download-csv.service';
 import { EncryptionService } from './../_services/encryption.service';
-import { PortalUsersService } from '../_services/portal-users.service';
 import { SessionService } from '../_services/session.service';
-import { StorageService } from 'src/app/_services/storage.service';
 import { TerminalsService } from '../_services/terminals.service';
 import { ThemeService } from '../_services/theme.service';
 import { UIStateService } from '../_services/ui-state.service';
 
 /**
+ * @class BalancesComponent
+ * @description
  * Componente para la gestión y visualización de cierres de caja.
  * Permite buscar, filtrar, exportar y visualizar detalles de cierres de caja.
  */
@@ -28,16 +27,13 @@ export class BalancesComponent implements OnInit, OnDestroy {
 
   private balancesService = inject(BalancesService);
   private encryptionService = inject(EncryptionService);
-  private storageService = inject(StorageService);
   private downloadCsvService = inject(DownloadCsvService);
-  private portalUsersService = inject(PortalUsersService);
   private terminalsService = inject(TerminalsService);
   private commercesService = inject(CommercesService);
   private sessionService = inject(SessionService);
   private themeService = inject(ThemeService);
   private translate = inject(TranslateService);
   private uiStateService = inject(UIStateService);
-  private authService = inject(AuthService);
   private router = inject(Router);
 
   Math = Math;
@@ -81,7 +77,6 @@ export class BalancesComponent implements OnInit, OnDestroy {
     });
   }
 
-  /** @inheritdoc */
   ngOnInit(): void {
 
     if (this.sessionService.getItem(SessionService.FROM_DATE) !== null) {
@@ -92,45 +87,36 @@ export class BalancesComponent implements OnInit, OnDestroy {
       this.tilDate = this.formatDate(this.sessionService.getItem(SessionService.TO_DATE));
     }
 
-    this.storageService.userInfo.subscribe((user) => {
-      this.portalUsersService.getToken(user).subscribe({
-        next: (portalUserToken) => {
-          this.authService.setPortalUsersToken(portalUserToken.token);
-          this.commercesService.getCommerceList().subscribe({
-            next: (commerces) => {
-              this.sessionService.getCommerceId().subscribe((commerceId) => {
-                this.commerceId = commerceId !== 0 ? commerceId : commerces[0].commerceId;
-                if (commerceId === 0) {
-                  this.sessionService.setItem(SessionService.COMMERCE_ID, this.commerceId);
-                }
-                this.terminalsService.getTerminalList().subscribe({
-                  next: (terminals) => {
-                    terminals = terminals.filter(t => t.commerceId === this.commerceId && t.terminalNumber !== null);
-                    if (terminals.length) {
-                      this.terminalsNumber = terminals.map(t => t.terminalNumber);
-                    }
-                    this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
-                    if (this.sessionService.getItem(SessionService.TERMINAL_NUMBER) === null) {
-                      this.terminalSelected = this.terminalsNumber[0];
-                      this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
-                    } else {
-                      this.terminalSelected = this.sessionService.getItem(SessionService.TERMINAL_NUMBER);
-                    }
-                    this.searchBalances();
-                  },
-                  error: (error) => console.error('Error Terminals:', error)
-                });
-              });
+    this.commercesService.getCommerceList().subscribe({
+      next: (commerces) => {
+        this.sessionService.getCommerceId().subscribe((commerceId) => {
+          this.commerceId = commerceId !== 0 ? commerceId : commerces[0].commerceId;
+          if (commerceId === 0) {
+            this.sessionService.setItem(SessionService.COMMERCE_ID, this.commerceId);
+          }
+          this.terminalsService.getTerminalList().subscribe({
+            next: (terminals) => {
+              terminals = terminals.filter(t => t.commerceId === this.commerceId && t.terminalNumber !== null);
+              if (terminals.length) {
+                this.terminalsNumber = terminals.map(t => t.terminalNumber);
+              }
+              this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
+              if (this.sessionService.getItem(SessionService.TERMINAL_NUMBER) === null) {
+                this.terminalSelected = this.terminalsNumber[0];
+                this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
+              } else {
+                this.terminalSelected = this.sessionService.getItem(SessionService.TERMINAL_NUMBER);
+              }
+              this.searchBalances();
             },
-            error: (error) => console.error('Error Commerces:', error)
+            error: (error) => console.error('Error Terminals:', error)
           });
-        },
-        error: (error) => console.error('Error Portal user token', error)
-      });
+        });
+      },
+      error: (error) => console.error('Error Commerces:', error)
     });
   }
 
-  /** @inheritdoc */
   ngOnDestroy(): void {
     this.langSubscription.unsubscribe();
   }
@@ -204,6 +190,7 @@ export class BalancesComponent implements OnInit, OnDestroy {
 
   /**
    * Redirige a la vista de detalles de cierres de caja con el ID encriptado.
+   * 
    * @param id - Identificador del cierre de caja
    */
   public sendBalanceDetails(id: string): void {
@@ -323,6 +310,7 @@ export class BalancesComponent implements OnInit, OnDestroy {
   
   /**
    * Convierte un timestamp a formato YYYY-MM-DD.
+   * 
    * @param timestamp - Fecha en milisegundos
    * @returns Fecha formateada
    */

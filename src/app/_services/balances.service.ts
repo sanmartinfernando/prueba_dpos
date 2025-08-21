@@ -8,6 +8,8 @@ import { BalanceInfo } from '../_models/balance-info.model';
 import { TranslateService } from '@ngx-translate/core';
 
 /**
+ * @class BalancesService
+ * @description
  * Servicio para gestionar cierres de caja y obtener detalles e información agregada desde el backend.
  */
 @Injectable({ providedIn: 'root' })
@@ -24,6 +26,7 @@ export class BalancesService {
 
   /**
    * Obtiene el detalle de un cierre de caja por su ID.
+   * 
    * @param id Identificador del cierre de caja.
    * @returns Observable que emite un Balance.
    * @throws Error si id es undefined o null.
@@ -36,6 +39,7 @@ export class BalancesService {
 
   /**
    * Obtiene información agregada de los cierre de caja con parámetros de búsqueda.
+   * 
    * @param size Tamaño de la página de resultados.
    * @param searchParams Parámetros de búsqueda en formato JSON.
    * @returns Observable que emite un BalanceInfo.
@@ -49,6 +53,7 @@ export class BalancesService {
 
   /**
    * Valida que los parámetros no sean undefined ni null.
+   * 
    * @param params Parámetros a validar.
    * @throws Error si algún parámetro es inválido.
    */

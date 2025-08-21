@@ -5,9 +5,10 @@ import { Subscription } from 'rxjs';
 import { User } from '../../_models/user.model';
 import { AuthService } from '../../_services/auth.service';
 import { StorageService } from '../../_services/storage.service';
-import { PagesService } from 'src/app/_services/pages.service';
 
 /**
+ * @class LoginComponent
+ * @description
  * Componente de inicio de sesión que valida las credenciales del usuario,
  * gestiona el estado de autenticación y redirige a las páginas correspondientes.
  */
@@ -21,7 +22,6 @@ export class LoginComponent implements OnInit {
   private storageService = inject(StorageService);
   private formBuilder = inject(FormBuilder);
   private route = inject(ActivatedRoute);
-  private pagesService = inject(PagesService);
   public router = inject(Router);
 
   private userSubscription!: Subscription;
@@ -90,6 +90,7 @@ export class LoginComponent implements OnInit {
 
   /**
    * Actualiza el estado de sesión según la información del usuario.
+   * 
    * @param user Datos del usuario.
    */
   private updateUserData(user: User): void {

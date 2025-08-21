@@ -1,15 +1,11 @@
-import { StorageService } from 'src/app/_services/storage.service';
 import { ArqueoXService } from './../_services/arqueo-x.service';
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
-import { EncryptionService } from '../_services/encryption.service';
 import { DownloadCsvService } from '../_services/download-csv.service';
 import { Balance } from '../_models/balance.model';
 import { SalesReport, SalesReportAggregations } from '../_models/sales-report.model';
 import { SalesReportService } from '../_services/sales-report.service';
-import { PortalUsersService } from '../_services/portal-users.service';
 import { TerminalsService } from '../_services/terminals.service';
 import { CommercesService } from '../_services/commerces.service';
-import { AuthService } from '../_services/auth.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { SessionService } from '../_services/session.service';
@@ -17,6 +13,8 @@ import { ThemeService } from '../_services/theme.service';
 import { UIStateService } from '../_services/ui-state.service';
 
 /**
+ * @class ReportsComponent
+ * @description
  * Componente encargado de gestionar y mostrar informes.
  * Permite filtrar por fechas, terminales y tipo de informe, así como descargar resultados en CSV.
  */
@@ -27,16 +25,12 @@ import { UIStateService } from '../_services/ui-state.service';
 })
 export class ReportsComponent implements OnInit, OnDestroy {
 
-  private encryptionService = inject(EncryptionService);
   private arqueoXService = inject(ArqueoXService);
   private salesReportService = inject(SalesReportService);
-  private storageService = inject(StorageService);
   private downloadCsvService = inject(DownloadCsvService);
-  private portalUsersService = inject(PortalUsersService);
   private terminalsService = inject(TerminalsService);
   private commercesService = inject(CommercesService);
   private sessionService = inject(SessionService);
-  private authService = inject(AuthService);
   private themeService = inject(ThemeService);
   public translate = inject(TranslateService);
   private uiStateService = inject(UIStateService);
@@ -118,49 +112,39 @@ export class ReportsComponent implements OnInit, OnDestroy {
       this.reportVarSearch = this.translate.instant('dpos.reports.taxes.label');
     }
 
-    this.storageService.userInfo.subscribe((user) => {
-      this.portalUsersService.getToken(user).subscribe({
-        next: (portalUserToken) => {
-          this.authService.setPortalUsersToken(portalUserToken.token);
-          this.commercesService.getCommerceList().subscribe({
-            next: (commerces) => {
-              this.sessionService.getCommerceId().subscribe((commerceId) => {
-                if (commerceId !== 0) {
-                  this.commerceId = commerceId;
-                } else {
-                  this.commerceId = commerces[0].commerceId;
-                  this.sessionService.setItem(SessionService.COMMERCE_ID, this.commerceId);
-                }
-                this.terminalsService.getTerminalList().subscribe({
-                  next: (terminals) => {
-                    terminals = terminals.filter(terminal => terminal.commerceId === this.commerceId && terminal.terminalNumber !== null);
-                    if (terminals.length !== 0) {
-                      this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
-                    }
-                    this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
-                    if (this.sessionService.getItem(SessionService.TERMINAL_NUMBER) === null) {
-                      this.terminalSelected = this.terminalsNumber[0];
-                      this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
-                    } else {
-                      this.terminalSelected = this.sessionService.getItem(SessionService.TERMINAL_NUMBER);
-                    }
-                    this.searchReports();
-                  },
-                  error: (error) => {
-                    console.error("Error Terminals: ", error);
-                  }
-                });
-              });
+    this.commercesService.getCommerceList().subscribe({
+      next: (commerces) => {
+        this.sessionService.getCommerceId().subscribe((commerceId) => {
+          if (commerceId !== 0) {
+            this.commerceId = commerceId;
+          } else {
+            this.commerceId = commerces[0].commerceId;
+            this.sessionService.setItem(SessionService.COMMERCE_ID, this.commerceId);
+          }
+          this.terminalsService.getTerminalList().subscribe({
+            next: (terminals) => {
+              terminals = terminals.filter(terminal => terminal.commerceId === this.commerceId && terminal.terminalNumber !== null);
+              if (terminals.length !== 0) {
+                this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
+              }
+              this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
+              if (this.sessionService.getItem(SessionService.TERMINAL_NUMBER) === null) {
+                this.terminalSelected = this.terminalsNumber[0];
+                this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
+              } else {
+                this.terminalSelected = this.sessionService.getItem(SessionService.TERMINAL_NUMBER);
+              }
+              this.searchReports();
             },
             error: (error) => {
-              console.error("Error Commerces: ", error);
+              console.error("Error Terminals: ", error);
             }
           });
-        },
-        error: (error) => {
-          console.error("Error Portal user token", error);
-        }
-      });
+        });
+      },
+      error: (error) => {
+        console.error("Error Commerces: ", error);
+      }
     });
   }
 
@@ -370,6 +354,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
   /**
    * Devuelve el nombre traducido del tipo de informe según su identificador.
+   * 
    * @param reportType Tipo de informe.
    * @returns Nombre traducido del tipo de informe.
    */
@@ -393,6 +378,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
   /**
    * Devuelve el identificador del tipo de informe según su nombre traducido.
+   * 
    * @returns Tipo de informe.
    */
   private getReportType(): number {
@@ -415,6 +401,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
   /**
    * Formatea un timestamp en formato YYYY-MM-DD.
+   * 
    * @param timestamp Fecha en milisegundos.
    * @returns Fecha formateada como string.
    */

@@ -5,7 +5,9 @@ import { User } from '../_models/user.model';
 import { StorageService } from '../_services/storage.service';
 
 /**
- * AuthGuard protege rutas que requieren autenticación.
+ * @class AuthGuard
+ * @description
+ * Protege rutas que requieren autenticación.
  * Implementa CanActivate para determinar si un usuario puede acceder a una ruta.
  */
 @Injectable()

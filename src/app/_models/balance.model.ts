@@ -2,6 +2,8 @@ import { BalanceCommerce } from "./balance-commerce.model";
 import { BalanceLine } from "./balance-line.model";
 
 /**
+ * @class Balance
+ * @description
  * Representa un cierre de caja que incluye información de ventas, devoluciones,
  * movimientos de caja, líneas de detalle y datos del terminal.
  */

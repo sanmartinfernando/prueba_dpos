@@ -1,7 +1,9 @@
 import { FilterStep } from "./filters.interface";
 
 /**
- * OrdersFilter construye filtros para consultas de ventas.
+ * @class OrdersFilter
+ * @description
+ * Construye filtros para consultas de ventas.
  */
 export class OrdersFilter {
 

@@ -2,6 +2,8 @@ import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { InactivityService } from './_services/inactivity.service';
 
 /**
+ * @class AppComponent
+ * @description
  * Componente raíz de la aplicación.
  * Gestiona el estado de navegación y el monitoreo de inactividad del usuario.
  */
@@ -32,6 +34,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   /**
    * Actualiza el estado del menú de navegación.
+   * 
    * @param isOpen Indica si el menú debe mostrarse abierto.
    */
   public onNavToggled(isOpen: boolean): void {

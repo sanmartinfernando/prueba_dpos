@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 
 /**
+ * @class PrivacyPolicyComponent
+ * @description
  * Componente encargado de mostrar la política de privacidad del portal Web.
  */
 @Component({

@@ -8,6 +8,8 @@ import { Tax } from '../_models/tax.model';
 import { TranslateService } from '@ngx-translate/core';
 
 /**
+ * @class TaxesService
+ * @description
  * Servicio encargado de gestionar las operaciones relacionadas con impuestos,
  * incluyendo la obtención de listas de impuestos y detalles de impuestos específicos.
  */
@@ -25,6 +27,7 @@ export class TaxesService {
 
   /**
    * Obtiene una lista de impuestos.
+   * 
    * @param size Número de elementos a obtener.
    * @param searchParams Parámetros de búsqueda o filtrado.
    * @returns Observable con la información de impuestos.
@@ -39,6 +42,7 @@ export class TaxesService {
 
   /**
    * Obtiene los detalles de un impuesto específico.
+   * 
    * @param id Identificador único del impuesto.
    * @returns Observable con los detalles del impuesto.
    */

@@ -1,7 +1,9 @@
 import { FilterStep } from "./filters.interface";
 
 /**
- * Top3Filter construye filtros para obtener los tres productos más vendidos.
+ * @class Top3Filter
+ * @description
+ * Construye filtros para obtener los tres productos más vendidos.
  */
 export class Top3Filter {
 
@@ -20,12 +22,10 @@ export class Top3Filter {
    * @param toDate - Fecha de fin del filtro en milisegundos (opcional, valor por defecto: 1735686000000).
    */
   constructor(commerceId: number, terminalsId?: string[], fromDate?: number, toDate?: number) {
-
     this.terminalsId = terminalsId;
     this.commerceId = commerceId;
     this.fromDate = fromDate ?? 1704063600000;
     this.toDate = toDate ?? 1735686000000;
-
     this.idTop3 = [
       {
         $match: {

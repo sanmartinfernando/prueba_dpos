@@ -1,4 +1,6 @@
 /**
+ * @class OrderCommerce
+ * @description
  * Representa la información de un comercio relacionado con una venta,
  * incluyendo datos de identificación, contacto y dirección.
  */

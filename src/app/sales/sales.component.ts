@@ -1,12 +1,9 @@
-import { StorageService } from 'src/app/_services/storage.service';
 import { EncryptionService } from './../_services/encryption.service';
 import { DownloadCsvService } from '../_services/download-csv.service';
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { OrderInfo } from '../_models/order-info.model';
-import { PortalUsersService } from '../_services/portal-users.service';
 import { TerminalsService } from '../_services/terminals.service';
 import { CommercesService } from '../_services/commerces.service';
-import { AuthService } from '../_services/auth.service';
 import { OrdersService } from '../_services/orders.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/internal/Subscription';
@@ -21,6 +18,8 @@ import { UIStateService } from '../_services/ui-state.service';
 import { Router } from '@angular/router';
 
 /**
+ * @class SalesComponent
+ * @description
  * Componente encargado de la gestión y visualización de ventas. Proporciona funcionalidades para:
  * - Aplicar y recordar filtros de búsqueda (fechas, comercio, terminal, tipo de operación, documento).
  * - Consultar la información de ventas y calcular totales.
@@ -36,13 +35,10 @@ export class SalesComponent implements OnInit, OnDestroy {
   private encryptionService = inject(EncryptionService);
   private ordersService = inject(OrdersService);
   private downloadCsvService = inject(DownloadCsvService);
-  private storageService = inject(StorageService);
-  private portalUsersService = inject(PortalUsersService);
   private terminalsService = inject(TerminalsService);
   private commercesService = inject(CommercesService);
   private currencyPipe = inject(CurrencyPipe);
   private sessionService = inject(SessionService);
-  private authService = inject(AuthService);
   private translate = inject(TranslateService);
   private themeService = inject(ThemeService);
   private uiStateService = inject(UIStateService);
@@ -141,51 +137,41 @@ export class SalesComponent implements OnInit, OnDestroy {
       this.documentVarSearch = this.sessionService.getItem(SessionService.DOC_NUMBER);
     }
 
-    this.storageService.userInfo.subscribe((user) => {
-      this.portalUsersService.getToken(user).subscribe({
-        next: (portalUserToken) => {
-          this.authService.setPortalUsersToken(portalUserToken.token);
-          this.commercesService.getCommerceList().subscribe({
-            next: (commerces) => {
-              this.commerces = commerces;
-              this.sessionService.getCommerceId().subscribe((commerceId) => {
-                if (commerceId !== 0) {
-                  this.commerceId = commerceId;
-                } else {
-                  this.commerceId = commerces[0].commerceId;
-                  this.sessionService.setItem(SessionService.COMMERCE_ID, this.commerceId);
-                }
-                this.commerceSelected = this.getCommerceNumber(this.commerceId);
-                this.terminalsService.getTerminalList().subscribe({
-                  next: (terminals) => {
-                    terminals = terminals.filter(terminal => terminal.commerceId === this.commerceId && terminal.terminalNumber !== null);
-                    if (terminals.length !== 0) {
-                      this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
-                    }
-                    this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
-                    if (this.sessionService.getItem(SessionService.TERMINAL_NUMBER) === null) {
-                      this.terminalSelected = this.terminalsNumber[0];
-                      this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
-                    } else {
-                      this.terminalSelected = this.sessionService.getItem(SessionService.TERMINAL_NUMBER);
-                    }
-                    this.searchSales();
-                  },
-                  error: (error) => {
-                    console.error("Error Terminals: ", error);
-                  }
-                });
-              });
+    this.commercesService.getCommerceList().subscribe({
+      next: (commerces) => {
+        this.commerces = commerces;
+        this.sessionService.getCommerceId().subscribe((commerceId) => {
+          if (commerceId !== 0) {
+            this.commerceId = commerceId;
+          } else {
+            this.commerceId = commerces[0].commerceId;
+            this.sessionService.setItem(SessionService.COMMERCE_ID, this.commerceId);
+          }
+          this.commerceSelected = this.getCommerceNumber(this.commerceId);
+          this.terminalsService.getTerminalList().subscribe({
+            next: (terminals) => {
+              terminals = terminals.filter(terminal => terminal.commerceId === this.commerceId && terminal.terminalNumber !== null);
+              if (terminals.length !== 0) {
+                this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
+              }
+              this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
+              if (this.sessionService.getItem(SessionService.TERMINAL_NUMBER) === null) {
+                this.terminalSelected = this.terminalsNumber[0];
+                this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
+              } else {
+                this.terminalSelected = this.sessionService.getItem(SessionService.TERMINAL_NUMBER);
+              }
+              this.searchSales();
             },
             error: (error) => {
-              console.error("Error Commerces: ", error);
+              console.error("Error Terminals: ", error);
             }
           });
-        },
-        error: (error) => {
-          console.error("Error Portal user token", error);
-        }
-      });
+        });
+      },
+      error: (error) => {
+        console.error("Error Commerces: ", error);
+      }
     });
   }
 
@@ -332,6 +318,7 @@ export class SalesComponent implements OnInit, OnDestroy {
 
   /**
    * Navega al detalle de una venta cifrando y codificando el ID.
+   * 
    * @param id Identificador de la venta.
    */
   public sendSalesDetails(id: string) {
@@ -394,6 +381,7 @@ export class SalesComponent implements OnInit, OnDestroy {
 
   /**
    * Calcula la base imponible total del array de impuestos de la venta.
+   * 
    * @param orderTaxes Lista de impuestos de la venta.
    * @returns Total de la base imponible.
    */
@@ -410,6 +398,7 @@ export class SalesComponent implements OnInit, OnDestroy {
 
   /**
    * Calcula el total de impuestos del array de impuestos de la venta.
+   * 
    * @param orderTaxes Lista de impuestos de la venta.
    * @returns Total de impuestos.
    */
@@ -556,6 +545,7 @@ export class SalesComponent implements OnInit, OnDestroy {
 
   /**
    * Obtiene el texto traducido del tipo de operación.
+   * 
    * @param opType Identificador numérico del tipo de operación.
    * @returns Cadena traducida para el selector.
    */
@@ -579,6 +569,7 @@ export class SalesComponent implements OnInit, OnDestroy {
 
   /**
    * Traduce el valor seleccionado en el selector, a su código numérico.
+   * 
    * @returns Código del tipo de operación, o -1 si no aplica.
    */
   private getOpType(): number {
@@ -601,6 +592,7 @@ export class SalesComponent implements OnInit, OnDestroy {
 
   /**
    * Obtiene el número de comercio a partir de su ID.
+   * 
    * @param commerceId Identificador del comercio.
    * @returns Número de comercio o cadena vacía si no existe.
    */
@@ -614,6 +606,7 @@ export class SalesComponent implements OnInit, OnDestroy {
 
   /**
    * Formatea un timestamp a 'YYYY-MM-DD'.
+   * 
    * @param timestamp Milisegundos.
    * @returns Fecha formateada como string.
    */

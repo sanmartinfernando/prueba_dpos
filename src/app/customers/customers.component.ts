@@ -2,22 +2,19 @@ import { Component, ElementRef, OnInit, OnDestroy, ViewChild, inject } from '@an
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/internal/Subscription';
-
-import { AuthService } from '../_services/auth.service';
 import { CommercesService } from '../_services/commerces.service';
 import { CustomersService } from '../_services/customers.service';
 import { DownloadCsvService } from '../_services/download-csv.service';
 import { EncryptionService } from '../_services/encryption.service';
-import { PortalUsersService } from '../_services/portal-users.service';
 import { SessionService } from '../_services/session.service';
-import { StorageService } from '../_services/storage.service';
 import { ThemeService } from '../_services/theme.service';
 import { UIStateService } from '../_services/ui-state.service';
-
 import { Commerce } from '../_models/commerce.model';
 import { Customer } from '../_models/customer.model';
 
 /**
+ * @class CustomersComponent
+ * @description
  * Componente para la gestión de clientes.
  * Permite búsqueda, importación, exportación, alta y baja de clientes.
  */
@@ -29,15 +26,12 @@ export class CustomersComponent implements OnInit, OnDestroy {
 
   private encryptionService = inject(EncryptionService);
   private downloadCsvService = inject(DownloadCsvService);
-  private storageService = inject(StorageService);
-  private portalUsersService = inject(PortalUsersService);
   private customersService = inject(CustomersService);
   private commercesService = inject(CommercesService);
   private translate = inject(TranslateService);
   private sessionService = inject(SessionService);
   private themeService = inject(ThemeService);
   private uiStateService = inject(UIStateService);
-  private authService = inject(AuthService);
   private router = inject(Router);
 
   Math: Math;
@@ -100,15 +94,7 @@ export class CustomersComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadCompleted = false;
     this.restoreSearchParams();
-    this.storageService.userInfo.subscribe(user => {
-      this.portalUsersService.getToken(user).subscribe({
-        next: portalUserToken => {
-          this.authService.setPortalUsersToken(portalUserToken.token);
-          this.loadCommerces();
-        },
-        error: error => console.error('Error Portal user token', error)
-      });
-    });
+    this.loadCommerces();
   }
 
   /**
@@ -141,6 +127,7 @@ export class CustomersComponent implements OnInit, OnDestroy {
 
   /**
    * Navega a la vista de detalle de un cliente.
+   * 
    * @param id Identificador del cliente
    */
   public sendCustomerDetails(id: string): void {
@@ -174,6 +161,7 @@ export class CustomersComponent implements OnInit, OnDestroy {
 
   /**
    * Procesa un archivo CSV con datos de clientes.
+   * 
    * @param event Evento de selección de archivo
    */
   public onCustomerFileSelected(event: Event): void {
@@ -327,6 +315,7 @@ export class CustomersComponent implements OnInit, OnDestroy {
 
   /**
    * Obtiene el ID del comercio correspondiente al número de comercio seleccionado.
+   * 
    * @returns El ID del comercio o 0 si no se encuentra.
    */
   private getCommerceId(): number {
@@ -335,6 +324,7 @@ export class CustomersComponent implements OnInit, OnDestroy {
 
   /**
    * Obtiene el número de comercio correspondiente al ID de comercio especificado.
+   * 
    * @param commerceId - ID del comercio.
    * @returns El número de comercio o cadena vacía si no se encuentra.
    */
@@ -344,6 +334,7 @@ export class CustomersComponent implements OnInit, OnDestroy {
 
   /**
    * Obtiene el nombre del reseller asociado al comercio activo.
+   * 
    * @param commerces - Lista de comercios disponibles.
    * @returns El nombre del reseller o `null` si no se encuentra.
    */

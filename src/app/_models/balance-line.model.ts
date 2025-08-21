@@ -1,4 +1,6 @@
 /**
+ * @class BalanceLine
+ * @description
  * Representa una línea de cierre de caja con información como el identificador de la línea, valores monetarios,
  * porcentajes, impuestos y otros datos relacionados con el cierre de caja.
  */

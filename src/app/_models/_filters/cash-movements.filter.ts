@@ -1,7 +1,9 @@
 import { FilterStep } from "./filters.interface";
 
 /**
- * CashMovementsFilter construye filtros para consultas de movimientos de caja.
+ * @class CashMovementsFilter
+ * @description
+ * Construye filtros para consultas de movimientos de caja.
  * Permite filtrar por comercio, terminales y rango de fechas.
  */
 export class CashMovementsFilter {

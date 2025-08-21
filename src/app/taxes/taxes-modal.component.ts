@@ -1,15 +1,13 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
-import { AuthService } from '../_services/auth.service';
-import { PortalUsersService } from '../_services/portal-users.service';
 import { SessionService } from '../_services/session.service';
-import { StorageService } from '../_services/storage.service';
 import { ThemeService } from '../_services/theme.service';
-
 import { Tax } from '../_models/tax.model';
 
 /**
+ * @class TaxesModalComponent
+ * @description
  * Componente modal para crear o editar impuestos.
  * Permite configurar tipo, nombre y valor del impuesto.
  */
@@ -20,10 +18,7 @@ import { Tax } from '../_models/tax.model';
 })
 export class TaxesModalComponent implements OnInit {
 
-  private authService = inject(AuthService);
-  private portalUsersService = inject(PortalUsersService);
   private sessionService = inject(SessionService);
-  private storageService = inject(StorageService);
   private themeService = inject(ThemeService);
   private translate = inject(TranslateService);
 
@@ -51,22 +46,12 @@ export class TaxesModalComponent implements OnInit {
    * Inicializa el modal, cargando datos si se está editando un impuesto.
    */
   ngOnInit(): void {
-    this.storageService.userInfo.subscribe((user) => {
-      this.portalUsersService.getToken(user).subscribe({
-        next: (portalUserToken) => {
-          this.authService.setPortalUsersToken(portalUserToken.token);
-          if (this.idTax) {
-            this.titlePage = this.translate.instant('dpos.taxes.modal.title.edit');
-            this.getTax();
-          } else {
-            this.titlePage = this.translate.instant('dpos.taxes.modal.title.add');
-          }
-        },
-        error: (error) => {
-          console.error('Error Portal user token', error);
-        }
-      });
-    });
+    if (this.idTax) {
+      this.titlePage = this.translate.instant('dpos.taxes.modal.title.edit');
+      this.getTax();
+    } else {
+      this.titlePage = this.translate.instant('dpos.taxes.modal.title.add');
+    }
   }
 
   /**

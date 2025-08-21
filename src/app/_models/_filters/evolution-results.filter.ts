@@ -1,7 +1,9 @@
 import { FilterStep } from "./filters.interface";
 
 /**
- * EvolutionResultsFilter construye filtros para el gráfico de evolución de cierres de caja.
+ * @class EvolutionResultsFilter
+ * @description
+ * Construye filtros para el gráfico de evolución de cierres de caja.
  */
 export class EvolutionResultsFilter {
 

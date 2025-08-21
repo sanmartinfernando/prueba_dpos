@@ -2,9 +2,7 @@ import { CashMovementsService } from '../_services/cash-movements.service';
 import { OrdersService } from '../_services/orders.service';
 import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { OrderAggregation } from '../_models/order-aggregation.model';
-import { PortalUsersService } from '../_services/portal-users.service';
 import { TerminalsService } from '../_services/terminals.service';
-import { AuthService } from '../_services/auth.service';
 import { Terminal } from '../_models/terminal.model';
 import { CommercesService } from '../_services/commerces.service';
 import { OrdersFilter } from '../_models/_filters/orders.filter';
@@ -15,18 +13,18 @@ import { EvolutionResultsFilter } from '../_models/_filters/evolution-results.fi
 import { PaymentMethodsFilter } from '../_models/_filters/payment-methods.filter';
 import { Top3Filter } from '../_models/_filters/top3.filter';
 import { TopProductsFilter } from '../_models/_filters/top-products.filter';
-import { StorageService } from '../_services/storage.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { DataSetTop3 } from '../_models/dataset-top3.model';
 import { SessionService } from '../_services/session.service';
-import { Router } from '@angular/router';
 import { Top3Aggregation } from '../_models/top3-aggregation.model';
 import { ThemeService } from '../_services/theme.service';
 import { UIStateService } from '../_services/ui-state.service';
 import { Order } from '../_models/order.model';
 
 /**
+ * @class DashboardComponent
+ * @description
  * Componente principal para la visualización de datos de KPIs,
  * métodos de pago y top de venta de productos.
  * Gestiona la obtención, filtrado y representación gráfica de la información.
@@ -40,16 +38,12 @@ export class DashboardComponent implements OnInit {
 
   private ordersService = inject(OrdersService);
   private cashMovementsService = inject(CashMovementsService);
-  private portalUsersService = inject(PortalUsersService);
   private terminalsService = inject(TerminalsService);
   private commercesService = inject(CommercesService);
   public translate = inject(TranslateService);
-  private storageService = inject(StorageService);
   private sessionService = inject(SessionService);
-  private authService = inject(AuthService);
   private themeService = inject(ThemeService);
   private uiStateService = inject(UIStateService);
-  private router = inject(Router);
 
   public loadedKPIChart = false;
   public loadedPMChart = false;
@@ -165,57 +159,45 @@ export class DashboardComponent implements OnInit {
    */
   ngOnInit(): void {
     this.updateView();
-    this.storageService.userInfo.subscribe((user) => {
-      this.portalUsersService.getToken(user).subscribe({
-        next: (portalUserToken) => {
-          this.authService.setPortalUsersToken(portalUserToken.token);
-          this.commercesService.getCommerceList().subscribe({
-            next: (commerces) => {
-              this.sessionService.getCommerceId().subscribe((commerceId) => {
-                if (commerceId !== 0) {
-                  this.commerceId = commerceId;
-                } else {
-                  this.commerceId = commerces[0].commerceId;
-                  this.sessionService.setItem(SessionService.COMMERCE_ID, this.commerceId);
-                }
-                this.terminalsService.getTerminalList().subscribe({
-                  next: (terminals) => {
-                    terminals = terminals.filter(terminal => terminal.commerceId === this.commerceId && terminal.terminalNumber !== null);
-                    if (terminals.length !== 0) {
-                      this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
-                    }
-                    this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
-                    if (this.sessionService.getItem(SessionService.TERMINAL_NUMBER) === null) {
-                      this.terminalSelected = this.terminalsNumber[0];
-                      this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
-                    } else {
-                      this.terminalSelected = this.sessionService.getItem(SessionService.TERMINAL_NUMBER);
-                    }
-                    this.searchTerminal();
-                  },
-                  error: (error) => {
-                    console.error("Error Terminals: ", error);
-                  }
-                });
-              });
+    this.commercesService.getCommerceList().subscribe({
+      next: (commerces) => {
+        this.sessionService.getCommerceId().subscribe((commerceId) => {
+          if (commerceId !== 0) {
+            this.commerceId = commerceId;
+          } else {
+            this.commerceId = commerces[0].commerceId;
+            this.sessionService.setItem(SessionService.COMMERCE_ID, this.commerceId);
+          }
+          this.terminalsService.getTerminalList().subscribe({
+            next: (terminals) => {
+              terminals = terminals.filter(terminal => terminal.commerceId === this.commerceId && terminal.terminalNumber !== null);
+              if (terminals.length !== 0) {
+                this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
+              }
+              this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
+              if (this.sessionService.getItem(SessionService.TERMINAL_NUMBER) === null) {
+                this.terminalSelected = this.terminalsNumber[0];
+                this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
+              } else {
+                this.terminalSelected = this.sessionService.getItem(SessionService.TERMINAL_NUMBER);
+              }
+              this.searchTerminal();
             },
             error: (error) => {
-              console.error("Error Commerces: ", error);
+              console.error("Error Terminals: ", error);
             }
           });
-        },
-        error: (error) => {
-          console.error("Error Portal user token", error);
-          if (error.status === 401) {
-            this.router.navigate(['/login']);
-          }
-        }
-      });
+        });
+      },
+      error: (error) => {
+        console.error("Error Commerces: ", error);
+      }
     });
   }
 
   /**
    * Detecta el redimensionamiento de la ventana y actualiza las dimensiones de los gráficos.
+   * 
    * @param event Evento de redimensionamiento de la ventana.
    */
   @HostListener('window:resize', ['$event'])
@@ -225,6 +207,7 @@ export class DashboardComponent implements OnInit {
 
   /**
    * Formatea un valor numérico como porcentaje para etiquetas en gráficos.
+   * 
    * @param value Valor numérico a formatear.
    * @returns Cadena con el valor en porcentaje.
    */
@@ -235,6 +218,7 @@ export class DashboardComponent implements OnInit {
   /**
    * Formatea un valor numérico como moneda en euros para etiquetas en gráficos.
    * Aplica el formato dependiendo del mes seleccionado.
+   * 
    * @param value Valor numérico a formatear.
    * @returns Cadena con el valor formateado o null si no aplica.
    */
@@ -259,6 +243,7 @@ export class DashboardComponent implements OnInit {
 
   /**
    * Asigna colores personalizados a las barras del gráfico KPI según el mes seleccionado.
+   * 
    * @returns Lista de objetos con nombre y color asignado.
    */
   public barCustomColors() {
@@ -318,6 +303,7 @@ export class DashboardComponent implements OnInit {
 
   /**
    * Cambia el tipo de KPI mostrado en función del botón pulsado y carga el gráfico correspondiente.
+   * 
    * @param event Evento del clic del usuario.
    */
   public fillCharKPIs(event: MouseEvent) {
@@ -384,6 +370,7 @@ export class DashboardComponent implements OnInit {
 
   /**
    * Actualiza el índice del mes seleccionado.
+   * 
    * @param event Evento de cambio en el elemento select.
    */
   public onMonthChange(event: Event): void {
@@ -393,6 +380,7 @@ export class DashboardComponent implements OnInit {
 
   /**
    * Formatea las etiquetas de datos en gráficos a dos decimales si el valor es positivo.
+   * 
    * @param value Valor numérico a formatear.
    * @returns Cadena con el valor formateado o vacío si es cero o negativo.
    */

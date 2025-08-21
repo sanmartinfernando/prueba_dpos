@@ -2,9 +2,7 @@ import { Component, EventEmitter, HostListener, OnInit, Output, inject } from '@
 import { Router } from '@angular/router';
 import { Commerce } from 'src/app/_models/commerce.model';
 import { Page } from 'src/app/_models/page.model';
-import { AuthService } from 'src/app/_services/auth.service';
 import { PagesService } from 'src/app/_services/pages.service';
-import { PortalUsersService } from 'src/app/_services/portal-users.service';
 import { SessionService } from 'src/app/_services/session.service';
 import { StorageService } from 'src/app/_services/storage.service';
 import { UIStateService } from 'src/app/_services/ui-state.service';
@@ -12,6 +10,8 @@ import { CommercesService } from '../../_services/commerces.service';
 import { ThemeService } from '../../_services/theme.service';
 
 /**
+ * @class HeaderComponent
+ * @description
  * Componente de cabecera del portal Web que gestiona la navegación,
  * la sesión de usuario, el comercio seleccionado y el tema visual.
  */
@@ -22,8 +22,6 @@ import { ThemeService } from '../../_services/theme.service';
 })
 export class HeaderComponent implements OnInit {
 
-  private authService = inject(AuthService);
-  private portalUsersService = inject(PortalUsersService);
   private commercesService = inject(CommercesService);
   private storageService = inject(StorageService);
   private sessionService = inject(SessionService);
@@ -59,29 +57,24 @@ export class HeaderComponent implements OnInit {
    */
   ngOnInit(): void {
     this.loadThemeByResellerName();
+
     this.storageService.userInfo.subscribe(user => {
       if (user) {
         this.isLoggedIn = true;
         this.username = user.user;
-        this.portalUsersService.getToken(user).subscribe({
-          next: portalUserToken => {
-            this.authService.setPortalUsersToken(portalUserToken.token);
-            this.commercesService.getCommerceList().subscribe({
-              next: commerces => {
-                this.commerces = commerces;
-                this.commerceSelected = this.sessionService.getItem(SessionService.COMMERCE_ID);
-                if (this.commerceSelected === null) {
-                  const firstCommerce = commerces[0];
-                  this.commerceSelected = firstCommerce.commerceId;
-                  this.sessionService.setItem(SessionService.COMMERCE_ID, firstCommerce.commerceId);
-                  this.sessionService.setItem(SessionService.RESELLER_NAME, firstCommerce.resellerName);
-                  this.loadThemeByResellerName();
-                }
-              },
-              error: error => console.error('Error Commerces:', error)
-            });
+        this.commercesService.getCommerceList().subscribe({
+          next: commerces => {
+            this.commerces = commerces;
+            this.commerceSelected = this.sessionService.getItem(SessionService.COMMERCE_ID);
+            if (this.commerceSelected === null) {
+              const firstCommerce = commerces[0];
+              this.commerceSelected = firstCommerce.commerceId;
+              this.sessionService.setItem(SessionService.COMMERCE_ID, firstCommerce.commerceId);
+              this.sessionService.setItem(SessionService.RESELLER_NAME, firstCommerce.resellerName);
+              this.loadThemeByResellerName();
+            }
           },
-          error: error => console.error('Error Portal user token', error)
+          error: error => console.error('Error Commerces:', error)
         });
       } else {
         this.isLoggedIn = false;
@@ -108,6 +101,7 @@ export class HeaderComponent implements OnInit {
 
   /**
    * Gestiona el clic de las opciones del menú de navegación.
+   * 
    * @param text Texto de la opción seleccionada.
    * @param code Código de la opción seleccionada.
    */
@@ -151,6 +145,7 @@ export class HeaderComponent implements OnInit {
 
   /**
    * Verifica si la pantalla es de tamaño grande.
+   * 
    * @returns True si el ancho de la ventana es mayor o igual a 768px.
    */
   private isLargeScreen(): boolean {
@@ -159,6 +154,7 @@ export class HeaderComponent implements OnInit {
 
   /**
    * Cambia el título principal de la cabecera.
+   * 
    * @param name Nuevo título.
    */
   private titleHeader(name: string): void {
@@ -167,6 +163,7 @@ export class HeaderComponent implements OnInit {
   
   /**
    * Guarda el componente seleccionado en almacenamiento.
+   * 
    * @param component Nombre del componente.
    */
   private component(component: string): void {
@@ -175,6 +172,7 @@ export class HeaderComponent implements OnInit {
   
   /**
    * Obtiene el comercio actualmente seleccionado.
+   * 
    * @returns Comercio, o null si no existe.
    */
   private getCommerce(): Commerce {
@@ -194,6 +192,7 @@ export class HeaderComponent implements OnInit {
 
   /**
    * Determina si el tema actual corresponde a la entidad de 'Comercia'.
+   * 
    * @returns True si el comercio es Comercia.
    */
   private isComerciaTheme(): boolean {

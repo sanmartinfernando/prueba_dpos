@@ -1,7 +1,9 @@
 import { FilterStep } from "./filters.interface";
 
 /**
- * EvolutionFilter construye filtros para el gráfico de evolución de ventas.
+ * @class EvolutionFilter
+ * @description
+ * Construye filtros para el gráfico de evolución de ventas.
  */
 export class EvolutionFilter {
 

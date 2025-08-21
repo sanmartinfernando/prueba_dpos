@@ -1,4 +1,6 @@
 /**
+ * @class PortalUserToken
+ * @description
  * Representa un token de usuario para el portal web, incluyendo el tipo de token y fecha de expiración.
  */
 export class PortalUserToken {

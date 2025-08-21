@@ -8,6 +8,8 @@ import { Customer } from '../_models/customer.model';
 import { TranslateService } from '@ngx-translate/core';
 
 /**
+ * @class CustomersService
+ * @description
  * Servicio para gestionar operaciones relacionadas con clientes.
  */
 @Injectable({ providedIn: 'root' })
@@ -25,6 +27,7 @@ export class CustomersService {
   /**
    * Crea o actualiza un cliente según tenga definido el clientId.
    * Si clientId no existe, se realiza un POST; de lo contrario, un PUT.
+   * 
    * @param customer Objeto Customer con los datos del cliente.
    * @param commerceId Id del comercio asociado.
    * @returns Observable con el cliente creado o actualizado.
@@ -46,6 +49,7 @@ export class CustomersService {
 
   /**
    * Obtiene un cliente específico por su ID.
+   * 
    * @param customerId Id del cliente a obtener.
    * @param commerceId Id del comercio asociado.
    * @returns Observable con el cliente obtenido.
@@ -61,6 +65,7 @@ export class CustomersService {
 
   /**
    * Obtiene un listado de clientes con información agregada según los parámetros de búsqueda.
+   * 
    * @param size Cantidad de resultados a obtener.
    * @param searchParams Parámetros de búsqueda y paginación.
    * @returns Observable con información de clientes.

@@ -2,19 +2,17 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
-
-import { AuthService } from 'src/app/_services/auth.service';
 import { CustomersService } from 'src/app/_services/customers.service';
 import { EncryptionService } from 'src/app/_services/encryption.service';
-import { PortalUsersService } from 'src/app/_services/portal-users.service';
 import { SessionService } from 'src/app/_services/session.service';
-import { StorageService } from 'src/app/_services/storage.service';
 import { ThemeService } from 'src/app/_services/theme.service';
 import { UIStateService } from 'src/app/_services/ui-state.service';
 
 import { Customer } from 'src/app/_models/customer.model';
 
 /**
+ * @class CustomerDetailsComponent
+ * @description
  * Componente para gestionar el detalle de clientes.
  * Permite visualizar, crear y editar datos de clientes asociados a un comercio.
  */
@@ -26,14 +24,11 @@ export class CustomerDetailsComponent implements OnInit {
 
   private activatedRoute = inject(ActivatedRoute);
   private encryptionService = inject(EncryptionService);
-  private portalUsersService = inject(PortalUsersService);
   private customersService = inject(CustomersService);
-  private storageService = inject(StorageService);
   private uiStateService = inject(UIStateService);
   private sessionService = inject(SessionService);
   private translate = inject(TranslateService);
   private themeService = inject(ThemeService);
-  private authService = inject(AuthService);
   private fb = inject(FormBuilder);
 
   loadCompleted = false;
@@ -66,30 +61,21 @@ export class CustomerDetailsComponent implements OnInit {
    * Inicializa el componente cargando el token de usuario y, si corresponde, los datos del cliente.
    */
   ngOnInit(): void {
-    this.storageService.userInfo.subscribe((user) => {
-      this.portalUsersService.getToken(user).subscribe({
-        next: (portalUserToken) => {
-          this.authService.setPortalUsersToken(portalUserToken.token);
-          this.commerceId = this.sessionService.getItem(SessionService.COMMERCE_ID);
-          const idParam = this.activatedRoute.snapshot.params['id'];
-          if (idParam) {
-            this.idCustomer = this.encryptionService.decode(idParam);
-            this.getCustomer(this.idCustomer);
-            this.titlePage = this.translate.instant('dpos.customer.details.page.edit.title');
-          } else {
-            this.titlePage = this.translate.instant('dpos.customer.details.page.add.title');
-            this.loadCompleted = true;
-          }
-        },
-        error: (error) => {
-          console.error('Error Portal user token', error);
-        }
-      });
-    });
+    this.commerceId = this.sessionService.getItem(SessionService.COMMERCE_ID);
+    const idParam = this.activatedRoute.snapshot.params['id'];
+    if (idParam) {
+      this.idCustomer = this.encryptionService.decode(idParam);
+      this.getCustomer(this.idCustomer);
+      this.titlePage = this.translate.instant('dpos.customer.details.page.edit.title');
+    } else {
+      this.titlePage = this.translate.instant('dpos.customer.details.page.add.title');
+      this.loadCompleted = true;
+    }
   }
 
   /**
    * Obtiene los datos de un cliente por su ID y los asigna al formulario.
+   * 
    * @param idClient Identificador del cliente.
    */
   public getCustomer(idClient: string): void {

@@ -7,6 +7,8 @@ import { SalesReport } from '../_models/sales-report.model';
 import { TranslateService } from '@ngx-translate/core';
 
 /**
+ * @class SalesReportService
+ * @description
  * Servicio para la obtención de reportes de ventas.
  * Permite filtrar por fechas, número de terminal y comercio.
  */
@@ -22,6 +24,7 @@ export class SalesReportService {
 
   /**
    * Obtiene el reporte de ventas filtrado por fecha y opcionalmente por terminal y comercio.
+   * 
    * @param fromDate Fecha inicial en formato numérico.
    * @param toDate Fecha final en formato numérico.
    * @param terminalNumber Número de terminal opcional.

@@ -1,4 +1,6 @@
 /**
+ * @class Terminal
+ * @description
  * Representa un terminal de punto de venta asociado a un comercio.
  * Contiene información como su identificador, estado, aplicación y fechas relevantes.
  */

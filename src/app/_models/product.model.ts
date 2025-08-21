@@ -1,6 +1,8 @@
 import { Tax } from "./tax.model";
 
 /**
+ * @enum UnitMeasurement
+ * @description
  * Enumeración que representa las unidades de medida disponibles
  * para productos.
  */
@@ -23,6 +25,8 @@ export const UnitMeasurementLabel: Record<UnitMeasurement, string> = {
 };
 
 /**
+ * @enum PriceType
+ * @description
  * Enumeración que representa los tipos de precio (fijo o variable) disponibles
  * para productos.
  */
@@ -41,6 +45,8 @@ export const PriceTypeLabel: Record<PriceType, string> = {
 };
 
 /**
+ * @class Product
+ * @description
  * Representa un producto con sus propiedades, impuestos, categorías y modificadores asociados.
  */
 export class Product {
@@ -59,7 +65,6 @@ export class Product {
   unitMeasurement: number;
   stock: number;
   noticeBar = false;
-
   barcode?: string;
   reference?: string;
   description?: string;

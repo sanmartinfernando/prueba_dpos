@@ -1,6 +1,8 @@
 import { Terminal } from "./terminal.model";
 
 /**
+ * @class Commerce
+ * @description
  * Representa un comercio con su identificador, datos de contacto,
  * información fiscal y terminal asociado.
  */

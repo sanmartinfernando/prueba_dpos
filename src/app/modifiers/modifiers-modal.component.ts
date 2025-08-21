@@ -1,17 +1,15 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
-
-import { AuthService } from '../_services/auth.service';
-import { PortalUsersService } from '../_services/portal-users.service';
 import { SessionService } from '../_services/session.service';
-import { StorageService } from '../_services/storage.service';
 import { ThemeService } from '../_services/theme.service';
 import { Modifiers } from '../_models/modifiers.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProductsService } from '../_services/products.service';
 
 /**
+ * @class ModifiersModalComponent
+ * @description
  * Modal para gestionar modificadores de productos, permitiendo
  * agregar o editarlos y cerrar el diálogo.
  */
@@ -22,12 +20,9 @@ import { ProductsService } from '../_services/products.service';
 })
 export class ModifiersModalComponent implements OnInit {
 
-  private authService = inject(AuthService);
   private fb = inject(FormBuilder);
-  private portalUsersService = inject(PortalUsersService);
   private productsService = inject(ProductsService);
   private sessionService = inject(SessionService);
-  private storageService = inject(StorageService);
   private themeService = inject(ThemeService);
   private translate = inject(TranslateService);
 
@@ -59,25 +54,15 @@ export class ModifiersModalComponent implements OnInit {
    * Inicializa el modal cargando datos según corresponda.
    */
   ngOnInit(): void {
-    this.storageService.userInfo.subscribe((user) => {
-      this.portalUsersService.getToken(user).subscribe({
-        next: (portalUserToken) => {
-          this.authService.setPortalUsersToken(portalUserToken.token);
-          this.commerceId = this.sessionService.getItem(SessionService.COMMERCE_ID);
-          if (this.idModifiers) {
-            this.getModifiers();
-            this.titlePage = this.translate.instant('dpos.modifiers-modal.title.edit');
-            
-          } else {
-            this.titlePage = this.translate.instant('dpos.modifiers-modal.title.add');
-            this.loadCompleted = true;
-          }
-        },
-        error: (error) => {
-          console.error('Error Portal user token', error);
-        }
-      });
-    });
+    this.commerceId = this.sessionService.getItem(SessionService.COMMERCE_ID);
+    if (this.idModifiers) {
+      this.getModifiers();
+      this.titlePage = this.translate.instant('dpos.modifiers-modal.title.edit');
+      
+    } else {
+      this.titlePage = this.translate.instant('dpos.modifiers-modal.title.add');
+      this.loadCompleted = true;
+    }
   }
 
   /**

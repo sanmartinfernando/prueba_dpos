@@ -1,4 +1,6 @@
 /**
+ * @class Page
+ * @description
  * Representa una página con un identificador, texto, código e icono.
  */
 export class Page {

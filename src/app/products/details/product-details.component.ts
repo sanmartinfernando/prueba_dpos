@@ -2,11 +2,8 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
-import { AuthService } from 'src/app/_services/auth.service';
 import { EncryptionService } from 'src/app/_services/encryption.service';
-import { PortalUsersService } from 'src/app/_services/portal-users.service';
 import { SessionService } from 'src/app/_services/session.service';
-import { StorageService } from 'src/app/_services/storage.service';
 import { ThemeService } from 'src/app/_services/theme.service';
 import { UIStateService } from 'src/app/_services/ui-state.service';
 import { PriceType, PriceTypeLabel, Product, UnitMeasurement, UnitMeasurementLabel } from '../../_models/product.model';
@@ -18,6 +15,8 @@ import { ProductsService } from 'src/app/_services/products.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 /**
+ * @class ProductDetailsComponent
+ * @description
  * Componente que gestiona la vista y edición de detalles de un producto,
  * permitiendo su creación, actualización y asignación de categorías y modificadores.
  */
@@ -27,12 +26,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class ProductDetailsComponent implements OnInit {
 
-  private authService = inject(AuthService);
   private fb = inject(FormBuilder);
   private encryptionService = inject(EncryptionService);
-  private portalUsersService = inject(PortalUsersService);
   private sessionService = inject(SessionService);
-  private storageService = inject(StorageService);
   private themeService = inject(ThemeService);
   private uiStateService = inject(UIStateService);
   private activatedRoute = inject(ActivatedRoute);
@@ -120,29 +116,19 @@ export class ProductDetailsComponent implements OnInit {
         this.productForm.get('price')?.setValue(null);
       }
     });
-
-    this.storageService.userInfo.subscribe((user) => {
-      this.portalUsersService.getToken(user).subscribe({
-        next: (portalUserToken) => {
-          this.authService.setPortalUsersToken(portalUserToken.token);
-          this.commerceId = this.sessionService.getItem(SessionService.COMMERCE_ID);
-          const idParam = this.activatedRoute.snapshot.params['id'];
-          if (idParam) {
-            this.idProduct = this.encryptionService.decode(idParam);
-            this.titlePage = this.translate.instant('dpos.product-details.page.edit.title');
-            this.getProduct();
-          } else {
-            this.titlePage = this.translate.instant('dpos.product-details.page.add.title');
-          }
-          this.getAllCategories();
-          this.getAllModifiers();
-          this.loadCompleted = true;
-        },
-        error: (error) => {
-          console.error('Error Portal user token', error);
-        }
-      });
-    });
+    
+    this.commerceId = this.sessionService.getItem(SessionService.COMMERCE_ID);
+    const idParam = this.activatedRoute.snapshot.params['id'];
+    if (idParam) {
+      this.idProduct = this.encryptionService.decode(idParam);
+      this.titlePage = this.translate.instant('dpos.product-details.page.edit.title');
+      this.getProduct();
+    } else {
+      this.titlePage = this.translate.instant('dpos.product-details.page.add.title');
+    }
+    this.getAllCategories();
+    this.getAllModifiers();
+    this.loadCompleted = true;
   }
 
   /**
@@ -154,6 +140,7 @@ export class ProductDetailsComponent implements OnInit {
 
   /**
    * Abre el modal de categorías.
+   * 
    * @param id - ID de la categoría para edición.
    */
   public openCategoriesModal(id?: string): void {
@@ -169,6 +156,7 @@ export class ProductDetailsComponent implements OnInit {
 
   /**
    * Abre el modal de modificadores.
+   * 
    * @param id - ID del modificador para edición.
    */
   public openModifiersModal(id?: string): void {

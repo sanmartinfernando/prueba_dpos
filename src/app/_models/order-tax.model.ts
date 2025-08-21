@@ -1,4 +1,6 @@
 /**
+ * @class OrderTax
+ * @description
  * Representa un impuesto aplicado a una venta, incluyendo el identificador, nombre,
  * valor, base imponible, total, decimales y régimen fiscal.
  */

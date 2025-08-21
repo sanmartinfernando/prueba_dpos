@@ -4,15 +4,18 @@ import { PwdProperties } from 'src/app/_models/pwd-properties.model';
 import { PwdReset } from 'src/app/_models/pwd-reset.model';
 import { PortalUsersService } from 'src/app/_services/portal-users.service';
 
+/**
+ * @class PwresetComponent
+ * @description
+ * Componente para restablecer la contraseña de un usuario,
+ * validando las propiedades requeridas y mostrando mensajes de error.
+ */
 @Component({
   selector: 'app-pwreset',
   templateUrl: './pwreset.component.html'
 })
-/**
- * Componente para restablecer la contraseña de un usuario,
- * validando las propiedades requeridas y mostrando mensajes de error.
- */
 export class PwresetComponent {
+  
   private router = inject(Router);
   private portalUsersService = inject(PortalUsersService);
 

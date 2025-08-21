@@ -6,6 +6,8 @@ import { OrderTicketBai } from "./order-ticketbai.model";
 import { OrderVerifactu } from "./order-verifactu.model";
 
 /**
+ * @class Order
+ * @description
  * Representa una venta, incluyendo detalles de sus líneas, pagos, impuestos,
  * cliente, comercio, ticketBAI, Verifactu, descuentos y estado.
  */

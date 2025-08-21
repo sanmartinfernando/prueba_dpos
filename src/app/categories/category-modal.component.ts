@@ -2,15 +2,14 @@ import { Component, inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
-import { AuthService } from '../_services/auth.service';
-import { PortalUsersService } from '../_services/portal-users.service';
 import { SessionService } from '../_services/session.service';
-import { StorageService } from '../_services/storage.service';
 import { ThemeService } from '../_services/theme.service';
 import { ProductsService } from '../_services/products.service';
 import { Category } from '../_models/category.model';
 
 /**
+ * @class CategoryModalComponent
+ * @description
  * Modal de gestión de categorías.
  * Permite crear, editar y guardar categorías.
  */
@@ -21,12 +20,9 @@ import { Category } from '../_models/category.model';
 })
 export class CategoryModalComponent implements OnInit {
 
-  private authService = inject(AuthService);
   private fb = inject(FormBuilder);
-  private portalUsersService = inject(PortalUsersService);
   private productsService = inject(ProductsService);
   private sessionService = inject(SessionService);
-  private storageService = inject(StorageService);
   private themeService = inject(ThemeService);
   private translate = inject(TranslateService);
 
@@ -52,24 +48,14 @@ export class CategoryModalComponent implements OnInit {
    * Inicializa el componente cargando datos del usuario y, si corresponde, la categoría a editar.
    */
   ngOnInit(): void {
-    this.storageService.userInfo.subscribe((user) => {
-      this.portalUsersService.getToken(user).subscribe({
-        next: (portalUserToken) => {
-          this.authService.setPortalUsersToken(portalUserToken.token);
-          this.commerceId = this.sessionService.getItem(SessionService.COMMERCE_ID);
-          if (this.idCategory) {
-            this.getCategory(this.idCategory);
-            this.titlePage = this.translate.instant('dpos.category.modal.title.edit');
-          } else {
-            this.titlePage = this.translate.instant('dpos.category.modal.title.add');
-            this.loadCompleted = true;
-          }
-        },
-        error: (error) => {
-          console.error('Error Portal user token', error);
-        }
-      });
-    });
+    this.commerceId = this.sessionService.getItem(SessionService.COMMERCE_ID);
+    if (this.idCategory) {
+      this.getCategory(this.idCategory);
+      this.titlePage = this.translate.instant('dpos.category.modal.title.edit');
+    } else {
+      this.titlePage = this.translate.instant('dpos.category.modal.title.add');
+      this.loadCompleted = true;
+    }
   }
 
   /**
@@ -81,6 +67,7 @@ export class CategoryModalComponent implements OnInit {
 
   /**
    * Obtiene una categoría existente y carga sus datos en el formulario.
+   * 
    * @param categoryId Identificador de la categoría.
    */
   public getCategory(categoryId: string): void {

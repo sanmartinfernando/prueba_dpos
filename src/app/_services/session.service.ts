@@ -3,6 +3,8 @@ import { BehaviorSubject } from 'rxjs';
 import { Commerce } from '../_models/commerce.model';
 
 /**
+ * @class SessionService
+ * @description
  * Servicio de sesión para almacenar y gestionar datos
  * en sessionStorage y mantenerlos reactivos mediante BehaviorSubject.
  */
@@ -43,6 +45,7 @@ export class SessionService {
 
   /**
    * Guarda un valor en sessionStorage.
+   * 
    * @param key Clave del elemento.
    * @param value Valor a almacenar.
    */
@@ -52,6 +55,7 @@ export class SessionService {
 
   /**
    * Obtiene un valor de sessionStorage.
+   * 
    * @param key Clave del elemento.
    * @returns Valor almacenado o null si no existe.
    */
@@ -62,6 +66,7 @@ export class SessionService {
 
   /**
    * Elimina un elemento de sessionStorage.
+   * 
    * @param key Clave del elemento a eliminar.
    */
   public removeItem(key: string): void {
@@ -77,6 +82,7 @@ export class SessionService {
 
   /**
    * Obtiene el BehaviorSubject del comercio.
+   * 
    * @returns BehaviorSubject con el comercio.
    */
   public getCommerce(): BehaviorSubject<Commerce> {
@@ -85,6 +91,7 @@ export class SessionService {
 
   /**
    * Actualiza el BehaviorSubject del comercio.
+   * 
    * @param commerce Objeto Commerce a establecer.
    */
   public setCommerce(commerce: Commerce): void {
@@ -93,6 +100,7 @@ export class SessionService {
 
   /**
    * Obtiene el BehaviorSubject del ID del comercio.
+   * 
    * @returns BehaviorSubject con el ID del comercio.
    */
   public getCommerceId(): BehaviorSubject<number> {
@@ -101,6 +109,7 @@ export class SessionService {
 
   /**
    * Actualiza el BehaviorSubject del ID del comercio.
+   * 
    * @param commerceId Nuevo ID del comercio.
    */
   public setCommerceId(commerceId: number): void {

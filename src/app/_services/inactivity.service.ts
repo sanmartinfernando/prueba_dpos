@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { StorageService } from './storage.service';
 
 /**
+ * @class InactivityService
+ * @description
  * Servicio para detectar inactividad del usuario y cerrar sesión automáticamente
  * después de un periodo configurado sin interacción.
  */
@@ -47,6 +49,7 @@ export class InactivityService {
 
   /**
    * Verifica si el monitoreo de inactividad está activo.
+   * 
    * @returns True si el monitoreo está activo, false en caso contrario.
    */
   public isMonitoringActive(): boolean {

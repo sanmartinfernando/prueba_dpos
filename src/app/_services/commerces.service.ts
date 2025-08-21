@@ -6,6 +6,8 @@ import { RestRoutes } from '../_rest/rest-routes.config';
 import { Commerce } from '../_models/commerce.model';
 
 /**
+ * @class CommercesService
+ * @description
  * Servicio para gestionar operaciones relacionadas con comercios.
  */
 @Injectable({ providedIn: 'root' })
@@ -25,6 +27,7 @@ export class CommercesService {
 
   /**
    * Obtiene la lista de comercios asociados al usuario.
+   * 
    * @returns Observable con un array de objetos Commerce.
    */
   public getCommerceList(): Observable<Commerce[]> {
@@ -34,6 +37,7 @@ export class CommercesService {
 
   /**
    * Actualiza el comercio seleccionado.
+   * 
    * @param commerceId Id del comercio a establecer.
    */
   public setCommerceId(commerceId: number): void {

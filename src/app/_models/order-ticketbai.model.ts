@@ -1,4 +1,6 @@
 /**
+ * @class OrderTicketBai
+ * @description
  * Representa un ticketBAI de una venta, incluyendo información del terminal,
  * aplicación, vendedor, fechas, estados, epígrafes y advertencias.
  */

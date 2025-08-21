@@ -4,6 +4,8 @@ import { environment } from 'src/environments/environment.dev-inte';
 import { RestRoutes } from '../_rest/rest-routes.config';
 
 /**
+ * @class DownloadPDFService
+ * @description
  * Servicio para descargar archivos PDF relacionados con cierres de caja y ventas.
  */
 @Injectable({ providedIn: 'root' })
@@ -13,6 +15,7 @@ export class DownloadPDFService {
 
   /**
    * Descarga el archivo PDF correspondiente a un cierre de caja por su ID.
+   * 
    * @param id Identificador del cierre de caja.
    */
   public downloadBalancesFile(id: string): void {
@@ -24,6 +27,7 @@ export class DownloadPDFService {
 
   /**
    * Descarga el archivo PDF correspondiente a una venta por su ID.
+   * 
    * @param id Identificador de la venta.
    */
   public downloadOrdersFile(id: string): void {
@@ -35,6 +39,7 @@ export class DownloadPDFService {
 
   /**
    * Guarda un archivo PDF en el sistema del usuario.
+   * 
    * @param blob Archivo en formato Blob.
    * @param id Nombre base del archivo.
    */

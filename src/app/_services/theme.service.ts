@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Commerce } from '../_models/commerce.model';
 
 /**
+ * @class ThemeService
+ * @description
  * Servicio encargado de gestionar la carga y activación de temas CSS
  * asociados a diferentes comercios.
  */
@@ -46,6 +48,7 @@ export class ThemeService {
   /**
    * Activa el tema correspondiente al comercio indicado y
    * desactiva el resto de temas cargados.
+   * 
    * @param resellerName Nombre del comercio cuyo tema se desea activar.
    */
   public loadTheme(resellerName: string): void {

@@ -10,6 +10,8 @@ import { ThemeService } from 'src/app/_services/theme.service';
 import { UIStateService } from 'src/app/_services/ui-state.service';
 
 /**
+ * @class BalancesDetailsComponent
+ * @description
  * Componente encargado de mostrar el detalle de un cierre de caja,
  * calcular totales y permitir la descarga del mismo en formato PDF.
  */

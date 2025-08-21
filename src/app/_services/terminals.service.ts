@@ -6,6 +6,8 @@ import { RestRoutes } from '../_rest/rest-routes.config';
 import { Terminal } from '../_models/terminal.model';
 
 /**
+ * @class TerminalsService
+ * @description
  * Servicio encargado de gestionar las operaciones relacionadas con terminales.
  * Proporciona métodos para obtener la lista de terminales disponibles.
  */
@@ -23,6 +25,7 @@ export class TerminalsService {
 
   /**
    * Obtiene la lista de terminales asociadas al usuario del portal.
+   * 
    * @returns Observable con un array de objetos Terminal.
    */
   public getTerminalList(): Observable<Terminal[]> {

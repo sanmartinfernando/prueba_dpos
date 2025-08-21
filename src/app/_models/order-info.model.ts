@@ -1,6 +1,8 @@
 import { Order } from "./order.model";
 
 /**
+ * @class OrderInfo
+ * @description
  * Contiene información paginada de ventas.
  */
 export class OrderInfo {

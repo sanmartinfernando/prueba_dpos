@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 /**
+ * @class UIStateService
+ * @description
  * Servicio encargado de gestionar y exponer el estado de la interfaz de usuario
  * relacionado con la habilitación del selector de formularios.
  */
@@ -13,6 +15,7 @@ export class UIStateService {
 
   /**
    * Actualiza el estado de habilitación del selector de formularios.
+   * 
    * @param enabled Indica si el selector de formularios debe estar habilitado.
    */
   public setFormSelectEnabled(enabled: boolean): void {

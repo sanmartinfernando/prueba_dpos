@@ -2,11 +2,8 @@ import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { TranslateService } from '@ngx-translate/core';
-import { StorageService } from 'src/app/_services/storage.service';
 import { DownloadCsvService } from '../_services/download-csv.service';
-import { PortalUsersService } from '../_services/portal-users.service';
 import { CommercesService } from '../_services/commerces.service';
-import { AuthService } from '../_services/auth.service';
 import { SessionService } from '../_services/session.service';
 import { ThemeService } from '../_services/theme.service';
 import { UIStateService } from '../_services/ui-state.service';
@@ -15,6 +12,8 @@ import { Tax } from '../_models/tax.model';
 import { TaxesModalComponent } from './taxes-modal.component';
 
 /**
+ * @class TaxesComponent
+ * @description
  * Componente encargado de gestionar la visualización, filtrado, edición, eliminación
  * y descarga de impuestos.
  */
@@ -25,13 +24,10 @@ import { TaxesModalComponent } from './taxes-modal.component';
 export class TaxesComponent implements OnInit, OnDestroy {
 
   private downloadCsvService = inject(DownloadCsvService);
-  private storageService = inject(StorageService);
-  private portalUsersService = inject(PortalUsersService);
   private dialog = inject(MatDialog);
   private commercesService = inject(CommercesService);
   private sessionService = inject(SessionService);
   private themeService = inject(ThemeService);
-  private authService = inject(AuthService);
   private translate = inject(TranslateService);
   private uiStateService = inject(UIStateService);
 
@@ -88,28 +84,20 @@ export class TaxesComponent implements OnInit, OnDestroy {
    */
   ngOnInit(): void {
     this.loadCompleted = false;
-    this.storageService.userInfo.subscribe(user => {
-      this.portalUsersService.getToken(user).subscribe({
-        next: portalUserToken => {
-          this.authService.setPortalUsersToken(portalUserToken.token);
-          this.commercesService.getCommerceList().subscribe({
-            next: commerces => {
-              this.commerces = commerces;
-              this.sessionService.getCommerceId().subscribe(commerceId => {
-                this.commerceId = commerceId !== 0 ? commerceId : commerces[0].commerceId;
-                if (commerceId === 0) {
-                  this.sessionService.setItem(SessionService.COMMERCE_ID, this.commerceId);
-                }
-                this.themeService.loadTheme(this.getCommerceResellerName(commerces));
-                this.commerceSelected = this.getCommerceNumber(this.commerceId);
-                this.searchTaxes();
-              });
-            },
-            error: error => console.error("Error Commerces: ", error)
-          });
-        },
-        error: error => console.error("Error Portal user token", error)
-      });
+    this.commercesService.getCommerceList().subscribe({
+      next: commerces => {
+        this.commerces = commerces;
+        this.sessionService.getCommerceId().subscribe(commerceId => {
+          this.commerceId = commerceId !== 0 ? commerceId : commerces[0].commerceId;
+          if (commerceId === 0) {
+            this.sessionService.setItem(SessionService.COMMERCE_ID, this.commerceId);
+          }
+          this.themeService.loadTheme(this.getCommerceResellerName(commerces));
+          this.commerceSelected = this.getCommerceNumber(this.commerceId);
+          this.searchTaxes();
+        });
+      },
+      error: error => console.error("Error Commerces: ", error)
     });
   }
 
@@ -132,6 +120,7 @@ export class TaxesComponent implements OnInit, OnDestroy {
 
   /**
    * Abre el modal para agregar o editar un impuesto.
+   * 
    * @param id Identificador del impuesto a editar (opcional).
    */
   public openTaxesModal(id?: number): void {

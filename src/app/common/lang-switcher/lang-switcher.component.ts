@@ -3,6 +3,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { SessionService } from 'src/app/_services/session.service';
 
 /**
+ * @class LangSwitcherComponent
+ * @description
  * Componente para cambiar el idioma de la aplicación y
  * actualizar la información de sesión relacionada con el idioma.
  */
@@ -31,6 +33,7 @@ export class LangSwitcherComponent {
 
   /**
    * Cambia el idioma de la aplicación en función de la selección del usuario.
+   * 
    * @param event Evento de cambio de idioma desde el selector.
    */
   switchLang(event: Event): void {

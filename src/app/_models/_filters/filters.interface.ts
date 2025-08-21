@@ -1,4 +1,6 @@
 /**
+ * @interface AddFields
+ * @description
  * Define un filtro para agregar campos específicos.
  */
 interface AddFields {
@@ -10,6 +12,8 @@ interface AddFields {
 }
 
 /**
+ * @interface Unwind
+ * @description
  * Define un filtro para descomponer un array en resultados individuales.
  */
 interface Unwind {
@@ -17,6 +21,8 @@ interface Unwind {
 }
 
 /**
+ * @interface Match
+ * @description
  * Define un filtro para filtrar los resultados según condiciones específicas.
  */
 interface Match {
@@ -29,6 +35,8 @@ interface Match {
 }
 
 /**
+ * @interface Group
+ * @description
  * Define un filtro para agrupar los resultados y calcular totales, promedios, conteos u otros valores agregados.
  */
 interface Group {
@@ -47,6 +55,8 @@ interface Group {
 }
 
 /**
+ * @interface Sort
+ * @description
  * Define un filtro para ordenar los resultados según campos específicos.
  */
 interface Sort {
@@ -57,6 +67,8 @@ interface Sort {
 }
 
 /**
+ * @interface Limit
+ * @description
  * Define un paso de agregación para limitar el número de resultados devueltos.
  */
 interface Limit {

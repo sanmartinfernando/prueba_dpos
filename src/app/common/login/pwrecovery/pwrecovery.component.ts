@@ -6,6 +6,8 @@ import { PortalUsersService } from 'src/app/_services/portal-users.service';
 import { StorageService } from 'src/app/_services/storage.service';
 
 /**
+ * @class PwrecoveryComponent
+ * @description
  * Componente para la recuperación de contraseña de usuario.
  * Permite solicitar un restablecimiento de contraseña y gestiona
  * el estado de sesión y temporizadores de espera.
@@ -15,6 +17,7 @@ import { StorageService } from 'src/app/_services/storage.service';
   templateUrl: './pwrecovery.component.html'
 })
 export class PwrecoveryComponent implements OnInit {
+  
   private storageService = inject(StorageService);
   private portalUsersService = inject(PortalUsersService);
 
@@ -59,6 +62,7 @@ export class PwrecoveryComponent implements OnInit {
 
   /**
    * Gestiona los eventos del temporizador de espera.
+   * 
    * @param e Evento del temporizador.
    */
   public onTimerFinished(e: CountdownEvent): void {
@@ -72,6 +76,7 @@ export class PwrecoveryComponent implements OnInit {
 
   /**
    * Actualiza la información del usuario y su estado de sesión.
+   * 
    * @param user Datos del usuario.
    */
   private updateUserData(user: User): void {

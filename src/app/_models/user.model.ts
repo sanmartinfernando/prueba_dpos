@@ -1,4 +1,6 @@
 /**
+ * @class User
+ * @description
  * Representa un usuario del sistema con sus credenciales y datos personales.
  */
 export class User {

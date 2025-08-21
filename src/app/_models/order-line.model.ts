@@ -1,4 +1,6 @@
 /**
+ * @class OrderLine
+ * @description
  * Representa una línea de venta, incluyendo información del producto, cantidades,
  * precios, impuestos, descuentos, modificadores y notas de cocina.
  */

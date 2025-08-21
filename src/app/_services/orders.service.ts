@@ -10,6 +10,8 @@ import { Order } from '../_models/order.model';
 import { TranslateService } from '@ngx-translate/core';
 
 /**
+ * @class OrdersService
+ * @description
  * Servicio para la gestión y obtención de información relacionada con ventas,
  * incluyendo agregaciones, detalles y datos resumidos.
  */
@@ -27,6 +29,7 @@ export class OrdersService {
 
   /**
    * Obtiene agregaciones de ventas.
+   * 
    * @param searchParams Parámetros de búsqueda en formato string.
    * @returns Observable con la lista de agregaciones de ventas.
    */
@@ -40,6 +43,7 @@ export class OrdersService {
 
   /**
    * Obtiene el top 3 de agregaciones de ventas.
+   * 
    * @param searchParams Parámetros de búsqueda en formato string.
    * @returns Observable con el top 3 de agregaciones de ventas.
    */
@@ -53,6 +57,7 @@ export class OrdersService {
 
   /**
    * Obtiene información detallada de ventas.
+   * 
    * @param size Cantidad de registros a obtener.
    * @param searchParams Parámetros de búsqueda en formato string.
    * @returns Observable con la información de las ventas.
@@ -67,6 +72,7 @@ export class OrdersService {
 
   /**
    * Obtiene el detalle de una venta específica.
+   * 
    * @param id Identificador único de la venta.
    * @returns Observable con los datos de la venta.
    */

@@ -7,18 +7,27 @@ import { RestRoutes } from '../_rest/rest-routes.config';
 import { LoginRequest } from '../_models/login-request.model';
 import { StringConstants } from '../_rest/string-constants';
 import { AuthRequest } from '../_models/auth-request.model';
+import { TokenStorageService } from './token-storage.service';
 
 /**
- * Servicio de autenticación y gestión de tokens para usuarios.
- * Proporciona métodos para login, validación de token y manejo de sesión.
+ * @class AuthService
+ * @description
+ * Servicio encargado de gestionar la autenticación de usuarios y el manejo de tokens.
+ * Proporciona métodos para:
+ * - Iniciar sesión (obtener tokens).
+ * - Autorizar cliente (token secundario).
+ * - Obtener información de usuario autenticado.
+ * - Gestionar sesión y almacenamiento de credenciales.
+ * Se apoya en `TokenStorageService` para persistir tokens en almacenamiento local.
  */
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
   private http = inject(HttpClient);
+  private tokenStorage = inject(TokenStorageService);
 
+  // Observable que emite eventos de login/logout con el usuario autenticado
   public configObservable = new Subject<User>();
-  private portalUsersToken: string;
 
   private httpOptions = {
     headers: new HttpHeaders({
@@ -27,10 +36,12 @@ export class AuthService {
   };
 
   /**
-   * Maneja errores de respuesta HTTP.
-   * @param response Respuesta HTTP a evaluar.
-   * @returns La misma respuesta si es válida.
-   * @throws Error si el status no es 200 o 409.
+   * Manejo genérico de errores en peticiones `fetch`.
+   * Solo acepta códigos 200 (OK) o 409 (CONFLICT).
+   *
+   * @param response Respuesta HTTP
+   * @returns Respuesta validada
+   * @throws Error si el estado HTTP no es 200 o 409
    */
   private static handleErrors(response: Response) {
     if (!(response.status === 200 || response.status === 409)) {
@@ -40,20 +51,24 @@ export class AuthService {
   }
 
   /**
-   * Realiza el login completo del usuario y obtiene los tokens.
-   * @param UserName Nombre de usuario.
-   * @param Password Contraseña del usuario.
-   * @returns Promise con el token principal.
+   * Realiza el login completo de usuario.
+   * - Autentica contra PortalUsers.
+   * - Autoriza cliente para obtener un segundo token.
+   *
+   * @param UserName Nombre de usuario
+   * @param Password Contraseña del usuario
+   * @returns Token principal del usuario
    */
   public async login(UserName: string, Password: string): Promise<string> {
     await this.loginPortalUsers(UserName, Password);
     await this.authorizeClient();
-    return this.getToken();
+    return this.tokenStorage.getToken();
   }
 
   /**
-   * Obtiene la información del usuario autenticado.
-   * @returns Promise con un objeto User.
+   * Obtiene la información del usuario autenticado desde la API.
+   *
+   * @returns Información de usuario (`User`)
    */
   public async getUserInfo(): Promise<User> {
     const urlUser = `${environment.urlAuth}${RestRoutes.USER}`;
@@ -61,15 +76,18 @@ export class AuthService {
   }
 
   /**
-   * Emite evento de login con los datos del usuario.
-   * @param user Objeto User con la información del usuario.
+   * Emite un evento de login con la información de usuario.
+   *
+   * @param user Usuario autenticado
    */
   public loginEvent(user: User) {
     this.configObservable.next(user);
   }
 
   /**
-   * Cierra la sesión del usuario, eliminando tokens y datos de sesión.
+   * Cierra sesión del usuario:
+   * - Limpia localStorage y sessionStorage.
+   * - Notifica mediante `configObservable`.
    */
   public logOut() {
     window.localStorage.clear();
@@ -78,65 +96,20 @@ export class AuthService {
   }
 
   /**
-   * Guarda el nombre de usuario en el localStorage.
-   * @param username Nombre de usuario a guardar.
+   * Guarda el nombre de usuario en localStorage.
+   *
+   * @param username Nombre de usuario a guardar
    */
   public saveUserName(username: string): void {
     window.localStorage.setItem(StringConstants.USERNAME_KEY, username);
   }
 
   /**
-   * Guarda el token principal en el localStorage.
-   * @param token Token a guardar.
-   */
-  public saveToken(token: string): void {
-    window.localStorage.setItem(StringConstants.TOKEN_KEY, token);
-  }
-
-  /**
-   * Obtiene el token principal almacenado en el localStorage.
-   * @returns Token en formato string o cadena vacía si no existe.
-   */
-  public getToken(): string {
-    return window.localStorage.getItem(StringConstants.TOKEN_KEY) ?? '';
-  }
-
-  /**
-   * Obtiene el segundo token almacenado en el localStorage.
-   * @returns Token en formato string o cadena vacía si no existe.
-   */
-  public getToken2(): string {
-    return window.localStorage.getItem(StringConstants.TOKEN_KEY2) ?? '';
-  }
-
-  /**
-   * Obtiene el token de PortalUsers almacenado en memoria.
-   * @returns Token en formato string.
-   */
-  public getPortalUsersToken(): string {
-    return this.portalUsersToken;
-  }
-
-  /**
-   * Setea el token de PortalUsers en memoria.
-   * @param token Token a almacenar.
-   * @returns Token establecido.
-   */
-  public setPortalUsersToken(token: string): string {
-    return (this.portalUsersToken = token);
-  }
-
-  /**
-   * Elimina el token principal del localStorage.
-   */
-  public clearToken(): void {
-    window.localStorage.removeItem(StringConstants.TOKEN_KEY);
-  }
-
-  /**
-   * Login en el servicio de PortalUsers y guarda token y usuario.
-   * @param userName Nombre de usuario.
-   * @param password Contraseña del usuario.
+   * Realiza login contra el servicio de PortalUsers.
+   * Obtiene el token principal y lo guarda en el almacenamiento.
+   *
+   * @param userName Nombre de usuario
+   * @param password Contraseña
    */
   private async loginPortalUsers(userName: string, password: string): Promise<void> {
     const urlLogin = `${environment.urlAuth}${RestRoutes.AUTH_PORTALUSERS}/login`;
@@ -152,9 +125,11 @@ export class AuthService {
       .then(AuthService.handleErrors)
       .then((res) => res.json());
 
-    this.saveToken(result.token);
+    // Guardar token principal a través del TokenStorageService
+    this.tokenStorage.saveToken(result.token);
     this.saveUserName(userName);
 
+    // Emite evento de login
     const userInfo = new User();
     userInfo.user = userName;
     userInfo.pwd = password;
@@ -162,7 +137,7 @@ export class AuthService {
   }
 
   /**
-   * Autoriza el cliente y guarda el segundo token en localStorage.
+   * Autoriza cliente y guarda un segundo token (`token2`).
    */
   private async authorizeClient(): Promise<void> {
     const urlLogin2 = `${environment.urlAuth}${RestRoutes.AUTH}/authorize`;
@@ -179,5 +154,48 @@ export class AuthService {
       .then((res) => res.json());
 
     window.localStorage.setItem(StringConstants.TOKEN_KEY2, result.token);
+  }
+
+  /**
+   * Obtiene el token principal desde el almacenamiento.
+   * 
+   * @returns Token principal
+   */
+  public getToken(): string {
+    return this.tokenStorage.getToken();
+  }
+
+  /**
+   * Obtiene el token secundario (`token2`) desde el almacenamiento.
+   * 
+   * @returns Token secundario
+   */
+  public getToken2(): string {
+    return this.tokenStorage.getToken2();
+  }
+
+  /**
+   * Obtiene el token de PortalUsers desde el almacenamiento.
+   * 
+   * @returns Token de PortalUsers
+   */
+  public getPortalUsersToken(): string {
+    return this.tokenStorage.getPortalUsersToken();
+  }
+
+  /**
+   * Establece el token de PortalUsers en el almacenamiento.
+   * 
+   * @param token Token de PortalUsers
+   */
+  public setPortalUsersToken(token: string): void {
+    this.tokenStorage.setPortalUsersToken(token);
+  }
+
+  /**
+   * Elimina todos los tokens del almacenamiento.
+   */
+  public clearToken(): void {
+    this.tokenStorage.clearToken();
   }
 }

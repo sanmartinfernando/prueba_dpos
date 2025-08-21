@@ -1,4 +1,6 @@
 /**
+ * @class PwdReset
+ * @description
  * Representa la respuesta de un intento de restablecimiento de contraseña.
  */
 export class PwdReset {

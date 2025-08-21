@@ -1,4 +1,6 @@
 /**
+ * @class Tax
+ * @description
  * Representa un impuesto con sus propiedades, tipos y valores.
  */
 export class Tax {

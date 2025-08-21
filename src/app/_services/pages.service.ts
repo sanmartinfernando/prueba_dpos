@@ -3,6 +3,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { Page } from 'src/app/_models/page.model';
 
 /**
+ * @class PagesService
+ * @description
  * Servicio para gestionar las páginas de la aplicación Web y sus traducciones dinámicas
  * según el idioma seleccionado.
  */

@@ -1,7 +1,9 @@
 import { FilterStep } from "./filters.interface";
 
 /**
- * EvolutionCMFilter construye filtros para el gráfico de evolución de movimientos de caja.
+ * @class EvolutionCMFilter
+ * @description
+ * Construye filtros para el gráfico de evolución de movimientos de caja.
  */
 export class EvolutionCMFilter {
 

@@ -10,6 +10,8 @@ import { UIStateService } from 'src/app/_services/ui-state.service';
 import { Order } from 'src/app/_models/order.model';
 
 /**
+ * @class DetailsComponent
+ * @description
  * Componente que muestra los detalles de una venta,
  * incluyendo cálculos de totales, información fiscal y descarga en PDF.
  */

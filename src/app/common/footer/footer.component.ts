@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 
 /**
+ * @class FooterComponent
+ * @description
  * Componente encargado de renderizar el pie de página del portal Web.
  */
 @Component({

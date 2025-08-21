@@ -1,4 +1,6 @@
 /**
+ * @class Modifiers
+ * @description
  * Representa un conjunto de modificadores asociados a un elemento,
  * incluyendo su identificador, nombre y la lista de modificadores separados.
  */

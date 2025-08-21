@@ -1,4 +1,6 @@
 /**
+ * @class OrderAggregation
+ * @description
  * Representa un agregado de ventas, incluyendo el identificador,
  * cantidad de ventas, valor promedio, valor total y número de decimales.
  */

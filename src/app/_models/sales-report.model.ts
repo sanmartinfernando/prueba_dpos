@@ -1,4 +1,6 @@
 /**
+ * @class SalesReport
+ * @description
  * Representa un informe de ventas con rango de fechas, moneda y agregaciones de datos.
  */
 export class SalesReport {
@@ -10,6 +12,8 @@ export class SalesReport {
 }
 
 /**
+ * @class SalesReportAggregations
+ * @description
  * Contiene los totales agregados de ventas por producto.
  */
 export class SalesReportAggregations {

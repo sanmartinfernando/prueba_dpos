@@ -9,6 +9,8 @@ import { Category } from '../_models/category.model';
 import { Modifiers } from '../_models/modifiers.model';
 
 /**
+ * @class ProductsService
+ * @description
  * Servicio para gestionar la obtención de productos y sus detalles.
  * Proporciona métodos para consultar listados y detalles individuales.
  */
@@ -24,6 +26,7 @@ export class ProductsService {
 
   /**
    * Obtiene un producto específico por su ID.
+   * 
    * @param productId Id del producto a obtener.
    * @param commerceId Id del comercio asociado.
    * @returns Observable con el producto obtenido.
@@ -39,6 +42,7 @@ export class ProductsService {
 
   /**
    * Obtiene el listado de productos de un comercio.
+   * 
    * @param commerceId Id del comercio asociado.
    * @returns Observable con el listado de productos.
    */
@@ -54,6 +58,7 @@ export class ProductsService {
   /**
    * Crea o actualiza un producto según tenga definido el ID.
    * Si id no existe, se realiza un POST; de lo contrario, un PUT.
+   * 
    * @param product Objeto Product con los datos del producto.
    * @param commerceId Id del comercio asociado.
    * @returns Observable con el producto creado o actualizado.
@@ -75,6 +80,7 @@ export class ProductsService {
 
   /**
    * Obtiene una categoría específica por su ID.
+   * 
    * @param categoryId Id de la categoría a obtener.
    * @param commerceId Id del comercio asociado.
    * @returns Observable con la categoría obtenida.
@@ -90,6 +96,7 @@ export class ProductsService {
 
   /**
    * Obtiene el listado de categorías de un comercio.
+   * 
    * @param commerceId Id del comercio asociado.
    * @returns Observable con el listado de categorías.
    */
@@ -105,6 +112,7 @@ export class ProductsService {
   /**
    * Crea o actualiza una categoría según tenga definido el ID.
    * Si id no existe, se realiza un POST; de lo contrario, un PUT.
+   * 
    * @param category Objeto Category con los datos de la categoría.
    * @param commerceId Id del comercio asociado.
    * @returns Observable con la categoría creada o actualizada.
@@ -126,6 +134,7 @@ export class ProductsService {
 
   /**
    * Obtiene un modificador específico por su ID.
+   * 
    * @param modifierId Id del modificador a obtener.
    * @param commerceId Id del comercio asociado.
    * @returns Observable con el modificador obtenido.
@@ -141,6 +150,7 @@ export class ProductsService {
 
   /**
    * Obtiene el listado de modificadores de un comercio.
+   * 
    * @param commerceId Id del comercio asociado.
    * @returns Observable con el listado de modificadores.
    */
@@ -156,6 +166,7 @@ export class ProductsService {
   /**
    * Crea o actualiza un modificador según tenga definido el ID.
    * Si el ID no existe, se realiza un POST; de lo contrario, un PUT.
+   * 
    * @param modifiers Objeto Modifier con los datos del modificador.
    * @param commerceId ID del comercio asociado.
    * @returns Observable con el modificador creado o actualizado.

@@ -1,5 +1,7 @@
 /**
- * AuthRequest representa los datos necesarios para autenticar una solicitud.
+ * @class AuthRequest
+ * @description
+ * Representa los datos necesarios para autenticar una solicitud.
  * Contiene la clave del cliente y la clave secreta para autenticación.
  */
 export class AuthRequest {

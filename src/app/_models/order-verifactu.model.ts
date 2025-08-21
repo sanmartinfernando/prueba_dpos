@@ -1,4 +1,6 @@
 /**
+ * @enum VerifactuStatus
+ * @description
  * Estados posibles de un proceso Verifactu.
  */
 export enum VerifactuStatus {
@@ -12,6 +14,8 @@ export enum VerifactuStatus {
 }
 
 /**
+ * @class OrderVerifactu
+ * @description
  * Representa la información de Verifactu asociada a una venta,
  * incluyendo identificadores, URL, estados y advertencias.
  */

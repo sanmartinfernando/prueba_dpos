@@ -6,6 +6,8 @@ import { RestRoutes } from '../_rest/rest-routes.config';
 import { Balance } from '../_models/balance.model';
 
 /**
+ * @class ArqueoXService
+ * @description
  * Servicio para obtener información de los arqueos X desde el backend.
  */
 @Injectable({ providedIn: 'root' })
@@ -21,6 +23,7 @@ export class ArqueoXService {
 
   /**
    * Obtiene los datos del arqueo X según fecha, terminal y comercio.
+   * 
    * @param fromDate Fecha de inicio en timestamp.
    * @param toDate Fecha de fin en timestamp.
    * @param terminalNumber Número de terminal (opcional).

@@ -48,6 +48,8 @@ const routes: Routes = [
 ];
 
 /**
+ * @class AppRoutingModule
+ * @description
  * Módulo de enrutamiento principal de la aplicación.
  * Define las rutas y protege accesos mediante guardas de autenticación.
  */

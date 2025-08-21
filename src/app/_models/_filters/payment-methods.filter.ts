@@ -1,7 +1,9 @@
 import { FilterStep } from "./filters.interface";
 
 /**
- * PaymentMethodsFilter construye filtros para consultas de métodos de pago.
+ * @class PaymentMethodsFilter
+ * @description
+ * Construye filtros para consultas de métodos de pago.
  */
 export class PaymentMethodsFilter {
 
@@ -20,12 +22,10 @@ export class PaymentMethodsFilter {
    * @param toDate - Fecha de fin del filtro en milisegundos (opcional, valor por defecto: 1735686000000).
    */
   constructor(commerceId: number, terminalsId?: string[], fromDate?: number, toDate?: number) {
-
     this.terminalsId = terminalsId;
     this.commerceId = commerceId;
     this.fromDate = fromDate ?? 1704063600000;
     this.toDate = toDate ?? 1735686000000;
-
     this.idPaymentMethods = [
       {
         $unwind: '$order_payments',

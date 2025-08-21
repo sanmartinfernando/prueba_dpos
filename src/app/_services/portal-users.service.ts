@@ -11,6 +11,8 @@ import { PwdReset } from '../_models/pwd-reset.model';
 const TOKEN_KEY = 'dmf-token';
 
 /**
+ * @class PortalUsersService
+ * @description
  * Servicio para gestionar la autenticación y administración de usuarios del portal Web.
  * Permite obtener tokens, resetear contraseñas, consultar políticas y recuperar accesos.
  */
@@ -25,6 +27,7 @@ export class PortalUsersService {
 
   /**
    * Obtiene el token de autenticación para un usuario.
+   * 
    * @param user Datos del usuario (usuario y contraseña).
    * @returns Observable con el token de usuario.
    */
@@ -36,6 +39,7 @@ export class PortalUsersService {
 
   /**
    * Solicita el reseteo de contraseña para un usuario.
+   * 
    * @param parameters Parámetros requeridos para el reseteo.
    * @returns Observable con la respuesta del reseteo.
    */
@@ -46,6 +50,7 @@ export class PortalUsersService {
 
   /**
    * Consulta las propiedades y restricciones de contraseñas del sistema.
+   * 
    * @returns Observable con las propiedades de la contraseña.
    */
   public checkPwdProperties(): Observable<PwdProperties> {
@@ -55,6 +60,7 @@ export class PortalUsersService {
 
   /**
    * Inicia el proceso de recuperación de contraseña para un usuario.
+   * 
    * @param user Datos del usuario para recuperación.
    * @returns Token de usuario almacenado localmente.
    */
@@ -70,6 +76,7 @@ export class PortalUsersService {
 
   /**
    * Obtiene el token almacenado en el almacenamiento local del navegador.
+   * 
    * @returns Token en formato string.
    */
   public getTokenKey(): string {

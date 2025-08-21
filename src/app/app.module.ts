@@ -52,6 +52,8 @@ import localeEs from '@angular/common/locales/es';
 registerLocaleData(localeEs);
 
 /**
+ * @class AppModule
+ * @description
  * Módulo raíz de la aplicación.
  * Configura componentes, módulos, proveedores y la inicialización de traducciones y configuración regional.
  */

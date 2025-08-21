@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 
 /** 
+ * @class CookiesPolicyComponent
+ * @description
  * Componente encargado de mostrar la política de cookies.
  */
 @Component({
