@@ -71,6 +71,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
   searchCounter = false;
   varSearch: string = null;
   emptySearch = false;
+  
   showModal = false;
   modalTitle = '';
   modalMessage = '';
@@ -106,7 +107,10 @@ export class ProductsComponent implements OnInit, OnDestroy {
           this.searchProducts();
         });
       },
-      error: error => console.error("Error Commerces: ", error)
+      error: error => {
+        this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.commerces'));
+        console.error("Error Commerces: ", error);
+      }
     });
   }
 
@@ -254,6 +258,18 @@ export class ProductsComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Abre el modal de mensajes estableciendo el título y el mensaje.
+   *
+   * @param title   Texto que se mostrará como título del modal.
+   * @param message Texto que se mostrará como contenido del modal.
+   */
+  public openModal(title: string, message: string) {
+    this.modalTitle = title;
+    this.modalMessage = message;
+    this.showModal = true;
+  }
+  
+  /**
    * Cierra el modal de mensajes.
    */
   public closeModal() {
@@ -276,8 +292,9 @@ export class ProductsComponent implements OnInit, OnDestroy {
           this.categorySelected = this.categories.find(category => category.categoryId === this.sessionService.getItem(SessionService.CATEGORY_ID)).categoryId;
         }
       },
-      error: () => {
-        //TODO
+      error: (error) => {
+        this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.category.all'));
+        console.error("Error all categories", error);
       }
     });
   }

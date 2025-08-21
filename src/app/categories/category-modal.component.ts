@@ -36,6 +36,10 @@ export class CategoryModalComponent implements OnInit {
   idCategory: string;
   categoryForm: FormGroup;
 
+  showModal = false;
+  modalTitle = '';
+  modalMessage = '';
+
   constructor() {
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
     this.idCategory = this.data.id;
@@ -78,6 +82,7 @@ export class CategoryModalComponent implements OnInit {
         this.loadCompleted = true;
       },
       error: () => {
+        this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.category'));
         this.loadCompleted = true;
       }
     });
@@ -98,6 +103,25 @@ export class CategoryModalComponent implements OnInit {
     }
   }
 
+  /**
+   * Abre el modal de mensajes estableciendo el título y el mensaje.
+   *
+   * @param title   Texto que se mostrará como título del modal.
+   * @param message Texto que se mostrará como contenido del modal.
+   */
+  public openModal(title: string, message: string) {
+    this.modalTitle = title;
+    this.modalMessage = message;
+    this.showModal = true;
+  }
+
+  /**
+   * Cierra el modal de mensajes.
+   */
+  public closeModal(): void {
+    this.showModal = false;
+  }
+  
   /**
    * Actualiza una categoría existente.
    */

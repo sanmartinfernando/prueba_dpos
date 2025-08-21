@@ -97,7 +97,10 @@ export class TaxesComponent implements OnInit, OnDestroy {
           this.searchTaxes();
         });
       },
-      error: error => console.error("Error Commerces: ", error)
+      error: error => {
+        this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.commerces'));
+        console.error("Error Commerces: ", error)
+      }
     });
   }
 
@@ -137,6 +140,18 @@ export class TaxesComponent implements OnInit, OnDestroy {
       this.translate.instant('dpos.taxes.page.title'),
       this.currentLang
     );
+  }
+
+  /**
+   * Abre el modal de mensajes estableciendo el título y el mensaje.
+   *
+   * @param title   Texto que se mostrará como título del modal.
+   * @param message Texto que se mostrará como contenido del modal.
+   */
+  public openModal(title: string, message: string) {
+    this.modalTitle = title;
+    this.modalMessage = message;
+    this.showModal = true;
   }
 
   /**

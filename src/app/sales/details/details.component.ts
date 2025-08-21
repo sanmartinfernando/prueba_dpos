@@ -8,6 +8,7 @@ import { ThemeService } from 'src/app/_services/theme.service';
 import { UIStateService } from 'src/app/_services/ui-state.service';
 
 import { Order } from 'src/app/_models/order.model';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * @class DetailsComponent
@@ -28,6 +29,7 @@ export class DetailsComponent implements OnInit {
   private sessionService = inject(SessionService);
   private themeService = inject(ThemeService);
   private uiStateService = inject(UIStateService);
+  private translate = inject(TranslateService);
 
   public ticket: Order;
   public orderId: string;
@@ -37,6 +39,10 @@ export class DetailsComponent implements OnInit {
   public salesTicketBai: string[];
   public salesVerifactu: string[];
   public totalBase: number;
+
+  modalTitle = '';
+  modalMessage = '';
+  showModal = false;
 
   constructor() {
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
@@ -72,6 +78,7 @@ export class DetailsComponent implements OnInit {
         this.loadCompleted = true;
       },
       error: (error) => {
+        this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.order.details'));
         if (error.status === 401 || error.status === 500) {
           this.loadCompleted = true;
         }
@@ -84,5 +91,24 @@ export class DetailsComponent implements OnInit {
    */
   public downloadPDF(): void {
     this.downloadPDFService.downloadOrdersFile(this.orderId);
+  }
+
+  /**
+   * Abre el modal de mensajes estableciendo el título y el mensaje.
+   *
+   * @param title   Texto que se mostrará como título del modal.
+   * @param message Texto que se mostrará como contenido del modal.
+   */
+  public openModal(title: string, message: string) {
+    this.modalTitle = title;
+    this.modalMessage = message;
+    this.showModal = true;
+  }
+  
+  /**
+   * Cierra el modal de mensajes.
+   */
+  public closeModal() {
+    this.showModal = false;
   }
 }

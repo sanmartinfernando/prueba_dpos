@@ -37,6 +37,10 @@ export class ModifiersModalComponent implements OnInit {
 
   public modifiersForm: FormGroup;
 
+  public showModal = false;
+  public modalTitle = '';
+  public modalMessage = '';
+
   constructor() {
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
     this.idModifiers = this.data.id;
@@ -84,6 +88,7 @@ export class ModifiersModalComponent implements OnInit {
         this.loadCompleted = true;
       },
       error: () => {
+        this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.modifiers.detail'));
         this.loadCompleted = true;
       }
     });
@@ -105,12 +110,31 @@ export class ModifiersModalComponent implements OnInit {
   }
 
   /**
+   * Abre el modal de mensajes estableciendo el título y el mensaje.
+   *
+   * @param title   Texto que se mostrará como título del modal.
+   * @param message Texto que se mostrará como contenido del modal.
+   */
+  public openModal(title: string, message: string) {
+    this.modalTitle = title;
+    this.modalMessage = message;
+    this.showModal = true;
+  }
+
+  /**
+   * Cierra el modal de mensajes.
+   */
+  public closeModal(): void {
+    this.showModal = false;
+  }
+
+  /**
    * Actualiza un modificador existente.
    */
   private updateModifiers(): void {
     this.setModifiersFields();
     this.productsService.saveModifier(this.modifiers, this.commerceId).subscribe({
-      next: () => this.dialogRef.close(),
+      next: (savedModifier) => this.dialogRef.close(savedModifier),
       error: () => this.dialogRef.close()
     });
   }
@@ -122,7 +146,7 @@ export class ModifiersModalComponent implements OnInit {
     this.modifiers = new Modifiers();
     this.setModifiersFields();
     this.productsService.saveModifier(this.modifiers, this.commerceId).subscribe({
-      next: () => this.dialogRef.close(),
+      next: (savedModifier) => this.dialogRef.close(savedModifier),
       error: () => this.dialogRef.close()
     });
   }

@@ -9,6 +9,8 @@
       <i class="fa-solid fa-file-pdf fa-xl"></i>
     </button>
   </div>
+  <!-- Modal para mensajes -->
+  <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage" (closeModal)="closeModal()"></app-modal>
   <!-- Contenedor principal centrado con card de los detalles del cierre de caja -->
   <div class="col-12 col-sm-8 offset-sm-2 col-lg-4 offset-lg-4">
     <div class="card card-customer">

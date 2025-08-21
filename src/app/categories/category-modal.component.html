@@ -1,4 +1,6 @@
 <div class="modal-backdrop"></div>
+<!-- Modal para mensajes -->
+<app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage" (closeModal)="closeModal()"></app-modal>
 <div class="modal-small-content">
   <!-- Header con título y botón cerrar -->
   <div class="modal-header">

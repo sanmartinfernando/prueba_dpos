@@ -37,6 +37,8 @@
   <br />
   <div class="card">
     <div class="card-body">
+      <!-- Modal para mensajes -->
+      <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage" (closeModal)="closeModal()"></app-modal>
       <div class="row mb-2 align-items-center">
         <div class="col">
           <h5><b>{{ reportVarSearch }}</b></h5>
@@ -58,8 +60,6 @@
       <div *ngIf="loadCompleted && emptySearch === true" class="d-flex justify-content-center">
         <b><i>{{ 'dpos.dashboard.nodata.label' | translate }}</i></b>
       </div>
-      <!-- Modal para mensajes -->
-      <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage" (closeModal)="closeModal()"></app-modal>
       <!-- Mensaje para indicar que se debe seleccionar un tipo de reporte -->
       <div class="row" *ngIf="reportVarSearch === null">
         <b>{{ 'dpos.reports.selectreport.label' | translate }}</b>

@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { EncryptionService } from 'src/app/_services/encryption.service';
@@ -35,11 +35,11 @@ export class ProductDetailsComponent implements OnInit {
   private translate = inject(TranslateService);
   private productsService = inject(ProductsService);
   private dialog = inject(MatDialog);
+  private router = inject(Router);
 
   public loadCompleted = false;
   public idProduct: string = null;
   public titlePage: string;
-  public code: string;
   public product: Product;
   public categoryIdSelected: string[] = [];
   public modifiersIdSelected: string;
@@ -54,6 +54,10 @@ export class ProductDetailsComponent implements OnInit {
   public modifiers: Modifiers[] = [];
 
   public productForm: FormGroup;
+
+  public showModal = false;
+  public modalTitle = '';
+  public modalMessage = '';
 
   public unitMeasurementOptions = Object.values(UnitMeasurement)
     .filter(value => typeof value === 'number')
@@ -147,8 +151,6 @@ export class ProductDetailsComponent implements OnInit {
     dialogRef.afterClosed().subscribe(category => {
       if (category) {
         this.getAllCategories();
-      } else {
-        //TODO Error
       }
     });
   }
@@ -163,8 +165,6 @@ export class ProductDetailsComponent implements OnInit {
     dialogRef.afterClosed().subscribe(modifier => {
       if (modifier) {
         this.getAllModifiers();
-      } else {
-        //TODO Error
       }
     });
   }
@@ -234,16 +234,34 @@ export class ProductDetailsComponent implements OnInit {
   }
 
   /**
+   * Abre el modal de mensajes estableciendo el título y el mensaje.
+   *
+   * @param title   Texto que se mostrará como título del modal.
+   * @param message Texto que se mostrará como contenido del modal.
+   */
+  public openModal(title: string, message: string) {
+    this.modalTitle = title;
+    this.modalMessage = message;
+    this.showModal = true;
+  }
+  
+  /**
+   * Cierra el modal de mensajes.
+   */
+  public closeModal() {
+    this.showModal = false;
+    this.router.navigate(['/products']);
+  }
+
+  /**
    * Actualiza un producto existente.
    */
   private updateProduct(): void {
     this.setProductFields();
-    /*
     this.productsService.saveProduct(this.product, this.commerceId).subscribe({
-      next: () => this.code = '/products',
-      error: () => this.code = '/products'
+      next: () => this.openModal(this.translate.instant('dpos.product-details.modal.edit.title'), this.translate.instant('dpos.product-details.modal.edit.message')),
+      error: () => this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.product.update'))
     });
-    */
   }
 
   /**
@@ -252,12 +270,10 @@ export class ProductDetailsComponent implements OnInit {
   private createProduct(): void {
     this.product = new Product();
     this.setProductFields();
-    /*
     this.productsService.saveProduct(this.product, this.commerceId).subscribe({
-      next: () => this.code = '/products',
-      error: () => this.code = '/products'
+      next: () => this.openModal(this.translate.instant('dpos.product-details.modal.create.title'), this.translate.instant('dpos.product-details.modal.create.message')),
+      error: () => this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.product.create'))
     });
-    */
   }
 
   /**
@@ -270,8 +286,9 @@ export class ProductDetailsComponent implements OnInit {
         const category: Category = {categoryId: "0", name: this.translate.instant('dpos.filter.all')};
         this.categories.unshift(category);
       },
-      error: () => {
-        //TODO
+      error: (error) => {
+        this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.category.all'));
+        console.error("Error all categories", error);
       }
     });
   }
@@ -284,8 +301,9 @@ export class ProductDetailsComponent implements OnInit {
       next: (modifiers) => {
         this.modifiers = modifiers;
       },
-      error: () => {
-        //TODO
+      error: (error) => {
+        this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.modifiers.all'));
+        console.error("Error all modifiers", error);
       }
     });
   }

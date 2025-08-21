@@ -8,6 +8,8 @@
   <!-- Formulario principal con los detalles del producto -->
   <div class="card my-4">
     <div class="card-body">
+      <!-- Modal para mensajes -->
+      <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage" (closeModal)="closeModal()"></app-modal>
       <!-- Spinner de carga mientras no se completan los datos -->
       <div *ngIf="!loadCompleted" class="d-flex justify-content-center">
         <div class="spinner-border text-danger"></div>
@@ -148,7 +150,7 @@
           <a [routerLink]="['/products']" type="button" style="text-decoration: none;">
             <button type="button" class="btn btn-outline-danger me-2">{{ 'dpos.action.cancel' | translate }}</button>
           </a>
-          <button type="submit" class="btn btn-primary" [routerLink]="code">{{ 'dpos.action.save' | translate }}</button>
+          <button type="submit" class="btn btn-primary"s>{{ 'dpos.action.save' | translate }}</button>
         </div>
       </form>
     </div>

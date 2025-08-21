@@ -79,12 +79,12 @@ export class BalancesComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    if (this.sessionService.getItem(SessionService.FROM_DATE) !== null) {
-      this.sinceDate = this.formatDate(this.sessionService.getItem(SessionService.FROM_DATE));
+    if (this.sessionService.getItem(SessionService.BALANCES_FROM_DATE) !== null) {
+      this.sinceDate = this.formatDate(this.sessionService.getItem(SessionService.BALANCES_FROM_DATE));
     }
 
-    if (this.sessionService.getItem(SessionService.TO_DATE) !== null) {
-      this.tilDate = this.formatDate(this.sessionService.getItem(SessionService.TO_DATE));
+    if (this.sessionService.getItem(SessionService.BALANCES_TO_DATE) !== null) {
+      this.tilDate = this.formatDate(this.sessionService.getItem(SessionService.BALANCES_TO_DATE));
     }
 
     this.commercesService.getCommerceList().subscribe({
@@ -109,11 +109,17 @@ export class BalancesComponent implements OnInit, OnDestroy {
               }
               this.searchBalances();
             },
-            error: (error) => console.error('Error Terminals:', error)
+            error: (error) => {
+              this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.terminals')); 
+              console.error('Error Terminals:', error);
+            }
           });
         });
       },
-      error: (error) => console.error('Error Commerces:', error)
+      error: (error) => {
+        this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.commerces')); 
+        console.error('Error Commerces:', error)
+      }
     });
   }
 
@@ -157,9 +163,7 @@ export class BalancesComponent implements OnInit, OnDestroy {
 
     if (this.sinceDateMilli > 0) {
       if (this.sinceDateMilli > this.tilDateMilli && this.tilDateMilli > 0) {
-        this.modalTitle = this.translate.instant('dpos.modal.fromDate.title');
-        this.modalMessage = this.translate.instant('dpos.modal.fromDate.message');
-        this.openModal();
+        this.openModal(this.translate.instant('dpos.modal.fromDate.title'), this.translate.instant('dpos.modal.fromDate.message'));
         return;
       }
       if (!this.searchCounter) this.searchCounter = true;
@@ -169,9 +173,7 @@ export class BalancesComponent implements OnInit, OnDestroy {
 
     if (this.tilDateMilli > 0) {
       if (this.tilDateMilli < this.sinceDateMilli && this.sinceDateMilli > 0) {
-        this.modalTitle = this.translate.instant('dpos.filter.toDate.title');
-        this.modalMessage = this.translate.instant('dpos.filter.toDate.message');
-        this.openModal();
+        this.openModal(this.translate.instant('dpos.filter.toDate.title'), this.translate.instant('dpos.filter.toDate.message'));
         return;
       }
       if (!this.searchCounter) this.searchCounter = true;
@@ -221,11 +223,11 @@ export class BalancesComponent implements OnInit, OnDestroy {
    * Evento al cambiar la fecha "desde".
    */
   public onSinceDateChange(): void {
-    this.sessionService.setItem(SessionService.FROM_DATE, this.terminalSelected);
+    this.sessionService.setItem(SessionService.BALANCES_FROM_DATE, this.terminalSelected);
     this.sinceDate = (document.getElementById('sinceDate') as HTMLInputElement).value;
     if (this.sinceDate.length > 0) {
       this.sinceDateMilli = Date.parse(this.sinceDate);
-      this.sessionService.setItem(SessionService.FROM_DATE, this.sinceDateMilli);
+      this.sessionService.setItem(SessionService.BALANCES_FROM_DATE, this.sinceDateMilli);
     }
   }
 
@@ -233,12 +235,24 @@ export class BalancesComponent implements OnInit, OnDestroy {
    * Evento al cambiar la fecha "hasta".
    */
   public onTilDateChange(): void {
-    this.sessionService.setItem(SessionService.TO_DATE, this.terminalSelected);
+    this.sessionService.setItem(SessionService.BALANCES_TO_DATE, this.terminalSelected);
     this.tilDate = (document.getElementById('tilDate') as HTMLInputElement).value;
     if (this.tilDate.length > 0) {
       this.tilDateMilli = Date.parse(this.tilDate);
-      this.sessionService.setItem(SessionService.TO_DATE, this.tilDateMilli);
+      this.sessionService.setItem(SessionService.BALANCES_TO_DATE, this.tilDateMilli);
     }
+  }
+
+  /**
+   * Abre el modal de mensajes estableciendo el título y el mensaje.
+   *
+   * @param title   Texto que se mostrará como título del modal.
+   * @param message Texto que se mostrará como contenido del modal.
+   */
+  public openModal(title: string, message: string) {
+    this.modalTitle = title;
+    this.modalMessage = message;
+    this.showModal = true;
   }
 
   /**
@@ -246,13 +260,6 @@ export class BalancesComponent implements OnInit, OnDestroy {
    */
   public closeModal(): void {
     this.showModal = false;
-  }
-  
-  /**
-   * Abre el modal de mensajes.
-   */
-  private openModal(): void {
-    this.showModal = true;
   }
 
   /**
@@ -300,6 +307,7 @@ export class BalancesComponent implements OnInit, OnDestroy {
         this.loadCompleted = true;
       },
       error: (error) => {
+        this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.balances'));
         if ([401, 500].includes(error.status)) {
           this.emptySearch = true;
           this.loadCompleted = true;

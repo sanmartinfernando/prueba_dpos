@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { CustomersService } from 'src/app/_services/customers.service';
@@ -30,6 +30,7 @@ export class CustomerDetailsComponent implements OnInit {
   private translate = inject(TranslateService);
   private themeService = inject(ThemeService);
   private fb = inject(FormBuilder);
+  private router = inject(Router);
 
   loadCompleted = false;
   idCustomer: string = null;
@@ -37,9 +38,12 @@ export class CustomerDetailsComponent implements OnInit {
   titlePage: string;
 
   customer: Customer;
-  code: string;
 
   clientForm: FormGroup;
+
+  showModal = false;
+  modalTitle = '';
+  modalMessage = '';
 
   constructor() {
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
@@ -96,6 +100,7 @@ export class CustomerDetailsComponent implements OnInit {
         this.loadCompleted = true;
       },
       error: () => {
+        this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.customer.detail'));
         this.loadCompleted = true;
       }
     });
@@ -117,13 +122,33 @@ export class CustomerDetailsComponent implements OnInit {
   }
 
   /**
+   * Abre el modal de mensajes estableciendo el título y el mensaje.
+   *
+   * @param title   Texto que se mostrará como título del modal.
+   * @param message Texto que se mostrará como contenido del modal.
+   */
+  public openModal(title: string, message: string) {
+    this.modalTitle = title;
+    this.modalMessage = message;
+    this.showModal = true;
+  }
+
+  /**
+   * Cierra el modal de mensajes.
+   */
+  public closeModal() {
+    this.showModal = false;
+    this.router.navigate(['/customers']);
+  }
+
+  /**
    * Actualiza un cliente existente.
    */
   private updateCustomer(): void {
     this.setCustomerFields();
     this.customersService.saveCustomer(this.customer, this.commerceId).subscribe({
-      next: () => this.code = '/customers',
-      error: () => this.code = '/customers'
+      next: () => this.openModal(this.translate.instant('dpos.customer.details.modal.edit.title'), this.translate.instant('dpos.customer.details.modal.edit.message')),
+      error: () => this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.customer.update'))
     });
   }
 
@@ -134,8 +159,8 @@ export class CustomerDetailsComponent implements OnInit {
     this.customer = new Customer();
     this.setCustomerFields();
     this.customersService.saveCustomer(this.customer, this.commerceId).subscribe({
-      next: () => this.code = '/customers',
-      error: () => this.code = '/customers'
+      next: () => this.openModal(this.translate.instant('dpos.customer.details.modal.create.title'), this.translate.instant('dpos.customer.details.modal.create.message')),
+      error: () => this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.customer.create'))
     });
   }
 

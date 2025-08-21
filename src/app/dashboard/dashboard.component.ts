@@ -132,6 +132,10 @@ export class DashboardComponent implements OnInit {
 
   viewEvo: [number, number] = [0, 400];
 
+  showModal = false;
+  modalTitle = '';
+  modalMessage = '';
+
   constructor() {
 
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
@@ -184,12 +188,14 @@ export class DashboardComponent implements OnInit {
               this.searchTerminal();
             },
             error: (error) => {
+              this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.terminals'));
               console.error("Error Terminals: ", error);
             }
           });
         });
       },
       error: (error) => {
+        this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.commerces'));
         console.error("Error Commerces: ", error);
       }
     });
@@ -387,6 +393,25 @@ export class DashboardComponent implements OnInit {
   public dataLabelFormatting(value: any): string {
     if (value <= 0) return "";
     return value.toFixed(2);
+  }
+
+  /**
+   * Abre el modal de mensajes estableciendo el título y el mensaje.
+   *
+   * @param title   Texto que se mostrará como título del modal.
+   * @param message Texto que se mostrará como contenido del modal.
+   */
+  public openModal(title: string, message: string) {
+    this.modalTitle = title;
+    this.modalMessage = message;
+    this.showModal = true;
+  }
+  
+  /**
+   * Cierra el modal de mensajes.
+   */
+  public closeModal() {
+    this.showModal = false;
   }
 
   /**

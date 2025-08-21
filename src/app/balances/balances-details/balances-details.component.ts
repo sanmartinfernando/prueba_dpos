@@ -8,6 +8,8 @@ import { EncryptionService } from './../../_services/encryption.service';
 import { SessionService } from 'src/app/_services/session.service';
 import { ThemeService } from 'src/app/_services/theme.service';
 import { UIStateService } from 'src/app/_services/ui-state.service';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 /**
  * @class BalancesDetailsComponent
@@ -29,6 +31,7 @@ export class BalancesDetailsComponent implements OnInit {
   private uiStateService = inject(UIStateService);
   private sessionService = inject(SessionService);
   private themeService = inject(ThemeService);
+  private translate = inject(TranslateService);
 
   balances: Balance;
   balancesId: string;
@@ -49,9 +52,20 @@ export class BalancesDetailsComponent implements OnInit {
   total = 0;
   pmTotal = 0;
 
+  currentLang: string;
+  langSubscription: Subscription;
+
+  showModal = false;
+  modalTitle = '';
+  modalMessage = '';
+  
   constructor() {
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
     this.uiStateService.setFormSelectEnabled(false);
+    this.currentLang = this.translate.currentLang || 'es';
+    this.langSubscription = this.translate.onLangChange.subscribe(event => {
+      this.currentLang = event.lang;
+    });
   }
 
   /**
@@ -69,6 +83,7 @@ export class BalancesDetailsComponent implements OnInit {
         this.loadCompleted = true;
       },
       error: (error) => {
+        this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.balance.detail'));
         if (error.status === 401 || error.status === 500) {
           this.loadCompleted = true;
         }
@@ -81,6 +96,25 @@ export class BalancesDetailsComponent implements OnInit {
    */
   public downloadPDF(): void {
     this.downloadPDFService.downloadBalancesFile(this.balancesId);
+  }
+
+  /**
+   * Abre el modal de mensajes estableciendo el título y el mensaje.
+   *
+   * @param title   Texto que se mostrará como título del modal.
+   * @param message Texto que se mostrará como contenido del modal.
+   */
+  public openModal(title: string, message: string) {
+    this.modalTitle = title;
+    this.modalMessage = message;
+    this.showModal = true;
+  }
+
+  /**
+   * Cierra el modal de mensajes.
+   */
+  public closeModal(): void {
+    this.showModal = false;
   }
 
   /**

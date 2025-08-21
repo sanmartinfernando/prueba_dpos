@@ -29,6 +29,8 @@
       </button>
     </div>
   </form>
+  <!-- Modal para mensajes -->
+  <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage" (closeModal)="closeModal()"></app-modal>
   <!-- Template cuando no hay resultados -->
   <ng-template #noresults>
     <p>€0.00</p>

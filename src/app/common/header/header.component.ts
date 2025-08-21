@@ -74,7 +74,7 @@ export class HeaderComponent implements OnInit {
               this.loadThemeByResellerName();
             }
           },
-          error: error => console.error('Error Commerces:', error)
+          error: () => {}
         });
       } else {
         this.isLoggedIn = false;

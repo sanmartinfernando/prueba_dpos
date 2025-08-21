@@ -9,6 +9,8 @@
       <i class="fa-solid fa-file-pdf fa-xl"></i>
     </button>
   </div>
+  <!-- Modal para mensajes -->
+  <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage" (closeModal)="closeModal()"></app-modal>
   <!-- Spinner mientras se carga la información -->
   <div *ngIf="!loadCompleted" class="d-flex justify-content-center">
     <div class="spinner-border text-danger"></div>

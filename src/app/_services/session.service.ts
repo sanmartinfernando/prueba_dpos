@@ -18,8 +18,12 @@ export class SessionService {
   static readonly TERMINAL_NUMBER = 'terminalNumber';
 
   // Keys de fechas y operaciones
-  static readonly FROM_DATE = 'fromDate';
-  static readonly TO_DATE = 'toDate';
+  static readonly SALES_FROM_DATE = 'salesFromDate';
+  static readonly SALES_TO_DATE = 'salesToDate';
+  static readonly REPORTS_FROM_DATE = 'reportsFromDate';
+  static readonly REPORTS_TO_DATE = 'reportsToDate';
+  static readonly BALANCES_FROM_DATE = 'balancesFromDate';
+  static readonly BALANCES_TO_DATE = 'balancesToDate';
   static readonly OP_TYPE = 'opType';
   static readonly DOC_NUMBER = 'docNumber';
   static readonly REPORT_TYPE = 'reportType';
