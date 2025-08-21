@@ -91,7 +91,6 @@ export class ProductDetailsComponent implements OnInit {
     const initialPriceType = Number(this.productForm.get('priceType')?.value);
     const numericType = Number(initialPriceType);
     if (numericType === PriceType.Variable) {
-      console.log("variable");
       this.productForm.get('price')?.reset();
       this.productForm.get('price')?.disable();
       this.productForm.get('price')?.setValue(0);
