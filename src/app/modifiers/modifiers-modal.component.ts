@@ -37,6 +37,8 @@ export class ModifiersModalComponent implements OnInit {
 
   public modifiersForm: FormGroup;
 
+  savedModifiers: Modifiers;
+
   public showModal = false;
   public modalTitle = '';
   public modalMessage = '';
@@ -126,6 +128,7 @@ export class ModifiersModalComponent implements OnInit {
    */
   public closeModal(): void {
     this.showModal = false;
+    this.dialogRef.close(this.savedModifiers);
   }
 
   /**
@@ -134,8 +137,14 @@ export class ModifiersModalComponent implements OnInit {
   private updateModifiers(): void {
     this.setModifiersFields();
     this.productsService.saveModifier(this.modifiers, this.commerceId).subscribe({
-      next: (savedModifier) => this.dialogRef.close(savedModifier),
-      error: () => this.dialogRef.close()
+      next: (savedModifier) => {
+        this.openModal(this.translate.instant('dpos.modifiers-modal.modal.edit.title'), this.translate.instant('dpos.modifiers-modal.modal.edit.message'));
+        this.savedModifiers = savedModifier;
+      },
+      error: () => {
+        this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.modifiers.updates'));
+        this.savedModifiers = null;
+      }
     });
   }
 
@@ -146,8 +155,14 @@ export class ModifiersModalComponent implements OnInit {
     this.modifiers = new Modifiers();
     this.setModifiersFields();
     this.productsService.saveModifier(this.modifiers, this.commerceId).subscribe({
-      next: (savedModifier) => this.dialogRef.close(savedModifier),
-      error: () => this.dialogRef.close()
+      next: (savedModifier) => {
+        this.openModal(this.translate.instant('dpos.modifiers-modal.modal.create.title'), this.translate.instant('dpos.modifiers-modal.modal.create.message'));
+        this.savedModifiers = savedModifier;
+      },
+      error: () => {
+        this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.modifiers.create'));
+        this.savedModifiers = null;
+      }
     });
   }
 

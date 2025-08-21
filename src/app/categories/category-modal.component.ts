@@ -36,6 +36,8 @@ export class CategoryModalComponent implements OnInit {
   idCategory: string;
   categoryForm: FormGroup;
 
+  savedCategory: Category;
+
   showModal = false;
   modalTitle = '';
   modalMessage = '';
@@ -120,6 +122,7 @@ export class CategoryModalComponent implements OnInit {
    */
   public closeModal(): void {
     this.showModal = false;
+    this.dialogRef.close(this.savedCategory);
   }
   
   /**
@@ -128,8 +131,14 @@ export class CategoryModalComponent implements OnInit {
   private updateCategory(): void {
     this.setCategoryFields();
     this.productsService.saveCategory(this.category, this.commerceId).subscribe({
-      next: (savedCategory) => this.dialogRef.close(savedCategory),
-      error: () => this.dialogRef.close(null)
+      next: (savedCategory) => {
+        this.openModal(this.translate.instant('dpos.category.modal.modal.edit.title'), this.translate.instant('dpos.category.modal.modal.edit.message'));
+        this.savedCategory = savedCategory;
+      },
+      error: () => {
+        this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.category.update'));
+        this.savedCategory = null;
+      }
     });
   }
 
@@ -140,8 +149,14 @@ export class CategoryModalComponent implements OnInit {
     this.category = new Category();
     this.setCategoryFields();
     this.productsService.saveCategory(this.category, this.commerceId).subscribe({
-      next: (savedCategory) => this.dialogRef.close(savedCategory),
-      error: () => this.dialogRef.close(null)
+      next: (savedCategory) => {
+        this.openModal(this.translate.instant('dpos.category.modal.modal.create.title'), this.translate.instant('dpos.category.modal.modal.create.message'));
+        this.savedCategory = savedCategory;
+      },
+       error: () => {
+        this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.category.create'));
+        this.savedCategory = null;
+      }
     });
   }
 
