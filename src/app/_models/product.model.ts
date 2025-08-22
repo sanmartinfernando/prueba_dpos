@@ -1,5 +1,3 @@
-import { Tax } from "./tax.model";
-
 /**
  * @enum UnitMeasurement
  * @description
@@ -58,23 +56,24 @@ export class Product {
   price: number;
   type: PriceType;
   favourite = false;
-  categories: string[] = [];
+  categoryId: string;
   modifiers: string[] = [];
   epigraph: string;
   noticeKitchen = false;
   unitMeasurement: number;
   stock: number;
   noticeBar = false;
-  barcode?: string;
-  reference?: string;
-  description?: string;
-  tax?: Tax;
-  taxExemptCode?: string;
-  taxRegimen?: string;
-  salePrice?: number;
-  startSalesPrice?: number;
-  endSalesPrice?: number;
-  decorationCategory?: string;
-  decorationElement?: string;
+  decimals?: number = 2;
+  //barcode?: string;
+  //reference?: string;
+  //description?: string;
+  //tax?: Tax;
+  //taxExemptCode?: string;
+  //taxRegimen?: string;
+  //salePrice?: number;
+  //startSalesPrice?: number;
+  //endSalesPrice?: number;
+  //decorationCategory?: string;
+  //decorationElement?: string;
   selected?: boolean = false;
 }

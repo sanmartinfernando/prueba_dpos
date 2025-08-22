@@ -49,6 +49,7 @@ import { AuthGuard } from './_guard/auth.guard';
 import { SessionService } from './_services/session.service';
 
 import localeEs from '@angular/common/locales/es';
+import { CurrencyInputDirective } from './_utils/currency-input.directive';
 registerLocaleData(localeEs);
 
 /**
@@ -75,6 +76,7 @@ registerLocaleData(localeEs);
         CategoryModalComponent,
         ModifiersModalComponent,
         ProductsComponent,
+        CurrencyInputDirective,
         ProductDetailsComponent,
         LoginComponent,
         BalancesComponent,
@@ -130,6 +132,7 @@ registerLocaleData(localeEs);
           multi: true
         }
       ],
+      exports: [CurrencyInputDirective],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
 export class AppModule { }

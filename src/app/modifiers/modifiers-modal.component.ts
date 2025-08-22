@@ -3,7 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { SessionService } from '../_services/session.service';
 import { ThemeService } from '../_services/theme.service';
-import { Modifiers } from '../_models/modifiers.model';
+import { Modifier } from '../_models/modifiers.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProductsService } from '../_services/products.service';
 
@@ -32,12 +32,12 @@ export class ModifiersModalComponent implements OnInit {
   public titlePage: string;
   public loadCompleted = false;
   public commerceId: string;
-  public idModifiers: string;
-  public modifiers: Modifiers;
+  public idModifier: string;
+  public modifier: Modifier;
 
   public modifiersForm: FormGroup;
 
-  savedModifiers: Modifiers;
+  savedModifiers: Modifier;
 
   public showModal = false;
   public modalTitle = '';
@@ -45,14 +45,14 @@ export class ModifiersModalComponent implements OnInit {
 
   constructor() {
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
-    this.idModifiers = this.data.id;
+    this.idModifier = this.data.id;
     this.modifiersForm = this.fb.group({
-      name: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
-      modifier1: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
-      modifier2: ['', [Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
-      modifier3: ['', [Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
-      modifier4: ['', [Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
-      modifier5: ['', [Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
+      name: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
+      modifier1: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
+      modifier2: ['', [Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
+      modifier3: ['', [Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$$/)]],
+      modifier4: ['', [Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
+      modifier5: ['', [Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
     });
   }
 
@@ -61,7 +61,7 @@ export class ModifiersModalComponent implements OnInit {
    */
   ngOnInit(): void {
     this.commerceId = this.sessionService.getItem(SessionService.COMMERCE_ID);
-    if (this.idModifiers) {
+    if (this.idModifier) {
       this.getModifiers();
       this.titlePage = this.translate.instant('dpos.modifiers-modal.title.edit');
       
@@ -82,11 +82,11 @@ export class ModifiersModalComponent implements OnInit {
    * Obtiene los datos de modificadores existentes.
    */
   private getModifiers(): void {
-    this.productsService.getModifier(this.idModifiers, this.commerceId).subscribe({
+    this.productsService.getModifier(this.idModifier, this.commerceId).subscribe({
       next: (modifier) => {
-        this.modifiers = modifier;
-        this.modifiersForm.setValue({ name: this.modifiers.name, modifier1: this.modifiers.modifiers[0] ?? "", modifier2: this.modifiers.modifiers[1] ?? "",
-                                      modifier3: this.modifiers.modifiers[2] ?? "", modifier4: this.modifiers.modifiers[3] ?? "", modifier5: this.modifiers.modifiers[4] ?? ""});
+        this.modifier = modifier;
+        this.modifiersForm.setValue({ name: this.modifier.name, modifier1: this.modifier.modifierOptions[0] ?? "", modifier2: this.modifier.modifierOptions[1] ?? "",
+                                      modifier3: this.modifier.modifierOptions[2] ?? "", modifier4: this.modifier.modifierOptions[3] ?? "", modifier5: this.modifier.modifierOptions[4] ?? ""});
         this.loadCompleted = true;
       },
       error: () => {
@@ -104,7 +104,7 @@ export class ModifiersModalComponent implements OnInit {
       this.modifiersForm.markAllAsTouched();
       return;
     }
-    if (this.modifiers) {
+    if (this.modifier) {
       this.updateModifiers();
     } else {
       this.createModifiers();
@@ -136,7 +136,7 @@ export class ModifiersModalComponent implements OnInit {
    */
   private updateModifiers(): void {
     this.setModifiersFields();
-    this.productsService.saveModifier(this.modifiers, this.commerceId).subscribe({
+    this.productsService.saveModifier(this.modifier, this.commerceId).subscribe({
       next: (savedModifier) => {
         this.openModal(this.translate.instant('dpos.modifiers-modal.modal.edit.title'), this.translate.instant('dpos.modifiers-modal.modal.edit.message'));
         this.savedModifiers = savedModifier;
@@ -152,9 +152,9 @@ export class ModifiersModalComponent implements OnInit {
    * Crea una nuevo modificador.
    */
   private createModifiers(): void {
-    this.modifiers = new Modifiers();
+    this.modifier = new Modifier();
     this.setModifiersFields();
-    this.productsService.saveModifier(this.modifiers, this.commerceId).subscribe({
+    this.productsService.saveModifier(this.modifier, this.commerceId).subscribe({
       next: (savedModifier) => {
         this.openModal(this.translate.instant('dpos.modifiers-modal.modal.create.title'), this.translate.instant('dpos.modifiers-modal.modal.create.message'));
         this.savedModifiers = savedModifier;
@@ -170,7 +170,7 @@ export class ModifiersModalComponent implements OnInit {
    * Asigna al modelo de modificadores los valores actuales del formulario.
    */
   private setModifiersFields(): void {
-    this.modifiers.name = this.modifiersForm.get('name').value
+    this.modifier.name = this.modifiersForm.get('name').value
     const modifiers: string[] = [
                                 this.modifiersForm.get('modifier1')?.value,
                                 this.modifiersForm.get('modifier2')?.value,
@@ -178,6 +178,6 @@ export class ModifiersModalComponent implements OnInit {
                                 this.modifiersForm.get('modifier4')?.value,
                                 this.modifiersForm.get('modifier5')?.value,
                               ].filter(value => value !== null && value !== undefined && value !== '');
-    this.modifiers.modifiers = modifiers;
+    this.modifier.modifierOptions = modifiers;
   }
 }

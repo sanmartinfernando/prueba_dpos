@@ -235,9 +235,9 @@ export class DownloadCsvService {
    */
   public downloadProductsFile(products: Product[], filename = 'data', language: string) {
     if (!products) return;
-    const headersES = ['Referencia', 'Código de barras', 'Nombre', 'Precio', 'Stock'];
-    const headersCAT = ['Referència', 'Codi de barres', 'Nom', 'Preu', 'Stock'];
-    const headersEU = ['Erreferentzia', 'Barra-kodea', 'Izena', 'Prezioa', 'Stocka'];
+    const headersES = ['Nombre', 'Precio', 'Stock'];
+    const headersCAT = ['Nom', 'Preu', 'Stock'];
+    const headersEU = ['Izena', 'Prezioa', 'Stocka'];
     let headers: string[] = headersES;
     if (language === 'es') {
       headers = headersES;
@@ -246,7 +246,7 @@ export class DownloadCsvService {
     } else if (language === 'cat') {
       headers = headersCAT;
     }
-    const fields = ['reference', 'barcode', 'name', 'price', 'stock'];
+    const fields = ['name', 'price', 'stock'];
     const csvData = this.convertProductsToCSV(products, fields, headers);
     const blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
     const dwldLink = document.createElement("a");
@@ -441,8 +441,6 @@ export class DownloadCsvService {
     let str = headers.join(';') + '\r\n';
     for (const product of products) {
       let line = "";
-      line += (line ? ';' : '') + (product.reference || '');
-      line += (line ? ';' : '') + (product.barcode || '');
       line += (line ? ';' : '') + (product.name || '');
       line += (line ? ';' : '') + (this.currencyPipe.transform(product.price / (Math.pow(10, product.price)), 'EUR', '€') || '');
       line += (line ? ';' : '') + (product.stock || '');

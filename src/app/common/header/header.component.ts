@@ -74,7 +74,9 @@ export class HeaderComponent implements OnInit {
               this.loadThemeByResellerName();
             }
           },
-          error: () => {}
+          error: () => {
+            //TODO
+          }
         });
       } else {
         this.isLoggedIn = false;

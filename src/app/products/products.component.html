@@ -12,14 +12,6 @@
       <label class="form-label" for="productName">{{ 'dpos.products.name.form.label' | translate }}</label>
       <input type="text" class="form-control" id="productName" name="productName" [(ngModel)]="productNameVarSearch" (change)="onProductNameChange()">
     </div>
-    <div class="col-12 col-sm-6 col-md-4 col-lg-2">
-      <label class="form-label" for="productReference">{{ 'dpos.products.reference.form.label' | translate }}</label>
-      <input type="text" class="form-control" id="productReference" name="productReference"[(ngModel)]="productReferenceVarSearch" (change)="onProductReferenceChange()">
-    </div>
-    <div class="col-12 col-sm-6 col-md-4 col-lg-2">
-      <label class="form-label" for="productBarcode">{{ 'dpos.products.barcode.form.label' | translate }}</label>
-      <input type="text" class="form-control" id="productBarcode" name="productBarcode" [(ngModel)]="productBarcodeVarSearch" (change)="onProductBarcodeChange()">
-    </div>
     <!-- Botones para limpiar formulario y buscar productos -->
     <div class="col-12 col-md-4 col-lg-4 d-flex flex-wrap gap-2 align-items-end">
       <button type="reset" class="btn btn-outline-danger" (click)="cleanFormFields()">
@@ -61,8 +53,6 @@
           <table class="table table-hover">
             <thead class="text-customer">
               <tr>
-                <th>{{ 'dpos.products.table.column.reference' | translate }}</th>
-                <th>{{ 'dpos.products.table.column.barcode' | translate }}</th>
                 <th>{{ 'dpos.products.table.column.name' | translate }}</th>
                 <th class="text-center">{{ 'dpos.products.table.column.stock' | translate }}</th>
                 <th class="text-end">{{ 'dpos.products.table.column.price' | translate }}</th>
@@ -73,8 +63,6 @@
             <tbody>
               <!-- Iteración paginada de productos -->
               <tr *ngFor="let product of products | paginate: { id: 'productsList', itemsPerPage: 5, currentPage: currentProductsPage }">
-                <td class="align-middle"><span class="table-title">{{ product.reference }}</span></td>
-                <td class="align-middle">{{ product.barcode }}</td>
                 <td class="align-middle">{{ product.name }}</td>
                 <td class="text-center align-middle">{{ product.stock }}</td>
                 <td class="text-end align-middle">{{ product.price / (Math.pow(10, 2)) | currency : 'EUR' : '€' }}</td>

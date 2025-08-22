@@ -29,11 +29,18 @@
                 {{ 'dpos.customers.details.form.mandatory' | translate }}
               </div>
             </div>
+            <div class="mb-3">
+              <label for="epigraph" class="form-label">{{ 'dpos.product-details.form.epigraph' | translate }}</label>
+              <input type="text" class="form-control" id="epigraph" formControlName="epigraph" name="epigraph" />
+              <div *ngIf="productForm.get('epigraph')?.invalid && productForm.get('epigraph')?.touched" class="text-danger">
+                {{ 'dpos.customers.details.form.mandatory' | translate }}
+              </div>
+            </div>
             <div class="row">
               <div class="col-md-8 mb-3">
-                <label for="categories" class="form-label">{{ 'dpos.product-details.form.category' | translate }}</label>
-                <mat-select formControlName="categories" id="categories" name="categories" class="custom-mat-form-select" multiple [ngClass]="{'mat-form-field-invalid': productForm.get('categories')?.hasError('required') && productForm.get('categories')?.touched}">
-                  <mat-select-trigger>{{ getSelectedCategoryNames(productForm.get('categories')?.value) }}</mat-select-trigger>
+                <label for="categoryId" class="form-label">{{ 'dpos.product-details.form.category' | translate }}</label>
+                <mat-select formControlName="categoryId" id="categoryId" name="categoryId" class="custom-mat-form-select" [ngClass]="{'mat-form-field-invalid': productForm.get('categories')?.hasError('required') && productForm.get('categories')?.touched}">
+                  <mat-select-trigger>{{ getSelectedCategoryNames(productForm.get('categoryId')?.value) }}</mat-select-trigger>
                   <mat-option *ngFor="let category of categories" [value]="category.categoryId">
                     <div class="d-flex align-items-center w-100">
                       <span class="custom-mat-form-span">{{ category.name }}</span>
@@ -43,7 +50,7 @@
                     </div>
                   </mat-option>
                 </mat-select>
-                <mat-error *ngIf="productForm.get('categories')?.hasError('required') && productForm.get('categories')?.touched">
+                <mat-error *ngIf="productForm.get('categoryId')?.hasError('required') && productForm.get('categoryId')?.touched">
                   {{ 'dpos.customers.details.form.mandatory' | translate }}
                 </mat-error>
               </div>
@@ -53,10 +60,53 @@
                 </button>
               </div>
             </div>
+          </div>
+          <!-- Segunda columna del formulario -->
+          <div class="col-md-6">
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="type" class="form-label">{{ 'dpos.product-details.form.price.type' | translate }}</label>
+                <select id="type" class="form-select" formControlName="type" name="type">
+                  <option *ngFor="let option of priceTypeOptions" [ngValue]="option.value">
+                    {{ option.label }}
+                  </option>
+                </select>
+                <div *ngIf="productForm.get('type')?.invalid && productForm.get('type')?.touched" class="text-danger">
+                  {{ 'dpos.customers.details.form.mandatory' | translate }}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label for="price" class="form-label">{{ 'dpos.product-details.form.price' | translate }}</label>
+                <input type="text" class="form-control" id="price" formControlName="price" name="price" appCurrencyInput />
+                <div *ngIf="productForm.get('price')?.invalid && productForm.get('price')?.touched" class="text-danger">
+                  {{ 'dpos.customers.details.form.mandatory' | translate }}
+                </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="unitMeasurement" class="form-label">{{ 'dpos.product-details.form.unitMeasurement' | translate }}</label>
+                <select id="unitMeasurement" class="form-select" formControlName="unitMeasurement" name="unitMeasurement">
+                  <option *ngFor="let option of unitMeasurementOptions" [ngValue]="option.value">
+                    {{ option.label }}
+                  </option>
+                </select>
+                <div *ngIf="productForm.get('unitMeasurement')?.invalid && productForm.get('unitMeasurement')?.touched" class="text-danger">
+                  {{ 'dpos.customers.details.form.mandatory' | translate }}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label for="stock" class="form-label">{{ 'dpos.product-details.form.stock' | translate }}</label>
+                <input type="number" class="form-control" id="stock" formControlName="stock" name="stock" min="0" />
+                <div *ngIf="productForm.get('stock')?.invalid && productForm.get('stock')?.touched" class="text-danger">
+                  {{ 'dpos.customers.details.form.mandatory' | translate }}
+                </div>
+              </div>
+            </div>
             <div class="row">
               <div class="col-md-8 mb-3">
                 <label for="modifiers" class="form-label">{{ 'dpos.product-details.form.modifiers' | translate }}</label>
-                <mat-select formControlName="modifiers" id="modifiers" name="modifiers" class="custom-mat-form-select"  [ngClass]="{'mat-form-field-invalid': productForm.get('modifiers')?.hasError('required') && productForm.get('modifiers')?.touched}">
+                <mat-select formControlName="modifiers" id="modifiers" name="modifiers" class="custom-mat-form-select" multiple [ngClass]="{'mat-form-field-invalid': productForm.get('modifiers')?.hasError('required') && productForm.get('modifiers')?.touched}">
                   <mat-select-trigger>{{ getSelectedModifiersName(productForm.get('modifiers')?.value) }}</mat-select-trigger>
                   <mat-option *ngFor="let modifier of modifiers" [value]="modifier.modifierId">
                     <div class="d-flex align-items-center w-100">
@@ -77,73 +127,7 @@
                 </button>
               </div>
             </div>
-            <div class="mb-3">
-              <label for="stock" class="form-label">{{ 'dpos.product-details.form.stock' | translate }}</label>
-              <input type="text" class="form-control" id="stock" formControlName="stock" name="stock" />
-              <div *ngIf="productForm.get('stock')?.invalid && productForm.get('stock')?.touched" class="text-danger">
-                {{ 'dpos.customers.details.form.mandatory' | translate }}
-              </div>
-            </div>
-            <div class="mb-3">
-              <label for="epigraph" class="form-label">{{ 'dpos.product-details.form.epigraph' | translate }}</label>
-              <input type="text" class="form-control" id="epigraph" formControlName="epigraph" name="epigraph" />
-              <div *ngIf="productForm.get('epigraph')?.invalid && productForm.get('epigraph')?.touched" class="text-danger">
-                {{ 'dpos.customers.details.form.mandatory' | translate }}
-              </div>
-            </div>
           </div>
-          <!-- Segunda columna del formulario -->
-          <div class="col-md-6">
-            <div class="mb-3">
-              <label for="barcode" class="form-label">{{ 'dpos.product-details.form.barcode' | translate }}</label>
-              <input type="text" class="form-control" id="barcode" formControlName="barcode" name="barcode" />
-            </div>
-            <div class="mb-3">
-              <label for="reference" class="form-label">{{ 'dpos.product-details.form.reference' | translate }}</label>
-              <input type="text" class="form-control" id="reference" formControlName="reference" name="reference" />
-            </div>
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <label for="priceType" class="form-label">{{ 'dpos.product-details.form.price.type' | translate }}</label>
-                <select id="priceType" class="form-select" formControlName="priceType" name="priceType">
-                  <option *ngFor="let option of priceTypeOptions" [value]="option.value">
-                    {{ option.label }}
-                  </option>
-                </select>
-                <div *ngIf="productForm.get('priceType')?.invalid && productForm.get('priceType')?.touched" class="text-danger">
-                  {{ 'dpos.customers.details.form.mandatory' | translate }}
-                </div>
-              </div>
-
-              <div class="col-md-6">
-                <label for="price" class="form-label">{{ 'dpos.product-details.form.price' | translate }}</label>
-                <input type="text" class="form-control" id="price" formControlName="price" name="price" />
-                <div *ngIf="productForm.get('price')?.invalid && productForm.get('price')?.touched" class="text-danger">
-                  {{ 'dpos.customers.details.form.mandatory' | translate }}
-                </div>
-              </div>
-            </div>
-            <div class="mb-3">
-              <label for="taxes" class="form-label">{{ 'dpos.product-details.form.taxes' | translate }}</label>
-              <input type="text" class="form-control" id="taxes" formControlName="taxes" name="taxes" />
-            </div>
-            <div class="mb-3">
-              <label for="unitMeasurement" class="form-label">{{ 'dpos.product-details.form.unitMeasurement' | translate }}</label>
-              <select id="unitMeasurement" class="form-select" formControlName="unitMeasurement" name="unitMeasurement">
-                <option *ngFor="let option of unitMeasurementOptions" [value]="option.value">
-                  {{ option.label }}
-                </option>
-              </select>
-              <div *ngIf="productForm.get('unitMeasurement')?.invalid && productForm.get('unitMeasurement')?.touched" class="text-danger">
-                {{ 'dpos.customers.details.form.mandatory' | translate }}
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Campo descripción -->
-        <div class="col-md-12 mb-3">
-          <label for="description" class="form-label">{{ 'dpos.product-details.form.description' | translate }}</label>
-          <textarea class="form-control" id="description" rows="2" formControlName="description" name="description"></textarea>
         </div>
         <!-- Botones de cancelar o guardar productos -->
         <div class="d-flex justify-content-end mt-4">

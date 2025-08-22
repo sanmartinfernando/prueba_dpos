@@ -38,8 +38,6 @@ export class SessionService {
 
   // Keys de producto
   static readonly PRODUCT_NAME = 'productName';
-  static readonly PRODUCT_REFERENCE = 'productReference';
-  static readonly PRODUCT_BARCODE = 'productBarcode';
 
   // Keys de categorías
   static readonly CATEGORY_ID = 'categoryId';

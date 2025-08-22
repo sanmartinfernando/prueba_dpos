@@ -8,7 +8,7 @@ import { ThemeService } from 'src/app/_services/theme.service';
 import { UIStateService } from 'src/app/_services/ui-state.service';
 import { PriceType, PriceTypeLabel, Product, UnitMeasurement, UnitMeasurementLabel } from '../../_models/product.model';
 import { Category } from 'src/app/_models/category.model';
-import { Modifiers } from '../../_models/modifiers.model';
+import { Modifier } from '../../_models/modifiers.model';
 import { CategoryModalComponent } from 'src/app/categories/category-modal.component';
 import { ModifiersModalComponent } from 'src/app/modifiers/modifiers-modal.component';
 import { ProductsService } from 'src/app/_services/products.service';
@@ -51,7 +51,7 @@ export class ProductDetailsComponent implements OnInit {
   public categories: Category[] = [];
   public commerceId: string = null;
 
-  public modifiers: Modifiers[] = [];
+  public modifiers: Modifier[] = [];
 
   public productForm: FormGroup;
 
@@ -79,20 +79,16 @@ export class ProductDetailsComponent implements OnInit {
 
     this.productForm = this.fb.group({
       name: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
-      categories: [[], [Validators.required, Validators.pattern(/^\bcategory:\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\b$/)]],
-      modifiers: ['', [Validators.required, Validators.pattern(/^\bmodifier:\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\b$/)]],
-      stock: ['', [Validators.required]],
+      price: [0, [Validators.required, Validators.min(0)]],
+      type: [0, [Validators.required, Validators.min(0), Validators.max(1)]],
+      categoryId: ['', [Validators.required, Validators.pattern(/^\bcategory:\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\b$/)]],
+      modifiers: [[], [Validators.required, Validators.pattern(/^\bmodifier:\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\b$/)]],
       epigraph: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
-      barcode: ['',[Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
-      reference: ['',[Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
-      priceType: ['0', [Validators.required]],
-      price: ['', [Validators.required]],
-      taxes: ['',[Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
-      unitMeasurement: ['', [Validators.required]],
-      description: ['',[Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,250}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]]
+      unitMeasurement: [0, [Validators.required, Validators.min(0), Validators.max(3)]],
+      stock: [0, [Validators.required, Validators.min(0)]]
     });
 
-    const initialPriceType = Number(this.productForm.get('priceType')?.value);
+    const initialPriceType = Number(this.productForm.get('type')?.value);
     const numericType = Number(initialPriceType);
     if (numericType === PriceType.Variable) {
       this.productForm.get('price')?.reset();
@@ -108,7 +104,7 @@ export class ProductDetailsComponent implements OnInit {
    * Inicializa el componente obteniendo información del producto si existe.
    */
   ngOnInit(): void {
-    this.productForm.get('priceType')?.valueChanges.subscribe(type => {
+    this.productForm.get('type')?.valueChanges.subscribe(type => {
       const numericType = Number(type);
       if (numericType === PriceType.Variable) {
         this.productForm.get('price')?.reset();
@@ -209,28 +205,28 @@ export class ProductDetailsComponent implements OnInit {
   }
 
   /**
-   * Devuelve los nombres de las categorías seleccionadas en forma de cadena separada por comas.
+   * Devuelve los nombres de los modificadores seleccionados en forma de cadena separada por comas.
    *
-   * @returns {string} Cadena con los nombres de las categorías seleccionadas,
-   *                   o una cadena vacía si no hay categorías seleccionadas.
+   * @returns {string} Cadena con los nombres de los modificadores seleccionados,
+   *                   o una cadena vacía si no se ha seleccionado ningún modificador.
    */
-  public getSelectedCategoryNames(selectedIds: string[]): string {
+  public getSelectedModifiersName(selectedIds: string[]): string {
     if (!selectedIds || selectedIds.length === 0) return '';
-    return this.categories
-      .filter(cat => selectedIds.includes(cat.categoryId))
-      .map(cat => cat.name)
+    return this.modifiers
+      .filter(mod => selectedIds.includes(mod.modifierId))
+      .map(mod => mod.name)
       .join(', ');
   }
 
   /**
-   * Devuelve el nombre del modificador seleccionado.
+   * Devuelve el nombre de la categoría seleccionada.
    *
-   * @returns {string} Nombre del modificador seleccionado,
-   *                   o una cadena vacía si no hay modificador seleccionado.
+   * @returns {string} Nombre de la categoría seleccionada,
+   *                   o una cadena vacía si no se ha seleccionado una categoría.
    */
-  public getSelectedModifiersName(selectedId: string): string {
-    const mod = this.modifiers.find(m => m.modifierId === selectedId);
-    return mod ? mod.name : '';
+  public getSelectedCategoryNames(selectedId: string): string {
+    const cat = this.categories.find(c => c.categoryId === selectedId);
+    return cat ? cat.name : '';
   }
 
   /**

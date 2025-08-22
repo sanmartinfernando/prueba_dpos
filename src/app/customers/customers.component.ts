@@ -329,15 +329,6 @@ export class CustomersComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Obtiene el ID del comercio correspondiente al número de comercio seleccionado.
-   * 
-   * @returns El ID del comercio o 0 si no se encuentra.
-   */
-  private getCommerceId(): number {
-    return this.commerces.find(c => c.commerceNumber === this.commerceSelected)?.commerceId ?? 0;
-  }
-
-  /**
    * Obtiene el número de comercio correspondiente al ID de comercio especificado.
    * 
    * @param commerceId - ID del comercio.

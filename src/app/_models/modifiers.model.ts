@@ -1,14 +1,12 @@
 /**
- * @class Modifiers
+ * @class Modifier
  * @description
- * Representa un conjunto de modificadores asociados a un elemento,
- * incluyendo su identificador, nombre y la lista de modificadores separados.
+ * Representa un modificador asociado a un producto,
+ * incluyendo su identificador, nombre y la lista de modificadores.
  */
-export class Modifiers {
-
-  static readonly MODIFIERS_SEPARATOR = ";";
+export class Modifier {
 
   modifierId: string;
   name: string;
-  modifiers: string[];
+  modifierOptions: string[];
 }

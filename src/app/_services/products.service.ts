@@ -6,7 +6,7 @@ import { RestRoutes } from '../_rest/rest-routes.config';
 import { Product } from '../_models/product.model';
 import { TranslateService } from '@ngx-translate/core';
 import { Category } from '../_models/category.model';
-import { Modifiers } from '../_models/modifiers.model';
+import { Modifier } from '../_models/modifiers.model';
 
 /**
  * @class ProductsService
@@ -139,13 +139,13 @@ export class ProductsService {
    * @param commerceId Id del comercio asociado.
    * @returns Observable con el modificador obtenido.
    */
-  public getModifier(modifierId: string, commerceId: string): Observable<Modifiers> {
+  public getModifier(modifierId: string, commerceId: string): Observable<Modifier> {
     if (!modifierId) {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
     }
     const params = new HttpParams().set('commerceId', commerceId);
     const url = `${environment.urlProducts}${RestRoutes.MODIFIERS}/${modifierId}`;
-    return this.http.get<Modifiers>(url, { headers: this.httpOptions.headers, params });
+    return this.http.get<Modifier>(url, { headers: this.httpOptions.headers, params });
   }
 
   /**
@@ -154,13 +154,13 @@ export class ProductsService {
    * @param commerceId Id del comercio asociado.
    * @returns Observable con el listado de modificadores.
    */
-  public getAllModifiers(commerceId: string): Observable<Modifiers[]> {
+  public getAllModifiers(commerceId: string): Observable<Modifier[]> {
     if (!commerceId) {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
     }
     const params = new HttpParams().set('commerceId', commerceId);
     const url = `${environment.urlProducts}${RestRoutes.MODIFIERS}/all`;
-    return this.http.get<Modifiers[]>(url, { headers: this.httpOptions.headers, params });
+    return this.http.get<Modifier[]>(url, { headers: this.httpOptions.headers, params });
   }
 
   /**
@@ -171,7 +171,7 @@ export class ProductsService {
    * @param commerceId ID del comercio asociado.
    * @returns Observable con el modificador creado o actualizado.
    */
-  public saveModifier(modifiers: Modifiers, commerceId: string): Observable<Modifiers> {
+  public saveModifier(modifiers: Modifier, commerceId: string): Observable<Modifier> {
     if (!modifiers || !commerceId || (modifiers.modifierId === null)) {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
     }
@@ -182,7 +182,7 @@ export class ProductsService {
       : `${environment.urlProducts}${RestRoutes.MODIFIERS}`;
 
     return modifiers.modifierId
-      ? this.http.put<Modifiers>(url, modifiers, { headers: this.httpOptions.headers, params })
-      : this.http.post<Modifiers>(url, modifiers, { headers: this.httpOptions.headers, params });
+      ? this.http.put<Modifier>(url, modifiers, { headers: this.httpOptions.headers, params })
+      : this.http.post<Modifier>(url, modifiers, { headers: this.httpOptions.headers, params });
   }
 }
