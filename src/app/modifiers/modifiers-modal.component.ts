@@ -30,7 +30,6 @@ export class ModifiersModalComponent implements OnInit {
   public data = inject<{ id?: string }>(MAT_DIALOG_DATA);
 
   public titlePage: string;
-  public loadCompleted = false;
   public commerceId: string;
   public idModifier: string;
   public modifier: Modifier;
@@ -39,6 +38,7 @@ export class ModifiersModalComponent implements OnInit {
 
   savedModifiers: Modifier;
 
+  public isLoading = false;
   public showModal = false;
   public modalTitle = '';
   public modalMessage = '';
@@ -67,7 +67,7 @@ export class ModifiersModalComponent implements OnInit {
       
     } else {
       this.titlePage = this.translate.instant('dpos.modifiers-modal.title.add');
-      this.loadCompleted = true;
+      this.isLoading = false;
     }
   }
 
@@ -82,16 +82,17 @@ export class ModifiersModalComponent implements OnInit {
    * Obtiene los datos de modificadores existentes.
    */
   private getModifiers(): void {
+    this.isLoading = true;
     this.productsService.getModifier(this.idModifier, this.commerceId).subscribe({
       next: (modifier) => {
         this.modifier = modifier;
         this.modifiersForm.setValue({ name: this.modifier.name, modifier1: this.modifier.modifierOptions[0] ?? "", modifier2: this.modifier.modifierOptions[1] ?? "",
                                       modifier3: this.modifier.modifierOptions[2] ?? "", modifier4: this.modifier.modifierOptions[3] ?? "", modifier5: this.modifier.modifierOptions[4] ?? ""});
-        this.loadCompleted = true;
+        this.isLoading = false;
       },
       error: () => {
         this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.modifiers.detail'));
-        this.loadCompleted = true;
+        this.isLoading = false;
       }
     });
   }
@@ -136,14 +137,17 @@ export class ModifiersModalComponent implements OnInit {
    */
   private updateModifiers(): void {
     this.setModifiersFields();
+    this.isLoading = true;
     this.productsService.saveModifier(this.modifier, this.commerceId).subscribe({
       next: (savedModifier) => {
         this.openModal(this.translate.instant('dpos.modifiers-modal.modal.edit.title'), this.translate.instant('dpos.modifiers-modal.modal.edit.message'));
         this.savedModifiers = savedModifier;
+        this.isLoading = false;
       },
       error: () => {
         this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.modifiers.updates'));
         this.savedModifiers = null;
+        this.isLoading = true;
       }
     });
   }
@@ -154,14 +158,17 @@ export class ModifiersModalComponent implements OnInit {
   private createModifiers(): void {
     this.modifier = new Modifier();
     this.setModifiersFields();
+    this.isLoading = true;
     this.productsService.saveModifier(this.modifier, this.commerceId).subscribe({
       next: (savedModifier) => {
         this.openModal(this.translate.instant('dpos.modifiers-modal.modal.create.title'), this.translate.instant('dpos.modifiers-modal.modal.create.message'));
         this.savedModifiers = savedModifier;
+        this.isLoading = false;
       },
       error: () => {
         this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.modifiers.create'));
         this.savedModifiers = null;
+        this.isLoading = false;
       }
     });
   }

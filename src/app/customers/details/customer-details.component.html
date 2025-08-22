@@ -10,16 +10,16 @@
     <div class="card-body">
       <!-- Modal para mensajes -->
       <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage" (closeModal)="closeModal()"></app-modal>
-      <!-- Indicador de carga: se muestra el spinner mientras se cargan los datos -->
-      <div *ngIf="!loadCompleted" class="d-flex justify-content-center">
-        <div class="spinner-border text-danger"></div>
-      </div>
       <!-- Título de la página -->
       <div class="col mb-4">
         <h5><b>{{ titlePage }}</b></h5>
       </div>
+      <!-- Indicador de carga: se muestra el spinner mientras se cargan los datos -->
+      <div *ngIf="isLoading" class="d-flex justify-content-center">
+        <div class="spinner-border text-danger"></div>
+      </div>
       <!-- Formulario visible solo cuando la carga ha finalizado -->
-      <div *ngIf="loadCompleted" class="row">
+      <div *ngIf="!isLoading" class="row">
         <div class="col">
           <form [formGroup]="clientForm" (ngSubmit)="saveCustomer()">
             <div class="row g-3">

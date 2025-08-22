@@ -37,7 +37,7 @@ export class ProductDetailsComponent implements OnInit {
   private dialog = inject(MatDialog);
   private router = inject(Router);
 
-  public loadCompleted = false;
+  public isLoading = false;
   public idProduct: string = null;
   public titlePage: string;
   public product: Product;
@@ -118,16 +118,18 @@ export class ProductDetailsComponent implements OnInit {
     
     this.commerceId = this.sessionService.getItem(SessionService.COMMERCE_ID);
     const idParam = this.activatedRoute.snapshot.params['id'];
+
+    this.getAllCategories();
+    this.getAllModifiers();
+
     if (idParam) {
       this.idProduct = this.encryptionService.decode(idParam);
       this.titlePage = this.translate.instant('dpos.product-details.page.edit.title');
       this.getProduct();
     } else {
       this.titlePage = this.translate.instant('dpos.product-details.page.add.title');
+      this.isLoading = false;
     }
-    this.getAllCategories();
-    this.getAllModifiers();
-    this.loadCompleted = true;
   }
 
   /**
@@ -135,6 +137,7 @@ export class ProductDetailsComponent implements OnInit {
    */
   public getProduct(): void {
     // Implementación pendiente
+    this.isLoading = false;
   }
 
   /**
@@ -253,10 +256,17 @@ export class ProductDetailsComponent implements OnInit {
    * Actualiza un producto existente.
    */
   private updateProduct(): void {
+    this.isLoading = true;
     this.setProductFields();
     this.productsService.saveProduct(this.product, this.commerceId).subscribe({
-      next: () => this.openModal(this.translate.instant('dpos.product-details.modal.edit.title'), this.translate.instant('dpos.product-details.modal.edit.message')),
-      error: () => this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.product.update'))
+      next: () => {
+        this.openModal(this.translate.instant('dpos.product-details.modal.edit.title'), this.translate.instant('dpos.product-details.modal.edit.message'));
+        this.isLoading = false;
+      },
+      error: () => {
+        this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.product.update'));
+        this.isLoading = false;
+      }
     });
   }
 
@@ -264,11 +274,18 @@ export class ProductDetailsComponent implements OnInit {
    * Crea un nuevo producto.
    */
   private createProduct(): void {
+    this.isLoading = true;
     this.product = new Product();
     this.setProductFields();
     this.productsService.saveProduct(this.product, this.commerceId).subscribe({
-      next: () => this.openModal(this.translate.instant('dpos.product-details.modal.create.title'), this.translate.instant('dpos.product-details.modal.create.message')),
-      error: () => this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.product.create'))
+      next: () => {
+        this.openModal(this.translate.instant('dpos.product-details.modal.create.title'), this.translate.instant('dpos.product-details.modal.create.message'));
+        this.isLoading = false;
+      },
+      error: () => {
+        this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.product.create'));
+        this.isLoading = false;
+      }
     });
   }
 

@@ -11,12 +11,18 @@
     <!-- Cuerpo del modal con formulario -->
     <div class="modal-body">
       <div class="container my-3">
-        <div class="row mb-12">
-          <div class="col-md-12">
-            <label for="name" class="form-label">{{ 'dpos.category.modal.form.name' | translate }}</label>
-            <input type="text" class="form-control" id="name" formControlName="name" name="name" />
-            <div *ngIf="categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched" class="text-danger">
-              {{ 'dpos.customers.details.form.mandatory' | translate }}
+        <!-- Spinner -->
+        <div *ngIf="isLoading" >
+            <div class="spinner-border text-danger"></div>
+        </div>
+        <div *ngIf="!isLoading">
+          <div class="row mb-12">
+            <div class="col-md-12">
+              <label for="name" class="form-label">{{ 'dpos.category.modal.form.name' | translate }}</label>
+              <input type="text" class="form-control" id="name" formControlName="name" name="name" />
+              <div *ngIf="categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched" class="text-danger">
+                {{ 'dpos.customers.details.form.mandatory' | translate }}
+              </div>
             </div>
           </div>
         </div>

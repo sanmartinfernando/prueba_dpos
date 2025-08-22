@@ -10,133 +10,135 @@
     <div class="card-body">
       <!-- Modal para mensajes -->
       <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage" (closeModal)="closeModal()"></app-modal>
-      <!-- Spinner de carga mientras no se completan los datos -->
-      <div *ngIf="!loadCompleted" class="d-flex justify-content-center">
-        <div class="spinner-border text-danger"></div>
-      </div>
       <div class="col mb-4">
         <h5><b>{{ titlePage }}</b></h5>
       </div>
+      <!-- Spinner de carga mientras no se completan los datos -->
+      <div *ngIf="isLoading" class="d-flex justify-content-center">
+        <div class="spinner-border text-danger"></div>
+      </div>
       <!-- Formulario para editar o crear producto -->
-      <form  [formGroup]="productForm" (ngSubmit)="saveProduct()">
-        <div class="row g-3">
-          <!-- Primera columna del formulario -->
-          <div class="col-md-6">
-            <div class="mb-3">
-              <label for="name" class="form-label">{{ 'dpos.product-details.form.name' | translate }}</label>
-              <input type="text" class="form-control" id="name" formControlName="name" name="name" />
-              <div *ngIf="productForm.get('name')?.invalid && productForm.get('name')?.touched" class="text-danger">
-                {{ 'dpos.customers.details.form.mandatory' | translate }}
-              </div>
-            </div>
-            <div class="mb-3">
-              <label for="epigraph" class="form-label">{{ 'dpos.product-details.form.epigraph' | translate }}</label>
-              <input type="text" class="form-control" id="epigraph" formControlName="epigraph" name="epigraph" />
-              <div *ngIf="productForm.get('epigraph')?.invalid && productForm.get('epigraph')?.touched" class="text-danger">
-                {{ 'dpos.customers.details.form.mandatory' | translate }}
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-8 mb-3">
-                <label for="categoryId" class="form-label">{{ 'dpos.product-details.form.category' | translate }}</label>
-                <mat-select formControlName="categoryId" id="categoryId" name="categoryId" class="custom-mat-form-select" [ngClass]="{'mat-form-field-invalid': productForm.get('categories')?.hasError('required') && productForm.get('categories')?.touched}">
-                  <mat-select-trigger>{{ getSelectedCategoryNames(productForm.get('categoryId')?.value) }}</mat-select-trigger>
-                  <mat-option *ngFor="let category of categories" [value]="category.categoryId">
-                    <div class="d-flex align-items-center w-100">
-                      <span class="custom-mat-form-span">{{ category.name }}</span>
-                      <button mat-icon-button class="custom-mat-form-icon ms-auto" (click)="editCategory(category.categoryId, $event)">
-                        <mat-icon>edit</mat-icon>
-                      </button>
-                    </div>
-                  </mat-option>
-                </mat-select>
-                <mat-error *ngIf="productForm.get('categoryId')?.hasError('required') && productForm.get('categoryId')?.touched">
+      <div *ngIf="!isLoading">
+        <form  [formGroup]="productForm" (ngSubmit)="saveProduct()">
+          <div class="row g-3">
+            <!-- Primera columna del formulario -->
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="name" class="form-label">{{ 'dpos.product-details.form.name' | translate }}</label>
+                <input type="text" class="form-control" id="name" formControlName="name" name="name" />
+                <div *ngIf="productForm.get('name')?.invalid && productForm.get('name')?.touched" class="text-danger">
                   {{ 'dpos.customers.details.form.mandatory' | translate }}
-                </mat-error>
+                </div>
               </div>
-              <div class="col-md-4 mb-3 d-flex align-items-end justify-content-end">
-                <button class="btn btn-secondary min-btn-width" (click)="openCategoriesModal()">
-                  {{'dpos.product-details.category.create.btn' | translate}}
-                </button>
+              <div class="mb-3">
+                <label for="epigraph" class="form-label">{{ 'dpos.product-details.form.epigraph' | translate }}</label>
+                <input type="text" class="form-control" id="epigraph" formControlName="epigraph" name="epigraph" />
+                <div *ngIf="productForm.get('epigraph')?.invalid && productForm.get('epigraph')?.touched" class="text-danger">
+                  {{ 'dpos.customers.details.form.mandatory' | translate }}
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-8 mb-3">
+                  <label for="categoryId" class="form-label">{{ 'dpos.product-details.form.category' | translate }}</label>
+                  <mat-select formControlName="categoryId" id="categoryId" name="categoryId" class="custom-mat-form-select" [ngClass]="{'mat-form-field-invalid': productForm.get('categories')?.hasError('required') && productForm.get('categories')?.touched}">
+                    <mat-select-trigger>{{ getSelectedCategoryNames(productForm.get('categoryId')?.value) }}</mat-select-trigger>
+                    <mat-option *ngFor="let category of categories" [value]="category.categoryId">
+                      <div class="d-flex align-items-center w-100">
+                        <span class="custom-mat-form-span">{{ category.name }}</span>
+                        <button mat-icon-button class="custom-mat-form-icon ms-auto" (click)="editCategory(category.categoryId, $event)">
+                          <mat-icon>edit</mat-icon>
+                        </button>
+                      </div>
+                    </mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="productForm.get('categoryId')?.hasError('required') && productForm.get('categoryId')?.touched">
+                    {{ 'dpos.customers.details.form.mandatory' | translate }}
+                  </mat-error>
+                </div>
+                <div class="col-md-4 mb-3 d-flex align-items-end justify-content-end">
+                  <button class="btn btn-secondary min-btn-width" (click)="openCategoriesModal()">
+                    {{'dpos.product-details.category.create.btn' | translate}}
+                  </button>
+                </div>
+              </div>
+            </div>
+            <!-- Segunda columna del formulario -->
+            <div class="col-md-6">
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="type" class="form-label">{{ 'dpos.product-details.form.price.type' | translate }}</label>
+                  <select id="type" class="form-select" formControlName="type" name="type">
+                    <option *ngFor="let option of priceTypeOptions" [ngValue]="option.value">
+                      {{ option.label }}
+                    </option>
+                  </select>
+                  <div *ngIf="productForm.get('type')?.invalid && productForm.get('type')?.touched" class="text-danger">
+                    {{ 'dpos.customers.details.form.mandatory' | translate }}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label for="price" class="form-label">{{ 'dpos.product-details.form.price' | translate }}</label>
+                  <input type="text" class="form-control" id="price" formControlName="price" name="price" appCurrencyInput />
+                  <div *ngIf="productForm.get('price')?.invalid && productForm.get('price')?.touched" class="text-danger">
+                    {{ 'dpos.customers.details.form.mandatory' | translate }}
+                  </div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="unitMeasurement" class="form-label">{{ 'dpos.product-details.form.unitMeasurement' | translate }}</label>
+                  <select id="unitMeasurement" class="form-select" formControlName="unitMeasurement" name="unitMeasurement">
+                    <option *ngFor="let option of unitMeasurementOptions" [ngValue]="option.value">
+                      {{ option.label }}
+                    </option>
+                  </select>
+                  <div *ngIf="productForm.get('unitMeasurement')?.invalid && productForm.get('unitMeasurement')?.touched" class="text-danger">
+                    {{ 'dpos.customers.details.form.mandatory' | translate }}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label for="stock" class="form-label">{{ 'dpos.product-details.form.stock' | translate }}</label>
+                  <input type="number" class="form-control" id="stock" formControlName="stock" name="stock" min="0" />
+                  <div *ngIf="productForm.get('stock')?.invalid && productForm.get('stock')?.touched" class="text-danger">
+                    {{ 'dpos.customers.details.form.mandatory' | translate }}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-8 mb-3">
+                  <label for="modifiers" class="form-label">{{ 'dpos.product-details.form.modifiers' | translate }}</label>
+                  <mat-select formControlName="modifiers" id="modifiers" name="modifiers" class="custom-mat-form-select" multiple [ngClass]="{'mat-form-field-invalid': productForm.get('modifiers')?.hasError('required') && productForm.get('modifiers')?.touched}">
+                    <mat-select-trigger>{{ getSelectedModifiersName(productForm.get('modifiers')?.value) }}</mat-select-trigger>
+                    <mat-option *ngFor="let modifier of modifiers" [value]="modifier.modifierId">
+                      <div class="d-flex align-items-center w-100">
+                        <span class="custom-mat-form-span">{{ modifier.name }}</span>
+                        <button mat-icon-button class="custom-mat-form-icon" (click)="editModifier(modifier.modifierId, $event)">
+                          <mat-icon>edit</mat-icon>
+                        </button>
+                      </div>
+                    </mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="productForm.get('modifiers')?.hasError('required') && productForm.get('modifiers')?.touched">
+                    {{ 'dpos.customers.details.form.mandatory' | translate }}
+                  </mat-error>
+                </div>
+                <div class="col-md-4 mb-3 d-flex align-items-end justify-content-end">
+                  <button class="btn btn-secondary min-btn-width" (click)="openModifiersModal()">
+                    {{'dpos.product-details.modifiers.create.btn' | translate}}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-          <!-- Segunda columna del formulario -->
-          <div class="col-md-6">
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <label for="type" class="form-label">{{ 'dpos.product-details.form.price.type' | translate }}</label>
-                <select id="type" class="form-select" formControlName="type" name="type">
-                  <option *ngFor="let option of priceTypeOptions" [ngValue]="option.value">
-                    {{ option.label }}
-                  </option>
-                </select>
-                <div *ngIf="productForm.get('type')?.invalid && productForm.get('type')?.touched" class="text-danger">
-                  {{ 'dpos.customers.details.form.mandatory' | translate }}
-                </div>
-              </div>
-              <div class="col-md-6">
-                <label for="price" class="form-label">{{ 'dpos.product-details.form.price' | translate }}</label>
-                <input type="text" class="form-control" id="price" formControlName="price" name="price" appCurrencyInput />
-                <div *ngIf="productForm.get('price')?.invalid && productForm.get('price')?.touched" class="text-danger">
-                  {{ 'dpos.customers.details.form.mandatory' | translate }}
-                </div>
-              </div>
-            </div>
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <label for="unitMeasurement" class="form-label">{{ 'dpos.product-details.form.unitMeasurement' | translate }}</label>
-                <select id="unitMeasurement" class="form-select" formControlName="unitMeasurement" name="unitMeasurement">
-                  <option *ngFor="let option of unitMeasurementOptions" [ngValue]="option.value">
-                    {{ option.label }}
-                  </option>
-                </select>
-                <div *ngIf="productForm.get('unitMeasurement')?.invalid && productForm.get('unitMeasurement')?.touched" class="text-danger">
-                  {{ 'dpos.customers.details.form.mandatory' | translate }}
-                </div>
-              </div>
-              <div class="col-md-6">
-                <label for="stock" class="form-label">{{ 'dpos.product-details.form.stock' | translate }}</label>
-                <input type="number" class="form-control" id="stock" formControlName="stock" name="stock" min="0" />
-                <div *ngIf="productForm.get('stock')?.invalid && productForm.get('stock')?.touched" class="text-danger">
-                  {{ 'dpos.customers.details.form.mandatory' | translate }}
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-8 mb-3">
-                <label for="modifiers" class="form-label">{{ 'dpos.product-details.form.modifiers' | translate }}</label>
-                <mat-select formControlName="modifiers" id="modifiers" name="modifiers" class="custom-mat-form-select" multiple [ngClass]="{'mat-form-field-invalid': productForm.get('modifiers')?.hasError('required') && productForm.get('modifiers')?.touched}">
-                  <mat-select-trigger>{{ getSelectedModifiersName(productForm.get('modifiers')?.value) }}</mat-select-trigger>
-                  <mat-option *ngFor="let modifier of modifiers" [value]="modifier.modifierId">
-                    <div class="d-flex align-items-center w-100">
-                      <span class="custom-mat-form-span">{{ modifier.name }}</span>
-                      <button mat-icon-button class="custom-mat-form-icon" (click)="editModifier(modifier.modifierId, $event)">
-                        <mat-icon>edit</mat-icon>
-                      </button>
-                    </div>
-                  </mat-option>
-                </mat-select>
-                <mat-error *ngIf="productForm.get('modifiers')?.hasError('required') && productForm.get('modifiers')?.touched">
-                  {{ 'dpos.customers.details.form.mandatory' | translate }}
-                </mat-error>
-              </div>
-              <div class="col-md-4 mb-3 d-flex align-items-end justify-content-end">
-                <button class="btn btn-secondary min-btn-width" (click)="openModifiersModal()">
-                  {{'dpos.product-details.modifiers.create.btn' | translate}}
-                </button>
-              </div>
-            </div>
+          <!-- Botones de cancelar o guardar productos -->
+          <div class="d-flex justify-content-end mt-4">
+            <a [routerLink]="['/products']" type="button" style="text-decoration: none;">
+              <button type="button" class="btn btn-outline-danger me-2">{{ 'dpos.action.cancel' | translate }}</button>
+            </a>
+            <button type="submit" class="btn btn-primary"s>{{ 'dpos.action.save' | translate }}</button>
           </div>
-        </div>
-        <!-- Botones de cancelar o guardar productos -->
-        <div class="d-flex justify-content-end mt-4">
-          <a [routerLink]="['/products']" type="button" style="text-decoration: none;">
-            <button type="button" class="btn btn-outline-danger me-2">{{ 'dpos.action.cancel' | translate }}</button>
-          </a>
-          <button type="submit" class="btn btn-primary"s>{{ 'dpos.action.save' | translate }}</button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   </div>
 </div>

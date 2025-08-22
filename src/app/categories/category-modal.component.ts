@@ -30,7 +30,6 @@ export class CategoryModalComponent implements OnInit {
   public data = inject<{ id?: string }>(MAT_DIALOG_DATA);
 
   titlePage: string;
-  loadCompleted = false;
   commerceId: string;
   category: Category;
   idCategory: string;
@@ -41,6 +40,7 @@ export class CategoryModalComponent implements OnInit {
   showModal = false;
   modalTitle = '';
   modalMessage = '';
+  isLoading  = false;
 
   constructor() {
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
@@ -60,7 +60,7 @@ export class CategoryModalComponent implements OnInit {
       this.titlePage = this.translate.instant('dpos.category.modal.title.edit');
     } else {
       this.titlePage = this.translate.instant('dpos.category.modal.title.add');
-      this.loadCompleted = true;
+      this.isLoading  = true;
     }
   }
 
@@ -77,15 +77,16 @@ export class CategoryModalComponent implements OnInit {
    * @param categoryId Identificador de la categoría.
    */
   public getCategory(categoryId: string): void {
+    this.isLoading = true;
     this.productsService.getCategory(categoryId, this.commerceId).subscribe({
       next: (category) => {
         this.category = category;
         this.categoryForm.setValue({ name: this.category.name });
-        this.loadCompleted = true;
+        this.isLoading = false;
       },
       error: () => {
         this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.category'));
-        this.loadCompleted = true;
+        this.isLoading = false;
       }
     });
   }
@@ -130,14 +131,17 @@ export class CategoryModalComponent implements OnInit {
    */
   private updateCategory(): void {
     this.setCategoryFields();
+    this.isLoading = true;
     this.productsService.saveCategory(this.category, this.commerceId).subscribe({
       next: (savedCategory) => {
         this.openModal(this.translate.instant('dpos.category.modal.modal.edit.title'), this.translate.instant('dpos.category.modal.modal.edit.message'));
         this.savedCategory = savedCategory;
+        this.isLoading = false;
       },
       error: () => {
         this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.category.update'));
         this.savedCategory = null;
+        this.isLoading = false;
       }
     });
   }
@@ -148,14 +152,17 @@ export class CategoryModalComponent implements OnInit {
   private createCategory(): void {
     this.category = new Category();
     this.setCategoryFields();
+    this.isLoading = true;
     this.productsService.saveCategory(this.category, this.commerceId).subscribe({
       next: (savedCategory) => {
         this.openModal(this.translate.instant('dpos.category.modal.modal.create.title'), this.translate.instant('dpos.category.modal.modal.create.message'));
         this.savedCategory = savedCategory;
+        this.isLoading = false;
       },
        error: () => {
         this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.category.create'));
         this.savedCategory = null;
+        this.isLoading = false;
       }
     });
   }

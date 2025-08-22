@@ -81,6 +81,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
     this.currentLang = this.translate.currentLang || 'es';
     this.langSubscription = this.translate.onLangChange.subscribe(event => {
       this.currentLang = event.lang;
+
     });
   }
 

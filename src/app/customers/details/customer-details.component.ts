@@ -32,7 +32,7 @@ export class CustomerDetailsComponent implements OnInit {
   private fb = inject(FormBuilder);
   private router = inject(Router);
 
-  loadCompleted = false;
+  isLoading = false;
   idCustomer: string = null;
   commerceId: string = null;
   titlePage: string;
@@ -73,7 +73,7 @@ export class CustomerDetailsComponent implements OnInit {
       this.titlePage = this.translate.instant('dpos.customer.details.page.edit.title');
     } else {
       this.titlePage = this.translate.instant('dpos.customer.details.page.add.title');
-      this.loadCompleted = true;
+      this.isLoading = false;
     }
   }
 
@@ -83,6 +83,7 @@ export class CustomerDetailsComponent implements OnInit {
    * @param idClient Identificador del cliente.
    */
   public getCustomer(idClient: string): void {
+    this.isLoading = true;
     this.customersService.getCustomer(idClient, this.commerceId).subscribe({
       next: (client) => {
         this.customer = client;
@@ -97,11 +98,11 @@ export class CustomerDetailsComponent implements OnInit {
           country: client.country,
           state: client.state
         });
-        this.loadCompleted = true;
+        this.isLoading = false;
       },
       error: () => {
         this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.customer.detail'));
-        this.loadCompleted = true;
+        this.isLoading = false;
       }
     });
   }
@@ -145,10 +146,17 @@ export class CustomerDetailsComponent implements OnInit {
    * Actualiza un cliente existente.
    */
   private updateCustomer(): void {
+    this.isLoading = true;
     this.setCustomerFields();
     this.customersService.saveCustomer(this.customer, this.commerceId).subscribe({
-      next: () => this.openModal(this.translate.instant('dpos.customer.details.modal.edit.title'), this.translate.instant('dpos.customer.details.modal.edit.message')),
-      error: () => this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.customer.update'))
+      next: () => {
+        this.openModal(this.translate.instant('dpos.customer.details.modal.edit.title'), this.translate.instant('dpos.customer.details.modal.edit.message'));
+        this.isLoading = false;
+      },
+      error: () => {
+        this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.customer.update'));
+        this.isLoading = false;
+      }
     });
   }
 
@@ -156,11 +164,18 @@ export class CustomerDetailsComponent implements OnInit {
    * Crea un nuevo cliente.
    */
   private createCustomer(): void {
+    this.isLoading = true;
     this.customer = new Customer();
     this.setCustomerFields();
     this.customersService.saveCustomer(this.customer, this.commerceId).subscribe({
-      next: () => this.openModal(this.translate.instant('dpos.customer.details.modal.create.title'), this.translate.instant('dpos.customer.details.modal.create.message')),
-      error: () => this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.customer.create'))
+      next: () => {
+        this.openModal(this.translate.instant('dpos.customer.details.modal.create.title'), this.translate.instant('dpos.customer.details.modal.create.message'));
+        this.isLoading = false;
+      },
+      error: () => {
+        this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.customer.create'));
+        this.isLoading = false;
+      }
     });
   }
 
