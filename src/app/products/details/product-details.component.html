@@ -76,8 +76,8 @@
             <div class="col-md-6">
               <div class="row mb-3">
                 <div class="col-md-6">
-                  <label for="type" class="form-label">{{ 'dpos.product-details.form.price.type' | translate }}</label>
-                  <select id="type" class="form-select" formControlName="type" name="type">
+                  <label for="priceType" class="form-label">{{ 'dpos.product-details.form.price.type' | translate }}</label>
+                  <select id="priceType" class="form-select" formControlName="priceType" name="priceType">
                     <option *ngFor="let option of priceTypeOptions" [ngValue]="option.value">
                       {{ option.label }}
                     </option>

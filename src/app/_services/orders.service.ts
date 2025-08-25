@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment.dev-inte';
 import { RestRoutes } from '../_rest/rest-routes.config';
@@ -59,15 +59,15 @@ export class OrdersService {
    * Obtiene información detallada de ventas.
    * 
    * @param size Cantidad de registros a obtener.
-   * @param searchParams Parámetros de búsqueda en formato string.
+   * @param qs Parámetros de búsqueda en formato string.
    * @returns Observable con la información de las ventas.
    */
-  public getOrderInfo(size: number, searchParams: string): Observable<OrderInfo> {
-    if (size == null || !searchParams) {
+  public getOrderInfo(size: number, qs: string): Observable<OrderInfo> {
+    if (size == null || !qs) {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
     }
-    const url = `${environment.urlWS}${RestRoutes.ORDERS_INFO}${size}${RestRoutes.PARAM_OFFSET}${searchParams}`;
-    return this.http.get<OrderInfo>(url, this.httpOptions);
+    let params = new HttpParams().set('size', size.toString()).set('offset', '0').set('qs', qs);
+    return this.http.get<OrderInfo>(`${environment.urlWS}${RestRoutes.ORDERS_INFO}`, { params, ...this.httpOptions });
   }
 
   /**

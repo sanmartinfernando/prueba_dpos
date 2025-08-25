@@ -29,7 +29,7 @@ export const RestRoutes = {
   PORTALUSERS_TERMINALS: `${API}/${PORTALUSERS}/terminals`,
 
   ORDERS: `${API}/${ORDERS}/`,
-  ORDERS_INFO: `${API}/${ORDERS}?size=`,
+  ORDERS_INFO: `${API}/${ORDERS}`,
   ORDERS_AGGREGATE: `${API}/${ORDERS}/aggregate`,
   SALES_REPORT: `${API}/${ORDERS}/generate/sales-report?fromDate=`,
 

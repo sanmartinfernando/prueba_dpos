@@ -456,7 +456,7 @@ select, input[type="date" i], i{
 }
 
 .ng-invalid.ng-touched {
-  border-color: red;
+  border-color: red !important;
 }
 
 /*** PAGINACION ***/

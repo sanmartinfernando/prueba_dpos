@@ -555,7 +555,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .ng-invalid.ng-touched {
-  border-color: var(--bs-color-red-300);
+  border-color: var(--bs-color-red-300) !important;
 }
 
 /*** PAGINACION ***/

@@ -72,7 +72,6 @@ export class SalesComponent implements OnInit, OnDestroy {
   translatedTypeVarSearch = new Array(3);
   selTransTypeVarSearch: number = null;
   documentVarSearch: string = null;
-  varSearch = '';
   emptySearch = false;
 
   opTypes: { name: string; value: number }[];
@@ -186,100 +185,66 @@ export class SalesComponent implements OnInit, OnDestroy {
 
     this.validationVariable = false;
     this.loadCompleted = false;
+
     if (this.terminalSelected === '' || this.typeVarSearch === '') {
       this.terminalSelected = null;
       this.typeVarSearch = null;
     }
 
-    this.loadCompleted = false;
     this.sinceDateMilli = Date.parse(this.sinceDate);
-
     const date = new Date(this.tilDate);
     date.setHours(23, 59, 0, 0);
     this.tilDateMilli = date.getTime();
 
-    this.varSearch = "&qs={'and':[";
+    const andFilters: any[] = [];
 
     if (this.terminalSelected !== null) {
-      if (this.searchCounter === false) {
-        this.searchCounter = true;
-      }
       if (this.terminalSelected === this.translate.instant('dpos.filter.all')) {
-        this.varSearch = this.varSearch + "{'or':[";
-        for (let i = 1; i < this.terminalsNumber.length; i++) {
-          this.varSearch = this.varSearch + "{'field':'terminal_number','op':'=','value':'" + this.terminalsNumber[i] + "'}";
-          if (i + 1 < this.terminalsNumber.length) {
-            this.varSearch = this.varSearch + ",";
-          }
-        }
-        this.varSearch = this.varSearch + ']}';
+        const orFilters = this.terminalsNumber.slice(1).map(t => ({
+          field: 'terminal_number',
+          op: '=',
+          value: t
+        }));
+        andFilters.push({ or: orFilters });
       } else {
-        this.varSearch = this.varSearch + "{'field':'terminal_number','op':'=','value':'" + this.terminalSelected + "'}";
+        andFilters.push({ field: 'terminal_number', op: '=', value: this.terminalSelected });
       }
     }
 
     if (this.commerceId !== 0) {
-      if (this.searchCounter === false) {
-        this.searchCounter = true;
-      } else {
-        this.varSearch = this.varSearch + ',';
-      }
-      this.varSearch =
-        this.varSearch + "{'field':'CommerceId','op':'=','value':'" + this.commerceId + "'}";
+      andFilters.push({ field: 'CommerceId', op: '=', value: this.commerceId });
     }
 
     if (this.sinceDateMilli > 0) {
       if (this.sinceDateMilli > this.tilDateMilli && this.tilDateMilli > 0) {
-        this.openModal(this.translate.instant('dpos.modal.fromDate.title'), this.translate.instant('dpos.modal.fromDate.message'));
+        this.openModal(
+          this.translate.instant('dpos.modal.fromDate.title'),
+          this.translate.instant('dpos.modal.fromDate.message')
+        );
         return;
-      } else {
-        if (this.searchCounter === false) {
-          this.searchCounter = true;
-        } else {
-          this.varSearch = this.varSearch + ',';
-        }
-        this.varSearch = this.varSearch + "{'field':'CreatedAt','op':'>','value':'" + this.sinceDateMilli + "'}";
       }
+      andFilters.push({ field: 'CreatedAt', op: '>', value: this.sinceDateMilli });
     }
 
     if (this.tilDateMilli > 0) {
       if (this.tilDateMilli < this.sinceDateMilli && this.sinceDateMilli > 0) {
-        this.openModal(this.translate.instant('dpos.filter.toDate.title'), this.translate.instant('dpos.filter.toDate.message'));
+        this.openModal(
+          this.translate.instant('dpos.filter.toDate.title'),
+          this.translate.instant('dpos.filter.toDate.message')
+        );
         return;
-      } else {
-        if (this.searchCounter === false) {
-          this.searchCounter = true;
-        } else {
-          this.varSearch = this.varSearch + ',';
-        }
-        this.varSearch = this.varSearch + "{'field':'CreatedAt','op':'<','value':'" + this.tilDateMilli + "'}";
       }
+      andFilters.push({ field: 'CreatedAt', op: '<', value: this.tilDateMilli });
     }
 
     if (this.typeVarSearch !== null) {
-      if (this.searchCounter === false) {
-        this.searchCounter = true;
-      } else {
-        this.varSearch = this.varSearch + ',';
-      }
       if (this.typeVarSearch === this.translate.instant('dpos.filter.all')) {
-        this.varSearch = this.varSearch + "{'or':[";
-        for (let i = 0; i < this.opTypes.length; i++) {
-          if (i === 0) {
-            this.varSearch =
-              this.varSearch +
-              "{'field':'Type','op':'=','value':'" +
-              this.opTypes[i].value +
-              "'}";
-          } else {
-            this.varSearch =
-              this.varSearch +
-              ",{'field':'Type','op':'=','value':'" +
-              this.opTypes[i].value +
-              "'}";
-          }
-        }
-        this.varSearch = this.varSearch + ']}';
+        const orTypes = this.opTypes.map(t => ({
+          field: 'Type',
+          op: '=',
+          value: t.value
+        }));
+        andFilters.push({ or: orTypes });
       } else {
         switch (this.typeVarSearch) {
           case this.translate.instant('dpos.sales.operation.order.label'):
@@ -291,7 +256,7 @@ export class SalesComponent implements OnInit, OnDestroy {
           case this.translate.instant('dpos.sales.operation.rectification.label'):
             this.selTransTypeVarSearch = 5;
         }
-        this.varSearch = this.varSearch + "{'field':'Type','op':'=','value':'" + this.selTransTypeVarSearch + "'}";
+        andFilters.push({ field: 'Type', op: '=', value: this.selTransTypeVarSearch });
       }
     }
 
@@ -302,20 +267,16 @@ export class SalesComponent implements OnInit, OnDestroy {
         this.documentVarSearch.includes(')')
       ) {
         this.validationVariable = true;
-        this.loadCompleted = true
+        this.loadCompleted = true;
         return;
       }
-      if (this.searchCounter === false) {
-        this.searchCounter = true;
-      } else {
-        this.varSearch = this.varSearch + ',';
-      }
-      this.varSearch = this.varSearch + "{'field':'Reference','op':'=*.*','value':'" + this.documentVarSearch + "'}";
+      andFilters.push({ field: 'Reference', op: '=*.*', value: this.documentVarSearch });
     }
 
-    this.varSearch = this.varSearch + ']}';
-    this.searchCounter = false;
-    this.getOrderInfo();
+    const qsObject = { and: andFilters };
+    const qsString = JSON.stringify(qsObject).replace(/"/g, "'");
+
+    this.getOrderInfo(qsString);
   }
 
   /**
@@ -438,9 +399,9 @@ export class SalesComponent implements OnInit, OnDestroy {
    * Recupera datos de ventas desde el servicio y calcula totales,
    * listas de selección y estados de TicketBAI/Verifactu.
    */
-  private getOrderInfo() {
+  private getOrderInfo(qsString: string) {
 
-    this.ordersService.getOrderInfo(this.size, this.varSearch).subscribe(
+    this.ordersService.getOrderInfo(this.size, qsString).subscribe(
       (sale) => {
         this.sales = sale;
         if (this.sales.data.length !== 0) {
