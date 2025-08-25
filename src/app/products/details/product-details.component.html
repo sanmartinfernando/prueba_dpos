@@ -20,20 +20,30 @@
       <!-- Formulario para editar o crear producto -->
       <div *ngIf="!isLoading">
         <form  [formGroup]="productForm" (ngSubmit)="saveProduct()">
+          <div *ngIf="productForm.get('name')?.invalid && productForm.get('name')?.touched ||
+              productForm.get('epigraph')?.invalid && productForm.get('epigraph')?.touched ||
+              productForm.get('categoryId')?.hasError('required') && productForm.get('categoryId')?.touched ||
+              productForm.get('type')?.invalid && productForm.get('type')?.touched ||
+              productForm.get('price')?.invalid && productForm.get('price')?.touched ||
+              productForm.get('unitMeasurement')?.invalid && productForm.get('unitMeasurement')?.touched ||
+              productForm.get('stock')?.invalid && productForm.get('stock')?.touched ||
+              productForm.get('modifiers')?.hasError('required') && productForm.get('modifiers')?.touched" class="text-danger">
+            <p>{{ 'dpos.customers.details.form.mandatory' | translate }}</p>
+          </div>
           <div class="row g-3">
             <!-- Primera columna del formulario -->
             <div class="col-md-6">
               <div class="mb-3">
                 <label for="name" class="form-label">{{ 'dpos.product-details.form.name' | translate }}</label>
                 <input type="text" class="form-control" id="name" formControlName="name" name="name" />
-                <div *ngIf="productForm.get('name')?.invalid && productForm.get('name')?.touched" class="text-danger">
+                <div *ngIf="productForm.get('name')?.invalid && productForm.get('name')?.touched" class="invalid-feedback">
                   {{ 'dpos.customers.details.form.mandatory' | translate }}
                 </div>
               </div>
               <div class="mb-3">
                 <label for="epigraph" class="form-label">{{ 'dpos.product-details.form.epigraph' | translate }}</label>
                 <input type="text" class="form-control" id="epigraph" formControlName="epigraph" name="epigraph" />
-                <div *ngIf="productForm.get('epigraph')?.invalid && productForm.get('epigraph')?.touched" class="text-danger">
+                <div *ngIf="productForm.get('epigraph')?.invalid && productForm.get('epigraph')?.touched" class="text-danger invalid-feedback">
                   {{ 'dpos.customers.details.form.mandatory' | translate }}
                 </div>
               </div>
@@ -51,7 +61,7 @@
                       </div>
                     </mat-option>
                   </mat-select>
-                  <mat-error *ngIf="productForm.get('categoryId')?.hasError('required') && productForm.get('categoryId')?.touched">
+                  <mat-error *ngIf="productForm.get('categoryId')?.hasError('required') && productForm.get('categoryId')?.touched" class="invalid-feedback">
                     {{ 'dpos.customers.details.form.mandatory' | translate }}
                   </mat-error>
                 </div>
@@ -72,14 +82,14 @@
                       {{ option.label }}
                     </option>
                   </select>
-                  <div *ngIf="productForm.get('type')?.invalid && productForm.get('type')?.touched" class="text-danger">
+                  <div *ngIf="productForm.get('type')?.invalid && productForm.get('type')?.touched" class="text-danger invalid-feedback">
                     {{ 'dpos.customers.details.form.mandatory' | translate }}
                   </div>
                 </div>
                 <div class="col-md-6">
                   <label for="price" class="form-label">{{ 'dpos.product-details.form.price' | translate }}</label>
                   <input type="text" class="form-control" id="price" formControlName="price" name="price" appCurrencyInput />
-                  <div *ngIf="productForm.get('price')?.invalid && productForm.get('price')?.touched" class="text-danger">
+                  <div *ngIf="productForm.get('price')?.invalid && productForm.get('price')?.touched" class="text-danger invalid-feedback">
                     {{ 'dpos.customers.details.form.mandatory' | translate }}
                   </div>
                 </div>
@@ -92,14 +102,14 @@
                       {{ option.label }}
                     </option>
                   </select>
-                  <div *ngIf="productForm.get('unitMeasurement')?.invalid && productForm.get('unitMeasurement')?.touched" class="text-danger">
+                  <div *ngIf="productForm.get('unitMeasurement')?.invalid && productForm.get('unitMeasurement')?.touched" class="text-danger invalid-feedback">
                     {{ 'dpos.customers.details.form.mandatory' | translate }}
                   </div>
                 </div>
                 <div class="col-md-6">
                   <label for="stock" class="form-label">{{ 'dpos.product-details.form.stock' | translate }}</label>
                   <input type="number" class="form-control" id="stock" formControlName="stock" name="stock" min="0" />
-                  <div *ngIf="productForm.get('stock')?.invalid && productForm.get('stock')?.touched" class="text-danger">
+                  <div *ngIf="productForm.get('stock')?.invalid && productForm.get('stock')?.touched" class="text-danger invalid-feedback">
                     {{ 'dpos.customers.details.form.mandatory' | translate }}
                   </div>
                 </div>
@@ -118,7 +128,7 @@
                       </div>
                     </mat-option>
                   </mat-select>
-                  <mat-error *ngIf="productForm.get('modifiers')?.hasError('required') && productForm.get('modifiers')?.touched">
+                  <mat-error *ngIf="productForm.get('modifiers')?.hasError('required') && productForm.get('modifiers')?.touched" class="invalid-feedback">
                     {{ 'dpos.customers.details.form.mandatory' | translate }}
                   </mat-error>
                 </div>

@@ -38,21 +38,22 @@ export class ProductDetailsComponent implements OnInit {
   private router = inject(Router);
 
   public isLoading = false;
-  public idProduct: string = null;
   public titlePage: string;
-  public product: Product;
-  public categoryIdSelected: string[] = [];
-  public modifiersIdSelected: string;
+  public commerceId: string = null;
+  
   public salesStartDate: string;
   public salesStartDateMilli: number;
   public salesEndDate: string;
   public salesEndDateMilli: number;
 
+  public categoryIdSelected: string[] = [];
   public categories: Category[] = [];
-  public commerceId: string = null;
-
+  
+  public modifiersIdSelected: string;
   public modifiers: Modifier[] = [];
 
+  public product: Product;
+  public idProduct: string = null;
   public productForm: FormGroup;
 
   public showModal = false;
