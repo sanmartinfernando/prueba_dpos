@@ -28,9 +28,6 @@
       </button>
     </div>
   </form>
-  <div *ngIf="validationVariable === true" class="d-flex justify-content-center mt-3">
-    <div class="text-danger"><b>{{ 'dpos.filter.novalid' | translate }}</b></div>
-  </div>
   <!-- Tabla de clientes y acciones a realizar -->
   <div class="card mt-3">
     <div class="card-body">
@@ -91,7 +88,7 @@
                 <ng-container *ngIf="loadCompleted && customers; else empty">
                   <tr *ngFor="let customer of customers | paginate : { itemsPerPage: 10, currentPage: page }; index as i" (click)="sendCustomerDetails(customer.clientId)">
                     <td class="text-center align-middle">
-                      <input class="form-check-input" type="checkbox" [(ngModel)]="customer.selected" (change)="checkIfAllSelected()" (click)="$event.stopPropagation()" />
+                     <!-- <input class="form-check-input" type="checkbox" [(ngModel)]="customer.selected" (change)="checkIfAllSelected()" (click)="$event.stopPropagation()" /> -->
                     </td>
                     <td class="align-middle"><span class="table-title">{{ customer.identityDocument }}</span></td>
                     <td class="align-middle">{{ customer.name }}</td>

@@ -39,8 +39,8 @@ export class CustomersService {
 
     const params = new HttpParams().set('commerceId', commerceId);
     const url = customer.clientId
-      ? `${environment.urlClients}${RestRoutes.CUSTOMERS}/${customer.clientId}`
-      : `${environment.urlClients}${RestRoutes.CUSTOMERS}`;
+      ? `${environment.urlClients}${RestRoutes.CUSTOMER}/${customer.clientId}`
+      : `${environment.urlClients}${RestRoutes.CUSTOMER}`;
 
     return customer.clientId
       ? this.http.put<Customer>(url, customer, { headers: this.httpOptions.headers, params })
@@ -59,7 +59,7 @@ export class CustomersService {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
     }
     const params = new HttpParams().set('commerceId', commerceId);
-    const url = `${environment.urlClients}${RestRoutes.CUSTOMERS}/${customerId}`;
+    const url = `${environment.urlClients}${RestRoutes.CUSTOMER}/${customerId}`;
     return this.http.get<Customer>(url, { headers: this.httpOptions.headers, params });
   }
 
@@ -67,11 +67,21 @@ export class CustomersService {
    * Obtiene un listado de clientes con información agregada según los parámetros de búsqueda.
    * 
    * @param size Cantidad de resultados a obtener.
-   * @param searchParams Parámetros de búsqueda y paginación.
+  * @param commerceId ID del comercio. 
+  * @param searchParams Parámetros de búsqueda y paginación.
    * @returns Observable con información de clientes.
    */
-  public getCustomers(size: number, searchParams: string): Observable<CustomerInfo> {
-    const url = `${environment.urlClients}${RestRoutes.CUSTOMERS_INFO}${size}${RestRoutes.PARAM_OFFSET}${searchParams}`;
+  /*
+  public getCustomers(size: number, commerceId: string, searchParams: string): Observable<CustomerInfo> {
+    const url = `${environment.urlClients}${RestRoutes.CUSTOMERS_INFO}${size}${RestRoutes.PARAM_OFFSET}${RestRoutes.PARAM_COMMERCEID}${commerceId}${searchParams}`;
     return this.http.get<CustomerInfo>(url, this.httpOptions);
+  }
+  */
+  public getCustomers(size: number,commerceId: string, qs?: string): Observable<CustomerInfo> {
+    let params = new HttpParams().set('size', size.toString()).set('offset', "0").set('commerceId', commerceId);
+    if (qs) {
+      params = params.set('qs', qs);
+    }
+    return this.http.get<CustomerInfo>(`${environment.urlClients}${RestRoutes.CUSTOMERS_INFO}`, { params, ...this.httpOptions });
   }
 }

@@ -5,7 +5,8 @@ const PORTALUSERS = 'PortalUsers';
 const ORDERS = 'Orders';
 const BALANCES = 'Balances';
 const CASHMOVEMENTS = 'CashMovements';
-const CUSTOMERS = 'client';
+const CUSTOMER = 'client';
+const CUSTOMERS = 'clients';
 const CATEGORIES = 'category';
 const MODIFIERS = 'modifier';
 const PRODUCTS = 'product';
@@ -38,8 +39,9 @@ export const RestRoutes = {
 
   CASH_MOVEMENTS_AGGREGATE: `${API}/${CASHMOVEMENTS}/aggregate`,
 
+  CUSTOMER: `${CUSTOMER}`,
   CUSTOMERS: `${CUSTOMERS}`,
-  CUSTOMERS_INFO: `${API}/${CUSTOMERS}?size=`,
+  CUSTOMERS_INFO: `${CUSTOMERS}`,
 
   PRODUCTS: `${PRODUCTS}`,
 
@@ -54,5 +56,5 @@ export const RestRoutes = {
   PARAM_QS: `&qs={"and":`,
   PARAM_TODATE: `&toDate=`,
   PARAM_TERMINALNUMBER: `&terminalNumber=`,
-  PARAM_COMMERCEID: `&commerceId=`
+  PARAM_COMMERCEID: `&CommerceId=`
 };

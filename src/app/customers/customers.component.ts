@@ -36,12 +36,11 @@ export class CustomersComponent implements OnInit, OnDestroy {
 
   Math: Math;
 
-  size = 10000;
+  size = 10;
   customers: Customer[] = [];
   page = 0;
   code: string;
   loadCompleted = false;
-  validationVariable = false;
   commerceId = 0;
   masterSelected = false;
 
@@ -101,20 +100,21 @@ export class CustomersComponent implements OnInit, OnDestroy {
    * Ejecuta la búsqueda de clientes con los filtros actuales.
    */
   public searchCustomers(): void {
-    this.validationVariable = false;
     this.loadCompleted = false;
-    this.varSearch = "&qs={'and':[";
+    
     const filters = [
-      { field: 'CommerceId', value: this.commerceId, op: '=' },
-      { field: 'NIF', value: this.customerNifVarSearch, op: '=*.*' },
-      { field: 'Name', value: this.customerNameVarSearch, op: '=*.*' },
-      { field: 'LastName', value: this.customerLastNameVarSearch, op: '=*.*' },
-      { field: 'Phone', value: this.customerPhoneVarSearch, op: '=*.*' },
-      { field: 'Email', value: this.customerEmailVarSearch, op: '=*.*' }
+      { field: 'identityDocument', value: this.customerNifVarSearch, op: '=' },
+      { field: 'name', value: this.customerNameVarSearch, op: '=*.*' },
+      { field: 'phone', value: this.customerPhoneVarSearch, op: '=' },
+      { field: 'email', value: this.customerEmailVarSearch, op: '=' }
     ].filter(f => f.value);
 
-    this.varSearch += filters.map(f => `{'field':'${f.field}','op':'${f.op}','value':'${f.value}'}`).join(',');
-    this.varSearch += ']}';
+    // Construimos el objeto "qs"
+    const qsObject = { or: filters };
+
+    //Serializamos a string (con comillas simples en lugar de dobles
+    this.varSearch = JSON.stringify(qsObject).replace(/"/g, "'");
+
     this.getCustomers();
   }
 
@@ -122,7 +122,7 @@ export class CustomersComponent implements OnInit, OnDestroy {
    * Verifica si todos los clientes están seleccionados.
    */
   public checkIfAllSelected(): void {
-    this.masterSelected = this.customers.every(c => c.selected);
+    this.masterSelected = this.customers.every(c => true/*c.selected*/);
   }
 
   /**
@@ -141,7 +141,7 @@ export class CustomersComponent implements OnInit, OnDestroy {
    * Elimina los clientes seleccionados de la lista.
    */
   public deleteCustomers(): void {
-    this.customers = this.customers.filter(c => !c.selected);
+    this.customers = this.customers.filter(c => true/*!c.selected*/);
     this.emptySearch = this.customers.length === 0;
   }
 
@@ -287,7 +287,8 @@ export class CustomersComponent implements OnInit, OnDestroy {
   private getCustomers(): void {
     this.emptySearch = true;
     this.loadCompleted = false;
-    this.customersService.getCustomers(this.size, this.varSearch).subscribe({
+
+    this.customersService.getCustomers(this.size, this.commerceId.toString(), this.varSearch).subscribe({
       next: customers => {
         this.customers = customers.data;
         this.emptySearch = this.customers.length === 0;
@@ -386,7 +387,6 @@ export class CustomersComponent implements OnInit, OnDestroy {
         errors.push(`Error en la fila ${index + 1}: se esperaban ${expectedLength} columnas pero hay ${row.length}.`);
       }
     });
-
     return { rows, errors };
   }
 }
