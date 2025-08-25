@@ -81,7 +81,7 @@ export class ProductDetailsComponent implements OnInit {
     this.productForm = this.fb.group({
       name: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
       price: [0, [Validators.required, Validators.min(0)]],
-      type: [0, [Validators.required, Validators.min(0), Validators.max(1)]],
+      priceType: [0, [Validators.required, Validators.min(0), Validators.max(1)]],
       categoryId: ['', [Validators.required, Validators.pattern(/^\bcategory:\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\b$/)]],
       modifiers: [[], [Validators.required, Validators.pattern(/^\bmodifier:\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\b$/)]],
       epigraph: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
@@ -89,7 +89,7 @@ export class ProductDetailsComponent implements OnInit {
       stock: [0, [Validators.required, Validators.min(0)]]
     });
 
-    const initialPriceType = Number(this.productForm.get('type')?.value);
+    const initialPriceType = Number(this.productForm.get('priceType')?.value);
     const numericType = Number(initialPriceType);
     if (numericType === PriceType.Variable) {
       this.productForm.get('price')?.reset();
@@ -105,7 +105,7 @@ export class ProductDetailsComponent implements OnInit {
    * Inicializa el componente obteniendo información del producto si existe.
    */
   ngOnInit(): void {
-    this.productForm.get('type')?.valueChanges.subscribe(type => {
+    this.productForm.get('priceType')?.valueChanges.subscribe(type => {
       const numericType = Number(type);
       if (numericType === PriceType.Variable) {
         this.productForm.get('price')?.reset();
@@ -297,8 +297,6 @@ export class ProductDetailsComponent implements OnInit {
     this.productsService.getAllCategories(this.commerceId.toString()).subscribe({
       next: (categories) => {
         this.categories = categories;
-        const category: Category = {categoryId: "0", name: this.translate.instant('dpos.filter.all')};
-        this.categories.unshift(category);
       },
       error: (error) => {
         this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.category.all'));

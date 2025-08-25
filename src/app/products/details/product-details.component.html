@@ -23,7 +23,7 @@
           <div *ngIf="productForm.get('name')?.invalid && productForm.get('name')?.touched ||
               productForm.get('epigraph')?.invalid && productForm.get('epigraph')?.touched ||
               productForm.get('categoryId')?.hasError('required') && productForm.get('categoryId')?.touched ||
-              productForm.get('type')?.invalid && productForm.get('type')?.touched ||
+              productForm.get('priceType')?.invalid && productForm.get('priceType')?.touched ||
               productForm.get('price')?.invalid && productForm.get('price')?.touched ||
               productForm.get('unitMeasurement')?.invalid && productForm.get('unitMeasurement')?.touched ||
               productForm.get('stock')?.invalid && productForm.get('stock')?.touched ||
@@ -82,7 +82,7 @@
                       {{ option.label }}
                     </option>
                   </select>
-                  <div *ngIf="productForm.get('type')?.invalid && productForm.get('type')?.touched" class="text-danger invalid-feedback">
+                  <div *ngIf="productForm.get('priceType')?.invalid && productForm.get('priceType')?.touched" class="text-danger invalid-feedback">
                     {{ 'dpos.customers.details.form.mandatory' | translate }}
                   </div>
                 </div>

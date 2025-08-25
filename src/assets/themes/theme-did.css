@@ -409,6 +409,12 @@ border-color: var(--bs-color-black-100) !important;
   color: var(--bs-color-grey-400);
 }
 
+.checkbox-large {
+  width: 2rem;
+  height: 2rem;
+  margin-top: 0 !important;
+}
+
 .form-select-commerce {
   box-shadow: 0 0 0 0;
   margin: 4px 2px;

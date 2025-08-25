@@ -42,8 +42,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
   Math = Math;
 
   productNameVarSearch: string = null;
-  productReferenceVarSearch: string = null;
-  productBarcodeVarSearch: string = null;
+  productFavouriteVarSearch: boolean = false;
 
   commerces: Commerce[];
   commerceId = 0;
@@ -81,7 +80,12 @@ export class ProductsComponent implements OnInit, OnDestroy {
     this.currentLang = this.translate.currentLang || 'es';
     this.langSubscription = this.translate.onLangChange.subscribe(event => {
       this.currentLang = event.lang;
-
+      this.categories = this.categories.map(c => {
+        if (c.categoryId === "0") {
+          return { ...c, name: this.translate.instant('dpos.filter.all') };
+        }
+        return c;
+      });
     });
   }
 
@@ -123,8 +127,20 @@ export class ProductsComponent implements OnInit, OnDestroy {
   /**
    * Guarda el valor de búsqueda del nombre del producto en la sesión.
    */
+  public onCategoryChange(): void {
+    this.sessionService.setItem(SessionService.PRODUCT_CATEGORY, this.categorySelected);
+  }
+
+  /**
+   * Guarda el valor de búsqueda del nombre del producto en la sesión.
+   */
   public onProductNameChange(): void {
     this.sessionService.setItem(SessionService.PRODUCT_NAME, this.productNameVarSearch);
+  }
+
+  public onProductFavouriteChange(value: boolean): void {
+    this.productFavouriteVarSearch = value;
+    this.sessionService.setItem(SessionService.PRODUCT_FAVOURITE, this.productFavouriteVarSearch);
   }
 
   /**
@@ -132,11 +148,9 @@ export class ProductsComponent implements OnInit, OnDestroy {
    */
   public cleanFormFields(): void {
     this.productNameVarSearch = "";
-    this.productReferenceVarSearch = "";
-    this.productBarcodeVarSearch = "";
-    this.sessionService.setItem(SessionService.CUSTOMER_NIF, "");
-    this.sessionService.setItem(SessionService.CUSTOMER_NAME, "");
-    this.sessionService.setItem(SessionService.CUSTOMER_LASTNAME, "");
+    this.productFavouriteVarSearch = false;
+    this.sessionService.setItem(SessionService.PRODUCT_NAME, "");
+    this.sessionService.setItem(SessionService.PRODUCT_FAVOURITE, false);
   }
 
   /**
@@ -148,9 +162,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
     this.varSearch = "&qs={'and':[";
     const filters = [
       { field: 'CommerceId', value: this.commerceId },
-      { field: 'name', value: this.productNameVarSearch },
-      { field: 'reference', value: this.productReferenceVarSearch },
-      { field: 'barcode', value: this.productBarcodeVarSearch }
+      { field: 'name', value: this.productNameVarSearch }
     ];
     filters.forEach(filter => {
       if (filter.value !== null && filter.value !== "" && filter.value !== 0) {
@@ -269,12 +281,12 @@ export class ProductsComponent implements OnInit, OnDestroy {
       next: (categories) => {
         this.categories = categories;
         const category: Category = {categoryId: "0", name: this.translate.instant('dpos.filter.all')};
-        this.categories.unshift(category);
-        if (this.sessionService.getItem(SessionService.CATEGORY_ID) === null) {
+        this.categories.unshift(category);;
+        if (this.sessionService.getItem(SessionService.PRODUCT_CATEGORY) == null) {
           this.categorySelected = this.categories[0].categoryId;
-          this.sessionService.setItem(SessionService.CATEGORY_ID, this.categories[0].categoryId);
+          this.sessionService.setItem(SessionService.PRODUCT_CATEGORY, this.categories[0].categoryId);
         } else {
-          this.categorySelected = this.categories.find(category => category.categoryId === this.sessionService.getItem(SessionService.CATEGORY_ID)).categoryId;
+          this.categorySelected = this.categories.find(category => category.categoryId === this.sessionService.getItem(SessionService.PRODUCT_CATEGORY)).categoryId;
         }
       },
       error: (error) => {

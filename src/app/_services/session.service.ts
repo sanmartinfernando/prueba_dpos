@@ -37,10 +37,9 @@ export class SessionService {
   static readonly CUSTOMER_EMAIL = 'customerEmail';
 
   // Keys de producto
+  static readonly PRODUCT_CATEGORY = 'productCategory';
   static readonly PRODUCT_NAME = 'productName';
-
-  // Keys de categorías
-  static readonly CATEGORY_ID = 'categoryId';
+  static readonly PRODUCT_FAVOURITE = 'productFavourite';
 
   private commerceId = new BehaviorSubject<number>(this.getItem(SessionService.COMMERCE_ID) || 0);
   private commerce = new BehaviorSubject<Commerce>(this.getItem(SessionService.COMMERCE) || null);
