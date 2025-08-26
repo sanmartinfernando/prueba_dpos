@@ -274,8 +274,7 @@ export class SalesComponent implements OnInit, OnDestroy {
     }
 
     const qsObject = { and: andFilters };
-    const qsString = JSON.stringify(qsObject).replace(/"/g, "'");
-
+    const qsString = JSON.stringify(qsObject);
     this.getOrderInfo(qsString);
   }
 

@@ -111,10 +111,7 @@ export class CustomersComponent implements OnInit, OnDestroy {
 
     // Construimos el objeto "qs"
     const qsObject = { or: filters };
-
-    //Serializamos a string (con comillas simples en lugar de dobles
-    this.varSearch = JSON.stringify(qsObject).replace(/"/g, "'");
-
+    this.varSearch = JSON.stringify(qsObject);
     this.getCustomers();
   }
 
