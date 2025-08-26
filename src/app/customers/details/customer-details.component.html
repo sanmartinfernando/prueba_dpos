@@ -22,7 +22,7 @@
       <div *ngIf="!isLoading" class="row">
         <form [formGroup]="clientForm" (ngSubmit)="saveCustomer()">
           <div *ngIf="clientForm.get('identityDocument')?.invalid && clientForm.get('identityDocument')?.touched ||
-                clientForm.get('name')?.invalid && clientForm.get('name')?.touched ||
+                clientForm.get('clientName')?.invalid && clientForm.get('clientName')?.touched ||
                 clientForm.get('email')?.invalid && clientForm.get('email')?.touched ||
                 clientForm.get('phone')?.invalid && clientForm.get('phone')?.touched ||
                 clientForm.get('address')?.invalid && clientForm.get('address')?.touched ||
@@ -45,8 +45,8 @@
                 </div>
                 <div class="mb-3">
                   <label for="name" class="form-label">{{ 'dpos.customers.name.column' | translate }}</label>
-                  <input type="text" class="form-control" id="name" formControlName="name" name="name" />
-                  <div *ngIf="clientForm.get('name')?.invalid && clientForm.get('name')?.touched" class="text-danger invalid-feedback">
+                  <input type="text" class="form-control" id="clientName" formControlName="clientName" name="clientName" />
+                  <div *ngIf="clientForm.get('clientName')?.invalid && clientForm.get('clientName')?.touched" class="text-danger invalid-feedback">
                     {{ 'dpos.customers.details.form.mandatory' | translate }}
                   </div>
                 </div>

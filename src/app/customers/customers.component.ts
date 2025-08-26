@@ -58,12 +58,13 @@ export class CustomersComponent implements OnInit, OnDestroy {
   showModal = false;
   modalTitle = '';
   modalMessage = '';
+  showAcceptButton = false;
+  showCancelButton = false;
+
+  // Guardamos la acción a ejecutar al aceptar en el modal
+  acceptAction: (() => void) | null = null;
 
   @ViewChild('customerFileInput') customerFileInput!: ElementRef<HTMLInputElement>;
-
-  selectedIndices: number[] = [];
-  isAllSelected = false;
-  counter = 0;
 
   currentLang: string;
   langSubscription: Subscription;
@@ -117,13 +118,6 @@ export class CustomersComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Verifica si todos los clientes están seleccionados.
-   */
-  public checkIfAllSelected(): void {
-    this.masterSelected = this.customers.every(c => true/*c.selected*/);
-  }
-
-  /**
    * Navega a la vista de detalle de un cliente.
    * 
    * @param id Identificador del cliente
@@ -147,13 +141,6 @@ export class CustomersComponent implements OnInit, OnDestroy {
    */
   public importCustomers(): void {
     this.customerFileInput.nativeElement.click();
-  }
-
-  /**
-   * Elimina un cliente de la lista por su ID.
-   */
-  public deleteCustomer(customerId: string) {
-    
   }
 
   /**
@@ -182,6 +169,46 @@ export class CustomersComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Elimina un cliente de la lista por su ID.
+   */
+  public deleteCustomer(clientId: string) {
+    this.loadCompleted = false;
+    this.customersService.deleteCustomer(clientId, this.commerceId.toString()).subscribe({
+      next: () => {
+        this.showModal = false; 
+        this.loadCompleted = true;
+        this.searchCustomers();
+        this.openModal(this.translate.instant('dpos.customer.details.modal.delete.title'), this.translate.instant('dpos.customer.details.modal.delete.message'));
+      },
+      error: () => {
+        this.showModal = false;
+        this.loadCompleted = true;
+        this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.customer.delete'));
+      }
+    });
+  }
+
+  /** Abrir modal para eliminar */
+  openDeleteModal(customerId: string, event: MouseEvent) {
+    event.stopPropagation();
+    this.showAcceptButton = true;
+    this.showCancelButton = true;
+    this.modalTitle = this.translate.instant('dpos.action.confirm')
+    this.modalMessage = this.translate.instant('dpos.customer.details.modal.delete.confirm');
+    this.acceptAction = () => this.deleteCustomer(customerId);
+    this.showModal = true;
+  }
+
+  /** Acción genérica al aceptar modal */
+  onAcceptModal() {
+    if (this.acceptAction) {
+      this.acceptAction();
+      this.acceptAction = null;
+    }
+    this.showModal = false;
+  }
+  
+  /**
    * Abre el modal de mensajes estableciendo el título y el mensaje.
    *
    * @param title   Texto que se mostrará como título del modal.
@@ -190,6 +217,8 @@ export class CustomersComponent implements OnInit, OnDestroy {
   public openModal(title: string, message: string) {
     this.modalTitle = title;
     this.modalMessage = message;
+    this.showAcceptButton = false;
+    this.showCancelButton = false;
     this.showModal = true;
   }
   

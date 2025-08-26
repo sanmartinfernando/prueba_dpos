@@ -48,6 +48,23 @@ export class CustomersService {
   }
 
   /**
+   * Elimina un cliente según por su ID.
+   * 
+   * @param clientId Id del cliente que se quiere eliminar.
+   * @param commerceId Id del comercio asociado.
+   * @returns Observable con el cliente eliminado.
+   */
+  public deleteCustomer(clientId: string, commerceId: string): Observable<number> {
+    if (!clientId || !commerceId) {
+      return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
+    }
+
+    const params = new HttpParams().set('commerceId', commerceId);
+    const url = `${environment.urlClients}${RestRoutes.CUSTOMER}/${clientId}`;
+    return this.http.delete<number>(url, { headers: this.httpOptions.headers, params });
+  }
+
+  /**
    * Obtiene un cliente específico por su ID.
    * 
    * @param customerId Id del cliente a obtener.

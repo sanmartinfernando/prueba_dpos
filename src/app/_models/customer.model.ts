@@ -15,7 +15,6 @@ export class Customer {
 
   clientId: string;
   clientName: string;
-  //idType: string;
   identityDocument: string;
   address: string;
   city: string;
@@ -24,5 +23,4 @@ export class Customer {
   postcode: string;
   email: string;
   phone: string;
-  //selected = false;
 }

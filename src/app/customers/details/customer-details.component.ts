@@ -49,7 +49,7 @@ export class CustomerDetailsComponent implements OnInit {
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
     this.uiStateService.setFormSelectEnabled(false);
     this.clientForm = this.fb.group({
-      name: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
+      clientName: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
       identityDocument: ['', [Validators.required, Validators.pattern(/^(?:[0-9]{8}[A-Z]|[XYZ][0-9]{7}[A-Z]|[KLM][0-9]{7}[A-Z]|[ABCDEFGHJNPQRSUVW][0-9]{7}[A-Z0-9])$/)]],
       address: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ0-9 ,.\-/]+$/)]],
       city: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
@@ -66,9 +66,9 @@ export class CustomerDetailsComponent implements OnInit {
    */
   ngOnInit(): void {
     this.commerceId = this.sessionService.getItem(SessionService.COMMERCE_ID);
-    const idParam = this.activatedRoute.snapshot.params['id'];
+    const idParam = this.encryptionService.decode(this.activatedRoute.snapshot.params['id']);
     if (idParam) {
-      this.idCustomer = this.encryptionService.decode(idParam);
+      this.idCustomer = this.encryptionService.decrypt(idParam);
       this.getCustomer(this.idCustomer);
       this.titlePage = this.translate.instant('dpos.customer.details.page.edit.title');
     } else {
@@ -89,7 +89,7 @@ export class CustomerDetailsComponent implements OnInit {
         this.customer = client;
         this.clientForm.setValue({
           identityDocument: client.identityDocument,
-          name: client.clientName,
+          clientName: client.clientName,
           email: client.email,
           phone: client.phone,
           address: client.address,

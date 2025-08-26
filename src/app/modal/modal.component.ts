@@ -1,11 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
-/**
- * @class ModalComponent
- * @description
- * Componente de modal reutilizable que muestra un título, un mensaje
- * y permite cerrar el modal mediante un evento de salida.
- */
 @Component({
   selector: 'app-modal',
   templateUrl: './modal.component.html',
@@ -17,12 +11,29 @@ export class ModalComponent {
   @Input() modalMessage = '';
   @Input() showModal = false;
 
-  @Output() closeModal = new EventEmitter<void>();
+  // Mostrar u ocultar botones
+  @Input() showAcceptButton = false;
+  @Input() showCancelButton = false;
 
-  /**
-   * Emite el evento para cerrar el modal.
-   */
+  // Eventos para comunicar con el componente padre
+  @Output() closeModal = new EventEmitter<void>();
+  @Output() accept = new EventEmitter<void>();
+  @Output() cancel = new EventEmitter<void>();
+
+  /** Cierra modal */
   public close(): void {
     this.closeModal.emit();
+  }
+
+  /** Aceptar acción */
+  public onAccept(): void {
+    this.accept.emit();
+    this.close();
+  }
+
+  /** Cancelar acción */
+  public onCancel(): void {
+    this.cancel.emit();
+    this.close();
   }
 }

@@ -32,7 +32,7 @@
   <div class="card mt-3">
     <div class="card-body">
       <!-- Componente modal para mensajes -->
-      <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage" (closeModal)="closeModal()"></app-modal>
+      <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage" [showAcceptButton]="showAcceptButton" [showCancelButton]="showCancelButton" (accept)="onAcceptModal()" (cancel)="closeModal()" (closeModal)="closeModal()"></app-modal>
       <div class="row mb-4 align-items-center">
         <div class="col-12 col-md-6">
           <h5><b>{{ 'dpos.customers.page.title' | translate }}</b></h5>
@@ -92,7 +92,7 @@
                     <td class="align-middle">{{ customer.email }}</td>
                     <td class="text-center align-middle">{{ customer.phone }}</td>
                     <td class="text-center align-middle">
-                      <button type="button" class="btn-delete" (click)="deleteCustomer(customer.clientId)">
+                      <button type="button" class="btn-delete" (click)="openDeleteModal(customer.clientId, $event)">
                         <i class="fa-solid fa-trash" style="color: #FD716E"></i>
                       </button>
                     </td>
