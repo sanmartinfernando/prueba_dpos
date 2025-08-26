@@ -89,7 +89,7 @@ export class CustomerDetailsComponent implements OnInit {
         this.customer = client;
         this.clientForm.setValue({
           identityDocument: client.identityDocument,
-          name: client.name,
+          name: client.clientName,
           email: client.email,
           phone: client.phone,
           address: client.address,

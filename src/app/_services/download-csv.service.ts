@@ -422,7 +422,7 @@ export class DownloadCsvService {
     for (const customer of customers) {
       let line = "";
       line += (line ? ';' : '') + (customer.identityDocument || '');
-      line += (line ? ';' : '') + (customer.name || '');
+      line += (line ? ';' : '') + (customer.clientName || '');
       line += (line ? ';' : '') + (customer.phone || '');
       line += (line ? ';' : '') + (customer.email || '');
       str += line + '\r\n';

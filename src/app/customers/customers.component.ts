@@ -104,7 +104,7 @@ export class CustomersComponent implements OnInit, OnDestroy {
     
     const filters = [
       { field: 'identityDocument', value: this.customerNifVarSearch, op: '=' },
-      { field: 'name', value: this.customerNameVarSearch, op: '=*.*' },
+      { field: 'clientName', value: this.customerNameVarSearch, op: '=*.*' },
       { field: 'phone', value: this.customerPhoneVarSearch, op: '=' },
       { field: 'email', value: this.customerEmailVarSearch, op: '=' }
     ].filter(f => f.value);
@@ -309,7 +309,7 @@ export class CustomersComponent implements OnInit, OnDestroy {
     const imported = rows.map((row, i) => ({
       clientId: (i + 1).toString(),
       identityDocument: row[0],
-      name: row[1],
+      clientName: row[1],
       email: row[2],
       phone: row[3],
       address: row[4],

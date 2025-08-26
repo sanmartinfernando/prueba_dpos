@@ -14,7 +14,7 @@ export class Customer {
   static readonly ID_TYPE_OTHER_OTHER = "06";
 
   clientId: string;
-  name: string;
+  clientName: string;
   //idType: string;
   identityDocument: string;
   address: string;
