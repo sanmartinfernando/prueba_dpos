@@ -37,11 +37,8 @@
         <div class="col-12 col-md-6">
           <h5><b>{{ 'dpos.customers.page.title' | translate }}</b></h5>
         </div>
-        <!-- Botones para eliminar, añadir, importar y exportar clientes -->
+        <!-- Botones para añadir, importar y exportar clientes -->
         <div class="col-12 col-md-6 text-md-end text-center mt-3 mt-md-0 d-flex flex-wrap gap-2 justify-content-md-end justify-content-center">
-          <button type="button" class="btn btn-outline-danger" (click)="deleteCustomers()">
-            {{ 'dpos.customers.uncheck.label' | translate }}
-          </button>
           <a type="button" class="btn btn-primary" [routerLink]="code" (click)="addCustomer()">
             {{ 'dpos.customers.add.label' | translate }}
           </a>
@@ -69,7 +66,6 @@
             <table class="table table-hover order-table">
               <thead class="text-customer">
                 <tr>
-                  <th style="width: 50px;" class="text-center"></th>
                   <th>{{ 'dpos.customers.nif.label' | translate }}</th>
                   <th>{{ 'dpos.customers.name.label' | translate }}</th>
                   <th>{{ 'dpos.customers.address.label' | translate }}</th>
@@ -77,6 +73,7 @@
                   <th>{{ 'dpos.customers.state.label' | translate }}</th>
                   <th>{{ 'dpos.customers.mail.label' | translate }}</th>
                   <th class="text-center">{{ 'dpos.customers.phone.label' | translate }}</th>
+                  <th class="text-center">{{ 'dpos.customers.delete.label' | translate }}</th>
                 </tr>
               </thead>
               <ng-template #empty>
@@ -87,9 +84,6 @@
               <tbody>
                 <ng-container *ngIf="loadCompleted && customers; else empty">
                   <tr *ngFor="let customer of customers | paginate : { itemsPerPage: 10, currentPage: page }; index as i" (click)="sendCustomerDetails(customer.clientId)">
-                    <td class="text-center align-middle">
-                     <!-- <input class="form-check-input" type="checkbox" [(ngModel)]="customer.selected" (change)="checkIfAllSelected()" (click)="$event.stopPropagation()" /> -->
-                    </td>
                     <td class="align-middle"><span class="table-title">{{ customer.identityDocument }}</span></td>
                     <td class="align-middle">{{ customer.clientName }}</td>
                     <td class="align-middle">{{ customer.address }}</td>
@@ -97,6 +91,11 @@
                     <td class="align-middle">{{ customer.state }}</td>
                     <td class="align-middle">{{ customer.email }}</td>
                     <td class="text-center align-middle">{{ customer.phone }}</td>
+                    <td class="text-center align-middle">
+                      <button type="button" class="btn-delete" (click)="deleteCustomer(customer.clientId)">
+                        <i class="fa-solid fa-trash" style="color: #FD716E"></i>
+                      </button>
+                    </td>
                   </tr>
                 </ng-container>
               </tbody>

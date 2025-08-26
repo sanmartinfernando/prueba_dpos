@@ -224,6 +224,7 @@
     "dpos.customers.balance.label": "Metatutako saldoa",
     "dpos.customers.import.label": "Inportatu bezeroak",
     "dpos.customers.add.label": "+ Berria",
+    "dpos.customers.delete.label": "Ezabatu",
     "dpos.customers.uncheck.label": "Ezabatu hautaketa",
     "dpos.customers.nif.column": "IFZ*",
     "dpos.customers.name.column": "Izena*",

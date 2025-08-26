@@ -109,9 +109,10 @@ export class CustomersComponent implements OnInit, OnDestroy {
       { field: 'email', value: this.customerEmailVarSearch, op: '=' }
     ].filter(f => f.value);
 
+
     // Construimos el objeto "qs"
-    const qsObject = { or: filters };
-    this.varSearch = JSON.stringify(qsObject);
+    const qsObject = filters.length > 0 ? { or: filters } : null;
+    this.varSearch = qsObject ? JSON.stringify(qsObject) : null;
     this.getCustomers();
   }
 
@@ -135,14 +136,6 @@ export class CustomersComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Elimina los clientes seleccionados de la lista.
-   */
-  public deleteCustomers(): void {
-    this.customers = this.customers.filter(c => true/*!c.selected*/);
-    this.emptySearch = this.customers.length === 0;
-  }
-
-  /**
    * Lanza la acción para añadir un nuevo cliente.
    */
   public addCustomer(): void {
@@ -154,6 +147,13 @@ export class CustomersComponent implements OnInit, OnDestroy {
    */
   public importCustomers(): void {
     this.customerFileInput.nativeElement.click();
+  }
+
+  /**
+   * Elimina un cliente de la lista por su ID.
+   */
+  public deleteCustomer(customerId: string) {
+    
   }
 
   /**

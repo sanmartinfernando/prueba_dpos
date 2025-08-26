@@ -224,6 +224,7 @@
     "dpos.customers.balance.label": "Saldo acumulado",
     "dpos.customers.import.label": "Importar",
     "dpos.customers.add.label": "+ Nuevo",
+    "dpos.customers.delete.label": "Eliminar",
     "dpos.customers.uncheck.label": "Eliminar selección",
     "dpos.customers.nif.column": "NIF*",
     "dpos.customers.name.column": "Nombre*",
