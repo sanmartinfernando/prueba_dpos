@@ -28,6 +28,7 @@ export class PwresetComponent {
   userPassword = '';
   userConfirmPassword = '';
   errorCounter = 0;
+  responseError = true;
 
   /**
    * Valida y envía la solicitud de restablecimiento de contraseña.
@@ -35,6 +36,7 @@ export class PwresetComponent {
   public resetPW(): void {
     this.errorMessages = [];
     this.errorCounter = 0;
+    this.responseError = true;
 
     if (this.userPassword !== this.userConfirmPassword) {
       this.errorMessages.push('La contraseña en ambos campos tiene que ser la misma');
@@ -51,9 +53,11 @@ export class PwresetComponent {
       this.properties = properties;
       this.portalUsersService.resetPwd(this.parameters).subscribe({
         next: response => {
+          this.responseError = false;
           this.response = response;
         },
         error: error => {
+          this.responseError = true;
           if (error?.error?.Errors) {
             for (const err of error.error.Errors) {
               switch (err) {

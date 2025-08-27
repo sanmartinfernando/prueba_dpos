@@ -12,7 +12,7 @@
       <div class="form-group my-2 ms-5 me-5">
         <label class="mb-2" for="confirmpw">{{ 'dpos.pwreset.confirmpassword.label' | translate }}</label>
         <input type="password" class="form-control" [(ngModel)]="userConfirmPassword" name="confirmpw" id="confirmpw" />
-        <div class="mt-3" *ngIf="errorMessages.length === 0 && errorCounter === 0">
+        <div class="mt-3" *ngIf="errorMessages.length === 0 && errorCounter === 0 && !responseError">
           <span class="text-success">{{ 'dpos.pwreset.passwordchanged.label' | translate }}</span>
         </div>
         <div class="mt-3" *ngFor="let error of errorMessages">
