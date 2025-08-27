@@ -42,7 +42,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
   Math = Math;
 
   productNameVarSearch: string = null;
-  productFavouriteVarSearch: boolean = false;
+  productFavouriteVarSearch = false;
 
   commerces: Commerce[];
   commerceId = 0;
@@ -53,16 +53,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
   categories: Category[] = [{categoryId: "0", name:""}];
 
   currentProductsPage = 1;
-  products: Product[] = [
-    { productId: "1", name: "Producto 1", price: 1000, stock: 10, type:0, favourite: true, categoryId: "1", modifiers: ["1", "2"], epigraph:"Epígrafe 1", noticeKitchen: true, unitMeasurement: 0, noticeBar:true, decimals: 2},
-    { productId: "2", name: "Producto 2", price: 2000, stock: 20, type:0, favourite: true, categoryId: "1", modifiers: ["1", "2"], epigraph:"Epígrafe 2", noticeKitchen: true, unitMeasurement: 0, noticeBar:true, decimals: 2},
-    { productId: "3", name: "Producto 3", price: 3000, stock: 30, type:0, favourite: true, categoryId: "1", modifiers: ["1", "2"], epigraph:"Epígrafe 3", noticeKitchen: true, unitMeasurement: 0, noticeBar:true, decimals: 2},
-    { productId: "4", name: "Producto 4", price: 4000, stock: 40, type:0, favourite: true, categoryId: "1", modifiers: ["1", "2"], epigraph:"Epígrafe 4", noticeKitchen: true, unitMeasurement: 0, noticeBar:true, decimals: 2},
-    { productId: "5", name: "Producto 5", price: 5000, stock: 50, type:0, favourite: true, categoryId: "1", modifiers: ["1", "2"], epigraph:"Epígrafe 5", noticeKitchen: true, unitMeasurement: 0, noticeBar:true, decimals: 2},
-    { productId: "6", name: "Producto 6", price: 6000, stock: 60, type:0, favourite: true, categoryId: "1", modifiers: ["1", "2"], epigraph:"Epígrafe 6", noticeKitchen: true, unitMeasurement: 0, noticeBar:true, decimals: 2},
-    { productId: "7", name: "Producto 7", price: 7000, stock: 70, type:0, favourite: true, categoryId: "1", modifiers: ["1", "2"], epigraph:"Epígrafe 7", noticeKitchen: true, unitMeasurement: 0, noticeBar:true, decimals: 2},
-    { productId: "8", name: "Producto 8", price: 8000, stock: 80, type:0, favourite: true, categoryId: "1", modifiers: ["1", "2"], epigraph:"Epígrafe 8", noticeKitchen: true, unitMeasurement: 0, noticeBar:true, decimals: 2}
-  ];
+  products: Product[] = [];
 
   currentLang: string;
   langSubscription: Subscription;
@@ -74,6 +65,11 @@ export class ProductsComponent implements OnInit, OnDestroy {
   showModal = false;
   modalTitle = '';
   modalMessage = '';
+  showAcceptButton = false;
+  showCancelButton = false;
+
+  // Guardamos la acción a ejecutar al aceptar en el modal
+  acceptAction: (() => void) | null = null;
 
   constructor() {
     this.uiStateService.setFormSelectEnabled(true);
@@ -157,22 +153,17 @@ export class ProductsComponent implements OnInit, OnDestroy {
    * Genera la consulta de búsqueda y obtiene los productos.
    */
   public searchProducts() {
-    this.validationVariable = false;
     this.loadCompleted = false;
-    this.varSearch = "&qs={'and':[";
+
     const filters = [
-      { field: 'CommerceId', value: this.commerceId },
-      { field: 'name', value: this.productNameVarSearch }
-    ];
-    filters.forEach(filter => {
-      if (filter.value !== null && filter.value !== "" && filter.value !== 0) {
-        if (this.searchCounter) this.varSearch += ',';
-        this.searchCounter = true;
-        this.varSearch += `{'field':'${filter.field}','op':'=*.*','value':'${filter.value}'}`;
-      }
-    });
-    this.varSearch += ']}';
-    this.searchCounter = false;
+      { field: 'name', value: this.productNameVarSearch, op: '=*.*' },
+      { field: 'favourite', value: this.productFavouriteVarSearch, op: '=' }
+    ].filter(f => f.value);
+
+    
+    // Construimos el objeto "qs"
+    const qsObject = filters.length > 0 ? { or: filters } : null;
+    this.varSearch = qsObject ? JSON.stringify(qsObject) : null;
     this.getProducts();
   }
 
@@ -192,14 +183,6 @@ export class ProductsComponent implements OnInit, OnDestroy {
       : `/product-details/${this.encryptionService.encode(this.encryptionService.encryptData(id))}`;
 
     this.router.navigate([code]);
-  }
-
-  /**
-   * Elimina un producto de la lista por su ID.
-   */
-  public deleteProduct(productId: string) {
-    this.products = this.products.filter(p => p.productId !== productId);
-    if (!this.products.length) this.emptySearch = true;
   }
 
   /**
@@ -255,6 +238,47 @@ export class ProductsComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Elimina un producto de la lista por su ID.
+   */
+  public deleteProduct(productId: string) {
+    console.log("paso por aqui");
+    this.loadCompleted = false;
+    this.productsService.deleteProduct(productId, this.commerceId.toString()).subscribe({
+      next: () => {
+        this.showModal = false; 
+        this.loadCompleted = true;
+        this.searchProducts();
+        this.openModal(this.translate.instant('dpos.product-details.modal.delete.title'), this.translate.instant('dpos.product-details.modal.delete.message'));
+      },
+      error: () => {
+        this.showModal = false;
+        this.loadCompleted = true;
+        this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.product.delete'));
+      }
+    });
+  }
+
+  /** Abrir modal para eliminar */
+  openDeleteModal(productId: string, event: MouseEvent) {
+    event.stopPropagation();
+    this.showAcceptButton = true;
+    this.showCancelButton = true;
+    this.modalTitle = this.translate.instant('dpos.action.confirm')
+    this.modalMessage = this.translate.instant('dpos.product-details.modal.delete.confirm');
+    this.acceptAction = () => this.deleteProduct(productId);
+    this.showModal = true;
+  }
+
+  /** Acción genérica al aceptar modal */
+  onAcceptModal() {
+    if (this.acceptAction) {
+      this.acceptAction();
+      this.acceptAction = null;
+    }
+    this.showModal = false;
+  }
+
+  /**
    * Abre el modal de mensajes estableciendo el título y el mensaje.
    *
    * @param title   Texto que se mostrará como título del modal.
@@ -263,6 +287,8 @@ export class ProductsComponent implements OnInit, OnDestroy {
   public openModal(title: string, message: string) {
     this.modalTitle = title;
     this.modalMessage = message;
+    this.showAcceptButton = false;
+    this.showCancelButton = false;
     this.showModal = true;
   }
   
@@ -314,7 +340,21 @@ export class ProductsComponent implements OnInit, OnDestroy {
    * Obtiene los productos a través de la llamada al servicio correspondiente.
    */
   private getProducts() {
-    this.loadCompleted = true;
+    this.emptySearch = true;
+    this.loadCompleted = false;
+
+    this.productsService.getProducts(this.size, this.commerceId.toString(), this.varSearch).subscribe({
+      next: products => {
+        this.products = products.data;
+        this.emptySearch = this.products.length === 0;
+        this.loadCompleted = true;
+      },
+      error: () => {
+        this.products = [];
+        this.emptySearch = true;
+        this.loadCompleted = true;
+      }
+    });
   }
 
   /**

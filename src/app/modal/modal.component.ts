@@ -17,8 +17,8 @@ export class ModalComponent {
 
   // Eventos para comunicar con el componente padre
   @Output() closeModal = new EventEmitter<void>();
-  @Output() accept = new EventEmitter<void>();
-  @Output() cancel = new EventEmitter<void>();
+  @Output() acceptAction = new EventEmitter<void>();
+  @Output() cancelAction = new EventEmitter<void>();
 
   /** Cierra modal */
   public close(): void {
@@ -27,13 +27,13 @@ export class ModalComponent {
 
   /** Aceptar acción */
   public onAccept(): void {
-    this.accept.emit();
+    this.acceptAction.emit();
     this.close();
   }
 
   /** Cancelar acción */
   public onCancel(): void {
-    this.cancel.emit();
+    this.cancelAction.emit();
     this.close();
   }
 }

@@ -69,8 +69,8 @@ export class CustomerDetailsComponent implements OnInit {
     const idParam = this.encryptionService.decode(this.activatedRoute.snapshot.params['id']);
     if (idParam) {
       this.idCustomer = this.encryptionService.decrypt(idParam);
-      this.getCustomer(this.idCustomer);
       this.titlePage = this.translate.instant('dpos.customer.details.page.edit.title');
+      this.getCustomer(this.idCustomer);
     } else {
       this.titlePage = this.translate.instant('dpos.customer.details.page.add.title');
       this.isLoading = false;

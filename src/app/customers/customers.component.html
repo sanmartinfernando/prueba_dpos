@@ -32,7 +32,7 @@
   <div class="card mt-3">
     <div class="card-body">
       <!-- Componente modal para mensajes -->
-      <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage" [showAcceptButton]="showAcceptButton" [showCancelButton]="showCancelButton" (accept)="onAcceptModal()" (cancel)="closeModal()" (closeModal)="closeModal()"></app-modal>
+      <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage" [showAcceptButton]="showAcceptButton" [showCancelButton]="showCancelButton" (acceptAction)="onAcceptModal()" (cancelAction)="closeModal()" (closeModal)="closeModal()"></app-modal>
       <div class="row mb-4 align-items-center">
         <div class="col-12 col-md-6">
           <h5><b>{{ 'dpos.customers.page.title' | translate }}</b></h5>

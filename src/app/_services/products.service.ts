@@ -7,6 +7,7 @@ import { Product } from '../_models/product.model';
 import { TranslateService } from '@ngx-translate/core';
 import { Category } from '../_models/category.model';
 import { Modifier } from '../_models/modifiers.model';
+import { ProductInfo } from '../_models/product-info.model';
 
 /**
  * @class ProductsService
@@ -36,24 +37,26 @@ export class ProductsService {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
     }
     const params = new HttpParams().set('commerceId', commerceId);
-    const url = `${environment.urlProducts}${RestRoutes.PRODUCTS}/${productId}`;
+    const url = `${environment.urlProducts}${RestRoutes.PRODUCT}/${productId}`;
     return this.http.get<Product>(url, { headers: this.httpOptions.headers, params });
   }
 
   /**
    * Obtiene el listado de productos de un comercio.
    * 
-   * @param commerceId Id del comercio asociado.
+   * @param size Cantidad de resultados a obtener.
+   * @param commerceId ID del comercio. 
+   * @param qs Parámetros de búsqueda.
    * @returns Observable con el listado de productos.
    */
-  public getAllProducts(commerceId: string): Observable<Product[]> {
-    if (!commerceId) {
-      return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
+  public getProducts(size: number, commerceId: string, qs?: string): Observable<ProductInfo> {
+    let params = new HttpParams().set('size', size.toString()).set('offset', "0").set('commerceId', commerceId);
+    if (qs) {
+      params = params.set('qs', qs);
     }
-    const params = new HttpParams().set('commerceId', commerceId);
-    const url = `${environment.urlProducts}${RestRoutes.PRODUCTS}/all`;
-    return this.http.get<Product[]>(url, { headers: this.httpOptions.headers, params });
+    return this.http.get<ProductInfo>(`${environment.urlProducts}${RestRoutes.PRODUCTS_INFO}`, { params, ...this.httpOptions });
   }
+
 
   /**
    * Crea o actualiza un producto según tenga definido el ID.
@@ -70,12 +73,29 @@ export class ProductsService {
 
     const params = new HttpParams().set('commerceId', commerceId);
     const url = product.productId
-      ? `${environment.urlProducts}${RestRoutes.PRODUCTS}/${product.productId}`
-      : `${environment.urlProducts}${RestRoutes.PRODUCTS}`;
+      ? `${environment.urlProducts}${RestRoutes.PRODUCT}/${product.productId}`
+      : `${environment.urlProducts}${RestRoutes.PRODUCT}`;
 
     return product.productId
       ? this.http.put<Product>(url, product, { headers: this.httpOptions.headers, params })
       : this.http.post<Product>(url, product, { headers: this.httpOptions.headers, params });
+  }
+
+  /**
+   * Elimina un producto según por su ID.
+   * 
+   * @param productId Id del producto que se quiere eliminar.
+   * @param commerceId Id del comercio asociado.
+   * @returns Observable con el producto eliminado.
+   */
+  public deleteProduct(productId: string, commerceId: string): Observable<number> {
+    if (!productId || !commerceId) {
+      return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
+    }
+
+    const params = new HttpParams().set('commerceId', commerceId);
+    const url = `${environment.urlProducts}${RestRoutes.PRODUCT}/${productId}`;
+    return this.http.delete<number>(url, { headers: this.httpOptions.headers, params });
   }
 
   /**

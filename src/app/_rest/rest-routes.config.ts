@@ -9,7 +9,8 @@ const CUSTOMER = 'client';
 const CUSTOMERS = 'clients';
 const CATEGORIES = 'category';
 const MODIFIERS = 'modifier';
-const PRODUCTS = 'product';
+const PRODUCT = 'product';
+const PRODUCTS = 'products'
 const TAXES = 'Taxes';
 
 /**
@@ -43,7 +44,9 @@ export const RestRoutes = {
   CUSTOMERS: `${CUSTOMERS}`,
   CUSTOMERS_INFO: `${CUSTOMERS}`,
 
+  PRODUCT: `${PRODUCTS}`,
   PRODUCTS: `${PRODUCTS}`,
+  PRODUCTS_INFO: `${PRODUCTS}`,
 
   CATEGORIES: `${CATEGORIES}`,
 

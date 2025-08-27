@@ -66,7 +66,7 @@ export class OrdersService {
     if (size == null || !qs) {
       return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
     }
-    let params = new HttpParams().set('size', size.toString()).set('offset', '0').set('qs', qs);
+    const params = new HttpParams().set('size', size.toString()).set('offset', '0').set('qs', qs);
     return this.http.get<OrderInfo>(`${environment.urlWS}${RestRoutes.ORDERS_INFO}`, { params, ...this.httpOptions });
   }
 

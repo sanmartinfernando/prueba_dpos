@@ -84,16 +84,10 @@ export class CustomersService {
    * Obtiene un listado de clientes con información agregada según los parámetros de búsqueda.
    * 
    * @param size Cantidad de resultados a obtener.
-  * @param commerceId ID del comercio. 
-  * @param searchParams Parámetros de búsqueda y paginación.
+   * @param commerceId ID del comercio. 
+   * @param searchParams Parámetros de búsqueda.
    * @returns Observable con información de clientes.
    */
-  /*
-  public getCustomers(size: number, commerceId: string, searchParams: string): Observable<CustomerInfo> {
-    const url = `${environment.urlClients}${RestRoutes.CUSTOMERS_INFO}${size}${RestRoutes.PARAM_OFFSET}${RestRoutes.PARAM_COMMERCEID}${commerceId}${searchParams}`;
-    return this.http.get<CustomerInfo>(url, this.httpOptions);
-  }
-  */
   public getCustomers(size: number,commerceId: string, qs?: string): Observable<CustomerInfo> {
     let params = new HttpParams().set('size', size.toString()).set('offset', "0").set('commerceId', commerceId);
     if (qs) {
