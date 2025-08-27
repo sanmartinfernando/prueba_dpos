@@ -52,15 +52,15 @@
         </div>
       </div>
       <!-- Spinner de carga mientras no se complete la carga -->
-      <div *ngIf="loadCompleted === false && emptySearch === false" class="d-flex justify-content-center">
+      <div *ngIf="!loadCompleted && !emptySearch" class="d-flex justify-content-center">
         <div class="spinner-border text-danger"></div>
       </div>
       <!-- Mensaje cuando no hay resultados después de la búsqueda -->
-      <div *ngIf="loadCompleted && emptySearch === true" class="d-flex justify-content-center">
+      <div *ngIf="loadCompleted && emptySearch" class="d-flex justify-content-center">
         <b><i>{{ 'dpos.dashboard.nodata.label' | translate }}</i></b>
       </div>
       <!-- Tabla con resultados de clientes, visible si hay resultados -->
-      <div class="row" *ngIf="loadCompleted && emptySearch === false">
+      <div class="row" *ngIf="loadCompleted && !emptySearch">
         <div class="col">
           <div class="table-responsive">
             <table class="table table-hover order-table">
