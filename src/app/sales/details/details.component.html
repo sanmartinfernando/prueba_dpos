@@ -17,18 +17,18 @@
   </div>
   <div class="col-12 col-sm-8 offset-sm-2 col-lg-4 offset-lg-4">
     <!-- Información del ticket -->
-    <div class="card card-customer">
+    <div class="card card-customer" *ngIf="ticket">
       <div class="card-header d-flex">
         <div class="d-flex flex-column justify-content-between">
-          <h4 class="card-title" *ngIf="ticket">{{ ticket.orderCommerce.name }}</h4>
-          <span id="lblterminal_number" class="text-amber" *ngIf="ticket">
+          <h4 class="card-title">{{ ticket.orderCommerce.name }}</h4>
+          <span id="lblterminal_number" class="text-amber">
             {{ 'dpos.filter.terminal' | translate }} {{ ticket.terminalNumber }}
           </span>
         </div>
         <div class="flex-fill text-end">
-          <span id="lblcomercial_cif" class="small" *ngIf="ticket">{{ ticket.orderCommerce.nif }}</span><br />
-          <span id="lblcomercial_address" class="small" *ngIf="ticket">{{ ticket.orderCommerce.address }}</span><br />
-          <span id="lbldate" type="date" class="small text-customer" *ngIf="ticket">
+          <span id="lblcomercial_cif" class="small">{{ ticket.orderCommerce.nif }}</span><br />
+          <span id="lblcomercial_address" class="small">{{ ticket.orderCommerce.address }}</span><br />
+          <span id="lbldate" type="date" class="small text-customer">
             {{ ticket.finishedAt | date : "yyyy-MM-dd HH:mm" }}
           </span>
         </div>
@@ -37,7 +37,7 @@
         <div class="d-flex">
           <div class="flex-fill">
             <div class="text-end">
-              <span *ngIf="ticket"><b>{{ ticket.reference }}&nbsp;</b></span><br /><br />
+              <span><b>{{ ticket.reference }}&nbsp;</b></span><br /><br />
             </div>
             <div class="table-responsive">
               <table class="table table-hover order-table">

@@ -118,13 +118,14 @@ export class ProductDetailsComponent implements OnInit {
     });
     
     this.commerceId = this.sessionService.getItem(SessionService.COMMERCE_ID);
-    const idParam = this.encryptionService.decode(this.activatedRoute.snapshot.params['id']);
+    const idParam = this.activatedRoute.snapshot.params['id'];
 
     this.getAllCategories();
     this.getAllModifiers();
 
     if (idParam) {
-      this.idProduct = this.encryptionService.decrypt(idParam);
+      const decoded = this.encryptionService.decode(idParam);
+      this.idProduct = this.encryptionService.decrypt(decoded);
       this.titlePage = this.translate.instant('dpos.product-details.page.edit.title');
       this.getProduct();
     } else {

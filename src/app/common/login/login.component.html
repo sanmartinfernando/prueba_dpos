@@ -7,7 +7,7 @@
         <!-- Campo usuario -->
         <div class="my-3">
           <label for="username" class="form-label">{{ 'dpos.login.username.label' | translate }}</label>
-          <input type="username" class="form-control" formControlName="username" />
+          <input type="email" class="form-control" formControlName="username" autocomplete="username"/>
           <div *ngIf="loginForm.value.username.errors && loginForm.submitted" class="invalid-feedback">
             {{ 'dpos.login.username.required.label' | translate }}
           </div>
@@ -15,7 +15,7 @@
         <!-- Campo contraseña -->
         <div class="my-3">
           <label for="password" class="form-label">{{ 'dpos.login.password.label' | translate }}</label>
-          <input type="password" matInput class="form-control" formControlName="pw" minlength="4" />
+          <input type="password" matInput class="form-control" formControlName="pw" minlength="4" autocomplete="current-password" />
           <div style="padding: 5px;">
             <a [routerLink]="code"><small>{{ 'dpos.login.password.forget.label' | translate }}</small></a>
           </div>
