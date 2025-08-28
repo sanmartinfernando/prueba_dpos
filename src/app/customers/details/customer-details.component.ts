@@ -49,15 +49,15 @@ export class CustomerDetailsComponent implements OnInit {
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
     this.uiStateService.setFormSelectEnabled(false);
     this.clientForm = this.fb.group({
-      clientName: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
+      clientName: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,118}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
       identityDocument: ['', [Validators.required, Validators.pattern(/^(?:[0-9]{8}[A-Z]|[XYZ][0-9]{7}[A-Z]|[KLM][0-9]{7}[A-Z]|[ABCDEFGHJNPQRSUVW][0-9]{7}[A-Z0-9])$/)]],
-      address: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ0-9 ,.\-/]+$/)]],
-      city: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
-      state: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
-      country: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
-      postcode: ['', [Validators.required, Validators.pattern(/^(?:0[1-9]|[1-4][0-9]|5[0-2])\d{3}$/)]],
-      email: ['', [Validators.required, Validators.email]],
-      phone: ['', [Validators.required, Validators.pattern(/^(?:\+34|0034|34)?(?:\d{9}|\d{3}\d{3}\d{3})$/)]],
+      address: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ0-9][A-Za-zÀ-ÖØ-öø-ÿ0-9 ,.-\/]{0,198}[A-Za-zÀ-ÖØ-öø-ÿ0-9.]$/)]],
+      city: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ ]{0,19}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
+      state: ['', [Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ ]{0,99}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
+      country: ['', [Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ ]{0,99}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
+      postcode: ['', [Validators.required, Validators.pattern(/^(?:0[1-9]|[1-4][0-9]|5[0-2])\d{3,18}$/)]],
+      email: ['', [Validators.required, Validators.maxLength(100), Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
+      phone: ['', [Validators.required, Validators.maxLength(100), Validators.pattern(/^(?:\+34|0034|34)?(?:\d{9}|\d{3}\d{3}\d{3})$/)]],
     });
   }
 
