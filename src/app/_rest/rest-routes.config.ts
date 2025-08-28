@@ -44,7 +44,7 @@ export const RestRoutes = {
   CUSTOMERS: `${CUSTOMERS}`,
   CUSTOMERS_INFO: `${CUSTOMERS}`,
 
-  PRODUCT: `${PRODUCTS}`,
+  PRODUCT: `${PRODUCT}`,
   PRODUCTS: `${PRODUCTS}`,
   PRODUCTS_INFO: `${PRODUCTS}`,
 

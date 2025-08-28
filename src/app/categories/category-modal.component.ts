@@ -60,7 +60,7 @@ export class CategoryModalComponent implements OnInit {
       this.titlePage = this.translate.instant('dpos.category.modal.title.edit');
     } else {
       this.titlePage = this.translate.instant('dpos.category.modal.title.add');
-      this.isLoading  = true;
+      this.isLoading  = false;
     }
   }
 

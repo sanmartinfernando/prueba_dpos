@@ -63,8 +63,8 @@ export class Product {
   unitMeasurement: number;
   stock?: number = 0;
   noticeBar? = false;
-  decorationCategory?: string = "";
-  decorationElement?: string = "";
+  decorationCategory?: string;
+  decorationElement?: string;
   decimals?: number = 2;
   //barcode?: string;
   //reference?: string;
@@ -75,7 +75,5 @@ export class Product {
   //salePrice?: number;
   //startSalesPrice?: number;
   //endSalesPrice?: number;
-  //decorationCategory?: string;
-  //decorationElement?: string;
   selected?: boolean = false;
 }
