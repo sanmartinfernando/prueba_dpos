@@ -11,7 +11,7 @@
     <div class="col-12 col-sm-6 col-md-4 col-lg-2">
       <label class="form-label" for="category">{{ 'dpos.products.category.form.label' | translate }}</label>
       <select class="form-select" id="category" name="category" [(ngModel)]="categorySelected" (change)="onCategoryChange()">
-        <option *ngFor="let category of categories" [value]="category.categoryId">{{ category.name }}</option>
+        <option *ngFor="let category of categories" [value]="category.categoryId">{{ category.categoryName }}</option>
       </select>
     </div>
     <div class="col-12 col-sm-6 col-md-4 col-lg-2">
