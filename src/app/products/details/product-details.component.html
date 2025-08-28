@@ -20,7 +20,7 @@
       <!-- Formulario para editar o crear producto -->
       <div *ngIf="!isLoading">
         <form  [formGroup]="productForm" (ngSubmit)="saveProduct()">
-          <div *ngIf="productForm.get('name')?.invalid && productForm.get('name')?.touched ||
+          <div *ngIf="productForm.get('productName')?.invalid && productForm.get('productName')?.touched ||
               productForm.get('epigraph')?.invalid && productForm.get('epigraph')?.touched ||
               productForm.get('categoryId')?.hasError('required') && productForm.get('categoryId')?.touched ||
               productForm.get('priceType')?.invalid && productForm.get('priceType')?.touched ||
@@ -34,9 +34,9 @@
             <!-- Primera columna del formulario -->
             <div class="col-md-6">
               <div class="mb-3">
-                <label for="name" class="form-label">{{ 'dpos.product-details.form.name' | translate }}</label>
-                <input type="text" class="form-control" id="name" formControlName="name" name="name" />
-                <div *ngIf="productForm.get('name')?.invalid && productForm.get('name')?.touched" class="invalid-feedback">
+                <label for="productName" class="form-label">{{ 'dpos.product-details.form.name' | translate }}</label>
+                <input type="text" class="form-control" id="productName" formControlName="productName" name="productName" />
+                <div *ngIf="productForm.get('productName')?.invalid && productForm.get('productName')?.touched" class="invalid-feedback">
                   {{ 'dpos.customers.details.form.mandatory' | translate }}
                 </div>
               </div>
@@ -54,7 +54,7 @@
                     <mat-select-trigger>{{ getSelectedCategoryNames(productForm.get('categoryId')?.value) }}</mat-select-trigger>
                     <mat-option *ngFor="let category of categories" [value]="category.categoryId">
                       <div class="d-flex align-items-center w-100">
-                        <span class="custom-mat-form-span">{{ category.name }}</span>
+                        <span class="custom-mat-form-span">{{ category.categoryName }}</span>
                         <button mat-icon-button class="custom-mat-form-icon ms-auto" (click)="editCategory(category.categoryId, $event)">
                           <mat-icon>edit</mat-icon>
                         </button>
@@ -121,7 +121,7 @@
                     <mat-select-trigger>{{ getSelectedModifiersName(productForm.get('modifiers')?.value) }}</mat-select-trigger>
                     <mat-option *ngFor="let modifier of modifiers" [value]="modifier.modifierId">
                       <div class="d-flex align-items-center w-100">
-                        <span class="custom-mat-form-span">{{ modifier.name }}</span>
+                        <span class="custom-mat-form-span">{{ modifier.modifierName }}</span>
                         <button mat-icon-button class="custom-mat-form-icon" (click)="editModifier(modifier.modifierId, $event)">
                           <mat-icon>edit</mat-icon>
                         </button>

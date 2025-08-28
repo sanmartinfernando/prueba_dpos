@@ -52,17 +52,19 @@ export class Product {
   static readonly NO_ID = "-1";
 
   productId: string;
-  name: string;
+  productName: string;
   price: number;
-  type: PriceType;
+  priceType: PriceType;
   favourite = false;
   categoryId: string;
   modifiers: string[] = [];
   epigraph: string;
   noticeKitchen = false;
   unitMeasurement: number;
-  stock: number;
-  noticeBar = false;
+  stock?: number = 0;
+  noticeBar? = false;
+  decorationCategory?: string = "";
+  decorationElement?: string = "";
   decimals?: number = 2;
   //barcode?: string;
   //reference?: string;

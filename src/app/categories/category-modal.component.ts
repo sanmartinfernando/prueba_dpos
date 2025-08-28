@@ -46,7 +46,7 @@ export class CategoryModalComponent implements OnInit {
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
     this.idCategory = this.data.id;
     this.categoryForm = this.fb.group({
-      name: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
+      categoryName: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ ]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
     });
   }
 
@@ -81,7 +81,7 @@ export class CategoryModalComponent implements OnInit {
     this.productsService.getCategory(categoryId, this.commerceId).subscribe({
       next: (category) => {
         this.category = category;
-        this.categoryForm.setValue({ name: this.category.name });
+        this.categoryForm.setValue({ name: this.category.categoryName });
         this.isLoading = false;
       },
       error: () => {
@@ -171,6 +171,6 @@ export class CategoryModalComponent implements OnInit {
    * Asigna al modelo de categoría los valores actuales del formulario.
    */
   private setCategoryFields(): void {
-    this.category.name = this.categoryForm.get('name').value;
+    this.category.categoryName = this.categoryForm.get('categoryName').value;
   }
 }

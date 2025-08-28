@@ -18,9 +18,9 @@
         <div *ngIf="!isLoading">
           <div class="row mb-12">
             <div class="col-md-12">
-              <label for="name" class="form-label">{{ 'dpos.category.modal.form.name' | translate }}</label>
-              <input type="text" class="form-control" id="name" formControlName="name" name="name" />
-              <div *ngIf="categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched" class="text-danger">
+              <label for="categoryName" class="form-label">{{ 'dpos.category.modal.form.name' | translate }}</label>
+              <input type="text" class="form-control" id="categoryName" formControlName="categoryName" name="categoryName" />
+              <div *ngIf="categoryForm.get('categoryName')?.invalid && categoryForm.get('categoryName')?.touched" class="text-danger">
                 {{ 'dpos.customers.details.form.mandatory' | translate }}
               </div>
             </div>

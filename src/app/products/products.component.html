@@ -68,7 +68,7 @@
             <tbody>
               <!-- Iteración paginada de productos -->
               <tr *ngFor="let product of products | paginate: { id: 'productsList', itemsPerPage: 5, currentPage: currentProductsPage }" (click)="sendProductDetails(product.productId)">
-                <td class="align-middle">{{ product.name }}</td>
+                <td class="align-middle">{{ product.productName }}</td>
                 <td class="text-center align-middle">{{ product.stock }}</td>
                 <td class="text-end align-middle">{{ product.price / (Math.pow(10, 2)) | currency : 'EUR' : '€' }}</td>
                 <td class="text-center align-middle">

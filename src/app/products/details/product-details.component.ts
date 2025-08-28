@@ -79,14 +79,14 @@ export class ProductDetailsComponent implements OnInit {
     this.uiStateService.setFormSelectEnabled(false);
 
     this.productForm = this.fb.group({
-      name: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
+      productName: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ ]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
       price: [0, [Validators.required, Validators.min(0)]],
       priceType: [0, [Validators.required, Validators.min(0), Validators.max(1)]],
       categoryId: ['', [Validators.required, Validators.pattern(/^\bcategory:\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\b$/)]],
-      modifiers: [[], [Validators.required, Validators.pattern(/^\bmodifier:\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\b$/)]],
-      epigraph: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
+      modifiers: [[], [Validators.pattern(/^\bmodifier:\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\b$/)]],
+      epigraph: ['', [Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ ]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
       unitMeasurement: [0, [Validators.required, Validators.min(0), Validators.max(3)]],
-      stock: [0, [Validators.required, Validators.min(0)]]
+      stock: [0, [Validators.min(0)]]
     });
 
     const initialPriceType = Number(this.productForm.get('priceType')?.value);
@@ -219,7 +219,7 @@ export class ProductDetailsComponent implements OnInit {
     if (!selectedIds || selectedIds.length === 0) return '';
     return this.modifiers
       .filter(mod => selectedIds.includes(mod.modifierId))
-      .map(mod => mod.name)
+      .map(mod => mod.modifierName)
       .join(', ');
   }
 
@@ -231,7 +231,7 @@ export class ProductDetailsComponent implements OnInit {
    */
   public getSelectedCategoryNames(selectedId: string): string {
     const cat = this.categories.find(c => c.categoryId === selectedId);
-    return cat ? cat.name : '';
+    return cat ? cat.categoryName : '';
   }
 
   /**

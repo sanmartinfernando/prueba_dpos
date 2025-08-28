@@ -246,7 +246,7 @@ export class DownloadCsvService {
     } else if (language === 'cat') {
       headers = headersCAT;
     }
-    const fields = ['name', 'price', 'stock'];
+    const fields = ['productName', 'price', 'stock'];
     const csvData = this.convertProductsToCSV(products, fields, headers);
     const blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
     const dwldLink = document.createElement("a");
@@ -441,7 +441,7 @@ export class DownloadCsvService {
     let str = headers.join(';') + '\r\n';
     for (const product of products) {
       let line = "";
-      line += (line ? ';' : '') + (product.name || '');
+      line += (line ? ';' : '') + (product.productName || '');
       line += (line ? ';' : '') + (this.currencyPipe.transform(product.price / (Math.pow(10, product.price)), 'EUR', '€') || '');
       line += (line ? ';' : '') + (product.stock || '');
       str += line + '\r\n';

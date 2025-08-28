@@ -23,9 +23,9 @@
               <p>{{ 'dpos.modifiers-modal.group.description' | translate }}</p>
             </div>
             <div class="col-12">
-              <label class="form-label" for="name">{{ 'dpos.modifiers-modal.form.name' | translate }}</label>
-              <input type="text" class="form-control" id="name" formControlName="name" name="name" />
-              <div *ngIf="modifiersForm.get('name')?.invalid && modifiersForm.get('name')?.touched" class="text-danger">
+              <label class="form-label" for="modifierName">{{ 'dpos.modifiers-modal.form.name' | translate }}</label>
+              <input type="text" class="form-control" id="modifierName" formControlName="modifierName" name="modifierName" />
+              <div *ngIf="modifiersForm.get('modifierName')?.invalid && modifiersForm.get('modifierName')?.touched" class="text-danger">
                 {{ 'dpos.customers.details.form.mandatory' | translate }}
               </div>
             </div>

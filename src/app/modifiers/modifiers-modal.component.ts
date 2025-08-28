@@ -47,10 +47,10 @@ export class ModifiersModalComponent implements OnInit {
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
     this.idModifier = this.data.id;
     this.modifiersForm = this.fb.group({
-      name: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
+      modifierName: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ ]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
       modifier1: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
       modifier2: ['', [Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
-      modifier3: ['', [Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$$/)]],
+      modifier3: ['', [Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
       modifier4: ['', [Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
       modifier5: ['', [Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
     });
@@ -86,7 +86,7 @@ export class ModifiersModalComponent implements OnInit {
     this.productsService.getModifier(this.idModifier, this.commerceId).subscribe({
       next: (modifier) => {
         this.modifier = modifier;
-        this.modifiersForm.setValue({ name: this.modifier.name, modifier1: this.modifier.modifierOptions[0] ?? "", modifier2: this.modifier.modifierOptions[1] ?? "",
+        this.modifiersForm.setValue({ modifierName: this.modifier.modifierName, modifier1: this.modifier.modifierOptions[0] ?? "", modifier2: this.modifier.modifierOptions[1] ?? "",
                                       modifier3: this.modifier.modifierOptions[2] ?? "", modifier4: this.modifier.modifierOptions[3] ?? "", modifier5: this.modifier.modifierOptions[4] ?? ""});
         this.isLoading = false;
       },
@@ -177,7 +177,7 @@ export class ModifiersModalComponent implements OnInit {
    * Asigna al modelo de modificadores los valores actuales del formulario.
    */
   private setModifiersFields(): void {
-    this.modifier.name = this.modifiersForm.get('name').value
+    this.modifier.modifierName = this.modifiersForm.get('modifierName').value
     const modifiers: string[] = [
                                 this.modifiersForm.get('modifier1')?.value,
                                 this.modifiersForm.get('modifier2')?.value,

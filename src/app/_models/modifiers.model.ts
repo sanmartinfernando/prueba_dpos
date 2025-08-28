@@ -7,6 +7,6 @@
 export class Modifier {
 
   modifierId: string;
-  name: string;
+  modifierName: string;
   modifierOptions: string[];
 }

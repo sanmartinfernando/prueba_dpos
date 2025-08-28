@@ -50,7 +50,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
 
   currentCategoryPage = 1;
   categorySelected: string;
-  categories: Category[] = [{categoryId: "0", name:""}];
+  categories: Category[] = [{categoryId: "0", categoryName:""}];
 
   currentProductsPage = 1;
   products: Product[] = [];
@@ -214,10 +214,10 @@ export class ProductsComponent implements OnInit, OnDestroy {
       if (!errors.length) {
         const products: Product[] = rows.map((row, i) => ({
           productId: i.toString(),
-          name: row[0],
+          productName: row[0],
           price: Number(row[1]),
           stock: Number(row[2]), 
-          type:0, 
+          priceType:0, 
           favourite: true, 
           categoryId: "1", 
           modifiers: ["1", "2"], 
@@ -306,7 +306,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
     this.productsService.getAllCategories(this.commerceId.toString()).subscribe({
       next: (categories) => {
         this.categories = categories;
-        const category: Category = {categoryId: "0", name: this.translate.instant('dpos.filter.all')};
+        const category: Category = {categoryId: "0", categoryName: this.translate.instant('dpos.filter.all')};
         this.categories.unshift(category);;
         if (this.sessionService.getItem(SessionService.PRODUCT_CATEGORY) == null) {
           this.categorySelected = this.categories[0].categoryId;
