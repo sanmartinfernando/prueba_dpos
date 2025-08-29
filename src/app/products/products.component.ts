@@ -342,7 +342,20 @@ export class ProductsComponent implements OnInit, OnDestroy {
   private getProducts() {
     this.emptySearch = true;
     this.loadCompleted = false;
-
+    this.productsService.getAllProducts(this.commerceId.toString()).subscribe({
+      next: (products) => {
+        this.products = products;
+        this.emptySearch = this.products.length == 0;
+        this.loadCompleted = true;
+      },
+      error: () => {
+        this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.product.all'));
+        this.products = [];
+        this.emptySearch = true;
+        this.loadCompleted = true;
+      }
+    });
+    /*
     this.productsService.getProducts(this.size, this.commerceId.toString(), this.varSearch).subscribe({
       next: products => {
         this.products = products.data;
@@ -355,6 +368,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
         this.loadCompleted = true;
       }
     });
+    */
   }
 
   /**

@@ -60,6 +60,7 @@
     "dpos.error.msg.service.modifiers.detail": "Errorea aldatzailearen datuak lortzen saiatzean.",
     "dpos.error.msg.service.modifiers.create": "Errorea aldatzaile bat sortzen saiatzean.",
     "dpos.error.msg.service.modifiers.update": "Errorea aldatzaile bat eguneratzen saiatzean.",
+    "dpos.error.msg.service.product.all": "Error a l'intentar obtenir el llistat de productes.",
     "dpos.error.msg.service.product.create": "Errorea produktu berri bat sortzen saiatzean.",
     "dpos.error.msg.service.product.update": "Errorea produktuaren datuak eguneratzen saiatzean.",
     "dpos.error.msg.service.product.delete": "Produktuaren datuak ezabatzen saiatzean errore bat gertatu da.",

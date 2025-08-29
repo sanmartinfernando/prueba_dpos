@@ -60,6 +60,7 @@
     "dpos.error.msg.service.modifiers.detail": "Error al intentar obtener los datos del modificador.",
     "dpos.error.msg.service.modifiers.create": "Error al intentar crear un modificador.",
     "dpos.error.msg.service.modifiers.update": "Error al intentar actualizar un modificador.",
+    "dpos.error.msg.service.product.all": "Errorea produktuen zerrenda lortzen saiatzean.",
     "dpos.error.msg.service.product.create": "Error al intentar crear un producto nuevo.",
     "dpos.error.msg.service.product.update": "Error al intentar actualizar los datos del producto.",
     "dpos.error.msg.service.product.delete": "Error al intentar eliminar los datos del producto.",

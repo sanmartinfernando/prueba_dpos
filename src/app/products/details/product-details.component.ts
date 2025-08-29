@@ -46,10 +46,7 @@ export class ProductDetailsComponent implements OnInit {
   public salesEndDate: string;
   public salesEndDateMilli: number;
 
-  public categoryIdSelected: string[] = [];
   public categories: Category[] = [];
-  
-  public modifiersIdSelected: string;
   public modifiers: Modifier[] = [];
 
   public product: Product;
@@ -97,7 +94,6 @@ export class ProductDetailsComponent implements OnInit {
       this.productForm.get('price')?.setValue(0);
     } else {
       this.productForm.get('price')?.enable();
-      this.productForm.get('price')?.setValue(null);
     }
   }
 
@@ -113,7 +109,6 @@ export class ProductDetailsComponent implements OnInit {
         this.productForm.get('price')?.setValue(0);
       } else {
         this.productForm.get('price')?.enable();
-        this.productForm.get('price')?.setValue(null);
       }
     });
     
@@ -123,6 +118,7 @@ export class ProductDetailsComponent implements OnInit {
     this.getAllCategories();
     this.getAllModifiers();
 
+    
     if (idParam) {
       const decoded = this.encryptionService.decode(idParam);
       this.idProduct = this.encryptionService.decrypt(decoded);
@@ -138,8 +134,32 @@ export class ProductDetailsComponent implements OnInit {
    * Obtiene la información de un producto.
    */
   public getProduct(): void {
-    // Implementación pendiente
-    this.isLoading = false;
+    this.isLoading = true;
+    this.productsService.getProduct(this.idProduct, this.commerceId).subscribe({
+      next: (product) => {
+        this.product = product;
+        this.productForm.setValue({ productName: this.product.productName,
+                                  price: this.product.price,
+                                  priceType: this.product.priceType,
+                                  categoryId: this.product.categoryId,
+                                  modifiers: this.product.modifiers,
+                                  epigraph: this.product.epigraph,
+                                  unitMeasurement: this.product.unitMeasurement,
+                                  stock: this.product.stock});
+
+        // Forzar que el input de precio se formatee como en blur
+        setTimeout(() => {
+          const priceInput: HTMLInputElement | null = document.querySelector<HTMLInputElement>('#price');
+          priceInput?.dispatchEvent(new Event('blur'));
+        });
+
+        this.isLoading = false;
+      },
+      error: () => {
+        this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.category'));
+        this.isLoading = false;
+      }
+    });
   }
 
   /**

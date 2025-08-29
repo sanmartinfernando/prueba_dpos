@@ -57,6 +57,20 @@ export class ProductsService {
     return this.http.get<ProductInfo>(`${environment.urlProducts}${RestRoutes.PRODUCTS_INFO}`, { params, ...this.httpOptions });
   }
 
+  /**
+   * Obtiene el listado de productos de un comercio.
+   * 
+   * @param commerceId Id del comercio asociado.
+   * @returns Observable con el listado de categorías.
+   */
+  public getAllProducts(commerceId: string): Observable<Product[]> {
+    if (!commerceId) {
+      return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
+    }
+    const params = new HttpParams().set('commerceId', commerceId);
+    const url = `${environment.urlProducts}${RestRoutes.PRODUCT}/all`;
+    return this.http.get<Product[]>(url, { headers: this.httpOptions.headers, params });
+  }
 
   /**
    * Crea o actualiza un producto según tenga definido el ID.

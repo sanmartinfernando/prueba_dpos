@@ -60,6 +60,7 @@
     "dpos.error.msg.service.modifiers.detail": "Error a l'intentar obtenir les dades del modificador.",
     "dpos.error.msg.service.modifiers.create": "Error a l'intentar crear un modificador.",
     "dpos.error.msg.service.modifiers.update": "Error a l'intentar actualitzar un modificador.",
+    "dpos.error.msg.service.product.all": "Error a l'intentar obtenir el llistat de productes.",
     "dpos.error.msg.service.product.create": "Error a l'intentar crear un producte nou.",
     "dpos.error.msg.service.product.update": "Error a l'intentar actualitzar les dades del producte.",
     "dpos.error.msg.service.product.delete": "Error  l'intentar eliminar les dades del producte.",

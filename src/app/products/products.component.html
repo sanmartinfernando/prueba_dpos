@@ -5,18 +5,18 @@
     <div class="col-12 col-sm-6 col-md-4 col-lg-1">
       <label class="form-label" for="productFavourite">{{ 'dpos.products.favourite.form.label' | translate }}</label>
       <div class="d-flex justify-content-start mt-0">
-        <input type="checkbox" id="productFavourite" name="productFavourite" [(ngModel)]="productFavouriteVarSearch" (change)="onProductFavouriteChange(productFavouriteVarSearch)" class="form-check-input checkbox-large">
+        <input disabled type="checkbox" id="productFavourite" name="productFavourite" [(ngModel)]="productFavouriteVarSearch" (change)="onProductFavouriteChange(productFavouriteVarSearch)" class="form-check-input checkbox-large">
       </div>
     </div>
     <div class="col-12 col-sm-6 col-md-4 col-lg-2">
       <label class="form-label" for="category">{{ 'dpos.products.category.form.label' | translate }}</label>
-      <select class="form-select" id="category" name="category" [(ngModel)]="categorySelected" (change)="onCategoryChange()">
+      <select disabled class="form-select" id="category" name="category" [(ngModel)]="categorySelected" (change)="onCategoryChange()">
         <option *ngFor="let category of categories" [value]="category.categoryId">{{ category.categoryName }}</option>
       </select>
     </div>
     <div class="col-12 col-sm-6 col-md-4 col-lg-2">
       <label class="form-label" for="productName">{{ 'dpos.products.name.form.label' | translate }}</label>
-      <input type="text" class="form-control" id="productName" name="productName" [(ngModel)]="productNameVarSearch" (change)="onProductNameChange()">
+      <input disabled type="text" class="form-control" id="productName" name="productName" [(ngModel)]="productNameVarSearch" (change)="onProductNameChange()">
     </div>
     <!-- Botones para limpiar formulario y buscar productos -->
     <div class="col-12 col-md-4 col-lg-4 d-flex flex-wrap gap-2 align-items-end">
@@ -47,14 +47,16 @@
           </button>
         </div>
       </div>
-      <!-- Mensaje cuando no hay productos para mostrar -->
-      <div *ngIf="!products || products.length === 0" class="table table-hover">
-        <div class="d-flex justify-content-center">
-          <b><i>{{ 'dpos.products.nodata.label' | translate }}</i></b>
-        </div>
+      <!-- Spinner mientras se cargan los datos -->
+      <div *ngIf="!loadCompleted && !emptySearch" class="d-flex justify-content-center">
+        <div class="spinner-border text-danger"></div>
+      </div>
+      <!-- Mensaje cuando no hay datos para mostrar -->
+      <div *ngIf="loadCompleted && emptySearch" class="d-flex justify-content-center">
+        <b><i>{{ 'dpos.products.nodata.label' | translate }}</i></b>
       </div>
       <!-- Tabla con listado de productos -->
-      <div *ngIf="products && products.length > 0">
+      <div *ngIf="loadCompleted && !emptySearch">
         <div class="table-responsive">
           <table class="table table-hover">
             <thead class="text-customer">
