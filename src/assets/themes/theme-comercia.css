@@ -51,7 +51,7 @@
   --bs-color-black-200: #24292F;
   --bs-color-black-100: #1A1D22;
   --bs-color-grey-700: #cee9ea00;
-  --bs-color-grey-600: #212529;
+  --bs-color-grey-600: #2E2F30;
   --bs-color-grey-500: #333333;
   --bs-color-grey-400: #495057;
   --bs-color-grey-300: #606060;
@@ -59,6 +59,7 @@
   --bs-color-grey-100: #f7f7f7;
   --bs-color-white-200: #fcf2ff;
   --bs-color-white-100: #ffffff;
+  --bs-color-blue-800: #1B4965;
   --bs-color-blue-700: blue;
   --bs-color-blue-600: #32B5E7;
   --bs-color-blue-500: #5492ee;
@@ -73,7 +74,7 @@
   --bs-color-green-300: #a3d4d7;
   --bs-color-green-200: #73d7fb;
   --bs-color-green-100: #cee9ea;
-  --bs-color-green-light: #1FCC92;
+  --bs-color-green-light: #008535;
   --bs-color-purple-100: #af4bce;
   --bs-color-pink-200: #F598F5;
   --bs-color-pink-100: #eeb8ff;
@@ -175,6 +176,13 @@ label.me-2 {
 
 .infoSales {
   color: var(--bs-color-white-100);
+  box-shadow: none !important;
+  border: 1px solid var(--bs-color-blue-800) !important;
+  border-radius: 5px !important;
+  background-color: var(--bs-color-blue-800);
+  height: 38px;
+  padding-left: 10px;
+  font-size: 12px;
 }
 
 /*** HEADER ***/
@@ -194,7 +202,7 @@ label.me-2 {
 
 .header-main, .footer-main {
   background-color: var(--bs-color-black-100);
-  padding: 5px 10px 5px 140px;
+  padding: 5px 10px 5px 160px;
 }
 
 /*** MENU LATERAL ***/
@@ -204,17 +212,18 @@ label.me-2 {
   flex-wrap: nowrap;
   height: 100vh;
   max-height: 100vh;
-  width: 120px;
+  width: 160px;
   position: fixed;
   top: 0;
   left: 0;
   overflow-x: hidden;
   background-color: var(--bs-color-black-100);
+  border-right: 1px solid var(--bs-color-grey-400) !important;
   z-index: 1050;
 }
 
 .sidenav a {
-  padding: 0px 10px 10px 10px;
+  padding: 0px 10px 0px 10px;
   text-decoration: none;
   display: block;
   font-size: 0.7rem;
@@ -222,7 +231,7 @@ label.me-2 {
 
 .sidenav a i {
   font-size: 1.7rem;
-  padding: 30px 20px;
+  padding: 5px 5px;
   border-radius: 10px;
 }
 
@@ -385,14 +394,11 @@ border-color: var(--bs-color-white-100) !important;
 
 .custom-mat-form-select {
   background-color: var(--bs-color-black-200) !important;
-  color: var(--bs-color-white-100) !important;
+  color: var(--bs-color-grey-200) !important;
   height: 38px !important;
   box-shadow: none !important;
-  border: none !important;
-  border-bottom: 2px solid #000 !important;
-  border-radius: 0 !important;
-  border-color: var(--bs-color-white-100) !important;
-  background-color: var(--bs-color-black-100)FF  !important;
+  border: 1px solid var(--bs-color-grey-200) !important;
+  border-radius: 5px !important;
 }
 
 .mat-form-field-invalid{
@@ -428,29 +434,23 @@ border-color: var(--bs-color-white-100) !important;
   color: var(--bs-color-white-100);
 }
 
-
-.form-select {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right 0.75rem center;
-  background-size: 1rem;
-  padding-right: 2rem; /* espacio para la flechita */
-}
-
 .form-select, .form-control {
-  box-shadow: none;
-  border: none;
-  border-bottom: 2px solid #000;
-  border-radius: 0;
-  border-color: var(--bs-color-white-100);
+  box-shadow: none !important;
+  border: 1px solid var(--bs-color-grey-200) !important;
+  border-radius: 5px !important;
+  border-color: var(--bs-color-grey-200);
   background-color: var(--bs-color-black-100)FF;
   font-size: 0.85rem;
   height: 38px;
-  color: var(--bs-color-white-100);
+  color: var(--bs-color-grey-200);
   min-width: 150px;
+}
+
+.form-select:disabled {
+  border: 1px solid var(--bs-color-grey-200) !important;
+  border-radius: 5px !important;
+  border-color: var(--bs-color-grey-200);
+  background-color: var(--bs-color-grey-600);
 }
 
 .multiple-option {
@@ -491,29 +491,27 @@ select[multiple]::-webkit-scrollbar {
   color: var(--bs-color-white-100);
 }
 
+.form-check-input:disabled {
+  border: 1px solid var(--bs-color-grey-200) !important;
+  border-radius: 5px !important;
+  border-color: var(--bs-color-grey-200) !important;
+  background-color: var(--bs-color-grey-600);
+}
+
 .form-select option {
-  color: var(--bs-color-white-100);
+  color: var(--bs-color-grey-200);
   background-color: var(--bs-color-black-200);
 }
 
 .form-select-commerce {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right 0.75rem center;
-  background-size: 1rem;
-  padding-right: 2rem;
   box-shadow: none;
-  border: none;
-  border-bottom: 2px solid #000;
-  border-radius: 0;
-  border-color: var(--bs-color-white-100);
+  border: 1px solid var(--bs-color-grey-200) !important;
+  border-radius: 5px !important;
+  border-color: var(--bs-color-grey-200);
   background-color: var(--bs-color-black-100)FF;
   font-size: 0.85rem;
   height: 38px;
-  color: var(--bs-color-white-100);
+  color: var(--bs-color-grey-200);
   min-width: 150px;
 }
 
@@ -534,8 +532,8 @@ select, input, input[type="date" i] {
   border: none;
   border-bottom: 2px solid #000;
   border-radius: 0;
-  color: var(--bs-color-white-100);
-  border-color: var(--bs-color-white-100);
+  color: var(--bs-color-grey-200);
+  border-color: var(--bs-color-grey-200);
 }
 
 select, input[type="date" i], i{
@@ -569,20 +567,18 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .ngx-pagination span{
   font-size: 0.8rem;
-  color: var(--bs-color-grey-300);
 }
 
 .ngx-pagination .current, .ngx-pagination li a:hover{
   padding: 0px 9px !important;
   background: transparent !important;
-  color: var(--bs-color-white-200);
-  border: 1px solid var(--bs-color-white-200);
-  border-radius: 20px;
+  color: var(--bs-color-white-200) !important;
+  border: none;
 }
 
 .pagination-next a:after,
 .pagination-next a:before {
-  background-color: var(--bs-color-black-200);
+  background-color: var(--bs-color-grey-600);
   color: var(--bs-color-grey-300);
   border-radius: 4px;
 }
@@ -660,7 +656,7 @@ div.ng-star-inserted {
   --bs-btn-padding-x: 1rem;
   --bs-btn-padding-y: 0.453rem;
   --bs-btn-font-size: .785rem;
-  --bs-btn-font-weight: 400;
+  --bs-btn-font-weight: 600;
   --bs-btn-line-height: 1.4;
   --bs-btn-color: var(--bs-body-color);
   --bs-btn-bg: var(--bs-btn-bg);
@@ -743,9 +739,9 @@ div.ng-star-inserted {
 }
 
 .btn-light {
-  --bs-btn-color: var(--bs-color-white-100);
+  --bs-btn-color: var(--bs-color-grey-200);
   --bs-btn-bg: var(--bs-color-grey-700);
-  --bs-btn-border-color: var(--bs-color-white-100);
+  --bs-btn-border-color: var(--bs-color-grey-200);
   --bs-btn-active-color: var(--bs-color-grey-400);
   --bs-btn-active-bg: var(--bs-color-green-100);
   --bs-btn-active-border-color: var(--bs-color-grey-400);
@@ -753,21 +749,31 @@ div.ng-star-inserted {
   --bs-btn-disabled-bg: var(--bs-color-green-100);
   --bs-btn-disabled-border-color: var(--bs-color-blue-600);
   box-shadow: none;
-  border: none;
-  border-bottom: 2px solid var(--bs-color-white-100);
-  border-radius: 0;
+  border: 1px solid var(--bs-color-grey-200) !important;
+  border-radius: 5px !important;
+  border-color: var(--bs-color-grey-200);
+  background-color: var(--bs-color-black-100)FF;
+  font-size: 0.85rem;
+  height: 38px;
+}
+
+.btn-light-icon {
+  color: var(--bs-color-blue-600);
 }
 
 .btn-outline-info {
-  --bs-btn-color: var(--bs-color-green-light);
-  --bs-btn-border-color: var(--bs-color-green-light);
+  --bs-btn-color: var(--bs-color-black-100);
+  --bs-btn-bg: var(--bs-color-blue-600);
+  --bs-btn-border-color: var(--bs-color-blue-600);
   --bs-btn-hover-color: var(--bs-color-black-100);
-  --bs-btn-hover-bg: var(--bs-color-green-light);
-  --bs-btn-hover-border-color: var(--bs-color-black-100);
-  --bs-btn-active-color: var(--bs-color-green-light);
-  --bs-btn-active-border-color: var(--bs-color-green-light);
-  --bs-btn-disabled-color: var(--bs-color-green-light);
-  --bs-btn-disabled-border-color: var(--bs-color-green-light);
+  --bs-btn-hover-bg: var(--bs-color-blue-600);
+  --bs-btn-hover-border-color: var(--bs-color-blue-600);
+  --bs-btn-active-color: var(--bs-color-black-100);
+  --bs-btn-active-bg: var(--bs-color-blue-600);
+  --bs-btn-active-border-color: var(--bs-color-blue-600);
+  --bs-btn-disabled-color: var(--bs-color-black-100);
+  --bs-btn-disabled-bg: var(--bs-color-blue-500);
+  --bs-btn-disabled-border-color: var(--bs-color-blue-500);
 }
 
 .btn-outline-danger {
@@ -832,16 +838,16 @@ div.ng-star-inserted {
   word-wrap: break-word;
   border: 0;
   padding: 15px;
-  border-radius: 20px;
+  border-radius: 5px;
   color: var(--bs-color-grey-500);
-  background: var(--bs-color-black-200);
+  background: var(--bs-color-grey-600);
   width: 100%;
   box-shadow: none;
 }
 
 .card-header {
   color: var(--bs-color-grey-500);
-  background: var(--bs-color-black-200) !important;
+  background: var(--bs-color-grey-600) !important;
   width: 100%;
   box-shadow: none;
   padding: 20px;
@@ -939,7 +945,7 @@ div.ng-star-inserted {
 }
 
 .card-customer {
-  border-radius: 20px;
+  border-radius: 5px;
   color: var(--bs-color-white-100);
   width: 100%;
   box-shadow: none;
@@ -952,7 +958,7 @@ div.ng-star-inserted {
   box-shadow: none;
   padding: 20px 20px 15px 20px;
   background: var(--bs-color-grey-100);
-  border-radius: 20px 20px 0 0;
+  border-radius: 5px 5x 0 0;
 }
 
 .card-customer .card-footer {
@@ -1013,7 +1019,7 @@ ul.list-icons li i, ul.list-icons li span, ul.list-icons li svg {
 /*** TABLES ***/
 
 .table-responsive {
-  background-color: var(--bs-color-black-200);
+  background-color: var(--bs-color-grey-600);
 }
 
 .table {
@@ -1025,14 +1031,14 @@ ul.list-icons li i, ul.list-icons li span, ul.list-icons li svg {
   vertical-align: middle;
   border-top: 1px solid #0000000f;
   border-bottom: 1px solid var(--bs-color-grey-500);
-  background-color: var(--bs-color-black-200);
-  color: var(--bs-color-white-100);
+  background-color: var(--bs-color-grey-600);
+  color: var(--bs-color-grey-200);
 }
 
 .table thead th {
   vertical-align: middle;
   font-size: .8rem;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--bs-color-white-100);
   border-top-width: 0;
   border-bottom: 1px solid var(--bs-color-grey-300);
@@ -1045,7 +1051,7 @@ ul.list-icons li i, ul.list-icons li span, ul.list-icons li svg {
 }
 
 .table tr td {
-  background-color: var(--bs-color-black-200);
+  background-color: var(--bs-color-grey-600);
   font-size: .85rem;
   font-weight: 400;
   height: 48px;
@@ -1078,14 +1084,14 @@ ul.list-icons li i, ul.list-icons li span, ul.list-icons li svg {
 
 .table-title {
   font-weight: 500;
-  color: var(--bs-color-blue-600);
+  color: var(--bs-color-grey-200);
 }
 
 /* LISTS AND ITEMS */
 
 .list-items {
   padding: 0.75rem 1rem;
-  background-color: var(--bs-color-black-200);
+  background-color: var(--bs-color-grey-600);
   color: var(--bs-color-white-100);
   margin-bottom: 4px;
   cursor: pointer;
@@ -1129,30 +1135,30 @@ ul.list-icons li i, ul.list-icons li span, ul.list-icons li svg {
 }
 
 .bg-pending {
-  background: transparent;
-  color: var(--bs-color-grey-200);
-  border: 1px solid var(--bs-color-grey-200);
+  background: var(--bs-color-grey-200);
+  color: var(--bs-color-white-100);
+  border: 1px solid transparent;
   padding: 6px 10px;
 }
 
 .bg-accept {
-  background: transparent;
-  color: var(--bs-color-green-light);
-  border: 1px solid var(--bs-color-green-light);
+  background: var(--bs-color-green-light);
+  color: var(--bs-color-white-100);
+  border: 1px solid transparent;
   padding: 6px 10px;
 }
 
 .bg-warning {
-  background: transparent;
-  color: var(--bs-color-orange-200);
-  border: 1px solid var(--bs-color-orange-200);
+  background: var(--bs-color-orange-200);
+  color: var(--bs-color-white-100);
+  border: 1px solid transparent;
   padding: 6px 10px;
 }
 
 .bg-rejected{
-  background: transparent;
-  color: var(--bs-color-red-300);
-  border: 1px solid var(--bs-color-red-300);
+  background: var(--bs-color-red-300);
+  color: var(--bs-color-white-100);
+  border: 1px solid transparent;
   padding: 6px 10px;
 }
 
@@ -1176,7 +1182,7 @@ ul.list-icons li i, ul.list-icons li span, ul.list-icons li svg {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: var(--bs-color-black-200);
+  background-color: var(--bs-color-grey-600);
   border-radius: 5px;
   width: 550px;
   max-width: 90vw;
@@ -1191,7 +1197,7 @@ ul.list-icons li i, ul.list-icons li span, ul.list-icons li svg {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: var(--bs-color-black-200);
+  background-color: var(--bs-color-grey-600);
   border-radius: 8px;
   width: 400px;
   max-width: 90vw;
@@ -1204,7 +1210,7 @@ ul.list-icons li i, ul.list-icons li span, ul.list-icons li svg {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: var(--bs-color-black-200);
+  background-color: var(--bs-color-grey-600);
   border-radius: 8px;
   width: 550px;
   max-width: 90vw;
@@ -1243,7 +1249,7 @@ ul.list-icons li i, ul.list-icons li span, ul.list-icons li svg {
   max-height: calc(80vh - 100px); 
   overflow-y: auto;
   padding-top: 10px;
-  background-color: var(--bs-color-black-200);
+  background-color: var(--bs-color-grey-600);
 }
 
 .modal-body form {
@@ -1257,7 +1263,7 @@ ul.list-icons li i, ul.list-icons li span, ul.list-icons li svg {
 .modal-footer {
   margin-top: 20px;
   display: flex;
-  background-color: var(--bs-color-black-200);
+  background-color: var(--bs-color-grey-600);
   justify-content: flex-end;
   gap: 10px;
   height: 60px;

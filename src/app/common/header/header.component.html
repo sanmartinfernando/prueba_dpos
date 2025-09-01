@@ -27,10 +27,18 @@
   <!-- Lista de enlaces de navegación -->
   <div id="navBar1" class="flex-shrink-0">
     <ul id="navBarMain" class="navbar-nav flex-column align-items-center align-items-md-stretch w-100">
-      <ng-container>
+      <ng-container *ngIf="!isComercia">
         <li *ngFor="let page of pages" class="nav-item w-100">
           <a class="nav-link m-3 d-flex flex-column align-items-center" (click)="handlePageClick(page.text, page.code)" routerLink="/{{ page.code }}" routerLinkActive="active-link">
             <i class="{{ page.icon }} active-icon-link fa-2xl mt-3"></i>{{ page.text }}
+          </a>
+        </li>
+      </ng-container>
+      <ng-container *ngIf="isComercia">
+        <li *ngFor="let page of pages" class="nav-item w-100">
+          <a class="nav-link m-3 d-flex align-items-center" (click)="handlePageClick(page.text, page.code)" routerLink="/{{ page.code }}" routerLinkActive="active-link">
+            <i class="{{ page.icon }} active-icon-link me-2"></i>
+            <span>{{ page.text }}</span>
           </a>
         </li>
       </ng-container>
@@ -51,7 +59,7 @@
         </li>
         <!-- Selector de comercio -->
         <li class="mx-3 nav-item pt-2 pb-2 w-100 w-md-auto">
-          <select [disabled]="!formSelectEnabled" class="form-select-commerce responsive-input" id="searchCommerce" name="commerce" [(ngModel)]="commerceSelected" (change)="onCommerceChange()" *ngIf="username; else loginLink">
+          <select [disabled]="!formSelectEnabled" class="form-select responsive-input" id="searchCommerce" name="commerce" [(ngModel)]="commerceSelected" (change)="onCommerceChange()" *ngIf="username; else loginLink">
             <option *ngFor="let commerce of commerces" [value]="commerce.commerceId">
               {{ commerce.commerceNumber + ' - ' + commerce.resellerName }}
             </option>
@@ -60,9 +68,9 @@
         <!-- Botón de cerrar sesión -->
         <li class="mx-3 nav-item pt-2 pb-2 w-100 w-md-auto">
           <button class="btn btn-light d-flex align-items-center gap-2 responsive-button" *ngIf="username" (click)="logOut()" style="cursor: pointer">
-            <i class="fa-solid fa-circle-user fa-lg" style="color: #ffbb00;"></i>
+            <i class="fa-regular fa-circle-user fa-lg btn-light-icon"></i>
             <span>{{ username }}</span>
-            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            <i class="fa-solid fa-power-off"></i>
           </button>
         </li>
         <!-- Link a login, si no hay usuario -->
