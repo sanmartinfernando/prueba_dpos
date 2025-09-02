@@ -66,7 +66,8 @@ export class CustomerDetailsComponent implements OnInit {
    */
   ngOnInit(): void {
     this.commerceId = this.sessionService.getItem(SessionService.COMMERCE_ID);
-    const idParam = this.encryptionService.decode(this.activatedRoute.snapshot.params['id']);
+    const idParam = this.activatedRoute.snapshot.params['id'];
+    
     if (idParam) {
       const decoded = this.encryptionService.decode(idParam);
       this.idCustomer = this.encryptionService.decrypt(decoded);

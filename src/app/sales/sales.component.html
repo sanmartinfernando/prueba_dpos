@@ -32,8 +32,8 @@
       <button type="button" class="btn btn-primary" (click)="searchSales()">
         <i class="fas fa-search"></i>&nbsp;{{ 'dpos.action.search' | translate }}
       </button>
-      <button type="reset" class="btn btn-outline-danger">
-        <i class="fas fa-eraser"></i>
+      <button type="reset" class="btn btn-outline-info btn-round">
+        <i class="fa-solid fa-arrow-rotate-right fa-xl"></i>
       </button>
     </div>
   </form>
@@ -58,8 +58,8 @@
             <div class="infoSales d-flex flex-column flex-md-row align-items-md-center">
               <label class="me-md-2 mb-1 mb-md-0" for="totalSalesString">{{ 'dpos.sales.operations.total.label' | translate }}:&nbsp;&nbsp;&nbsp;<b>{{ totalSalesString }}</b></label>
             </div>
-            <button class="btn btn-outline-info mt-2 mt-md-0" (click)="downloadCSV()">
-              <i class="fa-solid fa-file-csv fa-xl"></i>
+            <button class="btn btn-primary btn-round mt-2 mt-md-0" (click)="downloadCSV()">
+              <i class="fa-solid fa-download fa-xl"></i>
             </button>
           </div>
         </div>

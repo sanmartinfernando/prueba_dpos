@@ -23,8 +23,8 @@
       <button type="button" class="btn btn-primary" (click)="searchCustomers()">
         <i class="fas fa-search"></i>&nbsp;{{ 'dpos.action.search' | translate }}
       </button>
-      <button type="reset" class="btn btn-outline-danger" (click)="cleanFormFields()">
-        <i class="fas fa-eraser"></i>
+      <button type="reset" class="btn btn-outline-info btn-round" (click)="cleanFormFields()">
+        <i class="fa-solid fa-arrow-rotate-right fa-xl"></i>
       </button>
     </div>
   </form>
@@ -46,8 +46,8 @@
             {{ 'dpos.customers.import.label' | translate }}
           </button>
           <input type="file" #customerFileInput style="display: none" accept=".csv" (change)="onCustomerFileSelected($event)" />
-          <button class="btn btn-outline-info" (click)="downloadCSV()">
-            <i class="fa-solid fa-file-csv fa-xl"></i>
+          <button class="btn btn-primary btn-round" (click)="downloadCSV()">
+            <i class="fa-solid fa-download fa-xl"></i>
           </button>
         </div>
       </div>

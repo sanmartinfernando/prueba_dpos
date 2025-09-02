@@ -20,8 +20,8 @@
       <button type="button" class="btn btn-primary" (click)="searchBalances()">
         <i class="fas fa-search"></i>&nbsp;{{ 'dpos.action.search' | translate }}
       </button>
-      <button type="reset" class="btn btn-outline-danger">
-        <i class="fas fa-eraser"></i>
+      <button type="reset" class="btn btn-outline-info btn-round">
+        <i class="fa-solid fa-arrow-rotate-right fa-xl"></i>
       </button>
     </div>
   </form>
@@ -37,9 +37,9 @@
           <h5><b>{{ 'dpos.balances.title.label' | translate }}</b></h5>
         </div>
         <!-- Botón exportar CSV, solo visible si carga se ha completado y hay resultados -->
-        <div class="col-12 col-md-3 text-md-end text-center" *ngIf="loadCompleted && !emptySearch">
-          <button class="btn btn-outline-info justify-content-center" (click)="downloadCSV()">
-            <i class="fa-solid fa-file-csv fa-xl"></i>
+        <div class="col-12 col-md-6 text-md-end text-center mt-3 mt-md-0 d-flex flex-wrap gap-2 justify-content-md-end justify-content-center" *ngIf="loadCompleted && !emptySearch">
+          <button class="btn btn-primary btn-round" (click)="downloadCSV()">
+            <i class="fa-solid fa-download fa-xl"></i>
           </button>
         </div>
       </div>

@@ -700,15 +700,26 @@ p.center {
 }
 
 .btn-outline-info {
-  --bs-btn-color: var(--bs-color-green-400);
-  --bs-btn-border-color: var(--bs-color-green-400);
+  --bs-btn-color: var(--bs-color-blue-600);
+  --bs-btn-bg: var(--bs-color-white-100)FF;
+  --bs-btn-border-color: var(--bs-color-blue-600);
   --bs-btn-hover-color: var(--bs-color-white-100);
-  --bs-btn-hover-bg: var(--bs-color-green-200);
-  --bs-btn-hover-border-color: var(--bs-color-green-200);
-  --bs-btn-active-color: var(--bs-color-green-200);
-  --bs-btn-active-border-color: var(--bs-color-green-200);
-  --bs-btn-disabled-color: var(--bs-color-green-400);
-  --bs-btn-disabled-border-color: var(--bs-color-green-400);
+  --bs-btn-hover-bg: var(--bs-color-blue-600);
+  --bs-btn-hover-border-color: var(--bs-color-blue-600);
+  --bs-btn-active-color: var(--bs-color-blue-600);
+  --bs-btn-active-border-color: var(--bs-color-blue-600);
+  --bs-btn-disabled-color: var(--bs-color-red-300);
+  --bs-btn-disabled-border-color: var(--bs-color-blue-600);
+}
+
+.btn-round {
+  border-radius: 50% !important;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
 }
 
 .btn-outline-danger {
