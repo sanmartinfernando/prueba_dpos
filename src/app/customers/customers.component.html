@@ -61,48 +61,46 @@
       </div>
       <!-- Tabla con resultados de clientes, visible si hay resultados -->
       <div class="row" *ngIf="loadCompleted && !emptySearch">
-        <div class="col">
-          <div class="table-responsive">
-            <table class="table table-hover order-table">
-              <thead class="text-customer">
-                <tr>
-                  <th>{{ 'dpos.customers.nif.label' | translate }}</th>
-                  <th>{{ 'dpos.customers.name.label' | translate }}</th>
-                  <th>{{ 'dpos.customers.address.label' | translate }}</th>
-                  <th>{{ 'dpos.customers.city.label' | translate }}</th>
-                  <th>{{ 'dpos.customers.state.label' | translate }}</th>
-                  <th>{{ 'dpos.customers.mail.label' | translate }}</th>
-                  <th class="text-center">{{ 'dpos.customers.phone.label' | translate }}</th>
-                  <th class="text-center">{{ 'dpos.customers.delete.label' | translate }}</th>
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead class="text-customer">
+              <tr>
+                <th>{{ 'dpos.customers.nif.label' | translate }}</th>
+                <th>{{ 'dpos.customers.name.label' | translate }}</th>
+                <th>{{ 'dpos.customers.address.label' | translate }}</th>
+                <th>{{ 'dpos.customers.city.label' | translate }}</th>
+                <th>{{ 'dpos.customers.state.label' | translate }}</th>
+                <th>{{ 'dpos.customers.mail.label' | translate }}</th>
+                <th class="text-center">{{ 'dpos.customers.phone.label' | translate }}</th>
+                <th class="text-center">{{ 'dpos.customers.delete.label' | translate }}</th>
+              </tr>
+            </thead>
+            <ng-template #empty>
+              <td colspan="7">
+                <b>{{ 'dpos.sales.operation.nodata.label' | translate }}</b>
+              </td>
+            </ng-template>
+            <tbody>
+              <ng-container *ngIf="loadCompleted && customers; else empty">
+                <tr *ngFor="let customer of customers | paginate : { itemsPerPage: 10, currentPage: page }; index as i" (click)="sendCustomerDetails(customer.clientId)">
+                  <td class="align-middle"><span class="table-title">{{ customer.identityDocument }}</span></td>
+                  <td class="align-middle">{{ customer.clientName }}</td>
+                  <td class="align-middle">{{ customer.address }}</td>
+                  <td class="align-middle">{{ customer.city }}</td>
+                  <td class="align-middle">{{ customer.state }}</td>
+                  <td class="align-middle">{{ customer.email }}</td>
+                  <td class="text-center align-middle">{{ customer.phone }}</td>
+                  <td class="text-center align-middle">
+                    <button type="button" class="btn-delete" (click)="openDeleteModal(customer.clientId, $event)">
+                      <i class="fa-solid fa-trash" style="color: #FD716E"></i>
+                    </button>
+                  </td>
                 </tr>
-              </thead>
-              <ng-template #empty>
-                <td colspan="7">
-                  <b>{{ 'dpos.sales.operation.nodata.label' | translate }}</b>
-                </td>
-              </ng-template>
-              <tbody>
-                <ng-container *ngIf="loadCompleted && customers; else empty">
-                  <tr *ngFor="let customer of customers | paginate : { itemsPerPage: 10, currentPage: page }; index as i" (click)="sendCustomerDetails(customer.clientId)">
-                    <td class="align-middle"><span class="table-title">{{ customer.identityDocument }}</span></td>
-                    <td class="align-middle">{{ customer.clientName }}</td>
-                    <td class="align-middle">{{ customer.address }}</td>
-                    <td class="align-middle">{{ customer.city }}</td>
-                    <td class="align-middle">{{ customer.state }}</td>
-                    <td class="align-middle">{{ customer.email }}</td>
-                    <td class="text-center align-middle">{{ customer.phone }}</td>
-                    <td class="text-center align-middle">
-                      <button type="button" class="btn-delete" (click)="openDeleteModal(customer.clientId, $event)">
-                        <i class="fa-solid fa-trash" style="color: #FD716E"></i>
-                      </button>
-                    </td>
-                  </tr>
-                </ng-container>
-              </tbody>
-            </table>
-            <div *ngIf="loadCompleted && emptySearch === false" class="text-center mt-3">
-              <pagination-controls (pageChange)="page = $event" previousLabel="" nextLabel=""></pagination-controls>
-            </div>
+              </ng-container>
+            </tbody>
+          </table>
+          <div *ngIf="loadCompleted && emptySearch === false" class="text-start mt-3">
+            <pagination-controls (pageChange)="page = $event" previousLabel="{{ 'dpos.pagination.previous' | translate }}" nextLabel="{{ 'dpos.pagination.next' | translate }}"></pagination-controls>
           </div>
         </div>
       </div>

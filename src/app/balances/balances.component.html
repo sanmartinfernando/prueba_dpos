@@ -86,8 +86,8 @@
                 </ng-container>
               </tbody>
             </table>
-            <div class="text-center mt-3">
-              <pagination-controls (pageChange)="page = $event" previousLabel="" nextLabel=""></pagination-controls>
+            <div class="text-start mt-3">
+              <pagination-controls (pageChange)="page = $event" previousLabel="{{ 'dpos.pagination.previous' | translate }}" nextLabel="{{ 'dpos.pagination.next' | translate }}"></pagination-controls>
             </div>
           </div>
         </div>

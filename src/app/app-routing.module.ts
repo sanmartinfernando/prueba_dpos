@@ -24,12 +24,12 @@ import { AuthService } from './_services/auth.service';
 import { InactivityService } from './_services/inactivity.service';
 
 const routes: Routes = [
-  { path: '', component: DashboardComponent, canActivate: [AuthGuard], title: 'DPOS - Dashboard' },
+  { path: '', component: DashboardComponent, canActivate: [AuthGuard], title: 'DPOS - Inicio' },
   { path: 'cookies-policy', component: CookiesPolicyComponent, title: 'Política de cookies' },
   { path: 'use-conditions', component: UseConditionsComponent, title: 'Condiciones de uso' },
   { path: 'privacy-policy', component: PrivacyPolicyComponent, title: 'Política de privacidad' },
   { path: 'login', component: LoginComponent, title: 'DPOS - Login' },
-  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard], title: 'DPOS - Dashboard' },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard], title: 'DPOS - Inicio' },
   { path: 'sales', component: SalesComponent, canActivate: [AuthGuard], title: 'DPOS - Ventas' },
   { path: 'customers', component: CustomersComponent, canActivate: [AuthGuard], title: 'DPOS - Clientes' },
   { path: 'reports', component: ReportsComponent, canActivate: [AuthGuard], title: 'DPOS - Informes' },

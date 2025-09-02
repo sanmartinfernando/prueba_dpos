@@ -566,7 +566,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .ngx-pagination span{
   font-size: 0.8rem;
-  color: var(--bs-color-grey-300);
+  color: var(--bs-color-grey-300) !important;
+}
+
+.ngx-pagination a{
+  font-size: 0.8rem;
+  color: var(--bs-color-grey-300) !important;
+  text-decoration: none !important;
 }
 
 .ngx-pagination .current, .ngx-pagination li a:hover{
@@ -1042,8 +1048,8 @@ ul.list-icons li i, ul.list-icons li span, ul.list-icons li svg {
   color: var(--bs-color-white-100);
   border-top-width: 0;
   border-bottom: 1px solid var(--bs-color-grey-300);
-  text-transform: uppercase;
   padding: 12px 10px;
+  text-transform: capitalize !important;
 }
 
 .table thead.bg-customer th {

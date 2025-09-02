@@ -67,23 +67,31 @@
                 <th class="text-center">{{ 'dpos.products.table.column.delete' | translate }}</th>
               </tr>
             </thead>
+            <ng-template #empty>
+              <td colspan="7">
+                <b>{{ 'dpos.sales.operation.nodata.label' | translate }}</b>
+              </td>
+            </ng-template>
             <tbody>
-              <!-- Iteración paginada de productos -->
-              <tr *ngFor="let product of products | paginate: { id: 'productsList', itemsPerPage: 5, currentPage: currentProductsPage }" (click)="sendProductDetails(product.productId)">
-                <td class="align-middle">{{ product.productName }}</td>
-                <td class="text-center align-middle">{{ product.stock }}</td>
-                <td class="text-end align-middle">{{ product.price / (Math.pow(10, 2)) | currency : 'EUR' : '€' }}</td>
-                <td class="text-center align-middle">
-                  <button type="button" class="btn-delete" (click)="openDeleteModal(product.productId, $event)">
-                    <i class="fa-solid fa-trash" style="color: #FD716E"></i>
-                  </button>
-                </td>
-              </tr>
+              <ng-container *ngIf="loadCompleted && products; else empty">
+                <tr *ngFor="let product of products | paginate: { id: 'productsList', itemsPerPage: 5, currentPage: currentProductsPage }" (click)="sendProductDetails(product.productId)">
+                  <td class="align-middle">{{ product.productName }}</td>
+                  <td class="text-center align-middle">{{ product.stock }}</td>
+                  <td class="text-end align-middle">{{ product.price / (Math.pow(10, 2)) | currency : 'EUR' : '€' }}</td>
+                  <td class="text-center align-middle">
+                    <button type="button" class="btn-delete" (click)="openDeleteModal(product.productId, $event)">
+                      <i class="fa-solid fa-trash" style="color: #FD716E"></i>
+                    </button>
+                  </td>
+                </tr>
+              </ng-container>
             </tbody>
           </table>
+          <!-- Controles de paginación -->
+          <div *ngIf="loadCompleted && emptySearch === false" class="text-start mt-3">
+            <pagination-controls (pageChange)="currentProductsPage = $event" id="productsList" previousLabel="{{ 'dpos.pagination.previous' | translate }}" nextLabel="{{ 'dpos.pagination.next' | translate }}"></pagination-controls>
+          </div>
         </div>
-        <!-- Controles de paginación -->
-        <pagination-controls (pageChange)="currentProductsPage = $event" id="productsList" previousLabel="" nextLabel="" class="mt-3 d-flex justify-content-center"></pagination-controls>
       </div>
     </div>
   </div>

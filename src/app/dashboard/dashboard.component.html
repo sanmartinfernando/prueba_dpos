@@ -112,7 +112,7 @@
     </div>
     <div class="col-12 col-lg-4 d-flex flex-column">
       <!-- Sección de gráfico de top ventas -->
-      <div class="card flex-fill mb-3">
+      <div class="card mb-3">
         <div class="card-body">
           <h5 class="mb-4">
             <i class="text-success me-2"></i>
@@ -133,7 +133,7 @@
         </div>
       </div>
       <!-- Sección de gráfico de métodos de pago -->
-      <div class="card flex-fill">
+      <div class="card">
         <div class="card-body">
           <h5 class="mb-4">
             <i class="text-info me-2"></i>
@@ -142,7 +142,6 @@
           <ng-template #noPMData><br /><b><i>{{ 'dpos.dashboard.nodata.label' | translate }}</i></b></ng-template>
           <ng-container *ngIf="loadedPMChart; else spinner">
             <div class="inner-chart">
-
               <ngx-charts-bar-horizontal [results]="datasetPM" [animations]="true"
                 [showDataLabel]="true" [xAxis]="false" [yAxis]="true" [customColors]="colorsPM"
                 [dataLabelFormatting]="formatPercentageLabel" *ngIf="!emptyKPIChart; else noPMData">
