@@ -55,6 +55,8 @@
   --bs-color-grey-100: #f7f7f7;
   --bs-color-white-200: #fcf2ff;
   --bs-color-white-100: #ffffff;
+  --bs-color-blue-900: #2a74bb;
+  --bs-color-blue-800: #1B4965;
   --bs-color-blue-700: blue;
   --bs-color-blue-600: #0d6efd;
   --bs-color-blue-500: #5492ee;
@@ -234,31 +236,77 @@ footer{
 /*** KPIS ***/
 
 #salesBorder {
-  border-bottom-color: var(--bs-color-blue-500) !important;
+  background-color: var(--bs-color-blue-500);
 }
 
 #averageTicketBorder {
-  border-bottom-color: var(--bs-color-green-light) !important;
+  background-color: var(--bs-color-green-light);
 }
 
 #refundsBorder {
-  border-bottom-color: var(--bs-color-orange-300) !important;
+  background-color: var(--bs-color-orange-300);
 }
 
 #casmovBorder {
-  border-bottom-color: var(--bs-color-pink-200) !important;
+  background-color: var(--bs-color-pink-200);
 }
 
 #balanceBorder {
-  border-bottom-color: var(--bs-color-red-100) !important;
+  background-color: var(--bs-color-red-100);
 }
 
-.kpi{
-  border: none;
+.kpi-container {
+  display: flex;
+  gap: 1rem;
+  background-color: var(--bs-color-white-100);
+  border-radius: 10px;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.kpi-card{
   background-color: var(--bs-color-grey-100);
-  border-bottom: 8px solid var(--bs-color-grey-200);
-  padding: 1rem;
-  cursor:pointer;
+  color: var(--bs-color-black-100);
+  border-radius: 8px;
+  flex: 1 1 160px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  border: none;
+  transition: transform 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 0;
+}
+
+.kpi-card:focus  {
+  background-color: var(--bs-color-white-200);
+}
+
+.kpi-title {
+  align-self: flex-start;
+  padding: 0.2rem 0.5rem;
+  color: var(--bs-color-white-100);
+  background-color: var(--bs-color-grey-100);
+  border-radius: 4px 0 4px 0;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+.kpi-value {
+  font-size: 1.2rem;
+  font-weight:normal;
+  margin: 0.3rem 0;
+  color: var(--bs-color-black-100);
+  width: 100%;
+  text-align: center;
+}
+
+.kpi-subtitle {
+  font-size: 0.85rem;
+  color: var(--bs-color-black-100);
+  width: 100%;
+  text-align: center;
 }
 
 /** MAT FORMS **/

@@ -20,11 +20,11 @@
     </div>
     <!-- Botones para limpiar formulario y buscar productos -->
     <div class="col-12 col-md-4 col-lg-4 d-flex flex-wrap gap-2 align-items-end">
-      <button type="reset" class="btn btn-outline-danger" (click)="cleanFormFields()">
-        <i class="fas fa-eraser"></i>
-      </button>
       <button type="button" class="btn btn-primary" (click)="searchProducts()">
         <i class="fas fa-search"></i>&nbsp;{{ 'dpos.action.search' | translate }}
+      </button>
+      <button type="reset" class="btn btn-outline-danger" (click)="cleanFormFields()">
+        <i class="fas fa-eraser"></i>
       </button>
     </div>
   </form>
