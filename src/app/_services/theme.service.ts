@@ -12,17 +12,17 @@ export class ThemeService {
 
   private themes = new Map<string, string>([
     [Commerce.RESELLER_DID, 'theme-did'],
-    [Commerce.RESELLER_ABANCA, 'theme-abanca'],
-    [Commerce.RESELLER_BBVA, 'theme-bbva'],
-    [Commerce.RESELLER_IBERCAJA, 'theme-ibercaja'],
+    [Commerce.RESELLER_ABANCA, 'theme-did'],
+    [Commerce.RESELLER_BBVA, 'theme-did'],
+    [Commerce.RESELLER_IBERCAJA, 'theme-did'],
     [Commerce.RESELLER_COMERCIA, 'theme-comercia'],
-    [Commerce.RESELLER_GETNET, 'theme-getnet'],
-    [Commerce.RESELLER_CAJAMAR, 'theme-cajamar'],
-    [Commerce.RESELLER_CAJARURAL, 'theme-cajarural'],
-    [Commerce.RESELLER_KUTXABANK, 'theme-kutxabank'],
-    [Commerce.RESELLER_LABORALKUTXA, 'theme-laboralkutxa'],
-    [Commerce.RESELLER_OPENPAY, 'theme-openpay'],
-    [Commerce.RESELLER_SABADELL, 'theme-sabadell']
+    [Commerce.RESELLER_GETNET, 'theme-did'],
+    [Commerce.RESELLER_CAJAMAR, 'theme-did'],
+    [Commerce.RESELLER_CAJARURAL, 'theme-did'],
+    [Commerce.RESELLER_KUTXABANK, 'theme-did'],
+    [Commerce.RESELLER_LABORALKUTXA, 'theme-did'],
+    [Commerce.RESELLER_OPENPAY, 'theme-did'],
+    [Commerce.RESELLER_SABADELL, 'theme-did']
   ]);
 
   constructor() {

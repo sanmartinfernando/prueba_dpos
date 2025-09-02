@@ -318,7 +318,7 @@ label.me-2 {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  padding: 0;
+  padding: 0px 0px 20px 0px; 
 }
 
 .kpi-card:focus  {
@@ -343,6 +343,7 @@ label.me-2 {
   color: var(--bs-color-white-100);
   width: 100%;
   text-align: center;
+  padding: 5px 0px 0px 0px; 
 }
 
 .kpi-subtitle {
@@ -643,7 +644,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .textDataLabel {
   transform: translateX(-35px);
-  fill: var(--bs-color-white-100) !important;
+  fill: var(--bs-color-black-100) !important;
   font-weight: 600;
 }
 
