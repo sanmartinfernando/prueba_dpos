@@ -763,7 +763,8 @@ export class DashboardComponent implements OnInit {
               break;
           }
         }
-        this.datasetPM = [...this.datasetPM];
+        this.datasetPM = [...this.datasetPM].filter(item => item.value > 0);
+
         this.loadedPMChart = true;
         this.emptyPMChart = false;
       } else {

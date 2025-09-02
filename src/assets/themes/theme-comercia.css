@@ -298,9 +298,8 @@ label.me-2 {
 
 .kpi{
   border: none;
-  background-color: var(--bs-color-black-100)FF;
+  background-color: var(--bs-color-blue-800);
   border-bottom: 8px solid var(--bs-color-grey-200);
-  padding: 1rem;
   cursor:pointer;
 }
 
@@ -567,6 +566,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .ngx-pagination span{
   font-size: 0.8rem;
+  color: var(--bs-color-grey-300);
 }
 
 .ngx-pagination .current, .ngx-pagination li a:hover{
@@ -585,13 +585,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 /*** CHARTS ***/
 
-ngx-charts-bar-vertical ngx-charts-chart .ngx-charts-outer .ngx-charts .bar-chart.chart .ng-star-inserted .ng-star-inserted .ng-star-inserted .textDataLabel{
-  transform: rotate(0deg)!important;
-  transform: translate(-13px,-3px)!important;
-  font-weight: bold!important;
+.textDataLabel {
+  transform: translateX(-35px);
+  fill: var(--bs-color-white-100) !important;
+  font-weight: 600;
 }
 
-text.ng-star-inserted, text.pie-label, .textDataLabel {
+text.ng-star-inserted, text.pie-label {
   fill: #fff !important;
 }
 
@@ -604,11 +604,11 @@ text.ng-star-inserted, text.pie-label, .textDataLabel {
 }
 
 .inner-chart {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: block;
   overflow-x: auto;
- }
+  height: auto;
+  max-height: none;        
+}
 
 p {
   color: var(--bs-color-white-100);

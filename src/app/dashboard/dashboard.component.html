@@ -142,9 +142,11 @@
           <ng-template #noPMData><br /><b><i>{{ 'dpos.dashboard.nodata.label' | translate }}</i></b></ng-template>
           <ng-container *ngIf="loadedPMChart; else spinner">
             <div class="inner-chart">
-              <ngx-charts-pie-chart [results]="datasetPM" [doughnut]="true" [labels]="true"
-                [arcWidth]="0.5" [customColors]="colorsPM" *ngIf="!emptyKPIChart; else noPMData">
-              </ngx-charts-pie-chart>
+
+              <ngx-charts-bar-horizontal [results]="datasetPM" [animations]="true"
+                [showDataLabel]="true" [xAxis]="false" [yAxis]="true" [customColors]="colorsPM"
+                [dataLabelFormatting]="formatPercentageLabel" *ngIf="!emptyKPIChart; else noPMData">
+              </ngx-charts-bar-horizontal>
             </div>
           </ng-container>
         </div>
