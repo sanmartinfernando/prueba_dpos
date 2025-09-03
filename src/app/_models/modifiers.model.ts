@@ -9,4 +9,5 @@ export class Modifier {
   modifierId: string;
   modifierName: string;
   modifierOptions: string[];
+  deleted?: boolean;
 }

@@ -46,7 +46,7 @@ export class CategoryModalComponent implements OnInit {
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
     this.idCategory = this.data.id;
     this.categoryForm = this.fb.group({
-      categoryName: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ ]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
+      categoryName: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ0-9][A-Za-zÀ-ÖØ-öø-ÿ0-9 ]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ0-9]$/)]],
     });
   }
 

@@ -76,12 +76,12 @@ export class ProductDetailsComponent implements OnInit {
     this.uiStateService.setFormSelectEnabled(false);
 
     this.productForm = this.fb.group({
-      productName: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ ]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
+      productName: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ0-9][A-Za-zÀ-ÖØ-öø-ÿ0-9 ]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ0-9]$/)]],
       price: [0, [Validators.required, Validators.min(0)]],
       priceType: [0, [Validators.required, Validators.min(0), Validators.max(1)]],
       categoryId: ['', [Validators.required, Validators.pattern(/^\bcategory:\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\b$/)]],
       modifiers: [[], [Validators.pattern(/^\bmodifier:\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\b$/)]],
-      epigraph: ['', [Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ ]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ]$/)]],
+      epigraph: ['', [Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ0-9][A-Za-zÀ-ÖØ-öø-ÿ0-9 ]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ0-9]$/)]],
       unitMeasurement: [0, [Validators.required, Validators.min(0), Validators.max(3)]],
       stock: [0, [Validators.min(0)]]
     });

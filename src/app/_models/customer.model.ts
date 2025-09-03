@@ -23,4 +23,5 @@ export class Customer {
   postcode: string;
   email: string;
   phone: string;
+  deleted: boolean;
 }
