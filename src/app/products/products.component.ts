@@ -153,17 +153,12 @@ export class ProductsComponent implements OnInit, OnDestroy {
    * Genera la consulta de búsqueda y obtiene los productos.
    */
   public searchProducts() {
-    this.loadCompleted = false;
-
-    const categoryFilter:string  = this.categorySelected != this.translate.instant('dpos.filter.all') ? this.categorySelected : null;
+    const categoryFilter:string  = !this.categorySelected || this.categorySelected != "0"  ? this.categorySelected : null;
     const filters = [
       { field: 'productName', value: this.productNameVarSearch, op: '=*.*' },
       { field: 'favourite', value: this.productFavouriteVarSearch, op: '=' },
       { field: 'categoryId', value: categoryFilter, op: '=' }
     ].filter(f => f.value);
-
-    
-    // Construimos el objeto "qs"
     const qsObject = filters.length > 0 ? { or: filters } : null;
     this.varSearch = qsObject ? JSON.stringify(qsObject) : null;
     this.getProducts();
@@ -346,7 +341,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
     this.loadCompleted = false;
     this.productsService.getProducts(this.size, this.commerceId.toString(), this.varSearch).subscribe({
       next: products => {
-        this.products = products.data;
+        this.products = products.data.filter(product => !product.deleted);
         this.emptySearch = this.products.length === 0;
         this.loadCompleted = true;
       },

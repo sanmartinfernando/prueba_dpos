@@ -413,8 +413,9 @@ label.me-2 {
 }
 
 .mat-mdc-option {
-  background-color: var(--bs-color-black-200) !important;
+  background-color: var(--bs-color-grey-600) !important;
   color: var(--bs-color-white-100) !important;
+  font-size: 13px !important;
 }
 
 .mat-pseudo-checkbox {
@@ -433,22 +434,23 @@ border-color: var(--bs-color-white-100) !important;
 }
 
 .custom-mat-form-span {
-  background-color: var(--bs-color-black-200) !important;
+  background-color: var(--bs-color-grey-600) !important;
   color: var(--bs-color-white-100) !important;
 }
 
 .custom-mat-form-icon {
-  background-color: var(--bs-color-black-200) !important;
+  background-color: var(--bs-color-grey-600) !important;
   color: var(--bs-color-white-100) !important;
 }
 
 .custom-mat-form-select {
-  background-color: var(--bs-color-black-200) !important;
+  background-color: var(--bs-color-grey-600) !important;
   color: var(--bs-color-grey-200) !important;
   height: 38px !important;
   box-shadow: none !important;
   border: 1px solid var(--bs-color-grey-200) !important;
   border-radius: 5px !important;
+  font-size: 13px !important;
 }
 
 .mat-form-field-invalid{
@@ -539,6 +541,23 @@ select[multiple]::-webkit-scrollbar {
 
 .form-check-label {
   color: var(--bs-color-white-100);
+}
+
+.form-check-input {
+  box-shadow: none !important;
+  border: 1px solid var(--bs-color-grey-200) !important;
+  border-radius: 5px !important;
+  border-color: var(--bs-color-grey-200);
+  background-color: var(--bs-color-black-100)FF;
+  height: 38px;
+  width: 38px;
+  color: var(--bs-color-grey-200);
+}
+
+.form-check-input:checked {
+  border: 1px solid var(--bs-color-grey-200) !important;
+  background-color: var(--bs-color-blue-600);
+  color: var(--bs-color-black-100);
 }
 
 .form-check-input:disabled {
@@ -780,6 +799,19 @@ div.ng-star-inserted {
   --bs-btn-disabled-border-color: var(--bs-color-blue-500);
 }
 
+.btn-secondary {
+  --bs-btn-color: var(--bs-color-blue-600);
+  --bs-btn-bg: var(--bs-color-black-100)FF;
+  --bs-btn-border-color: var(--bs-color-blue-600);
+  --bs-btn-hover-color: var(--bs-color-black-100);
+  --bs-btn-hover-bg: var(--bs-color-blue-600);
+  --bs-btn-hover-border-color: var(--bs-color-blue-600);
+  --bs-btn-active-color: var(--bs-color-blue-600);
+  --bs-btn-active-border-color: var(--bs-color-blue-600);
+  --bs-btn-disabled-color: var(--bs-color-blue-600);
+  --bs-btn-disabled-border-color: var(--bs-color-blue-600);
+}
+
 .btn-danger {
   --bs-btn-color: var(--bs-color-white-100)FF;
   --bs-btn-bg: var(--bs-color-red-300);
@@ -845,7 +877,7 @@ div.ng-star-inserted {
   --bs-btn-color: var(--bs-color-red-300);
   --bs-btn-bg: var(--bs-color-white-100)FF;
   --bs-btn-border-color: var(--bs-color-red-300);
-  --bs-btn-hover-color: var(--bs-color-white-100)FF;
+  --bs-btn-hover-color: var(--bs-color-black-100);
   --bs-btn-hover-bg: var(--bs-color-red-200);
   --bs-btn-hover-border-color: var(--bs-color-red-300);
   --bs-btn-active-color: var(--bs-color-red-200);

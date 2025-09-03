@@ -43,16 +43,15 @@
               <div class="mb-3">
                 <label for="epigraph" class="form-label">{{ 'dpos.product-details.form.epigraph' | translate }}</label>
                 <mat-select formControlName="epigraph" id="epigraph" name="epigraph" class="custom-mat-form-select" [ngClass]="{'mat-form-field-invalid': productForm.get('epigraph')?.hasError('required') && productForm.get('epigraph')?.touched}">
-                    <mat-select-trigger>{{ getSelectedCategoryNames(productForm.get('epigraph')?.value) }}</mat-select-trigger>
-                    <mat-option *ngFor="let epigraph of epigraphs" [value]="epigraph.codigo">
-                      <div class="d-flex align-items-center w-100">
-                        <span class="custom-mat-form-span">{{ epigraph.descripcionES }}</span>
-                      </div>
-                    </mat-option>
-                  </mat-select>
-                  <mat-error *ngIf="productForm.get('epigraph')?.hasError('required') && productForm.get('epigraph')?.touched" class="invalid-feedback">
-                    {{ 'dpos.customers.details.form.mandatory' | translate }}
-                  </mat-error>
+                  <mat-option *ngFor="let epigraph of epigraphs" [value]="epigraph.codigo">
+                    <div class="d-flex align-items-center w-100">
+                      <span class="custom-mat-form-span">{{ epigraph.descripcionES }}</span>
+                    </div>
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="productForm.get('epigraph')?.hasError('required') && productForm.get('epigraph')?.touched" class="invalid-feedback">
+                  {{ 'dpos.customers.details.form.mandatory' | translate }}
+                </mat-error>
               </div>
               <div class="row">
                 <div class="col-md-8 mb-3">

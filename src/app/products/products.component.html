@@ -2,21 +2,21 @@
 <div class="container-fluid header-main">
   <!-- Formulario de búsqueda para filtrar productos -->
   <form class="row g-3 px-2">
-    <div class="col-12 col-sm-6 col-md-4 col-lg-1">
-      <label class="form-label" for="productFavourite">{{ 'dpos.products.favourite.form.label' | translate }}</label>
-      <div class="d-flex justify-content-start mt-0">
-        <input disabled type="checkbox" id="productFavourite" name="productFavourite" [(ngModel)]="productFavouriteVarSearch" (change)="onProductFavouriteChange(productFavouriteVarSearch)" class="form-check-input checkbox-large">
-      </div>
-    </div>
     <div class="col-12 col-sm-6 col-md-4 col-lg-2">
       <label class="form-label" for="category">{{ 'dpos.products.category.form.label' | translate }}</label>
-      <select disabled class="form-select" id="category" name="category" [(ngModel)]="categorySelected" (change)="onCategoryChange()">
+      <select class="form-select" id="category" name="category" [(ngModel)]="categorySelected" (change)="onCategoryChange()">
         <option *ngFor="let category of categories" [value]="category.categoryId">{{ category.categoryName }}</option>
       </select>
     </div>
     <div class="col-12 col-sm-6 col-md-4 col-lg-2">
       <label class="form-label" for="productName">{{ 'dpos.products.name.form.label' | translate }}</label>
-      <input disabled type="text" class="form-control" id="productName" name="productName" [(ngModel)]="productNameVarSearch" (change)="onProductNameChange()">
+      <input type="text" class="form-control" id="productName" name="productName" [(ngModel)]="productNameVarSearch" (change)="onProductNameChange()">
+    </div>
+    <div class="col-12 col-sm-6 col-md-4 col-lg-1">
+      <label class="form-label" for="productFavourite">{{ 'dpos.products.favourite.form.label' | translate }}</label>
+      <div class="d-flex justify-content-start mt-0">
+        <input type="checkbox" id="productFavourite" name="productFavourite" [(ngModel)]="productFavouriteVarSearch" (change)="onProductFavouriteChange(productFavouriteVarSearch)" class="form-check-input checkbox-large">
+      </div>
     </div>
     <!-- Botones para limpiar formulario y buscar productos -->
     <div class="col-12 col-md-4 col-lg-4 d-flex flex-wrap gap-2 align-items-end">

@@ -316,7 +316,7 @@ export class CustomersComponent implements OnInit, OnDestroy {
 
     this.customersService.getCustomers(this.size, this.commerceId.toString(), this.varSearch).subscribe({
       next: customers => {
-        this.customers = customers.data;
+        this.customers = customers.data.filter(customer => !customer.deleted);
         this.emptySearch = this.customers.length === 0;
         this.loadCompleted = true;
       },
