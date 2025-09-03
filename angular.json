@@ -42,6 +42,11 @@
                 "input": "src/assets/img",
                 "output": "/assets/img"
               },
+              {
+                "glob": "**/*",
+                "input": "src/assets/files",
+                "output": "/assets/files"
+              },
               "src/web.config"
             ],
             "styles": [

@@ -13,6 +13,8 @@ import { CategoryModalComponent } from 'src/app/categories/category-modal.compon
 import { ModifiersModalComponent } from 'src/app/modifiers/modifiers-modal.component';
 import { ProductsService } from 'src/app/_services/products.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { EpigraphsService } from 'src/app/_services/epigraphs.service';
+import { Epigraph } from 'src/app/_models/epigraph.model';
 
 /**
  * @class ProductDetailsComponent
@@ -34,6 +36,7 @@ export class ProductDetailsComponent implements OnInit {
   private activatedRoute = inject(ActivatedRoute);
   private translate = inject(TranslateService);
   private productsService = inject(ProductsService);
+  private epigraphsService = inject(EpigraphsService);
   private dialog = inject(MatDialog);
   private router = inject(Router);
 
@@ -46,6 +49,7 @@ export class ProductDetailsComponent implements OnInit {
   public salesEndDate: string;
   public salesEndDateMilli: number;
 
+  public epigraphs: Epigraph[] = [];
   public categories: Category[] = [];
   public modifiers: Modifier[] = [];
 
@@ -117,8 +121,8 @@ export class ProductDetailsComponent implements OnInit {
 
     this.getAllCategories();
     this.getAllModifiers();
+    this.getEpigraphs();
 
-    
     if (idParam) {
       const decoded = this.encryptionService.decode(idParam);
       this.idProduct = this.encryptionService.decrypt(decoded);
@@ -255,6 +259,17 @@ export class ProductDetailsComponent implements OnInit {
   }
 
   /**
+   * Devuelve el nombre del epigrafe seleccionado.
+   *
+   * @returns {string} Nombre del epigrafe seleccionado,
+   *                   o una cadena vacía si no se ha seleccionado un epígrafe.
+   */
+  public getSelectedEpigrapfNames(selectedCode: string): string {
+    const epigraph = this.epigraphs.find(e => e.codigo === selectedCode);
+    return epigraph ? epigraph.descripcionES : '';
+  }
+
+  /**
    * Abre el modal de mensajes estableciendo el título y el mensaje.
    *
    * @param title   Texto que se mostrará como título del modal.
@@ -337,6 +352,20 @@ export class ProductDetailsComponent implements OnInit {
       error: (error) => {
         this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.modifiers.all'));
         console.error("Error all modifiers", error);
+      }
+    });
+  }
+
+  /**
+   * Devuelve el listado de modificadores para el comercio seleccionado.
+   */
+  private getEpigraphs() {
+    this.epigraphsService.getEpigraphs().subscribe({
+      next: (epigraphs) => {
+        this.epigraphs = epigraphs;
+      },
+      error: (error) => {
+        console.error(error);
       }
     });
   }

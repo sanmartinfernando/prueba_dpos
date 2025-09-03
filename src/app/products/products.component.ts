@@ -155,9 +155,11 @@ export class ProductsComponent implements OnInit, OnDestroy {
   public searchProducts() {
     this.loadCompleted = false;
 
+    const categoryFilter:string  = this.categorySelected != this.translate.instant('dpos.filter.all') ? this.categorySelected : null;
     const filters = [
-      { field: 'name', value: this.productNameVarSearch, op: '=*.*' },
-      { field: 'favourite', value: this.productFavouriteVarSearch, op: '=' }
+      { field: 'productName', value: this.productNameVarSearch, op: '=*.*' },
+      { field: 'favourite', value: this.productFavouriteVarSearch, op: '=' },
+      { field: 'categoryId', value: categoryFilter, op: '=' }
     ].filter(f => f.value);
 
     
@@ -241,7 +243,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
    * Elimina un producto de la lista por su ID.
    */
   public deleteProduct(productId: string) {
-    console.log("paso por aqui");
+
     this.loadCompleted = false;
     this.productsService.deleteProduct(productId, this.commerceId.toString()).subscribe({
       next: () => {
@@ -342,20 +344,6 @@ export class ProductsComponent implements OnInit, OnDestroy {
   private getProducts() {
     this.emptySearch = true;
     this.loadCompleted = false;
-    this.productsService.getAllProducts(this.commerceId.toString()).subscribe({
-      next: (products) => {
-        this.products = products;
-        this.emptySearch = this.products.length == 0;
-        this.loadCompleted = true;
-      },
-      error: () => {
-        this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.product.all'));
-        this.products = [];
-        this.emptySearch = true;
-        this.loadCompleted = true;
-      }
-    });
-    /*
     this.productsService.getProducts(this.size, this.commerceId.toString(), this.varSearch).subscribe({
       next: products => {
         this.products = products.data;
@@ -368,7 +356,6 @@ export class ProductsComponent implements OnInit, OnDestroy {
         this.loadCompleted = true;
       }
     });
-    */
   }
 
   /**

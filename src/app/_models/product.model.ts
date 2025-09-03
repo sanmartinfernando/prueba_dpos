@@ -55,7 +55,7 @@ export class Product {
   productName: string;
   price: number;
   priceType: PriceType;
-  favourite:boolean = false;
+  favourite = false;
   categoryId: string;
   modifiers?: string[] = [];
   epigraph?: string;

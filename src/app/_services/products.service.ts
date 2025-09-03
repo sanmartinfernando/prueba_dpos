@@ -42,7 +42,7 @@ export class ProductsService {
   }
 
   /**
-   * Obtiene el listado de productos de un comercio.
+   * Obtiene el listado de productos de un comercio  según los parámetros de búsqueda.
    * 
    * @param size Cantidad de resultados a obtener.
    * @param commerceId ID del comercio. 

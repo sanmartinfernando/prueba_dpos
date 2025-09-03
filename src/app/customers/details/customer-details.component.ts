@@ -51,7 +51,7 @@ export class CustomerDetailsComponent implements OnInit {
     this.clientForm = this.fb.group({
       clientName: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ0-9][A-Za-zÀ-ÖØ-öø-ÿ0-9 -]{0,118}[A-Za-zÀ-ÖØ-öø-ÿ0-9]$/)]],
       identityDocument: ['', [Validators.required, Validators.pattern(/^(?:[0-9]{8}[A-Z]|[XYZ][0-9]{7}[A-Z]|[KLM][0-9]{7}[A-Z]|[ABCDEFGHJNPQRSUVW][0-9]{7}[A-Z0-9])$/)]],
-      address: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ0-9][A-Za-zÀ-ÖØ-öø-ÿ0-9 ,.-\/]{0,198}[A-Za-zÀ-ÖØ-öø-ÿ0-9.]$/)]],
+      address: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ0-9][A-Za-zÀ-ÖØ-öø-ÿ0-9 ,.-/]{0,198}[A-Za-zÀ-ÖØ-öø-ÿ0-9.]$/)]],
       city: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ0-9][A-Za-zÀ-ÖØ-öø-ÿ0-9 ]{0,19}[A-Za-zÀ-ÖØ-öø-ÿ0-9]$/)]],
       state: ['', [Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ0-9][A-Za-zÀ-ÖØ-öø-ÿ0-9 ]{0,99}[A-Za-zÀ-ÖØ-öø-ÿ0-9]$/)]],
       country: ['', [Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ0-9][A-Za-zÀ-ÖØ-öø-ÿ0-9 ]{0,99}[A-Za-zÀ-ÖØ-öø-ÿ0-9]$/)]],
