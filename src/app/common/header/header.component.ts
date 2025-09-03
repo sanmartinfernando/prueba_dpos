@@ -118,7 +118,8 @@ export class HeaderComponent implements OnInit {
    * Actualiza el título en función del tema activo.
    */
   public getTitle(): void {
-    this.title = this.isComercia ? 'TPV&GO' : 'DPOS';
+    //this.title = this.isComercia ? 'TPV&GO' : 'DPOS';
+    this.title = 'DPOS';
   }
 
   /**
@@ -198,6 +199,7 @@ export class HeaderComponent implements OnInit {
    * @returns True si el comercio es Comercia.
    */
   private isComerciaTheme(): boolean {
-    return this.sessionService.getItem(SessionService.RESELLER_NAME) === Commerce.RESELLER_COMERCIA;
+    //return this.sessionService.getItem(SessionService.RESELLER_NAME) === Commerce.RESELLER_COMERCIA;
+    return false;
   }
 }
