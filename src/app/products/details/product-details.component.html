@@ -45,7 +45,7 @@
                 <mat-select formControlName="epigraph" id="epigraph" name="epigraph" class="custom-mat-form-select" [ngClass]="{'mat-form-field-invalid': productForm.get('epigraph')?.hasError('required') && productForm.get('epigraph')?.touched}">
                   <mat-option *ngFor="let epigraph of epigraphs" [value]="epigraph.codigo">
                     <div class="d-flex align-items-center w-100">
-                      <span class="custom-mat-form-span">{{ epigraph.descripcionES }}</span>
+                      <span class="custom-mat-form-span">{{ epigraph.codigo }} - {{ epigraph.descripcionES }}</span>
                     </div>
                   </mat-option>
                 </mat-select>

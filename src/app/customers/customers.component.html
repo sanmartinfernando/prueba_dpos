@@ -24,7 +24,7 @@
         <i class="fas fa-search"></i>&nbsp;{{ 'dpos.action.search' | translate }}
       </button>
       <button type="reset" class="btn btn-outline-info btn-round" (click)="cleanFormFields()">
-        <i class="fa-solid fa-arrow-rotate-right fa-xl"></i>
+        <img src="assets/img/ic-clean-filters.svg" alt="Icono limpiar filtros">
       </button>
     </div>
   </form>
@@ -47,7 +47,8 @@
           </button>
           <input type="file" #customerFileInput style="display: none" accept=".csv" (change)="onCustomerFileSelected($event)" />
           <button class="btn btn-primary btn-round" (click)="downloadCSV()">
-            <i class="fa-solid fa-download fa-xl"></i>
+            <img *ngIf="isComercia" src="assets/img/ic-download.svg" alt="Icono descargar datos">
+            <i *ngIf="!isComercia" class="fa-solid fa-download fa-xl"></i>
           </button>
         </div>
       </div>

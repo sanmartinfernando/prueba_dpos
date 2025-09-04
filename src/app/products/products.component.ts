@@ -68,6 +68,8 @@ export class ProductsComponent implements OnInit, OnDestroy {
   showAcceptButton = false;
   showCancelButton = false;
 
+  isComercia = false;
+
   // Guardamos la acción a ejecutar al aceptar en el modal
   acceptAction: (() => void) | null = null;
 
@@ -100,6 +102,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
           if (commerceId === 0) {
             this.sessionService.setItem(SessionService.COMMERCE_ID, this.commerceId);
           }
+          this.isComercia = this.sessionService.getItem(SessionService.RESELLER_NAME) === Commerce.RESELLER_COMERCIA;
           this.themeService.loadTheme(this.getCommerceResellerName(commerces));
           this.commerceSelected = this.getCommerceNumber(this.commerceId);
           this.getAllCategories();

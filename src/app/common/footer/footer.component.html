@@ -1,6 +1,11 @@
 <footer class="container-fluid text-center bg-footer py-3 mt-5">
   <p class="text_footer mb-2">
-    {{ 'dpos.footer.msg.copyright' | translate }}
+    <ng-container *ngIf="!isComercia">
+      {{ 'dpos.footer.msg.copyright' | translate }}
+    </ng-container>
+    <ng-container *ngIf="isComercia">
+      {{ 'dpos.footer.msg.copyright.comercia' | translate }}
+    </ng-container>
   </p>
   <ul class="d-flex flex-wrap justify-content-center align-items-center list-unstyled mb-0">
     <li class="list-group-item px-2 text-nowrap">

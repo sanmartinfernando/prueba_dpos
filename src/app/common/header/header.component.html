@@ -14,7 +14,7 @@
   <div class="logo flex-shrink-0 p-2 text-white text-center">
     <a class="d-flex align-items-center justify-content-center text-white text-decoration-none"
        (click)="getTitle()" routerLink="/dashboard">
-      <ng-container *ngIf="logoLoaded; else spinner">
+      <ng-container *ngIf="iconsLoaded; else spinner">
         <ng-container *ngIf="!isComercia">
           <i class="fa-solid fa-box py-2 logo"></i>
         </ng-container>
@@ -35,12 +35,30 @@
         </li>
       </ng-container>
       <ng-container *ngIf="isComercia">
-        <li *ngFor="let page of pages" class="nav-item w-100">
-          <a class="nav-link m-3 d-flex align-items-center" (click)="handlePageClick(page.text, page.code)" routerLink="/{{ page.code }}" routerLinkActive="active-link">
-            <i class="{{ page.icon }} active-icon-link me-2"></i>
-            <span>{{ page.text }}</span>
-          </a>
-        </li>
+        <a class="nav-link m-2 d-flex align-items-center" (click)="handlePageClick('Inicio', 'dashboard')" routerLink="/dashboard" routerLinkActive="active-link">
+          <img src="assets/img/ic-inicio.svg" alt="Icono Inicio" class="active-icon-link me-2">
+          <span>{{ 'dpos.nav.menu.dashboard' | translate }}</span>
+        </a>
+        <a class="nav-link m-2 d-flex align-items-center" (click)="handlePageClick('Ventas', 'sales')" routerLink="/sales" routerLinkActive="active-link">
+          <img src="assets/img/ic-sales.svg" alt="Icono Ventas" class="active-icon-link me-2">
+          <span><span>{{ 'dpos.nav.menu.sales' | translate }}</span></span>
+        </a>
+        <a class="nav-link m-2 d-flex align-items-center" (click)="handlePageClick('Cierres', 'balances')" routerLink="/balances" routerLinkActive="active-link">
+          <img src="assets/img/ic-balances.svg" alt="Icono Cierres" class="active-icon-link me-2">
+          <span>{{ 'dpos.nav.menu.balances' | translate }}</span>
+        </a>
+        <a class="nav-link m-2 d-flex align-items-center" (click)="handlePageClick('Informes', 'reports')" routerLink="/reports" routerLinkActive="active-link">
+          <img src="assets/img/ic-reports.svg" alt="Icono Informes" class="active-icon-link me-2">
+          <span>{{ 'dpos.nav.menu.reports' | translate }}</span>
+        </a>
+        <a class="nav-link m-2 d-flex align-items-center" (click)="handlePageClick('Clientes', 'customers')" routerLink="/customers" routerLinkActive="active-link">
+          <img src="assets/img/ic-reports.svg" alt="Icono Informes" class="active-icon-link me-2">
+          <span>{{ 'dpos.nav.menu.customers' | translate }}</span>
+        </a>
+        <a class="nav-link m-2 d-flex align-items-center" (click)="handlePageClick('Productos', 'products')" routerLink="/products" routerLinkActive="active-link">
+          <img src="assets/img/ic-reports.svg" alt="Icono Informes" class="active-icon-link me-2">
+          <span>{{ 'dpos.nav.menu.products' | translate }}</span>
+        </a>
       </ng-container>
     </ul>
   </div>
@@ -49,7 +67,7 @@
 <header class="bg-customer">
   <div class="clearfix header-main container-fluid py-2">
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
-      <ng-container *ngIf="logoLoaded; else spinner">
+      <ng-container *ngIf="iconsLoaded; else spinner">
         <h3 class="float-start p-3 pb-2 mb-0"><b>{{ title }}</b></h3>
       </ng-container>
       <ul class="navbar-nav d-flex flex-column flex-md-row align-items-start align-items-md-center ms-md-auto px-3 gap-2">

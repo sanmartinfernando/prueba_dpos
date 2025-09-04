@@ -11,6 +11,7 @@ import { Subscription } from 'rxjs/internal/Subscription';
 import { SessionService } from '../_services/session.service';
 import { ThemeService } from '../_services/theme.service';
 import { UIStateService } from '../_services/ui-state.service';
+import { Commerce } from '../_models/commerce.model';
 
 /**
  * @class ReportsComponent
@@ -71,6 +72,8 @@ export class ReportsComponent implements OnInit, OnDestroy {
   modalTitle = '';
   modalMessage = '';
 
+  isComercia = false;
+
   /**
    * Constructor del componente.
    * Inicializa el tema, el estado de la UI y la suscripción a cambios de idioma.
@@ -121,6 +124,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
             this.commerceId = commerces[0].commerceId;
             this.sessionService.setItem(SessionService.COMMERCE_ID, this.commerceId);
           }
+          this.isComercia = this.sessionService.getItem(SessionService.RESELLER_NAME) === Commerce.RESELLER_COMERCIA;
           this.terminalsService.getTerminalList().subscribe({
             next: (terminals) => {
               terminals = terminals.filter(terminal => terminal.commerceId === this.commerceId && terminal.terminalNumber !== null);
