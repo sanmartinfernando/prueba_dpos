@@ -1,6 +1,6 @@
 import { CashMovementsService } from '../_services/cash-movements.service';
 import { OrdersService } from '../_services/orders.service';
-import { ChangeDetectorRef, Component, ElementRef, HostListener, inject, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, inject, OnInit, SimpleChanges, ViewChild, OnDestroy, OnChanges, AfterViewInit } from '@angular/core';
 import { OrderAggregation } from '../_models/order-aggregation.model';
 import { TerminalsService } from '../_services/terminals.service';
 import { CommercesService } from '../_services/commerces.service';
@@ -35,7 +35,7 @@ import { debounceTime, fromEvent } from 'rxjs';
   templateUrl: './dashboard.component.html',
   styleUrls: [],
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
 
   private ordersService = inject(OrdersService);
   private cashMovementsService = inject(CashMovementsService);
@@ -133,7 +133,7 @@ export class DashboardComponent implements OnInit {
   modalTitle = '';
   modalMessage = '';
 
-  isComercia: boolean = false;
+  isComercia = false;
 
   constructor() {
 

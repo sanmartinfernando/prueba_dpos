@@ -410,6 +410,16 @@ border-color: var(--bs-color-black-100) !important;
   font-size: 13px !important;
 }
 
+.custom-mat-form-select .mat-mdc-select-arrow {
+  width: 16px;
+  height: 16px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'><path d='M6 9l6 6 6-6'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  color: transparent !important;
+}
+
 .mat-form-field-invalid{
   background-color: var(--bs-color-white-100) !important;
   color: var(--bs-color-black-100) !important;

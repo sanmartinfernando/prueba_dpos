@@ -1,7 +1,6 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { TranslateService } from '@ngx-translate/core';
 import { Epigraph } from '../_models/epigraph.model';
 
 /**
