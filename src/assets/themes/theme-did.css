@@ -569,10 +569,11 @@ ngx-charts-bar-vertical ngx-charts-chart .ngx-charts-outer .ngx-charts .bar-char
 }
 
 .inner-chart {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow-x: auto;
+  display: block;
+  overflow: hidden;
+  height: auto;
+  max-height: none; 
+  width: 100%;       
 }
 
 p.center {

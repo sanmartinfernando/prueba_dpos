@@ -681,9 +681,10 @@ text.ng-star-inserted, text.pie-label {
 
 .inner-chart {
   display: block;
-  overflow-x: auto;
+  overflow: hidden;
   height: auto;
-  max-height: none;        
+  max-height: none; 
+  width: 100%;       
 }
 
 p {
@@ -813,7 +814,7 @@ div.ng-star-inserted {
 }
 
 .btn-danger {
-  --bs-btn-color: var(--bs-color-white-100)FF;
+  --bs-btn-color: var(--bs-color-black-100);
   --bs-btn-bg: var(--bs-color-red-300);
   --bs-btn-border-color: var(--bs-color-red-300);
   --bs-btn-hover-color: var(--bs-color-white-100)FF;
