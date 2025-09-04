@@ -1,4 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { Commerce } from 'src/app/_models/commerce.model';
+import { CommercesService } from 'src/app/_services/commerces.service';
+import { SessionService } from 'src/app/_services/session.service';
 
 /**
  * @class FooterComponent
@@ -11,5 +14,21 @@ import { Component } from '@angular/core';
   styleUrls: []
 })
 export class FooterComponent {
+  
+  private commercesService = inject(CommercesService);
+  private sessionService = inject(SessionService);
+  isComercia: boolean = false;
 
+  ngOnInit(): void {
+    this.commercesService.getCommerceList().subscribe({
+      next: () => {
+        this.sessionService.getCommerceId().subscribe(() => {
+          this.isComercia = this.sessionService.getItem(SessionService.RESELLER_NAME) === Commerce.RESELLER_COMERCIA;
+        });
+      },
+      error: (error) => {
+        console.error("Error Commerces: ", error);
+      }
+    });
+  }
 }

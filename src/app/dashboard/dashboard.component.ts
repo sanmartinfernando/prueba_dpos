@@ -1,9 +1,8 @@
 import { CashMovementsService } from '../_services/cash-movements.service';
 import { OrdersService } from '../_services/orders.service';
-import { Component, HostListener, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, inject, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { OrderAggregation } from '../_models/order-aggregation.model';
 import { TerminalsService } from '../_services/terminals.service';
-import { Terminal } from '../_models/terminal.model';
 import { CommercesService } from '../_services/commerces.service';
 import { OrdersFilter } from '../_models/_filters/orders.filter';
 import { CashMovementsFilter } from '../_models/_filters/cash-movements.filter';
@@ -21,6 +20,8 @@ import { Top3Aggregation } from '../_models/top3-aggregation.model';
 import { ThemeService } from '../_services/theme.service';
 import { UIStateService } from '../_services/ui-state.service';
 import { Order } from '../_models/order.model';
+import { Commerce } from '../_models/commerce.model';
+import { debounceTime, fromEvent } from 'rxjs';
 
 /**
  * @class DashboardComponent
@@ -44,6 +45,9 @@ export class DashboardComponent implements OnInit {
   private sessionService = inject(SessionService);
   private themeService = inject(ThemeService);
   private uiStateService = inject(UIStateService);
+  private cdr = inject(ChangeDetectorRef);
+
+  private resizeSub!: Subscription;
 
   public loadedKPIChart = false;
   public loadedPMChart = false;
@@ -73,16 +77,10 @@ export class DashboardComponent implements OnInit {
   private monthVarSearch = '';
   private selectedMonthIndex = 0;
   private yearDate: Date;
-  private yearMilli = 0;
   private yearMaxDate: Date;
-  private yearMaxMilli = 0;
-  private dateMilli = 0;
-  private dateMaxMilli = 0;
-  private Math = Math;
-
   public terminalsNumber: string[];
-  private terminals: Terminal[];
   private commerceId: number;
+
   public aggregations: OrderAggregation[];
   private idOrders;
   private idCM;
@@ -93,17 +91,12 @@ export class DashboardComponent implements OnInit {
   private idT3;
   private idTP;
 
-  private colors: string[] = ['#6DB9FF',
-    '#1FCC92',
-    '#FF803C',
-    '#F598F5',
-    '#FF6E6E',
-    '#FFCC4D',
-    '#7C77FE'];
+  private hexColorsKPI: string[] = [];
+  private hexColorsPM: string[] = [];
+  private hexColorsTop3: string[] = [];
 
-  public kpiDataset = [];
-  public colorsKPI = [];
-
+  public datasetKPI = [];
+  public datasetTop3: DataSetTop3[];
   public datasetPM = [
     { name: 'Efectivo', value: 0 },
     { name: 'Tarjeta', value: 0 },
@@ -114,27 +107,33 @@ export class DashboardComponent implements OnInit {
     { name: 'Rectificación', value: 0 },
   ];
 
-  public colorsPM = [
-    { name: 'Efectivo', value: this.colors[0] },
-    { name: 'Tarjeta', value: this.colors[1] },
-    { name: 'Vales', value: this.colors[2] },
-    { name: 'Virtual', value: this.colors[3] },
-    { name: 'Otros', value: this.colors[4] },
-    { name: 'Bono Denda', value: this.colors[5] },
-    { name: 'Rectificación', value: this.colors[6] },
-  ];
-
-  public datasetTop3: DataSetTop3[];
+  public colorsKPI = [];
+  public colorsPM = [];
   public colorsTop3 = [];
 
   currentLang: string;
   langSubscription: Subscription;
 
-  viewEvo: [number, number] = [0, 400];
+  @ViewChild('top3ChartContainer', { static: false }) top3ChartContainer!: ElementRef;
+  @ViewChild('pmChartContainer', { static: false }) pmChartContainer!: ElementRef;
+  @ViewChild('KPIChartContainer', { static: false }) KPIChartContainer!: ElementRef;
+  
+  // Tamaños configurables
+  private readonly barHeight = 40;
+  private readonly padding = 20;
+
+  kpiView: [number, number] | null = null;
+  top3View: [number, number] | null = null;
+  pmView: [number, number] | null = null;
+
+  containerWidthTop3 = 400;
+  containerWidthPM = 400;
 
   showModal = false;
   modalTitle = '';
   modalMessage = '';
+
+  isComercia: boolean = false;
 
   constructor() {
 
@@ -162,7 +161,6 @@ export class DashboardComponent implements OnInit {
    * Configura la vista, obtiene la información del usuario y carga los datos iniciales de comercios y terminales.
    */
   ngOnInit(): void {
-    this.updateView();
     this.commercesService.getCommerceList().subscribe({
       next: (commerces) => {
         this.sessionService.getCommerceId().subscribe((commerceId) => {
@@ -172,6 +170,18 @@ export class DashboardComponent implements OnInit {
             this.commerceId = commerces[0].commerceId;
             this.sessionService.setItem(SessionService.COMMERCE_ID, this.commerceId);
           }
+          
+          this.isComercia = this.sessionService.getItem(SessionService.RESELLER_NAME) === Commerce.RESELLER_COMERCIA;
+          if(this.isComercia) {
+            this.hexColorsKPI = ['#40B3E4', '#40B3E4', '#40B3E4', '#40B3E4', '#40B3E4', '#40B3E4', '#40B3E4'];
+            this.hexColorsPM = ['#40B3E4', '#7A9F3F', '#33658A', '#FFCC00', '#FF6F3C', '#00BFA6', '#7A7A7A'];
+            this.hexColorsTop3 = ['#40B3E4', '#7A9F3F', '#33658A', '#FFCC00', '#FFCC00', '#FFCC00', '#FFCC00'];
+          } else {
+            this.hexColorsKPI = ['#6DB9FF', '#1FCC92', '#FF803C', '#F598F5', '#FF6E6E', '#FFCC4D', '#7C77FE'];
+            this.hexColorsPM = ['#6DB9FF', '#1FCC92', '#FF803C', '#F598F5', '#FF6E6E', '#FFCC4D', '#7C77FE'];
+            this.hexColorsTop3 = ['#6DB9FF', '#1FCC92', '#FF803C', '#F598F5', '#FF6E6E', '#FFCC4D', '#7C77FE'];
+          }
+          
           this.terminalsService.getTerminalList().subscribe({
             next: (terminals) => {
               terminals = terminals.filter(terminal => terminal.commerceId === this.commerceId && terminal.terminalNumber !== null);
@@ -201,6 +211,26 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  ngOnDestroy() {
+    this.resizeSub?.unsubscribe();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    // Recalcular tras cualquier cambio relevante:
+    if (changes['datasetTop3'] || changes['datasetPM'] || changes['datasetKPI'] || changes['loadedTPChart'] || changes['loadedPMChart'] || changes['loadedKPIChart']) {
+      this.recalcViewsSoon();
+    }
+  }
+  
+  ngAfterViewInit() {
+    // Primer cálculo de tamaño de charts justo después del primer render
+    this.recalcViewsSoon();
+    // Recalcular en resize de ventana (con debounce)
+    this.resizeSub = fromEvent(window, 'resize')
+      .pipe(debounceTime(150))
+      .subscribe(() => this.updateChartSizes());
+  }
+
   /**
    * Detecta el redimensionamiento de la ventana y actualiza las dimensiones de los gráficos.
    * 
@@ -208,7 +238,7 @@ export class DashboardComponent implements OnInit {
    */
   @HostListener('window:resize', ['$event'])
   onResize() {
-    this.updateView();
+    this.updateChartSizes();
   }
 
   /**
@@ -231,7 +261,7 @@ export class DashboardComponent implements OnInit {
   public formatCurrencyLabel = (value: any) => {
     this.monthVarSearch = (document.getElementById('monthDate') as HTMLInputElement).value;
     if (this.monthVarSearch !== this.translate.instant('dpos.filter.all')) {
-      if (this.kpiDataset[+this.monthVarSearch - 1].value === value && value !== 0) {
+      if (this.datasetKPI[+this.monthVarSearch - 1].value === value && value !== 0) {
         value = value.toFixed(1) + '€';
       } else {
         value = null;
@@ -246,23 +276,6 @@ export class DashboardComponent implements OnInit {
     this.monthVarSearch = null;
     return value;
   };
-
-  /**
-   * Asigna colores personalizados a las barras del gráfico KPI según el mes seleccionado.
-   * 
-   * @returns Lista de objetos con nombre y color asignado.
-   */
-  public barCustomColors() {
-    this.colorsKPI = [];
-    this.monthVarSearch = (document.getElementById('monthDate') as HTMLInputElement).value;
-    if (this.monthVarSearch !== this.translate.instant('dpos.filter.all')) {
-      for (const kpi of this.kpiDataset) {
-        this.colorsKPI.push({ name: kpi.name, value: this.colors[0] });
-      }
-    }
-    this.monthVarSearch = null;
-    return this.colorsKPI;
-  }
 
   /**
    * Ejecuta la búsqueda y actualización de datos en función del terminal, mes y año seleccionados.
@@ -414,12 +427,33 @@ export class DashboardComponent implements OnInit {
     this.showModal = false;
   }
 
-  /**
-   * Ajusta las dimensiones de los gráficos en función del tamaño de la ventana.
-   */
-  private updateView(): void {
-    const width = window.innerWidth;
-    this.viewEvo = [width * 0.55, 350];
+  private recalcViewsSoon() {
+    // Microtarea -> siguiente frame -> entonces medir
+    Promise.resolve().then(() => {
+      requestAnimationFrame(() => {
+        this.updateChartSizes();
+        // Forzamos un detectChanges para que el *ngIf vea el nuevo view en el mismo frame
+        this.cdr.detectChanges();
+      });
+    });
+  }
+
+  private updateChartSizes() {
+    if (this.top3ChartContainer) {
+      const width = this.top3ChartContainer.nativeElement.offsetWidth;
+      const height = this.datasetTop3.length * this.barHeight + this.padding;
+      this.top3View = [width, height];
+    }
+    if (this.pmChartContainer) {
+      const width = this.pmChartContainer.nativeElement.offsetWidth;
+      const height = this.datasetPM.length * this.barHeight + this.padding;
+      this.pmView = [width, height];
+    }
+    if (this.KPIChartContainer) {
+      const width = this.KPIChartContainer.nativeElement.offsetWidth;
+      const height = 300;
+      this.kpiView = [width, height];
+    }
   }
 
   /**
@@ -428,15 +462,15 @@ export class DashboardComponent implements OnInit {
   private printSalesEvoChart() {
     this.idEvo[1].$match.type = 0;
     for (const color of this.colorsKPI) {
-      color.value = this.colors[0];
+      color.value = this.hexColorsKPI[0];
     }
     this.resetKpiDataset();
     this.ordersService.getOrderAggregate(this.idEvo).subscribe((aggregationsEvo) => {
       if (aggregationsEvo.length !== 0) {
         for (const aggregation of aggregationsEvo) {
-          this.kpiDataset[aggregation._id - 1].value = aggregation.total / 100;
+          this.datasetKPI[aggregation._id - 1].value = aggregation.total / 100;
         }
-        this.kpiDataset = [...this.kpiDataset];
+        this.datasetKPI = [...this.datasetKPI];
         this.loadedKPIChart = true;
         this.emptyKPIChart = false;
       } else {
@@ -454,13 +488,13 @@ export class DashboardComponent implements OnInit {
     this.ordersService.getOrderAggregate(this.idEvo).subscribe((aggregationsEvo) => {
       if (aggregationsEvo.length !== 0) {
         this.colorsKPI.forEach(color => {
-          color.value = this.colors[2];
+          color.value = this.hexColorsKPI[2];
         });
         this.resetKpiDataset();
         for (const aggregation of aggregationsEvo) {
-          this.kpiDataset[aggregation._id - 1].value = aggregation.total / 100;
+          this.datasetKPI[aggregation._id - 1].value = aggregation.total / 100;
         }
-        this.kpiDataset = [...this.kpiDataset];
+        this.datasetKPI = [...this.datasetKPI];
         this.loadedKPIChart = true;
         this.emptyKPIChart = false;
       } else {
@@ -478,13 +512,13 @@ export class DashboardComponent implements OnInit {
     this.ordersService.getOrderAggregate(this.idEvo).subscribe((aggregationsEvo) => {
       if (aggregationsEvo.length !== 0) {
         this.colorsKPI.forEach(color => {
-          color.value = this.colors[1];
+          color.value = this.hexColorsKPI[1];
         });
         this.resetKpiDataset();
         for (const aggregation of aggregationsEvo) {
-          this.kpiDataset[aggregation._id - 1].value = aggregation.avg / 100;
+          this.datasetKPI[aggregation._id - 1].value = aggregation.avg / 100;
         }
-        this.kpiDataset = [...this.kpiDataset];
+        this.datasetKPI = [...this.datasetKPI];
         this.loadedKPIChart = true;
         this.emptyKPIChart = false;
       } else {
@@ -504,10 +538,10 @@ export class DashboardComponent implements OnInit {
     this.cashMovementsService.getCashMovementsAggregate(this.idEvoCM).subscribe((aggregationsEvoIn) => {
       if (aggregationsEvoIn.length !== 0) {
         this.colorsKPI.forEach(color => {
-          color.value = this.colors[3];
+          color.value = this.hexColorsKPI[3];
         });
         this.resetKpiDataset();
-        for (let i = 0; i < this.kpiDataset.length; i++) {
+        for (let i = 0; i < this.datasetKPI.length; i++) {
           valueGraphArrayIn[i] = 0;
           valueGraphArrayOut[i] = 0;
         }
@@ -518,10 +552,10 @@ export class DashboardComponent implements OnInit {
             valueGraphArrayOut[aggregation._id.month - 1] = aggregation.total / 100;
           }
         }
-        for (let i = 0; i < this.kpiDataset.length; i++) {
-          this.kpiDataset[i].value = valueGraphArrayIn[i] - valueGraphArrayOut[i];
+        for (let i = 0; i < this.datasetKPI.length; i++) {
+          this.datasetKPI[i].value = valueGraphArrayIn[i] - valueGraphArrayOut[i];
         }
-        this.kpiDataset = [...this.kpiDataset];
+        this.datasetKPI = [...this.datasetKPI];
         this.loadedKPIChart = true;
         this.emptyKPIChart = false;
       } else {
@@ -547,7 +581,7 @@ export class DashboardComponent implements OnInit {
             valueGraphArrayOut[aggregation._id.month - 1] = aggregation.total / 100;
           }
         }
-        for (let i = 0; i < this.kpiDataset.length; i++) {
+        for (let i = 0; i < this.datasetKPI.length; i++) {
           valueArrayCashMovements[i] = valueGraphArrayIn[i] - valueGraphArrayOut[i];
         }
       }
@@ -556,10 +590,10 @@ export class DashboardComponent implements OnInit {
       this.ordersService.getOrderAggregate(this.idEvoResults).subscribe((aggregationsEvoOrder) => {
         if (aggregationsEvoOrder.length !== 0) {
           this.colorsKPI.forEach(color => {
-            color.value = this.colors[4];
+            color.value = this.hexColorsKPI[4];
           });
           this.resetKpiDataset();
-          for (let i = 0; i < this.kpiDataset.length; i++) {
+          for (let i = 0; i < this.datasetKPI.length; i++) {
             valueGraphArraySales[i] = 0;
             valueGraphArrayRefunds[i] = 0;
           }
@@ -573,10 +607,10 @@ export class DashboardComponent implements OnInit {
                 break;
             }
           }
-          for (let i = 0; i < this.kpiDataset.length; i++) {
-            this.kpiDataset[i].value = valueGraphArraySales[i] - valueGraphArrayRefunds[i] + valueArrayCashMovements[i];
+          for (let i = 0; i < this.datasetKPI.length; i++) {
+            this.datasetKPI[i].value = valueGraphArraySales[i] - valueGraphArrayRefunds[i] + valueArrayCashMovements[i];
           }
-          this.kpiDataset = [...this.kpiDataset];
+          this.datasetKPI = [...this.datasetKPI];
           this.loadedKPIChart = true;
           this.emptyKPIChart = false;
         } else {
@@ -692,18 +726,19 @@ export class DashboardComponent implements OnInit {
                 }
                 const dataName: string = top3[i].product + ' (' + quantityValue + ')';
                 const dataValue: number = Math.round((top3[i].quantity / totalQuantity) * 100);
-                this.colorsTop3.push({ name: dataName, value: this.colors[i] });
+                this.colorsTop3.push({ name: dataName, value: this.hexColorsTop3[i] });
                 const data = new DataSetTop3(dataName, dataValue);
                 this.datasetTop3.push(data);
               }
               if (this.datasetTop3.length >= 3) {
                 const dataName: string = 'Resto (' + (totalQuantity - sumaTP) + ' uds)';
                 const dataValue: number = Math.round(((totalQuantity - sumaTP) / totalQuantity) * 100);
-                this.colorsTop3.push({ name: dataName, value: this.colors[4] });
+                this.colorsTop3.push({ name: dataName, value: this.hexColorsTop3[4] });
                 const data = new DataSetTop3(dataName, dataValue);
                 this.datasetTop3.push(data);
               }
               this.datasetTop3 = [...this.datasetTop3];
+              this.recalcViewsSoon();
               this.loadedTPChart = true;
               this.emptyTPChart = false;
             }
@@ -763,8 +798,19 @@ export class DashboardComponent implements OnInit {
               break;
           }
         }
-        this.datasetPM = [...this.datasetPM].filter(item => item.value > 0);
 
+        this.colorsPM = [
+          { name: 'Efectivo', value: this.hexColorsPM[0] },
+          { name: 'Tarjeta', value: this.hexColorsPM[1] },
+          { name: 'Vales', value: this.hexColorsPM[2] },
+          { name: 'Virtual', value: this.hexColorsPM[3] },
+          { name: 'Otros', value: this.hexColorsPM[4] },
+          { name: 'Bono Denda', value: this.hexColorsPM[5] },
+          { name: 'Rectificación', value: this.hexColorsPM[6] },
+        ];
+
+        this.datasetPM = [...this.datasetPM].filter(item => item.value > 0);
+        this.recalcViewsSoon();
         this.loadedPMChart = true;
         this.emptyPMChart = false;
       } else {
@@ -778,7 +824,7 @@ export class DashboardComponent implements OnInit {
    * Inicializa el dataset de KPIs con valores en cero para cada mes.
    */
   private resetKpiDataset() {
-    this.kpiDataset = [
+    this.datasetKPI = [
       { name: this.translate.instant('dpos.month.enero'), value: 0 },
       { name: this.translate.instant('dpos.month.febrero'), value: 0 },
       { name: this.translate.instant('dpos.month.marzo'), value: 0 },
@@ -799,18 +845,18 @@ export class DashboardComponent implements OnInit {
    */
   private resetColorsKPI() {
     this.colorsKPI = [
-      { name: this.translate.instant('dpos.month.enero'), value: this.colors[0] },
-      { name: this.translate.instant('dpos.month.febrero'), value: this.colors[0] },
-      { name: this.translate.instant('dpos.month.marzo'), value: this.colors[0] },
-      { name: this.translate.instant('dpos.month.abril'), value: this.colors[0] },
-      { name: this.translate.instant('dpos.month.mayo'), value: this.colors[0] },
-      { name: this.translate.instant('dpos.month.junio'), value: this.colors[0] },
-      { name: this.translate.instant('dpos.month.julio'), value: this.colors[0] },
-      { name: this.translate.instant('dpos.month.agosto'), value: this.colors[0] },
-      { name: this.translate.instant('dpos.month.septiembre'), value: this.colors[0] },
-      { name: this.translate.instant('dpos.month.octubre'), value: this.colors[0] },
-      { name: this.translate.instant('dpos.month.noviembre'), value: this.colors[0] },
-      { name: this.translate.instant('dpos.month.diciembre'), value: this.colors[0] },
+      { name: this.translate.instant('dpos.month.enero'), value: this.hexColorsKPI[0] },
+      { name: this.translate.instant('dpos.month.febrero'), value: this.hexColorsKPI[0] },
+      { name: this.translate.instant('dpos.month.marzo'), value: this.hexColorsKPI[0] },
+      { name: this.translate.instant('dpos.month.abril'), value: this.hexColorsKPI[0] },
+      { name: this.translate.instant('dpos.month.mayo'), value: this.hexColorsKPI[0] },
+      { name: this.translate.instant('dpos.month.junio'), value: this.hexColorsKPI[0] },
+      { name: this.translate.instant('dpos.month.julio'), value: this.hexColorsKPI[0] },
+      { name: this.translate.instant('dpos.month.agosto'), value: this.hexColorsKPI[0] },
+      { name: this.translate.instant('dpos.month.septiembre'), value: this.hexColorsKPI[0] },
+      { name: this.translate.instant('dpos.month.octubre'), value: this.hexColorsKPI[0] },
+      { name: this.translate.instant('dpos.month.noviembre'), value: this.hexColorsKPI[0] },
+      { name: this.translate.instant('dpos.month.diciembre'), value: this.hexColorsKPI[0] },
     ];
   }
 }

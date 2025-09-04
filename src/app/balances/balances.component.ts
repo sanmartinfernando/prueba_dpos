@@ -11,6 +11,7 @@ import { SessionService } from '../_services/session.service';
 import { TerminalsService } from '../_services/terminals.service';
 import { ThemeService } from '../_services/theme.service';
 import { UIStateService } from '../_services/ui-state.service';
+import { Commerce } from '../_models/commerce.model';
 
 /**
  * @class BalancesComponent
@@ -66,6 +67,8 @@ export class BalancesComponent implements OnInit, OnDestroy {
   modalTitle = '';
   modalMessage = '';
 
+  isComercia = false;
+
   constructor() {
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
     this.uiStateService.setFormSelectEnabled(true);
@@ -94,6 +97,7 @@ export class BalancesComponent implements OnInit, OnDestroy {
           if (commerceId === 0) {
             this.sessionService.setItem(SessionService.COMMERCE_ID, this.commerceId);
           }
+          this.isComercia = this.sessionService.getItem(SessionService.RESELLER_NAME) === Commerce.RESELLER_COMERCIA;
           this.terminalsService.getTerminalList().subscribe({
             next: (terminals) => {
               terminals = terminals.filter(t => t.commerceId === this.commerceId && t.terminalNumber !== null);

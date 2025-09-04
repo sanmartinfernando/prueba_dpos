@@ -141,6 +141,7 @@ export class ProductDetailsComponent implements OnInit {
     this.isLoading = true;
     this.productsService.getProduct(this.idProduct, this.commerceId).subscribe({
       next: (product) => {
+        this.isLoading = false;
         this.product = product;
         this.productForm.setValue({ productName: this.product.productName,
                                   price: this.product.price,
@@ -156,8 +157,6 @@ export class ProductDetailsComponent implements OnInit {
           const priceInput: HTMLInputElement | null = document.querySelector<HTMLInputElement>('#price');
           priceInput?.dispatchEvent(new Event('blur'));
         });
-
-        this.isLoading = false;
       },
       error: () => {
         this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.category'));
@@ -256,17 +255,6 @@ export class ProductDetailsComponent implements OnInit {
   public getSelectedCategoryNames(selectedId: string): string {
     const cat = this.categories.find(c => c.categoryId === selectedId);
     return cat ? cat.categoryName : '';
-  }
-
-  /**
-   * Devuelve el nombre del epigrafe seleccionado.
-   *
-   * @returns {string} Nombre del epigrafe seleccionado,
-   *                   o una cadena vacía si no se ha seleccionado un epígrafe.
-   */
-  public getSelectedEpigrapfNames(selectedCode: string): string {
-    const epigraph = this.epigraphs.find(e => e.codigo === selectedCode);
-    return epigraph ? epigraph.descripcionES : '';
   }
 
   /**

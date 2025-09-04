@@ -61,6 +61,8 @@ export class CustomersComponent implements OnInit, OnDestroy {
   showAcceptButton = false;
   showCancelButton = false;
 
+  isComercia = false;
+
   // Guardamos la acción a ejecutar al aceptar en el modal
   acceptAction: (() => void) | null = null;
 
@@ -295,6 +297,7 @@ export class CustomersComponent implements OnInit, OnDestroy {
           if (!commerceId) {
             this.sessionService.setItem(SessionService.COMMERCE_ID, this.commerceId);
           }
+          this.isComercia = this.sessionService.getItem(SessionService.RESELLER_NAME) === Commerce.RESELLER_COMERCIA;
           this.themeService.loadTheme(this.getCommerceResellerName(commerces));
           this.commerceSelected = this.getCommerceNumber(this.commerceId);
           this.searchCustomers();
@@ -316,7 +319,7 @@ export class CustomersComponent implements OnInit, OnDestroy {
 
     this.customersService.getCustomers(this.size, this.commerceId.toString(), this.varSearch).subscribe({
       next: customers => {
-        this.customers = customers.data;
+        this.customers = customers.data.filter(customer => !customer.deleted);
         this.emptySearch = this.customers.length === 0;
         this.loadCompleted = true;
       },

@@ -42,7 +42,7 @@ export class HeaderComponent implements OnInit {
   title0 = 'DPOS';
   isComercia = false;
   formSelectEnabled = true;
-  logoLoaded = false;
+  iconsLoaded = false;
 
   constructor() {
     this.pages = this.pagesService.pages;
@@ -186,11 +186,11 @@ export class HeaderComponent implements OnInit {
    * Carga el tema correspondiente al comercio guardado.
    */
   private loadThemeByResellerName(): void {
-    this.logoLoaded = false;
+    this.iconsLoaded = false;
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
     this.isComercia = this.isComerciaTheme();
     this.getTitle();
-    this.logoLoaded = true;
+    this.iconsLoaded = true;
   }
 
   /**

@@ -88,8 +88,11 @@ export class SalesComponent implements OnInit, OnDestroy {
   modalMessage = '';
   showModal = false;
 
+  isComercia = false;
+
   constructor() {
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
+
     this.uiStateService.setFormSelectEnabled(true);
     this.currentLang = this.translate.currentLang || 'es';
     this.langSubscription = this.translate.onLangChange.subscribe(event => {
@@ -148,6 +151,7 @@ export class SalesComponent implements OnInit, OnDestroy {
             this.commerceId = commerces[0].commerceId;
             this.sessionService.setItem(SessionService.COMMERCE_ID, this.commerceId);
           }
+          this.isComercia = this.sessionService.getItem(SessionService.RESELLER_NAME) === Commerce.RESELLER_COMERCIA;
           this.commerceSelected = this.getCommerceNumber(this.commerceId);
           this.terminalsService.getTerminalList().subscribe({
             next: (terminals) => {
