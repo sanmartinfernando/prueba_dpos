@@ -41,30 +41,50 @@
   <div *ngIf="validationVariable === true" class="d-flex justify-content-center mt-2">
     <div class="text-danger text-center"><b>{{ 'dpos.filter.novalid' | translate }}</b></div>
   </div>
-  <div class="card mt-4">
+  <div class="card mt-3">
     <div class="card-body">
       <!-- Modal para mensajes -->
       <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage" (closeModal)="closeModal()"></app-modal>
+      <!-- Encabezado y botones para crear, importar y descargar productos -->
       <div class="row mb-4 align-items-center">
-        <div class="col-md-6">
-          <h5><b>{{ 'dpos.sales.operations.label' | translate }}</b></h5>
+        <!-- Título y botón de descarga solo en móviles -->
+        <div class="col-12 d-flex justify-content-between align-items-center d-md-none">
+          <h5 class="mb-0">
+            <b>{{ 'dpos.sales.operations.label' | translate }}</b>
+          </h5>
+          <button class="btn btn-primary btn-round ms-2" (click)="downloadCSV()">
+            <img *ngIf="isComercia" src="assets/img/ic-download.svg" alt="Icono descargar datos">
+            <i *ngIf="!isComercia" class="fa-solid fa-download fa-xl"></i>
+          </button>
         </div>
-        <!-- Controles de resumen de datos y exportación, solo si la carga terminó y hay resultados -->
-        <div class="col-md-6 text-md-end mt-2 mt-md-0" *ngIf="loadCompleted && !emptySearch">
-          <div class="d-flex flex-md-row justify-content-md-end align-items-md-center gap-3">
-            <div class="infoSales d-flex flex-row align-items-center">
-              <label class="me-2 mb-0" for="operations">{{ 'dpos.sales.operations.number.label' | translate }}:&nbsp;&nbsp;&nbsp;<b>{{ operationN }}</b></label>
-            </div>
-            <div class="infoSales d-flex flex-row align-items-center">
-              <label class="me-2 mb-0" for="totalSalesString">{{ 'dpos.sales.operations.total.label' | translate }}:&nbsp;&nbsp;&nbsp;<b>{{ totalSalesString }}</b></label>
-            </div>
-            <button class="btn btn-primary btn-round" (click)="downloadCSV()">
-              <img *ngIf="isComercia" src="assets/img/ic-download.svg" alt="Icono descargar datos">
-              <i *ngIf="!isComercia" class="fa-solid fa-download fa-xl"></i>
-            </button>
+        <!-- Título en pantallas grandes -->
+        <div class="col-12 col-md-6 d-none d-md-block">
+          <h5 class="mb-0">
+            <b>{{ 'dpos.sales.operations.label' | translate }}</b>
+          </h5>
+        </div>
+        <!-- Botones en pantallas grandes (incluye downloadCSV) -->
+        <div class="col-12 col-md-6 text-md-end mt-3 mt-md-0 d-flex flex-wrap gap-2 justify-content-end">
+          <div class="infoSales">
+            <label class="me-2 mb-0" for="operations">{{ 'dpos.sales.operations.number.label' | translate }}:&nbsp;&nbsp;&nbsp;<b>{{ operationN }}</b></label>
           </div>
+          <div class="infoSales">
+            <label class="me-2 mb-0" for="totalSalesString">{{ 'dpos.sales.operations.total.label' | translate }}:&nbsp;&nbsp;&nbsp;<b>{{ totalSalesString }}</b></label>
+          </div>
+          <button class="btn btn-primary btn-round d-none d-md-inline-flex" (click)="downloadCSV()">
+            <img *ngIf="isComercia" src="assets/img/ic-download.svg" alt="Icono descargar datos">
+            <i *ngIf="!isComercia" class="fa-solid fa-download fa-xl"></i>
+          </button>
         </div>
       </div>
+
+
+
+
+
+
+
+
       <!-- Spinner mientras se cargan los datos -->
       <div *ngIf="!loadCompleted && !emptySearch" class="d-flex justify-content-center">
         <div class="spinner-border text-danger"></div>
