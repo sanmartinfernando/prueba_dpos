@@ -26,6 +26,12 @@
     width: 95vw;
     max-height: 95vh;
   }
+  h3 {
+    margin-left: 0px !important;
+  }
+  .body-content{
+    margin-left: 0px !important;
+  }
 }
 
 .toggle-nav-btn {
