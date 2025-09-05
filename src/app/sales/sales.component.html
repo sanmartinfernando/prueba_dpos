@@ -28,7 +28,7 @@
       <input type="text" class="form-control" name="documentN" id="documentN" [(ngModel)]="documentVarSearch" (change)="onDocNumberChange()">
     </div>
     <!-- Botones para resetear filtros y buscar -->
-    <div class="col-12 col-md-4 col-lg-2 d-flex flex-wrap gap-2 align-items-end">
+    <div class="col-12 col-md-4 col-lg-2 d-flex flex-wrap gap-2 align-items-end justify-content-md-start justify-content-end">
       <button type="button" class="btn btn-primary" (click)="searchSales()">
         <i class="fas fa-search"></i>&nbsp;{{ 'dpos.action.search' | translate }}
       </button>
@@ -51,14 +51,14 @@
         </div>
         <!-- Controles de resumen de datos y exportación, solo si la carga terminó y hay resultados -->
         <div class="col-md-6 text-md-end mt-2 mt-md-0" *ngIf="loadCompleted && !emptySearch">
-          <div class="d-flex flex-column flex-md-row justify-content-md-end align-items-md-center gap-3">
-            <div class="infoSales d-flex flex-column flex-md-row align-items-md-center">
-              <label class=" me-md-2 mb-1 mb-md-0" for="operations">{{ 'dpos.sales.operations.number.label' | translate }}:&nbsp;&nbsp;&nbsp;<b>{{ operationN }}</b></label>
+          <div class="d-flex flex-md-row justify-content-md-end align-items-md-center gap-3">
+            <div class="infoSales d-flex flex-row align-items-center">
+              <label class="me-2 mb-0" for="operations">{{ 'dpos.sales.operations.number.label' | translate }}:&nbsp;&nbsp;&nbsp;<b>{{ operationN }}</b></label>
             </div>
-            <div class="infoSales d-flex flex-column flex-md-row align-items-md-center">
-              <label class="me-md-2 mb-1 mb-md-0" for="totalSalesString">{{ 'dpos.sales.operations.total.label' | translate }}:&nbsp;&nbsp;&nbsp;<b>{{ totalSalesString }}</b></label>
+            <div class="infoSales d-flex flex-row align-items-center">
+              <label class="me-2 mb-0" for="totalSalesString">{{ 'dpos.sales.operations.total.label' | translate }}:&nbsp;&nbsp;&nbsp;<b>{{ totalSalesString }}</b></label>
             </div>
-            <button class="btn btn-primary btn-round mt-2 mt-md-0" (click)="downloadCSV()">
+            <button class="btn btn-primary btn-round" (click)="downloadCSV()">
               <img *ngIf="isComercia" src="assets/img/ic-download.svg" alt="Icono descargar datos">
               <i *ngIf="!isComercia" class="fa-solid fa-download fa-xl"></i>
             </button>

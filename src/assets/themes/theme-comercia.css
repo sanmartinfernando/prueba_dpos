@@ -192,6 +192,7 @@ label.me-2 {
   background-color: var(--bs-color-blue-800);
   height: 38px;
   padding-left: 10px;
+  padding-right: 10px;
   font-size: 12px;
 }
 
@@ -312,6 +313,7 @@ label.me-2 {
   gap: 1rem;
   background-color: #2b2b2b;
   border-radius: 10px;
+  margin: 20px 0;
   justify-content: flex-start;
   flex-wrap: wrap;
 }
@@ -465,6 +467,16 @@ border-color: var(--bs-color-white-100) !important;
   font-size: 13px !important;
 }
 
+.custom-mat-form-select .mat-mdc-select-arrow {
+  width: 16px;
+  height: 16px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='white' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'><path d='M6 9l6 6 6-6'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  color: transparent !important;
+}
+
 .mat-form-field-invalid{
   box-shadow: none !important;
   border: none !important;
@@ -496,6 +508,13 @@ border-color: var(--bs-color-white-100) !important;
   margin-bottom: 0px;
   padding: 5px 0px;
   color: var(--bs-color-white-100);
+}
+
+.form-select {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='white' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'><path d='M6 9l6 6 6-6'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 16px 16px;
 }
 
 .form-select, .form-control {
@@ -651,25 +670,21 @@ input[type=number] {
   padding: 0;
   font-size: 12px;
   font-weight: 400;
-  color: var(--bs-color-grey-300);
 }
-
 
 .ngx-pagination span{
   font-size: 12px;
   font-weight: 400;
-  color: var(--bs-color-grey-300);
 }
 
 .ngx-pagination a{
   font-size: 12px;
   font-weight: 400;
-  color: var(--bs-color-grey-300);
+  color: var(--bs-color-grey-300) !important;
   text-decoration: none !important;
 }
 
-.ngx-pagination .current, .ngx-pagination li a:hover{
-  padding: 0px 9px !important;
+.ngx-pagination .current, .ngx-pagination li a:hover, .ngx-pagination li span:hover {
   background: transparent !important;
   color: var(--bs-color-white-100) !important;
   border: none;
@@ -678,7 +693,7 @@ input[type=number] {
 .pagination-next a:after,
 .pagination-next a:before {
   background-color: var(--bs-color-grey-600);
-  color: var(--bs-color-grey-300);
+  color: var(--bs-color-grey-300) !important;
   border-radius: 4px;
 }
 
@@ -726,6 +741,10 @@ p.center {
   border-radius: 50%;
   line-height: 35px;
   padding: 15% 0 0;
+}
+
+.text-danger p {
+  color: var(--bs-color-red-500) !important;
 }
 
 text.ng-star-inserted {
@@ -867,6 +886,7 @@ div.ng-star-inserted {
   background-color: var(--bs-color-black-100)FF;
   font-size: 14px;
   height: 38px;
+  font-weight: 400;
 }
 
 .btn-light-icon {
@@ -878,7 +898,7 @@ div.ng-star-inserted {
   --bs-btn-bg: var(--bs-color-white-100)FF;
   --bs-btn-border-color: var(--bs-color-blue-600);
   --bs-btn-hover-color: var(--bs-color-white-100)FF;
-  --bs-btn-hover-bg: var(--bs-color-blue-600);
+  --bs-btn-hover-bg: var(--bs-color-blue-600)FF;
   --bs-btn-hover-border-color: var(--bs-color-blue-600);
   --bs-btn-active-color: var(--bs-color-blue-600);
   --bs-btn-active-border-color: var(--bs-color-blue-600);
@@ -894,6 +914,7 @@ div.ng-star-inserted {
   align-items: center;
   justify-content: center;
   padding: 0;
+  margin: 0;
 }
 
 .btn-outline-danger {

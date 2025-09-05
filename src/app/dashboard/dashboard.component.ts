@@ -1,6 +1,6 @@
 import { CashMovementsService } from '../_services/cash-movements.service';
 import { OrdersService } from '../_services/orders.service';
-import { ChangeDetectorRef, Component, ElementRef, HostListener, inject, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, inject, OnInit, SimpleChanges, ViewChild, OnDestroy, OnChanges, AfterViewInit } from '@angular/core';
 import { OrderAggregation } from '../_models/order-aggregation.model';
 import { TerminalsService } from '../_services/terminals.service';
 import { CommercesService } from '../_services/commerces.service';
@@ -35,7 +35,7 @@ import { debounceTime, fromEvent } from 'rxjs';
   templateUrl: './dashboard.component.html',
   styleUrls: [],
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
 
   private ordersService = inject(OrdersService);
   private cashMovementsService = inject(CashMovementsService);
@@ -133,7 +133,7 @@ export class DashboardComponent implements OnInit {
   modalTitle = '';
   modalMessage = '';
 
-  isComercia: boolean = false;
+  isComercia = false;
 
   constructor() {
 
@@ -730,13 +730,15 @@ export class DashboardComponent implements OnInit {
                 const data = new DataSetTop3(dataName, dataValue);
                 this.datasetTop3.push(data);
               }
+
               if (this.datasetTop3.length >= 3) {
-                const dataName: string = 'Resto (' + (totalQuantity - sumaTP) + ' uds)';
+                const dataName: string = 'Resto (' + (totalQuantity - sumaTP) / 1000 + ' uds)';
                 const dataValue: number = Math.round(((totalQuantity - sumaTP) / totalQuantity) * 100);
                 this.colorsTop3.push({ name: dataName, value: this.hexColorsTop3[4] });
                 const data = new DataSetTop3(dataName, dataValue);
                 this.datasetTop3.push(data);
               }
+              
               this.datasetTop3 = [...this.datasetTop3];
               this.recalcViewsSoon();
               this.loadedTPChart = true;

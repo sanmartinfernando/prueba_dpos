@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Commerce } from 'src/app/_models/commerce.model';
 import { CommercesService } from 'src/app/_services/commerces.service';
 import { SessionService } from 'src/app/_services/session.service';
@@ -13,11 +13,11 @@ import { SessionService } from 'src/app/_services/session.service';
   templateUrl: './footer.component.html',
   styleUrls: []
 })
-export class FooterComponent {
+export class FooterComponent implements OnInit {
   
   private commercesService = inject(CommercesService);
   private sessionService = inject(SessionService);
-  isComercia: boolean = false;
+  isComercia = false;
 
   ngOnInit(): void {
     this.commercesService.getCommerceList().subscribe({

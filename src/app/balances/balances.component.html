@@ -16,7 +16,7 @@
       <label for="tilDate" class="form-label">{{ 'dpos.filter.date.to' | translate }}</label>
       <input type="date" class="form-control" id="tilDate" [value]="tilDate" (change)="onTilDateChange()" />
     </div>
-    <div class="col-12 col-md-4 col-lg-3 d-flex flex-wrap gap-2 align-items-end justify-content-md-start">
+    <div class="col-12 col-md-4 col-lg-3 d-flex flex-wrap gap-2 align-items-end justify-content-md-start justify-content-end">
       <button type="button" class="btn btn-primary" (click)="searchBalances()">
         <i class="fas fa-search"></i>&nbsp;{{ 'dpos.action.search' | translate }}
       </button>
@@ -31,17 +31,17 @@
     <div class="card-body">
       <!-- Modal para mensajes -->
       <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage" (closeModal)="closeModal()"></app-modal>
-      <div class="row mb-4 align-items-center">
-        <!-- Título principal -->
-        <div class="col">
-          <h5><b>{{ 'dpos.balances.title.label' | translate }}</b></h5>
-        </div>
-        <!-- Botón exportar CSV, solo visible si carga se ha completado y hay resultados -->
-        <div class="col-12 col-md-6 text-md-end text-center mt-3 mt-md-0 d-flex flex-wrap gap-2 justify-content-md-end justify-content-center" *ngIf="loadCompleted && !emptySearch">
-          <button class="btn btn-primary btn-round" (click)="downloadCSV()">
-            <img *ngIf="isComercia" src="assets/img/ic-download.svg" alt="Icono descargar datos">
-            <i *ngIf="!isComercia" class="fa-solid fa-download fa-xl"></i>
-          </button>
+      <div class="row mb-4">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+          <!-- Título principal -->
+          <h5 class="mb-0"><b>{{ 'dpos.balances.title.label' | translate }}</b></h5>
+          <!-- Botón exportar CSV -->
+          <div *ngIf="loadCompleted && !emptySearch">
+            <button class="btn btn-primary btn-round ms-3" (click)="downloadCSV()">
+              <img *ngIf="isComercia" src="assets/img/ic-download.svg" alt="Icono descargar datos">
+              <i *ngIf="!isComercia" class="fa-solid fa-download fa-xl"></i>
+            </button>
+          </div>
         </div>
       </div>
       <!-- Spinner de carga mientras no hay resultados -->
