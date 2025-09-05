@@ -38,8 +38,7 @@ export class ThemeService {
     this.themes.forEach((themeName, reseller) => {
       const link = document.createElement('link');
       link.rel = 'stylesheet';
-      //link.href = `assets/themes/${themeName}.css`;
-      link.href = `assets/themes/theme-did.css`;
+      link.href = `assets/themes/${themeName}.css`;
       link.dataset['theme'] = reseller;
       link.disabled = true;
       head.appendChild(link);
