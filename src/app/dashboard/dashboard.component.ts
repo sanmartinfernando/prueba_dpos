@@ -730,13 +730,15 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
                 const data = new DataSetTop3(dataName, dataValue);
                 this.datasetTop3.push(data);
               }
+
               if (this.datasetTop3.length >= 3) {
-                const dataName: string = 'Resto (' + (totalQuantity - sumaTP) + ' uds)';
+                const dataName: string = 'Resto (' + (totalQuantity - sumaTP) / 1000 + ' uds)';
                 const dataValue: number = Math.round(((totalQuantity - sumaTP) / totalQuantity) * 100);
                 this.colorsTop3.push({ name: dataName, value: this.hexColorsTop3[4] });
                 const data = new DataSetTop3(dataName, dataValue);
                 this.datasetTop3.push(data);
               }
+              
               this.datasetTop3 = [...this.datasetTop3];
               this.recalcViewsSoon();
               this.loadedTPChart = true;
