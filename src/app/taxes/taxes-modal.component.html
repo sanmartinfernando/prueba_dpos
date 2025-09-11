@@ -50,13 +50,13 @@
           <div class="col-md-6">
             <label class="form-label">
               {{ 'dpos.taxes.modal.form.name' | translate }}
-              <input type="text" class="form-control" name="name" [(ngModel)]="taxFormData.name" [disabled]="isTaxNameDisabled">
+              <input type="text" class="form-control" name="taxName" [(ngModel)]="taxFormData.taxName" [disabled]="isTaxNameDisabled">
             </label>
           </div>
           <div class="col-md-6">
             <label class="form-label">
               {{ 'dpos.taxes.modal.form.value' | translate }}
-              <input type="text" class="form-control" name="value" [(ngModel)]="taxValueDisplay" [disabled]="isTaxValueDisabled"> <!-- Puede estar deshabilitado según estado -->
+              <input type="text" class="form-control" name="taxValue" [(ngModel)]="taxValueDisplay" [disabled]="isTaxValueDisabled"> <!-- Puede estar deshabilitado según estado -->
             </label>
           </div>
         </div>

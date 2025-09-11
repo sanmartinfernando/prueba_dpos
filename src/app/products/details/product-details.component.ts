@@ -12,9 +12,13 @@ import { Modifier } from '../../_models/modifiers.model';
 import { CategoryModalComponent } from 'src/app/categories/category-modal.component';
 import { ModifiersModalComponent } from 'src/app/modifiers/modifiers-modal.component';
 import { ProductsService } from 'src/app/_services/products.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { EpigraphsService } from 'src/app/_services/epigraphs.service';
 import { Epigraph } from 'src/app/_models/epigraph.model';
+import { ReplaySubject, Subject, takeUntil } from 'rxjs';
+import { Tax } from 'src/app/_models/tax.model';
+import { TaxRegimen, TBAIIVATaxRegimen, VerifactuIGICTaxRegimen, VerifactuIVATaxRegimen } from 'src/app/_models/tax-regimen.model';
+import { TaxExemptCode, TBAIExemptCode, TBAINoApplyCode, VerifactuExemptCode, VerifactuNoApplyCode } from '../../_models/tax-exempt-code.model';
 
 /**
  * @class ProductDetailsComponent
@@ -34,7 +38,7 @@ export class ProductDetailsComponent implements OnInit {
   private themeService = inject(ThemeService);
   private uiStateService = inject(UIStateService);
   private activatedRoute = inject(ActivatedRoute);
-  private translate = inject(TranslateService);
+  public translate = inject(TranslateService);
   private productsService = inject(ProductsService);
   private epigraphsService = inject(EpigraphsService);
   private dialog = inject(MatDialog);
@@ -53,6 +57,10 @@ export class ProductDetailsComponent implements OnInit {
   public categories: Category[] = [];
   public modifiers: Modifier[] = [];
 
+  public epigraphControl = new FormControl();
+  public epigraphFilterCtrl = new FormControl();
+  public filteredEpigraphs: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+
   public product: Product;
   public idProduct: string = null;
   public productForm: FormGroup;
@@ -61,6 +69,16 @@ export class ProductDetailsComponent implements OnInit {
   public modalTitle = '';
   public modalMessage = '';
 
+  public taxes = Tax.TAXES;
+  public selectedTax: Tax;
+  public taxRegimenes: TaxRegimen[];
+  public taxExemptCodes: TaxExemptCode[];
+
+  public isTicketBai = true;
+  public isVerifactu = false;
+
+  private _onDestroy = new Subject<void>();
+  
   public unitMeasurementOptions = Object.values(UnitMeasurement)
     .filter(value => typeof value === 'number')
     .map(value => ({
@@ -83,11 +101,14 @@ export class ProductDetailsComponent implements OnInit {
       productName: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ0-9][A-Za-zÀ-ÖØ-öø-ÿ0-9 ]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ0-9]$/)]],
       price: [0, [Validators.required, Validators.min(0)]],
       priceType: [0, [Validators.required, Validators.min(0), Validators.max(1)]],
-      categoryId: ['', [Validators.required, Validators.pattern(/^\bcategory:\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\b$/)]],
-      modifiers: [[], [Validators.pattern(/^\bmodifier:\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\b$/)]],
-      epigraph: ['', [Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ0-9][A-Za-zÀ-ÖØ-öø-ÿ0-9 ]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ0-9]$/)]],
+      categoryId: ['', [Validators.required]],
+      modifiers: [[]],
       unitMeasurement: [0, [Validators.required, Validators.min(0), Validators.max(3)]],
-      stock: [0, [Validators.min(0)]]
+      stock: [0, [Validators.min(0)]],
+      tax: [0, [Validators.required]],
+      taxExemptCode: ['', [Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ0-9_][A-Za-zÀ-ÖØ-öø-ÿ0-9_ ]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ0-9_]$/)]],
+      taxRegimen: ['', [Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ0-9_][A-Za-zÀ-ÖØ-öø-ÿ0-9_ ]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ0-9_]$/)]],
+      epigraph: ['', [Validators.pattern(/^\d+$/)]],
     });
 
     const initialPriceType = Number(this.productForm.get('priceType')?.value);
@@ -105,6 +126,13 @@ export class ProductDetailsComponent implements OnInit {
    * Inicializa el componente obteniendo información del producto si existe.
    */
   ngOnInit(): void {
+    
+    this.productForm.get('tax')?.valueChanges.subscribe((selectedTaxId) => {
+      this.selectedTax = this.taxes.find(t => t.id === selectedTaxId);
+      this.getTaxRegimenes();
+      this.getTaxExemptCodes();
+    });
+
     this.productForm.get('priceType')?.valueChanges.subscribe(type => {
       const numericType = Number(type);
       if (numericType === PriceType.Variable) {
@@ -134,6 +162,11 @@ export class ProductDetailsComponent implements OnInit {
     }
   }
 
+  ngOnDestroy() {
+    this._onDestroy.next();
+    this._onDestroy.complete();
+  }
+  
   /**
    * Obtiene la información de un producto.
    */
@@ -143,15 +176,25 @@ export class ProductDetailsComponent implements OnInit {
       next: (product) => {
         this.isLoading = false;
         this.product = product;
-        this.productForm.setValue({ productName: this.product.productName,
+        
+        const matchedTax = this.taxes.find(t => 
+          t.taxValue === this.product.tax?.taxValue &&
+          t.taxType === this.product.tax?.taxType
+        );
+
+        this.productForm.patchValue({ productName: this.product.productName,
                                   price: this.product.price,
                                   priceType: this.product.priceType,
                                   categoryId: this.product.categoryId,
                                   modifiers: this.product.modifiers,
-                                  epigraph: this.product.epigraph,
                                   unitMeasurement: this.product.unitMeasurement,
-                                  stock: this.product.stock});
-
+                                  stock: this.product.stock,
+                                  tax: matchedTax?.id ?? null,
+                                  taxExemptCode: this.product.taxExemptCode,
+                                  taxRegimen: this.product.taxRegimen,
+                                  epigraph: this.product.epigraph,
+                                  });
+        
         // Forzar que el input de precio se formatee como en blur
         setTimeout(() => {
           const priceInput: HTMLInputElement | null = document.querySelector<HTMLInputElement>('#price');
@@ -351,6 +394,17 @@ export class ProductDetailsComponent implements OnInit {
     this.epigraphsService.getEpigraphs().subscribe({
       next: (epigraphs) => {
         this.epigraphs = epigraphs;
+
+        // Inicializa el listado completo
+        this.filteredEpigraphs.next(this.epigraphs.slice());
+
+        // Filtrado en tiempo real
+        this.epigraphFilterCtrl.valueChanges
+          .pipe(takeUntil(this._onDestroy))
+          .subscribe(() => {
+            this.filterEpigraphs();
+          });
+
       },
       error: (error) => {
         console.error(error);
@@ -358,10 +412,80 @@ export class ProductDetailsComponent implements OnInit {
     });
   }
 
+  private getTaxRegimenes() {
+
+    const isIva = this.selectedTax.taxType == Tax.TYPE_IVA;
+    const isIgic = this.selectedTax.taxType == Tax.TYPE_IGIC;
+    this.productForm.get('taxRegimen')?.enable();
+
+    if(this.isVerifactu && isIva) {
+      const verifactuIvaTaxRegimen = new VerifactuIVATaxRegimen("");
+      this.taxRegimenes = verifactuIvaTaxRegimen.getTaxRegimens();
+    }else if (this.isVerifactu && isIgic){
+      const verifactuIgicTaxRegimen = new VerifactuIGICTaxRegimen(""); 
+      this.taxRegimenes = verifactuIgicTaxRegimen.getTaxRegimens();
+    }else if (this.isTicketBai) {
+      const tbaiIvaTaxRegimen = new TBAIIVATaxRegimen("");
+      this.taxRegimenes = tbaiIvaTaxRegimen.getTaxRegimens();
+    } else {
+      this.taxRegimenes = [];
+      this.productForm.get('taxRegimen')?.disable();
+    }
+    console.log(this.taxRegimenes);
+  }
+
+  private getTaxExemptCodes() {
+
+    const isExempt = this.selectedTax.taxValue == Tax.EXEMPT_VALUE;
+    const isNoApply = this.selectedTax.taxValue == Tax.NO_APPLY_VALUE;
+    this.productForm.get('taxExemptCode')?.enable();
+
+    if(this.isTicketBai && isExempt) {
+      const tbaiExemptCode = new TBAIExemptCode(""); 
+      this.taxExemptCodes = tbaiExemptCode.getTaxExemptCodes(); 
+    }else if (this.isTicketBai && isNoApply){
+      const tbaiNoApplyCode = new TBAINoApplyCode(""); 
+      this.taxExemptCodes = tbaiNoApplyCode.getTaxExemptCodes();
+    } else if (this.isVerifactu && isExempt) {
+      const verifactuNoApplyCode = new VerifactuExemptCode(""); 
+      this.taxExemptCodes = verifactuNoApplyCode.getTaxExemptCodes();
+    } else if (this.isVerifactu && isNoApply) {
+      const verifactuNoApplyCode = new VerifactuNoApplyCode(""); 
+      this.taxExemptCodes = verifactuNoApplyCode.getTaxExemptCodes();
+    } else {
+      this.taxExemptCodes = [];
+      this.productForm.get('taxExemptCode')?.disable();
+    }
+  }
+
+  private filterEpigraphs() {
+    if (!this.epigraphs) {
+      return;
+    }
+    let search = this.epigraphFilterCtrl.value;
+    if (!search) {
+      this.filteredEpigraphs.next(this.epigraphs.slice());
+      return;
+    } else {
+      search = search.toLowerCase();
+    }
+    this.filteredEpigraphs.next(
+      this.epigraphs.filter(
+        e =>
+          (e.codigo + ' - ' + e.descripcionES)
+            .toLowerCase()
+            .indexOf(search) > -1
+      )
+    );
+  }
+
   /**
    * Asigna los valores del formulario al objeto `Product`.
    */
   private setProductFields(): void {
     Object.assign(this.product, this.productForm.value);
+    if(this.selectedTax) {
+      this.product.tax = this.selectedTax;
+    }
   }
 }

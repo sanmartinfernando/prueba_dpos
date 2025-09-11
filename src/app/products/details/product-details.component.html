@@ -42,8 +42,12 @@
               </div>
               <div class="mb-3">
                 <label for="epigraph" class="form-label">{{ 'dpos.product-details.form.epigraph' | translate }}</label>
-                <mat-select formControlName="epigraph" id="epigraph" name="epigraph" class="custom-mat-form-select" [ngClass]="{'mat-form-field-invalid': productForm.get('epigraph')?.hasError('required') && productForm.get('epigraph')?.touched}">
-                  <mat-option *ngFor="let epigraph of epigraphs" [value]="epigraph.codigo">
+                <mat-select formControlName="epigraph" id="epigraph" name="epigraph" class="custom-mat-form-select" [formControl]="epigraphControl" placeholder="Selecciona epígrafe" [ngClass]="{'mat-form-field-invalid': productForm.get('epigraph')?.hasError('required') && productForm.get('epigraph')?.touched}">
+                  <!-- Componente de búsqueda -->
+                  <ngx-mat-select-search [formControl]="epigraphFilterCtrl" placeholderLabel="Buscar..." noEntriesFoundLabel="No encontrado">
+                  </ngx-mat-select-search>
+                  <!-- Opciones -->
+                  <mat-option *ngFor="let epigraph of filteredEpigraphs | async" [value]="epigraph.codigo">
                     <div class="d-flex align-items-center w-100">
                       <span class="custom-mat-form-span">{{ epigraph.codigo }} - {{ epigraph.descripcionES }}</span>
                     </div>
@@ -61,7 +65,7 @@
                     <mat-option *ngFor="let category of categories" [value]="category.categoryId">
                       <div class="d-flex align-items-center w-100">
                         <span class="custom-mat-form-span">{{ category.categoryName }}</span>
-                        <button mat-icon-button class="custom-mat-form-icon ms-auto" (click)="editCategory(category.categoryId, $event)">
+                        <button type="button" mat-icon-button class="custom-mat-form-icon ms-auto" (click)="editCategory(category.categoryId, $event)">
                           <mat-icon>edit</mat-icon>
                         </button>
                       </div>
@@ -72,10 +76,36 @@
                   </mat-error>
                 </div>
                 <div class="col-md-4 mb-3 d-flex align-items-end justify-content-end">
-                  <button class="btn btn-secondary min-btn-width" (click)="openCategoriesModal()">
+                  <button type="button" class="btn btn-secondary min-btn-width" (click)="openCategoriesModal()">
                     {{'dpos.product-details.category.create.btn' | translate}}
                   </button>
                 </div>
+              </div>
+              <div class="mb-3">
+                <label for="tax" class="form-label">{{ 'dpos.product-details.form.tax' | translate }}</label>
+                <mat-select formControlName="tax" id="tax" name="tax" class="custom-mat-form-select" [ngClass]="{'mat-form-field-invalid': productForm.get('tax')?.hasError('required') && productForm.get('tax')?.touched}">
+                  <mat-option *ngFor="let tax of taxes" [value]="tax.id">
+                    <div class="d-flex align-items-center w-100">
+                      <span class="custom-mat-form-span">{{ tax.taxName }}</span>
+                    </div>
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="productForm.get('tax')?.hasError('required') && productForm.get('tax')?.touched" class="invalid-feedback">
+                  {{ 'dpos.customers.details.form.mandatory' | translate }}
+                </mat-error>
+              </div>
+              <div class="mb-3">
+                <label for="tax" class="form-label">{{ 'dpos.product-details.form.tax.exemptcode' | translate }}</label>
+                <mat-select formControlName="taxExemptCode" id="taxExemptCode" name="taxExemptCode" class="custom-mat-form-select" [ngClass]="{'mat-form-field-invalid': productForm.get('taxExemptCode')?.hasError('required') && productForm.get('taxExemptCode')?.touched}">
+                  <mat-option *ngFor="let exemptCode of taxExemptCodes" [value]="exemptCode.code">
+                    <div class="d-flex align-items-center w-100">
+                      <span class="custom-mat-form-span">{{ exemptCode.getTaxExemptCodeName(exemptCode.code, translate) }}</span>
+                    </div>
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="productForm.get('taxExemptCode')?.hasError('required') && productForm.get('taxExemptCode')?.touched" class="invalid-feedback">
+                  {{ 'dpos.customers.details.form.mandatory' | translate }}
+                </mat-error>
               </div>
             </div>
             <!-- Segunda columna del formulario -->
@@ -128,7 +158,7 @@
                     <mat-option *ngFor="let modifier of modifiers" [value]="modifier.modifierId">
                       <div class="d-flex align-items-center w-100">
                         <span class="custom-mat-form-span">{{ modifier.modifierName }}</span>
-                        <button mat-icon-button class="custom-mat-form-icon" (click)="editModifier(modifier.modifierId, $event)">
+                        <button type="button" mat-icon-button class="custom-mat-form-icon" (click)="editModifier(modifier.modifierId, $event)">
                           <mat-icon>edit</mat-icon>
                         </button>
                       </div>
@@ -139,10 +169,23 @@
                   </mat-error>
                 </div>
                 <div class="col-md-4 mb-3 d-flex align-items-end justify-content-end">
-                  <button class="btn btn-secondary min-btn-width" (click)="openModifiersModal()">
+                  <button type="button" class="btn btn-secondary min-btn-width" (click)="openModifiersModal()">
                     {{'dpos.product-details.modifiers.create.btn' | translate}}
                   </button>
                 </div>
+              </div>
+              <div class="mb-3">
+                <label for="taxRegimen" class="form-label">{{ 'dpos.product-details.form.tax.regimen' | translate }}</label>
+                <mat-select formControlName="taxRegimen" id="taxRegimen" name="taxRegimen" class="custom-mat-form-select" [ngClass]="{'mat-form-field-invalid': productForm.get('taxRegimen')?.hasError('required') && productForm.get('taxRegimen')?.touched}">
+                  <mat-option *ngFor="let taxRegimen of taxRegimenes" [value]="taxRegimen.code">
+                    <div class="d-flex align-items-center w-100">
+                      <span class="custom-mat-form-span">{{ taxRegimen.getTaxRegimenName(taxRegimen.code, translate) }}</span>
+                    </div>
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="productForm.get('taxRegimen')?.hasError('required') && productForm.get('taxRegimen')?.touched" class="invalid-feedback">
+                  {{ 'dpos.customers.details.form.mandatory' | translate }}
+                </mat-error>
               </div>
             </div>
           </div>

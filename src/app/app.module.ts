@@ -7,6 +7,7 @@ import { CurrencyPipe, DatePipe, registerLocaleData } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { QRCodeModule } from 'angularx-qrcode';
 import { CountdownComponent } from 'ngx-countdown';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -101,6 +102,7 @@ registerLocaleData(localeEs);
         MatButtonModule,
         FormsModule,
         NgxChartsModule,
+        NgxMatSelectSearchModule,
         BrowserAnimationsModule,
         QRCodeModule,
         CountdownComponent,

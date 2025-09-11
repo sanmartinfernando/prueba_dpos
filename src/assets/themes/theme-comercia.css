@@ -437,18 +437,27 @@ label.me-2 {
   font-size: 13px !important;
 }
 
+.mat-select-search-input {
+  color: var(--bs-color-white-100) !important;
+  background-color: var(--bs-color-grey-600) !important;
+}
+
 .mat-pseudo-checkbox {
-background-color: var(--bs-color-black-200) !important;
+background-color: var(--bs-color-grey-600) !important;
 border-color: var(--bs-color-white-100) !important;
 }
 
 .mat-mdc-option-pseudo-checkbox  {
-  background-color: var(--bs-color-black-200) !important;
+  background-color: var(--bs-color-grey-600) !important;
+  border-color: var(--bs-color-white-100) !important;
+}
+
+.mat-mdc-option-pseudo-checkbox::after {
   border-color: var(--bs-color-white-100) !important;
 }
 
 .mat-pseudo-checkbox-checked {
-  background-color: var(--bs-color-black-200) !important;
+  background-color: var(--bs-color-grey-600) !important;
   border-color: var(--bs-color-white-100) !important;
 }
 

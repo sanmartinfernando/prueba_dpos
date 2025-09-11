@@ -33,8 +33,8 @@ export class TaxesComponent implements OnInit, OnDestroy {
 
   size = 10000;
   taxes: Tax[] = [
-    { id: 1, value: 1000, name: "IVA 10%" },
-    { id: 2, value: 2100, name: "IVA 21%" }
+    { id: 1, taxValue: 1000, taxName: "IVA 10%" },
+    { id: 2, taxValue: 2100, taxName: "IVA 21%" }
   ];
   page = 0;
   code: string;

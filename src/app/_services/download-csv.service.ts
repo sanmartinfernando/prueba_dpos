@@ -461,8 +461,8 @@ export class DownloadCsvService {
     for (const tax of taxes) {
       let line = "";
       line += (line ? ';' : '') + (tax.id || '');
-      line += (line ? ';' : '') + ((tax.value / 100).toFixed(2) + ' %' || '');
-      line += (line ? ';' : '') + (tax.name || '');
+      line += (line ? ';' : '') + ((tax.taxValue / 100).toFixed(2) + ' %' || '');
+      line += (line ? ';' : '') + (tax.taxName || '');
       str += line + '\r\n';
     }
     return str;

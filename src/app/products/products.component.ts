@@ -12,6 +12,7 @@ import { Commerce } from '../_models/commerce.model';
 import { Product } from '../_models/product.model';
 import { Category } from '../_models/category.model';
 import { ProductsService } from '../_services/products.service';
+import { Tax } from '../_models/tax.model';
 
 /**
  * @class ProductsComponent
@@ -220,6 +221,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
           priceType:0, 
           favourite: true, 
           categoryId: "1", 
+          tax: new Tax(),
           modifiers: ["1", "2"], 
           epigraph:"Epígrafe 1", 
           noticeKitchen: true, 

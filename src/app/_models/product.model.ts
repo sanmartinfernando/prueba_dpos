@@ -1,3 +1,4 @@
+import { Tax } from './tax.model';
 /**
  * @enum UnitMeasurement
  * @description
@@ -58,12 +59,15 @@ export class Product {
   favourite = false;
   categoryId: string;
   modifiers?: string[] = [];
-  epigraph?: string;
   noticeKitchen?:boolean = false;
   unitMeasurement: number;
   stock?: number = 0;
   noticeBar?:boolean = false;
   decimals?: number = 2;
+  tax: Tax;
+  taxExemptCode?: string;
+  taxRegimen?: string;
+  epigraph?: string;
   decorationCategory?: string;
   decorationElement?: string;
   deleted?: boolean = false;

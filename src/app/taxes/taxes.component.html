@@ -57,8 +57,8 @@
                         (change)="checkIfAllSelected()" (click)="$event.stopPropagation()" />
                     </td>
                     <td class="text-center align-middle">{{ tax.id }}</td>
-                    <td class="text-center align-middle">{{ tax.name }}</td>
-                    <td class="text-center align-middle">{{ (tax.value / 100).toFixed(2) }}&nbsp;%</td>
+                    <td class="text-center align-middle">{{ tax.taxName }}</td>
+                    <td class="text-center align-middle">{{ (tax.taxValue / 100).toFixed(2) }}&nbsp;%</td>
                   </tr>
                 </ng-container>
               </tbody>

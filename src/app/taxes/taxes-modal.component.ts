@@ -33,8 +33,8 @@ export class TaxesModalComponent implements OnInit {
 
   public taxFormData = {
     taxType: '-1',
-    name: 'EXENTO',
-    value: 0
+    taxName: 'EXENTO',
+    taxValue: 0
   };
 
   constructor() {
@@ -59,15 +59,15 @@ export class TaxesModalComponent implements OnInit {
    */
   public updateTaxForm(): void {
     if (this.taxFormData.taxType === '-1') {
-      this.taxFormData = { taxType: '-1', name: 'EXENTO', value: 0 };
+      this.taxFormData = { taxType: '-1', taxName: 'EXENTO', taxValue: 0 };
       this.isTaxNameDisabled = true;
       this.isTaxValueDisabled = true;
     } else if (this.taxFormData.taxType === '-2') {
-      this.taxFormData = { taxType: '-2', name: 'NO SUJETO', value: 0 };
+      this.taxFormData = { taxType: '-2', taxName: 'NO SUJETO', taxValue: 0 };
       this.isTaxNameDisabled = true;
       this.isTaxValueDisabled = true;
     } else {
-      this.taxFormData = { taxType: this.taxFormData.taxType, name: '', value: 0 };
+      this.taxFormData = { taxType: this.taxFormData.taxType, taxName: '', taxValue: 0 };
       this.isTaxNameDisabled = false;
       this.isTaxValueDisabled = false;
     }
@@ -98,7 +98,7 @@ export class TaxesModalComponent implements OnInit {
    * Carga datos de ejemplo para el impuesto.
    */
   private loadTaxData(): void {
-    this.taxFormData = { taxType: '0', name: 'IVA 10%', value: 1000 };
+    this.taxFormData = { taxType: '0', taxName: 'IVA 10%', taxValue: 1000 };
     this.isTaxNameDisabled = false;
     this.isTaxValueDisabled = false;
   }
@@ -107,7 +107,7 @@ export class TaxesModalComponent implements OnInit {
    * Devuelve el valor del impuesto formateado en porcentaje.
    */
   get taxValueDisplay(): string {
-    return (this.taxFormData.value / 100).toFixed(2) + '%';
+    return (this.taxFormData.taxValue / 100).toFixed(2) + '%';
   }
 
   /**
@@ -117,7 +117,7 @@ export class TaxesModalComponent implements OnInit {
     const clean = displayValue.replace('%', '').replace(',', '.');
     const parsed = parseFloat(clean);
     if (!isNaN(parsed)) {
-      this.taxFormData.value = parsed * 100;
+      this.taxFormData.taxValue = parsed * 100;
     }
   }
 }

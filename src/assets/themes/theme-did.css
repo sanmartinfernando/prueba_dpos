@@ -27,6 +27,12 @@
     width: 95vw;
     max-height: 95vh;
   }
+  h3 {
+    margin-left: 0px !important;
+  }
+  .body-content{
+    margin-left: 0px !important;
+  }
 }
 
 .toggle-nav-btn {
@@ -376,13 +382,27 @@ footer{
   font-size: 13px !important;
 }
 
+.mat-select-search-input {
+  color: var(--bs-color-black-100) !important;
+  background-color: var(--bs-color-white-100) !important;
+}
+
 .mat-pseudo-checkbox {
+background-color: var(--bs-color-white-100) !important;
+border-color: var(--bs-color-black-100) !important;
+}
+
+.mat-pseudo-checkbox::after {
 background-color: var(--bs-color-white-100) !important;
 border-color: var(--bs-color-black-100) !important;
 }
 
 .mat-mdc-option-pseudo-checkbox  {
   background-color: var(--bs-color-white-100) !important;
+  border-color: var(--bs-color-black-100) !important;
+}
+
+.mat-mdc-option-pseudo-checkbox::after {
   border-color: var(--bs-color-black-100) !important;
 }
 
