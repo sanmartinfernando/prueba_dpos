@@ -35,27 +35,27 @@
         </li>
       </ng-container>
       <ng-container *ngIf="isComercia">
-        <a class="nav-link m-2 d-flex align-items-center" (click)="handlePageClick('Inicio', 'dashboard')" routerLink="/dashboard" routerLinkActive="active-link">
+        <a class="nav-link m-2 d-flex align-items-center" (click)="handlePageClick('dpos.nav.menu.dashboard', 'dashboard')" routerLink="/dashboard" routerLinkActive="active-link">
           <img src="assets/img/ic-inicio.svg" alt="Icono Inicio" class="active-icon-link me-2">
           <span>{{ 'dpos.nav.menu.dashboard' | translate }}</span>
         </a>
-        <a class="nav-link m-2 d-flex align-items-center" (click)="handlePageClick('Ventas', 'sales')" routerLink="/sales" routerLinkActive="active-link">
+        <a class="nav-link m-2 d-flex align-items-center" (click)="handlePageClick('dpos.nav.menu.sales', 'sales')" routerLink="/sales" routerLinkActive="active-link">
           <img src="assets/img/ic-sales.svg" alt="Icono Ventas" class="active-icon-link me-2">
           <span><span>{{ 'dpos.nav.menu.sales' | translate }}</span></span>
         </a>
-        <a class="nav-link m-2 d-flex align-items-center" (click)="handlePageClick('Cierres', 'balances')" routerLink="/balances" routerLinkActive="active-link">
+        <a class="nav-link m-2 d-flex align-items-center" (click)="handlePageClick('dpos.nav.menu.balances', 'balances')" routerLink="/balances" routerLinkActive="active-link">
           <img src="assets/img/ic-balances.svg" alt="Icono Cierres" class="active-icon-link me-2">
           <span>{{ 'dpos.nav.menu.balances' | translate }}</span>
         </a>
-        <a class="nav-link m-2 d-flex align-items-center" (click)="handlePageClick('Informes', 'reports')" routerLink="/reports" routerLinkActive="active-link">
+        <a class="nav-link m-2 d-flex align-items-center" (click)="handlePageClick('dpos.nav.menu.reports', 'reports')" routerLink="/reports" routerLinkActive="active-link">
           <img src="assets/img/ic-reports.svg" alt="Icono Informes" class="active-icon-link me-2">
           <span>{{ 'dpos.nav.menu.reports' | translate }}</span>
         </a>
-        <a class="nav-link m-2 d-flex align-items-center" (click)="handlePageClick('Clientes', 'customers')" routerLink="/customers" routerLinkActive="active-link">
+        <a class="nav-link m-2 d-flex align-items-center" (click)="handlePageClick('dpos.nav.menu.customers', 'customers')" routerLink="/customers" routerLinkActive="active-link">
           <img src="assets/img/ic-reports.svg" alt="Icono Informes" class="active-icon-link me-2">
           <span>{{ 'dpos.nav.menu.customers' | translate }}</span>
         </a>
-        <a class="nav-link m-2 d-flex align-items-center" (click)="handlePageClick('Productos', 'products')" routerLink="/products" routerLinkActive="active-link">
+        <a class="nav-link m-2 d-flex align-items-center" (click)="handlePageClick('dpos.nav.menu.products', 'products')" routerLink="/products" routerLinkActive="active-link">
           <img src="assets/img/ic-reports.svg" alt="Icono Informes" class="active-icon-link me-2">
           <span>{{ 'dpos.nav.menu.products' | translate }}</span>
         </a>
@@ -80,7 +80,7 @@
         class="navbar-nav d-flex flex-column flex-md-row align-items-end align-items-md-center ms-md-auto px-3 gap-2 order-1 order-md-1 mt-3 mb-2 mt-md-0 mb-md-0"
       >
         <!-- Selector de idioma -->
-        <li class="mx-2 nav-item">
+        <li class="mx-2 nav-item w-100 w-md-auto">
           <app-dpos-lang-switcher></app-dpos-lang-switcher>
         </li>
 
@@ -93,8 +93,7 @@
             name="commerce"
             [(ngModel)]="commerceSelected"
             (change)="onCommerceChange()"
-            *ngIf="username; else loginLink"
-          >
+            *ngIf="username; else loginLink">
             <option *ngFor="let commerce of commerces" [value]="commerce.commerceId">
               {{ commerce.commerceNumber + ' - ' + commerce.resellerName }}
             </option>
@@ -107,8 +106,7 @@
             class="btn btn-light d-flex align-items-center gap-2 responsive-button w-100 w-md-auto"
             *ngIf="username"
             (click)="logOut()"
-            style="cursor: pointer"
-          >
+            style="cursor: pointer">
             <i class="fa-regular fa-circle-user fa-lg btn-light-icon"></i>
             <span>{{ username }}</span>
             <i class="fa-solid fa-power-off"></i>

@@ -6,7 +6,7 @@ export abstract class TaxExemptCode {
   static readonly TYPE_VERIFACTU = 1;
 
   public code: string;
-  public enabled: boolean = false;
+  public enabled = false;
   public type: number;
 
   constructor(code: string) {

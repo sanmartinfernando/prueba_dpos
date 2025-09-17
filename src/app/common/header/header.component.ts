@@ -8,6 +8,7 @@ import { StorageService } from 'src/app/_services/storage.service';
 import { UIStateService } from 'src/app/_services/ui-state.service';
 import { CommercesService } from '../../_services/commerces.service';
 import { ThemeService } from '../../_services/theme.service';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * @class HeaderComponent
@@ -26,6 +27,7 @@ export class HeaderComponent implements OnInit {
   private storageService = inject(StorageService);
   private sessionService = inject(SessionService);
   private themeService = inject(ThemeService);
+  private translate = inject(TranslateService);
   private uiStateService = inject(UIStateService);
   private pagesService = inject(PagesService);
   public router = inject(Router);
@@ -104,11 +106,12 @@ export class HeaderComponent implements OnInit {
   /**
    * Gestiona el clic de las opciones del menú de navegación.
    * 
-   * @param text Texto de la opción seleccionada.
+   * @param labelKey Texto de la opción de menú seleccionada.
    * @param code Código de la opción seleccionada.
    */
-  public handlePageClick(text: string, code: string): void {
-    this.titleHeader(text);
+  public handlePageClick(labelKey: string, code: string): void {
+    const label = this.translate.instant(labelKey);
+    this.titleHeader(label);
     this.component(code);
     this.showNav = this.isLargeScreen();
     this.navToggled.emit(this.showNav);

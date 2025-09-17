@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
@@ -30,7 +30,7 @@ import { TaxExemptCode, TBAIExemptCode, TBAINoApplyCode, VerifactuExemptCode, Ve
   selector: 'app-dpos-product-details',
   templateUrl: './product-details.component.html',
 })
-export class ProductDetailsComponent implements OnInit {
+export class ProductDetailsComponent implements OnInit, OnDestroy {
 
   private fb = inject(FormBuilder);
   private encryptionService = inject(EncryptionService);
@@ -363,7 +363,7 @@ export class ProductDetailsComponent implements OnInit {
   private getAllCategories() {
     this.productsService.getAllCategories(this.commerceId.toString()).subscribe({
       next: (categories) => {
-        this.categories = categories;
+        this.categories = categories.filter(category => !category.deleted);
       },
       error: (error) => {
         this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.category.all'));
@@ -378,7 +378,7 @@ export class ProductDetailsComponent implements OnInit {
   private getAllModifiers() {
     this.productsService.getAllModifiers(this.commerceId.toString()).subscribe({
       next: (modifiers) => {
-        this.modifiers = modifiers;
+        this.modifiers = modifiers.filter(modifier => !modifier.deleted);
       },
       error: (error) => {
         this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.modifiers.all'));
@@ -431,7 +431,6 @@ export class ProductDetailsComponent implements OnInit {
       this.taxRegimenes = [];
       this.productForm.get('taxRegimen')?.disable();
     }
-    console.log(this.taxRegimenes);
   }
 
   private getTaxExemptCodes() {

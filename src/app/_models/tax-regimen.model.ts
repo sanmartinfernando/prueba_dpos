@@ -16,7 +16,7 @@ export abstract class TaxRegimen {
   static readonly DEFAULT_CODE_NAME = '';
 
   public code: string;
-  public enabled: boolean = false;
+  public enabled = false;
   public type: number;
 
   constructor(code: string) {

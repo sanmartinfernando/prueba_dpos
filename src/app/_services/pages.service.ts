@@ -33,7 +33,7 @@ export class PagesService {
       this.pages[1].text = this.translate.instant('dpos.sales.page.title');
       this.pages[2].text = this.translate.instant('dpos.balances.page.title');
       this.pages[3].text = this.translate.instant('dpos.reports.page.title');
-      this.pages[4].text = this.translate.instant('dpos.customer.page.title');
+      this.pages[4].text = this.translate.instant('dpos.customers.page.title');
       this.pages[5].text = this.translate.instant('dpos.products.page.title');
       //this.pages[6].text = this.translate.instant('dpos.taxes.page.title');
     });

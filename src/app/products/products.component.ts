@@ -307,7 +307,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
   private getAllCategories() {
     this.productsService.getAllCategories(this.commerceId.toString()).subscribe({
       next: (categories) => {
-        this.categories = categories;
+        this.categories = categories.filter(category => !category.deleted);
         const category: Category = {categoryId: "0", categoryName: this.translate.instant('dpos.filter.all')};
         this.categories.unshift(category);;
         if (this.sessionService.getItem(SessionService.PRODUCT_CATEGORY) == null) {
