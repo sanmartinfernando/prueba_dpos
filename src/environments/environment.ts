@@ -7,6 +7,7 @@ export const environment = {
     urlClients:'https://q6zmc7oxgg.execute-api.eu-south-2.amazonaws.com/pre/',
     urlProducts:'https://c9i32wue1f.execute-api.eu-south-2.amazonaws.com/pre/',
     urlWS:'https://api.dpos.es/wstickets/',
-    urlAuth:'https://dpos.diusframi.tech:39443/wsauth/'
+    urlAuth:'https://dpos.diusframi.tech:39443/wsauth/',
+    urlSettings:'https://3yh5mb6hfj.execute-api.eu-south-2.amazonaws.com/pre'
 };
 

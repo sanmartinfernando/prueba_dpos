@@ -52,6 +52,8 @@ export const RestRoutes = {
 
   MODIFIERS: `${MODIFIERS}`,
 
+  COMMERCE: `/settings/commerce`,
+
   TAXES: `${API}/${TAXES}/`,
   TAXES_INFO: `${API}/${TAXES}?size=`,
 
