@@ -61,6 +61,32 @@ export class DownloadCsvService {
     document.body.removeChild(dwldLink);
   }
 
+  public downloadDocumentsFile(
+  docs: Array<{ name: string; inclusionDate: string; url?: string }>,
+  title: string,
+  lang: string
+): void {
+  const header = ['Nombre', 'Fecha inclusión', 'URL'];
+  const rows = docs.map(d => ([
+    d.name,
+    new Date(d.inclusionDate).toLocaleString(lang || 'es-ES'),
+    d.url ?? ''
+  ]));
+
+  const csv =
+    header.join(',') + '\n' +
+    rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${title || 'documentos'}.csv`;
+  a.click();
+  window.URL.revokeObjectURL(url);
+}
+
+
   /**
    * Genera y descarga un archivo CSV con datos de cierres de caja.
    * 

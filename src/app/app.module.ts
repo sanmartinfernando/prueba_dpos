@@ -37,6 +37,7 @@ import { CookiesPolicyComponent } from './common/footer/cookies-policy.component
 import { PrivacyPolicyComponent } from './common/footer/privacy-policy.component';
 import { UseConditionsComponent } from './common/footer/use-conditions.component';
 import { CustomersComponent } from './customers/customers.component';
+import { DocumentsComponent } from './documents/documents.component';
 import { CustomerDetailsComponent } from './customers/details/customer-details.component';
 import { ProductsComponent } from './products/products.component';
 import { ProductDetailsComponent } from './products/details/product-details.component';
@@ -44,6 +45,7 @@ import { TaxesComponent } from './taxes/taxes.component';
 import { TaxesModalComponent } from './taxes/taxes-modal.component';
 import { CategoryModalComponent } from './categories/category-modal.component';
 import { ModifiersModalComponent } from './modifiers/modifiers-modal.component';
+import { Document } from './_models/documents.model';
 
 import { httpInterceptorProviders } from './_rest/http.interceptor';
 import { AuthGuard } from './_guard/auth.guard';
@@ -71,6 +73,7 @@ registerLocaleData(localeEs);
         DashboardComponent,
         SalesComponent,
         CustomersComponent,
+        DocumentsComponent,
         CustomerDetailsComponent,
         TaxesComponent,
         TaxesModalComponent,

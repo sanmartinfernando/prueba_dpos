@@ -1,0 +1,114 @@
+<br />
+<div class="container-fluid header-main">
+
+  <!-- Tabla de documentos y acciones a realizar -->
+  <div class="card mt-3">
+    <div class="card-body">
+      <!-- Componente modal para mensajes -->
+      <app-modal
+        [showModal]="showModal"
+        [modalTitle]="modalTitle"
+        [modalMessage]="modalMessage"
+        [showAcceptButton]="showAcceptButton"
+        [showCancelButton]="showCancelButton"
+        (acceptAction)="onAcceptModal()"
+        (cancelAction)="closeModal()"
+        (closeModal)="closeModal()"
+      ></app-modal>
+
+      <div class="row mb-4 align-items-center">
+        <!-- Título y botón de exportar solo en móviles -->
+        <div class="col-12 d-flex justify-content-between align-items-center d-md-none">
+          <h5 class="mb-0">
+            <b>{{ 'dpos.documents.page.title' | translate }}</b>
+          </h5>
+          <button class="btn btn-primary btn-round ms-2" (click)="exportDocuments()">
+            <img *ngIf="isComercia" src="assets/img/ic-download.svg" alt="Icono exportar datos" />
+            <i *ngIf="!isComercia" class="fa-solid fa-download fa-xl"></i>
+          </button>
+        </div>
+
+        <!-- Título en pantallas grandes -->
+        <div class="col-12 col-md-6 d-none d-md-block">
+          <h5 class="mb-0">
+            <b>{{ 'dpos.documents.page.title' | translate }}</b>
+          </h5>
+        </div>
+
+        <!-- Botones en pantallas grandes (Nuevo, Importar, Exportar) -->
+        <div class="col-12 col-md-6 text-md-end mt-3 mt-md-0 d-flex flex-wrap gap-2 justify-content-end">
+          <input type="file" #documentFileInput style="display: none" accept=".csv" (change)="onDocumentFileSelected($event)" />
+          <button class="btn btn-primary btn-round d-none d-md-inline-flex" (click)="exportDocuments()">
+            <img *ngIf="isComercia" src="assets/img/ic-download.svg" alt="Icono exportar datos" />
+            <i *ngIf="!isComercia" class="fa-solid fa-download fa-xl"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Spinner de carga mientras no se complete la carga -->
+      <div *ngIf="!loadCompleted && !emptySearch" class="d-flex justify-content-center">
+        <div class="spinner-border text-danger"></div>
+      </div>
+
+      <!-- Mensaje cuando no hay resultados después de la búsqueda -->
+      <div *ngIf="loadCompleted && emptySearch" class="d-flex justify-content-center">
+        <b><i>{{ 'dpos.dashboard.nodata.label' | translate }}</i></b>
+      </div>
+
+      <!-- Tabla con resultados de documentos, visible si hay resultados -->
+      <div class="row" *ngIf="loadCompleted && !emptySearch">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead class="text-customer">
+              <tr>
+                <th>{{ 'dpos.documents.name.label' | translate }}</th>
+                <th>{{ 'dpos.documents.inclusionDate.label' | translate }}</th>
+              </tr>
+            </thead>
+            <ng-template #empty>
+              <td colspan="3">
+                <b>{{ 'dpos.sales.operation.nodata.label' | translate }}</b>
+              </td>
+            </ng-template>
+<tbody>
+  <ng-container *ngIf="loadCompleted && documents; else empty">
+    <tr
+      *ngFor="let document of documents | paginate : { itemsPerPage: 10, currentPage: page }; index as i"
+      (click)="sendDocumentDetails(document.documentId)"
+    >
+      <!-- NOMBRE DEL DOCUMENTO -->
+      <td class="align-middle" (click)="$event.stopPropagation()">
+        <span
+          class="table-title"
+          style="cursor: pointer; color: inherit; text-decoration: none;"
+          (click)="document._isApi ? openApiDoc(document._apiParams, $event) : openExternal(document.url, $event)"
+          title="Abrir documento"
+        >
+          {{ document.name }}
+        </span>
+      </td>
+
+      <!-- FECHA DE INCLUSIÓN -->
+      <td class="align-middle">
+        {{ document.inclusionDate | date:'dd/MM/yyyy HH:mm' }}
+      </td>
+
+      <!-- BOTÓN DE ELIMINAR -->
+      
+    </tr>
+  </ng-container>
+</tbody>
+          </table>
+
+          <div *ngIf="loadCompleted && emptySearch === false" class="text-start mt-3">
+            <pagination-controls
+              (pageChange)="page = $event"
+              previousLabel="{{ 'dpos.pagination.previous' | translate }}"
+              nextLabel="{{ 'dpos.pagination.next' | translate }}"
+            ></pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

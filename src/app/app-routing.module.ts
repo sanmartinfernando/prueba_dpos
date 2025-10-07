@@ -11,6 +11,7 @@ import { PwresetComponent } from './common/login/pwreset/pwreset.component';
 import { BalancesComponent } from './balances/balances.component';
 import { BalancesDetailsComponent } from './balances/balances-details/balances-details.component';
 import { CustomersComponent } from './customers/customers.component';
+import { DocumentsComponent } from './documents/documents.component';
 import { CustomerDetailsComponent } from './customers/details/customer-details.component';
 import { ProductsComponent } from './products/products.component';
 import { ProductDetailsComponent } from './products/details/product-details.component';
@@ -32,6 +33,7 @@ const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard], title: 'DPOS - Inicio' },
   { path: 'sales', component: SalesComponent, canActivate: [AuthGuard], title: 'DPOS - Ventas' },
   { path: 'customers', component: CustomersComponent, canActivate: [AuthGuard], title: 'DPOS - Clientes' },
+  { path: 'documents', component: DocumentsComponent, canActivate: [AuthGuard], title: 'DPOS - Documentos' },
   { path: 'reports', component: ReportsComponent, canActivate: [AuthGuard], title: 'DPOS - Informes' },
   { path: 'balances', component: BalancesComponent, canActivate: [AuthGuard], title: 'DPOS - Cierres' },
   { path: 'details/:id', component: DetailsComponent, canActivate: [AuthGuard], title: 'DPOS - Ventas' },

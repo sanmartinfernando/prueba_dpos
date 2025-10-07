@@ -386,5 +386,11 @@
     "dpos.no-apply-code.code.ie": "No sujeto en el TAI por reglas de localización, pero repercute impuesto extranjero, IPSI/IGIC o IVA en otro estado miembro UE.",
     "dpos.no-apply-code.code.n1": "Operación No Sujeta artículo 7, 14, otros.",
     "dpos.no-apply-code.code.n2": "Operación No Sujeta por Reglas de localización.",
-    "dpos.no-apply-code.code.none": "Código de no sujeto erróneo"
+    "dpos.no-apply-code.code.none": "Código de no sujeto erróneo",
+    "dpos.nav.menu.documents": "Documentos",
+    "dpos.documents.name.label": "Nombre",
+    "dpos.documents.inclusionDate.label": "Última Actualización",
+    "dpos.documents.page.title": "Documentos",
+    "dpos.documents.new.label": "Nuevo Documento",
+    "dpos.documents.import.label": "Importar Documento"
 }

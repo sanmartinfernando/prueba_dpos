@@ -6,12 +6,17 @@ const ORDERS = 'Orders';
 const BALANCES = 'Balances';
 const CASHMOVEMENTS = 'CashMovements';
 const CUSTOMER = 'client';
+const DOCUMENT = 'document';
+const DOCUMENTS = 'documents';
 const CUSTOMERS = 'clients';
 const CATEGORIES = 'category';
 const MODIFIERS = 'modifier';
 const PRODUCT = 'product';
 const PRODUCTS = 'products'
 const TAXES = 'Taxes';
+const VERIFACTU = 'api/verifactu/';
+const REPRESENTATION_DOCUMENT_DOWNLOAD = `${VERIFACTU}representation-document/download`;
+
 
 /**
  * Configuración de rutas REST utilizadas en la aplicación.
@@ -44,6 +49,10 @@ export const RestRoutes = {
   CUSTOMERS: `${CUSTOMERS}`,
   CUSTOMERS_INFO: `${CUSTOMERS}`,
 
+  DOCUMENT: `${DOCUMENT}`,
+  DOCUMENTS: `${DOCUMENTS}`,
+  DOCUMENTS_INFO: `${DOCUMENTS}`,
+
   PRODUCT: `${PRODUCT}`,
   PRODUCTS: `${PRODUCTS}`,
   PRODUCTS_INFO: `${PRODUCTS}`,
@@ -61,5 +70,7 @@ export const RestRoutes = {
   PARAM_QS: `&qs={"and":`,
   PARAM_TODATE: `&toDate=`,
   PARAM_TERMINALNUMBER: `&terminalNumber=`,
-  PARAM_COMMERCEID: `&CommerceId=`
+  PARAM_COMMERCEID: `&CommerceId=`,
+
+  VERIFACTU_REPRESENTATION_DOCUMENT_DOWNLOAD: `${REPRESENTATION_DOCUMENT_DOWNLOAD}`
 };
