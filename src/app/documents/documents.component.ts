@@ -3,8 +3,6 @@ import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { CommercesService } from '../_services/commerces.service';
-// Si todavía no tienes DocumentsService, cambia esta línea por:
-// import { CustomersService as DocumentsService } from '../_services/customers.service';
 import { DocumentsService } from '../_services/documents.service';
 import { DownloadCsvService } from '../_services/download-csv.service';
 import { EncryptionService } from '../_services/encryption.service';
@@ -41,17 +39,25 @@ export class DocumentsComponent implements OnInit, OnDestroy {
   private themeService = inject(ThemeService);
   private uiStateService = inject(UIStateService);
   private router = inject(Router);
-  private readonly STATIC_DOC_URL = 'https://drive.google.com/file/d/1tjWYY_Njv-Q_D6L8WNnMsSp2SVcCQo9H/view';
-  
-  private buildStaticDocument() {
-    return {
-      documentId: 'static-001',
-      name: 'Documento (Google Drive)',
-      inclusionDate: new Date().toISOString(),
-      url: this.STATIC_DOC_URL,
-      deleted: false
-    };
-  }
+  private readonly STATIC_DOC_URL_1 = 'https://d1v0i5k89q4x6i.cloudfront.net/Comercia/Declaracion_Responsable_TPVGO.pdf';
+  private readonly STATIC_DOC_URL_2 = 'https://d1v0i5k89q4x6i.cloudfront.net/DPOS/Declaracion_Responsable_DPOS.pdf';
+
+
+  private buildStaticDocumentsForReseller(): DocumentRow[] {
+  const isComercia = this.isComercia; // ya lo calculas en loadCommerces()
+  const url = isComercia ? this.STATIC_DOC_URL_1 : this.STATIC_DOC_URL_2;
+  const name = isComercia
+    ? 'Declaración Responsable TPV&GO VeriFactu'
+    : 'Declaración Responsable DPOS VeriFactu';
+
+  return [{
+    documentId: isComercia ? 'static-comercia' : 'static-otros',
+    name,
+    inclusionDate: new Date().toISOString(),
+    url,
+    deleted: false
+  }];
+}
 
   Math: Math;
 
@@ -293,13 +299,13 @@ private getDocuments(): void {
   this.emptySearch = true;
   this.loadCompleted = false;
 
-  // 📄 Documento estático (Google Drive)
-  const staticDoc = this.buildStaticDocument();
+  //Declaracion responsable
+  const staticDoc = this.buildStaticDocumentsForReseller();
 
   // 📄 Documento que viene de la API Verifactu (se abrirá con token vía HttpClient → Blob)
   const apiDoc: DocumentRow = {
     documentId: 'api-001',
-    name: 'Documento Verifactu (desde API)',
+    name: 'Autorización de Representación Para Envío de Registros de Facturación a la AEAT',
     inclusionDate: new Date().toISOString(),
     url: null,            // 👈 importante: para que el HTML use la rama _isApi
     deleted: false,
@@ -324,14 +330,14 @@ private getDocuments(): void {
     deleted: !!d.deleted,  // forzamos booleano para cumplir el requerido
   }));
 
-  this.documents = [ staticDoc, apiDoc, ...base ];
+  this.documents = [ ...staticDoc, apiDoc, ...base ];
   this.emptySearch = this.documents.length === 0;
   this.loadCompleted = true;
 },
 
       error: () => {
         // 👇 Si falla la API principal, mostramos el estático y el de la API Verifactu
-        this.documents = [staticDoc, apiDoc];
+        this.documents = [...staticDoc, apiDoc];
         this.emptySearch = this.documents.length === 0;
         this.loadCompleted = true;
       }
