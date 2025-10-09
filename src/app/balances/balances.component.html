@@ -80,14 +80,14 @@
                     <td class="text-center align-middle">{{ balance.terminalNumber }}</td>
                     <td class="text-start align-middle">{{ balance.startedAt | date : "dd/MM/yyyy HH:mm" }}</td>
                     <td class="text-start align-middle">{{ balance.finishedAt | date : "dd/MM/yyyy HH:mm" }}</td>
-                    <td class="text-center align-middle">{{ balance.salesCount + balance.refundsCount + balance.rectifyCount }}</td>
+                    <td class="text-center align-middle">{{ balance.operationsCount + balance.refundsCount + balance.rectifyCount }}</td>
                     <td class="text-end align-middle">{{ mismatch[i] / Math.pow(10, balance.decimals) | currency : "EUR" : "€" }}</td>
                     <td class="text-end align-middle">{{ balance.total / Math.pow(10, balance.decimals) | currency : "EUR" : "€" }}</td>
                   </tr>
                 </ng-container>
               </tbody>
             </table>
-            <div class="text-start mt-3">
+            <div class="text-start mt-3" *ngIf="balances.length > 10">
               <pagination-controls (pageChange)="page = $event" previousLabel="{{ 'dpos.pagination.previous' | translate }}" nextLabel="{{ 'dpos.pagination.next' | translate }}"></pagination-controls>
             </div>
           </div>

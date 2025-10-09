@@ -1,0 +1,10 @@
+.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.sortable i {
+  margin-left: 6px;
+  font-size: 0.8rem;
+  color: #fff;
+}

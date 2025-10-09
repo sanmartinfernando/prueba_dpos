@@ -1,17 +1,23 @@
 <br />
 <div class="container-fluid header-main">
   <!-- Formulario de búsqueda -->
-  <form class="row g-3 px-2">
+  <form class="row g-3 align-items-end px-2">
+    <!-- Terminal -->
     <div class="col-12 col-sm-6 col-md-3 col-lg-2">
       <label class="form-label" for="searchTer">{{ 'dpos.filter.terminal' | translate }}</label>
-      <select class="form-select" id="searchTer" name="terminal" [(ngModel)]="terminalSelected" (change)="onTerminalChange()">
+      <select class="form-select" id="searchTer" name="terminal" [(ngModel)]="terminalSelected"
+        (change)="onTerminalChange()">
         <option *ngFor="let terminal of terminalsNumber" [value]="terminal">{{ terminal }}</option>
       </select>
     </div>
+
+    <!-- Año -->
     <div class="col-12 col-sm-6 col-md-3 col-lg-2">
       <label class="form-label" for="yearDate">{{ 'dpos.filter.year' | translate }}</label>
       <input type="number" min="1900" [max]="year" step="1" [value]="year" class="form-control" id="yearDate" />
     </div>
+
+    <!-- Mes -->
     <div class="col-12 col-sm-6 col-md-3 col-lg-2">
       <label class="form-label" for="monthDate">{{ 'dpos.filter.month' | translate }}</label>
       <select class="form-select" id="monthDate" name="monthVarSearch" (change)="onMonthChange($event)">
@@ -19,18 +25,27 @@
         <option *ngFor="let m of [1,2,3,4,5,6,7,8,9,10,11,12]">{{ m }}</option>
       </select>
     </div>
-    <!-- Botones para resetear formulario y buscar -->
-    <div class="col-12 col-md-3 col-lg-3 d-flex flex-wrap gap-2 align-items-end justify-content-md-start justify-content-end">
-      <button type="button" class="btn btn-primary" (click)="searchTerminal()">
-        <i class="fas fa-search"></i>&nbsp;{{ 'dpos.action.search' | translate }}
+
+    <!-- Botones -->
+    <div class="col-12 col-sm-6 col-md-3 col-lg-auto d-flex gap-2 justify-content-start">
+      <button type="button" class="btn btn-primary d-flex gap-1 align-items-center button" (click)="searchTerminal()">
+        <i class="fas fa-search icon-bottom"></i>
+        <span class="text-center"> {{ 'dpos.action.search' | translate }}</span>
       </button>
-      <button type="reset" class="btn btn-outline-info btn-round">
+
+
+
+      <button type="reset" class="btn btn-outline-info d-flex align-items-center gap-1 btn-round">
         <img src="assets/img/ic-clean-filters.svg" alt="Icono limpiar filtros">
       </button>
     </div>
   </form>
+
+
+
   <!-- Modal para mensajes -->
-  <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage" (closeModal)="closeModal()"></app-modal>
+  <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage"
+    (closeModal)="closeModal()"></app-modal>
   <!-- Template cuando no hay resultados -->
   <ng-template #noresults>
     <p>€0.00</p>
@@ -48,49 +63,105 @@
           <!-- Grid para KPIs -->
           <div class="kpi-container row row-cols-2 row-cols-md-3 row-cols-xl-5 text-center">
             <!-- KPI de ventas -->
-            <button id="salesButton" class="kpi-card col d-flex flex-column align-items-center focus" (click)="fillCharKPIs($event)">
-              <span id="salesBorder" class="kpi-title">{{ 'dpos.dashboard.orders.label' | translate }}</span>
-              <span id="salesValue" class="kpi-value" *ngIf="ordersResult.total !== 0; else noresults">{{ ordersResult.total | currency : 'Eur' : '€' }}</span>
-              <span id="salesSubtitle" class="kpi-subtitle" *ngIf="ordersResult.count !== 0">{{ ordersResult.count }}
-                <ng-container *ngIf="ordersResult.count > 1; else singular">{{ 'dpos.dashboard.operations.label' | translate }}</ng-container>
+            <button id="operationsButton" class="kpi-card w-100 h-100 d-flex flex-column align-items-center focus"
+              (click)="fillCharKPIs($event)">
+              <span id="operationsBorder" class="kpi-title">
+                {{ 'dpos.dashboard.orders.label' | translate }}
               </span>
+              <div class="kpi-body d-flex flex-column align-items-center justify-content-center flex-grow-1">
+                <span id="operationsValue" class="kpi-value" *ngIf="ordersResult.total !== 0; else noresults">
+                  {{ ordersResult.total | currency : 'Eur' : '€' }}
+                </span>
+                <span id="operationsSubtitle" class="kpi-subtitle" *ngIf="ordersResult.count !== 0">
+                  {{ ordersResult.count }}
+                  <ng-container *ngIf="ordersResult.count > 1; else singular">
+                    {{ 'dpos.dashboard.operations.label' | translate }}
+                  </ng-container>
+                </span>
+              </div>
             </button>
+
             <!-- KPI de ticket medio -->
-            <button id="averageButton" class="kpi-card col d-flex flex-column align-items-center focus" (click)="fillCharKPIs($event)">
-              <span id="averageTicketBorder" class="kpi-title">{{ 'dpos.dashboard.average.ticket.label' | translate }}</span>
-              <span id="averageValue" class="kpi-value" *ngIf="avTicketResult !== 0; else noresults">{{ avTicketResult | currency : 'Eur' : '€' }}</span>
+            <button id="averageButton" class="kpi-card w-100 h-100 d-flex flex-column align-items-center focus"
+              (click)="fillCharKPIs($event)">
+              <span id="averageTicketBorder" class="kpi-title">
+                {{ 'dpos.dashboard.average.ticket.label' | translate }}
+              </span>
+              <div class="kpi-body d-flex flex-column align-items-center justify-content-center flex-grow-1">
+                <span id="averageValue" class="kpi-value" *ngIf="avTicketResult !== 0; else noresults">
+                  {{ avTicketResult | currency : 'Eur' : '€' }}
+                </span>
+              </div>
             </button>
+
             <!-- KPI de devoluciones -->
-            <button id="refundButton" class="kpi-card col d-flex flex-column align-items-center focus" (click)="fillCharKPIs($event)">
-              <span id="refundsBorder" class="kpi-title">{{ 'dpos.dashboard.refunds.label' | translate }}</span>
-              <span id="refundsValue" class="kpi-value" *ngIf="refundsResult.total !== 0; else noresults">{{ refundsResult.total | currency : 'Eur' : '€' }}</span>
-              <span id="refundsSubtitle" class="kpi-subtitle" *ngIf="refundsResult.count !== 0">{{ refundsResult.count }}
-                <ng-container *ngIf="refundsResult.count > 1; else singular">{{ 'dpos.dashboard.operations.label' | translate }}</ng-container>
+            <button id="refundButton" class="kpi-card w-100 h-100 d-flex flex-column align-items-center focus"
+              (click)="fillCharKPIs($event)">
+              <span id="refundsBorder" class="kpi-title">
+                {{ 'dpos.dashboard.refunds.label' | translate }}
               </span>
+              <div class="kpi-body d-flex flex-column align-items-center justify-content-center flex-grow-1">
+                <span id="refundsValue" class="kpi-value" *ngIf="refundsResult.total !== 0; else noresults">
+                  {{ refundsResult.total | currency : 'Eur' : '€' }}
+                </span>
+                <span id="refundsSubtitle" class="kpi-subtitle" *ngIf="refundsResult.count !== 0">
+                  {{ refundsResult.count }}
+                  <ng-container *ngIf="refundsResult.count > 1; else singular">
+                    {{ 'dpos.dashboard.operations.label' | translate }}
+                  </ng-container>
+                </span>
+              </div>
             </button>
+
             <!-- KPI de movimientos de caja -->
-            <button id="casmovButton" class="kpi-card col d-flex flex-column align-items-center focus" (click)="fillCharKPIs($event)">
-              <span id="casmovBorder" class="kpi-title">{{ 'dpos.dashboard.cashmovement.label' | translate }}</span>
-              <span id="casmovValue" class="kpi-value" *ngIf="cashMovementsResult !== 0; else noresults">{{ cashMovementsResult | currency : 'Eur' : '€' }}</span>
-              <span id="casmovSubtitle" class="kpi-subtitle" *ngIf="cashMovementsOperationsResult !== 0">{{ cashMovementsOperationsResult }}
-                <ng-container *ngIf="cashMovementsOperationsResult > 1; else singular">{{ 'dpos.dashboard.operations.label' | translate }}</ng-container>
+            <button id="casmovButton" class="kpi-card w-100 h-100 d-flex flex-column align-items-center focus"
+              (click)="fillCharKPIs($event)">
+              <span id="casmovBorder" class="kpi-title">
+                {{ 'dpos.dashboard.cashmovement.label' | translate }}
               </span>
+              <div class="kpi-body d-flex flex-column align-items-center justify-content-center flex-grow-1">
+                <span id="casmovValue" class="kpi-value" *ngIf="cashMovementsResult !== 0; else noresults">
+                  {{ cashMovementsResult | currency : 'Eur' : '€' }}
+                </span>
+                <span id="casmovSubtitle" class="kpi-subtitle" *ngIf="cashMovementsOperationsResult !== 0">
+                  {{ cashMovementsOperationsResult }}
+                  <ng-container *ngIf="cashMovementsOperationsResult > 1; else singular">
+                    {{ 'dpos.dashboard.operations.label' | translate }}
+                  </ng-container>
+                </span>
+              </div>
             </button>
+
             <!-- KPI de cierres de caja -->
-            <button id="balanceButton" class="kpi-card col d-flex flex-column align-items-center focus" (click)="fillCharKPIs($event)">
-              <span id="balanceBorder" class="kpi-title">{{ 'dpos.dashboard.result.label' | translate }}</span>
-              <span id="balanceValue" class="kpi-value" *ngIf="aggregations !== undefined && aggregations.length; else noresults">{{ balanceResult | currency : 'Eur' : '€' }}</span>
+            <button id="balanceButton" class="kpi-card w-100 h-100 d-flex flex-column align-items-center focus"
+              (click)="fillCharKPIs($event)">
+              <span id="balanceBorder" class="kpi-title">
+                {{ 'dpos.dashboard.result.label' | translate }}
+              </span>
+              <div class="kpi-body d-flex flex-column align-items-center justify-content-center flex-grow-1">
+                <span id="balanceValue" class="kpi-value"
+                  *ngIf="aggregations !== undefined && aggregations.length; else noresults">
+                  {{ balanceResult | currency : 'Eur' : '€' }}
+                </span>
+              </div>
             </button>
           </div>
+
           <!-- Grafico de barras de KPIs -->
           <div class="mt-5">
             <h6>
               <b>{{ 'dpos.dashboard.evokpis.label' | translate }}</b>
-              <ng-container *ngIf="showSalesVar === true || (showSalesVar === false && showRefundsVar === false && showAverageTicketVar === false && showCashMovVar === false && showResultsVar === false)"><b>&nbsp;> {{ 'dpos.dashboard.orders.txt' | translate }}</b></ng-container>
-              <ng-container *ngIf="showRefundsVar === true"><b>&nbsp;> {{ 'dpos.dashboard.refunds.txt' | translate }}</b></ng-container>
-              <ng-container *ngIf="showAverageTicketVar === true"><b>&nbsp;> {{ 'dpos.dashboard.average.ticket.txt' | translate }}</b></ng-container>
-              <ng-container *ngIf="showCashMovVar === true"><b>&nbsp;> {{ 'dpos.dashboard.cashmovements.txt' | translate }}</b></ng-container>
-              <ng-container *ngIf="showResultsVar === true"><b>&nbsp;> {{ 'dpos.dashboard.results.txt' | translate }}</b></ng-container>
+              <ng-container
+                *ngIf="showOperationsVar === true || (showOperationsVar === false && showRefundsVar === false && showAverageTicketVar === false && showCashMovVar === false && showResultsVar === false)"><b>&nbsp;>
+                  {{ 'dpos.dashboard.orders.txt' | translate }}</b></ng-container>
+              <ng-container *ngIf="showRefundsVar === true"><b>&nbsp;> {{ 'dpos.dashboard.refunds.txt' | translate
+                  }}</b></ng-container>
+              <ng-container *ngIf="showAverageTicketVar === true"><b>&nbsp;> {{ 'dpos.dashboard.average.ticket.txt' |
+                  translate }}</b></ng-container>
+              <ng-container *ngIf="showCashMovVar === true"><b>&nbsp;> {{ 'dpos.dashboard.cashmovements.txt' | translate
+                  }}</b></ng-container>
+              <ng-container *ngIf="showResultsVar === true"><b>&nbsp;> {{ 'dpos.dashboard.results.txt' | translate
+                  }}</b></ng-container>
             </h6>
             <!-- Spinner mientras se cargan datos -->
             <ng-template class="d-flex justify-content-center" #spinner>
@@ -142,11 +213,12 @@
           </h5>
           <ng-template #noPMData><br /><b><i>{{ 'dpos.dashboard.nodata.label' | translate }}</i></b></ng-template>
           <ng-container *ngIf="loadedPMChart; else spinner">
-            <div class="inner-chart"  #pmChartContainer>
-              <ngx-charts-bar-horizontal [results]="datasetPM" [view]="pmView" [animations]="true"
-                [showDataLabel]="true" [xAxis]="false" [yAxis]="true" [customColors]="colorsPM"
-                [dataLabelFormatting]="formatPercentageLabel" *ngIf="pmView && !emptyKPIChart; else noPMData">
-              </ngx-charts-bar-horizontal>
+            <div class="inner-chart" #pmChartContainer>
+              <ngx-charts-pie-chart [results]="datasetPM" [view]="pmView" [scheme]="schemePM" [animations]="true"
+                [labels]="true" [legend]="true" [doughnut]="false" [explodeSlices]="false" [gradient]="false"
+                [labelFormatting]="formatPercentageLabel" *ngIf="pmView && !emptyKPIChart; else noPMData">
+              </ngx-charts-pie-chart>
+
             </div>
           </ng-container>
         </div>

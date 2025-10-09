@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { OrderInfo } from '../_models/order-info.model';
 import { Balance } from '../_models/balance.model';
-import { SalesReport, SalesReportAggregations } from '../_models/sales-report.model';
+import { OperationsReport, OperationsReportAggregations } from '../_models/operations-report.model';
 import { TranslateService } from '@ngx-translate/core';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Order } from '../_models/order.model';
@@ -31,12 +31,12 @@ export class DownloadCsvService {
   /**
    * Genera y descarga un archivo CSV con datos de ventas.
    * 
-   * @param sales Información de ventas.
+   * @param operations Información de ventas.
    * @param filename Nombre del archivo a descargar.
    * @param language Idioma de los encabezados.
    */
-  public downloadSalesFile(sales: OrderInfo, filename = 'data', language: string) {
-    if (!sales) return;
+  public downloadOperationsFile(operations: OrderInfo, filename = 'data', language: string) {
+    if (!operations) return;
     const headersES = ['Documento', 'Tipo', 'Fecha', 'Terminal', 'Subtotal', 'Descuentos', 'Base Imponible', 'IVA', 'Total'];
     const headersCAT = ['Document', 'Tipus', 'Data', 'Terminal', 'Subtotal', 'Descomptes', 'Base Imponible', 'IVA', 'Total'];
     const headersEU = ['Dokumentua', 'Guy', 'Data', 'Terminala', 'Azpitotala', 'Deskontuak', 'Zerga Oinarria', 'BEZa', 'Guztira'];
@@ -49,7 +49,7 @@ export class DownloadCsvService {
       headers = headersCAT;
     }
     const fields = ['reference', 'type', 'createdAt', 'terminalNumber', 'subTotal', 'totalDiscount', 'subTotalTaxes', 'totalTaxes', 'total'];
-    const csvData = this.convertSalesToCSV(sales.data, fields, headers);
+    const csvData = this.convertOperationsToCSV(operations.data, fields, headers);
     const blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
     const dwldLink = document.createElement("a");
     const url = URL.createObjectURL(blob);
@@ -62,29 +62,29 @@ export class DownloadCsvService {
   }
 
   public downloadDocumentsFile(
-  docs: Array<{ name: string; inclusionDate: string; url?: string }>,
-  title: string,
-  lang: string
-): void {
-  const header = ['Nombre', 'Fecha inclusión', 'URL'];
-  const rows = docs.map(d => ([
-    d.name,
-    new Date(d.inclusionDate).toLocaleString(lang || 'es-ES'),
-    d.url ?? ''
-  ]));
+    docs: Array<{ name: string; inclusionDate: string; url?: string }>,
+    title: string,
+    lang: string
+  ): void {
+    const header = ['Nombre', 'Fecha inclusión', 'URL'];
+    const rows = docs.map(d => ([
+      d.name,
+      new Date(d.inclusionDate).toLocaleString(lang || 'es-ES'),
+      d.url ?? ''
+    ]));
 
-  const csv =
-    header.join(',') + '\n' +
-    rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+    const csv =
+      header.join(',') + '\n' +
+      rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
 
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const url = window.URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `${title || 'documentos'}.csv`;
-  a.click();
-  window.URL.revokeObjectURL(url);
-}
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${title || 'documentos'}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }
 
 
   /**
@@ -107,7 +107,7 @@ export class DownloadCsvService {
     } else if (language === 'cat') {
       headers = headersCAT;
     }
-    const fields = ['reference', 'terminalNumber', 'startedAt', 'finishedAt', 'salesCount', 'autoCashRecount', 'total'];
+    const fields = ['reference', 'terminalNumber', 'startedAt', 'finishedAt', 'operationsCount', 'autoCashRecount', 'total'];
     const csvData = this.convertBalancesToCSV(balances, fields, headers);
     const blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
     const dwldLink = document.createElement("a");
@@ -156,12 +156,12 @@ export class DownloadCsvService {
   /**
    * Genera y descarga un archivo CSV con un informe de ventas agregado.
    * 
-   * @param salesReport Informe de ventas.
+   * @param operationsReport Informe de ventas.
    * @param filename Nombre del archivo a descargar.
    * @param language Idioma de los encabezados.
    */
-  public downloadSalesReportFile(salesReport: SalesReport, filename = 'data', language: string) {
-    if (!salesReport) return;
+  public downloadOperationsReportFile(operationsReport: OperationsReport, filename = 'data', language: string) {
+    if (!operationsReport) return;
     const headersES = ['Producto', 'PVP (IVA INC.)', 'Ud. Vendidas', 'Total'];
     const headersCAT = ['Producte', 'PVP (IVA INC.)', 'U. Venudes', 'Total'];
     const headersEU = ['Produktua', 'RRP (BEZa barne)', 'Saldu duzu', 'Guztira'];
@@ -174,7 +174,7 @@ export class DownloadCsvService {
       headers = headersCAT;
     }
     const fields = ['aggregations.product', 'currency', 'aggregations.units', 'aggregations.total'];
-    const csvData = this.convertSalesReportToCSV(salesReport, fields, headers);
+    const csvData = this.convertOperationsReportToCSV(operationsReport, fields, headers);
     const blob = new Blob(['\ufeff' + csvData], { type: 'text/csv;charset=utf-8;' });
     const dwldLink = document.createElement("a");
     const url = URL.createObjectURL(blob);
@@ -325,17 +325,17 @@ export class DownloadCsvService {
    * @param fields Campos a incluir.
    * @param headers Encabezados del archivo.
    */
-  public convertSalesToCSV(orders: Order[], fields: string[], headers: string[]) {
+  public convertOperationsToCSV(orders: Order[], fields: string[], headers: string[]) {
     let str = headers.join(';') + '\r\n';
     for (const order of orders) {
       let line = "";
       line += (line ? ';' : '') + (order.reference || '');
       if (order.type === 2) {
-        line += (line ? ';' : '') + (this.translate.instant('dpos.sales.operation.refund.label') || '');
+        line += (line ? ';' : '') + (this.translate.instant('dpos.operations.operation.refund.label') || '');
       } else if (order.type === 5) {
-        line += (line ? ';' : '') + (this.translate.instant('dpos.sales.operation.rectification.label') || '');
+        line += (line ? ';' : '') + (this.translate.instant('dpos.operations.operation.rectification.label') || '');
       } else {
-        line += (line ? ';' : '') + (this.translate.instant('dpos.sales.operation.order.label') || '');
+        line += (line ? ';' : '') + (this.translate.instant('dpos.operations.operation.order.label') || '');
       }
       line += (line ? ';' : '') + (this.datePipe.transform(order.createdAt, 'dd/MM/yyyy HH:mm') || '');
       line += (line ? ';' : '') + (order.terminalNumber || '');
@@ -364,7 +364,7 @@ export class DownloadCsvService {
       line += (line ? ';' : '') + (balance.terminalNumber || '');
       line += (line ? ';' : '') + (this.datePipe.transform(balance.startedAt, 'dd/MM/yyyy HH:mm') || '');
       line += (line ? ';' : '') + (this.datePipe.transform(balance.finishedAt, 'dd/MM/yyyy HH:mm') || '');
-      line += (line ? ';' : '') + ((balance.salesCount + balance.refundsCount + balance.rectifyCount) || '');
+      line += (line ? ';' : '') + ((balance.operationsCount + balance.refundsCount + balance.rectifyCount) || '');
       line += (line ? ';' : '') + (this.currencyPipe.transform((Math.abs(balance.manualCashRecount) - Math.abs(balance.autoCashRecount)) / (Math.pow(10, balance.decimals)), 'EUR', '€') || '');
       line += (line ? ';' : '') + (this.currencyPipe.transform(balance.total / (Math.pow(10, balance.decimals)), 'EUR', '€') || '');
       str += line + '\r\n';
@@ -397,12 +397,12 @@ export class DownloadCsvService {
   /**
    * Convierte un informe de ventas a formato CSV.
    * 
-   * @param salesReport Informe de ventas.
+   * @param operationsReport Informe de ventas.
    * @param fields Campos a incluir.
    * @param headers Encabezados del archivo.
    */
-  public convertSalesReportToCSV(salesReport: SalesReport, fields: string[], headers: string[]) {
-    const products: SalesReportAggregations[] = Object.values(salesReport.aggregations);
+  public convertOperationsReportToCSV(operationsReport: OperationsReport, fields: string[], headers: string[]) {
+    const products: OperationsReportAggregations[] = Object.values(operationsReport.aggregations);
     let str = headers.join(';') + '\r\n';
     for (const product of products) {
       let line = "";

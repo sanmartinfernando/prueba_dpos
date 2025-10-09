@@ -2,8 +2,7 @@ import { ArqueoXService } from './../_services/arqueo-x.service';
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { DownloadCsvService } from '../_services/download-csv.service';
 import { Balance } from '../_models/balance.model';
-import { SalesReport, SalesReportAggregations } from '../_models/sales-report.model';
-import { SalesReportService } from '../_services/sales-report.service';
+
 import { TerminalsService } from '../_services/terminals.service';
 import { CommercesService } from '../_services/commerces.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -12,6 +11,8 @@ import { SessionService } from '../_services/session.service';
 import { ThemeService } from '../_services/theme.service';
 import { UIStateService } from '../_services/ui-state.service';
 import { Commerce } from '../_models/commerce.model';
+import { OperationsReportService } from '../_services/sales-report.service';
+import { OperationsReport, OperationsReportAggregations } from '../_models/operations-report.model';
 
 /**
  * @class ReportsComponent
@@ -27,7 +28,7 @@ import { Commerce } from '../_models/commerce.model';
 export class ReportsComponent implements OnInit, OnDestroy {
 
   private arqueoXService = inject(ArqueoXService);
-  private salesReportService = inject(SalesReportService);
+  private operationsReportService = inject(OperationsReportService);
   private downloadCsvService = inject(DownloadCsvService);
   private terminalsService = inject(TerminalsService);
   private commercesService = inject(CommercesService);
@@ -37,9 +38,9 @@ export class ReportsComponent implements OnInit, OnDestroy {
   private uiStateService = inject(UIStateService);
 
   size = 10000;
-  sales: Balance;
-  salesReports: SalesReport;
-  indexProduct: SalesReportAggregations[];
+  operations: Balance;
+  operationsReports: OperationsReport;
+  indexProduct: OperationsReportAggregations[];
   page = 0;
   searchParams0 = '';
   loadCompleted = false;
@@ -199,7 +200,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     if (this.reportVarSearch === this.translate.instant('dpos.reports.taxes.label') || this.reportVarSearch === this.translate.instant('dpos.reports.paymentmethods.label')) {
       this.getArqueoX();
     } else {
-      this.getSalesReport();
+      this.getOperationsReport();
     }
   }
 
@@ -208,11 +209,11 @@ export class ReportsComponent implements OnInit, OnDestroy {
    */
   public downloadReports() {
     if (this.reportVarSearch === this.translate.instant('dpos.reports.taxes.label')) {
-      this.downloadCsvService.downloadArqueoXFile(this.sales, this.translate.instant('dpos.reports.taxes.label'), this.currentLang);
+      this.downloadCsvService.downloadArqueoXFile(this.operations, this.translate.instant('dpos.reports.taxes.label'), this.currentLang);
     } else if (this.reportVarSearch === this.translate.instant('dpos.reports.products.label')) {
-      this.downloadCsvService.downloadSalesReportFile(this.salesReports, this.translate.instant('dpos.reports.products.label'), this.currentLang);
+      this.downloadCsvService.downloadOperationsReportFile(this.operationsReports, this.translate.instant('dpos.reports.products.label'), this.currentLang);
     } else if (this.reportVarSearch === this.translate.instant('dpos.reports.paymentmethods.label')) {
-      this.downloadCsvService.downloadPaymentMethodsFile(this.sales, this.translate.instant('dpos.reports.paymentmethods.label'), this.currentLang);
+      this.downloadCsvService.downloadPaymentMethodsFile(this.operations, this.translate.instant('dpos.reports.paymentmethods.label'), this.currentLang);
     }
   }
 
@@ -286,30 +287,30 @@ export class ReportsComponent implements OnInit, OnDestroy {
     this.loadCompleted = false;
     this.arqueoXService.getArqueoX(this.sinceDateMilli, this.tilDateMilli, this.terminalSelected === this.translate.instant('dpos.filter.all') ? null : this.terminalSelected, this.commerceId).subscribe({
       next: (arqueo) => {
-        this.sales = arqueo;
+        this.operations = arqueo;
         this.totalBase = 0;
         this.totalCuote = 0;
         this.totalTax = 0;
         this.totalPercentage = 0;
         this.totalValuePercentage = 0;
-        if (this.sales !== null && this.sales.balanceLines.length > 0) {
-          for (let i = 0; this.sales.balanceLines !== null && i < this.sales.balanceLines.length; i++) {
-            if (this.sales.balanceLines[i].itemType === 1 && this.sales.balanceLines[i].itemValue !== -1) {
-              this.totalBase = this.totalBase + this.sales.balanceLines[i].base / Math.pow(10, this.sales.balanceLines[i].decimals);
-              this.totalCuote = this.totalCuote + this.sales.balanceLines[i].tax / Math.pow(10, this.sales.balanceLines[i].decimals);
-              this.totalTax = this.totalTax + this.sales.balanceLines[i].total / Math.pow(10, this.sales.balanceLines[i].decimals);
+        if (this.operations !== null && this.operations.balanceLines.length > 0) {
+          for (let i = 0; this.operations.balanceLines !== null && i < this.operations.balanceLines.length; i++) {
+            if (this.operations.balanceLines[i].itemType === 1 && this.operations.balanceLines[i].itemValue !== -1) {
+              this.totalBase = this.totalBase + this.operations.balanceLines[i].base / Math.pow(10, this.operations.balanceLines[i].decimals);
+              this.totalCuote = this.totalCuote + this.operations.balanceLines[i].tax / Math.pow(10, this.operations.balanceLines[i].decimals);
+              this.totalTax = this.totalTax + this.operations.balanceLines[i].total / Math.pow(10, this.operations.balanceLines[i].decimals);
             }
             if (
-              this.sales.balanceLines[i].itemName.substring(0, 3) === 'Efe' ||
-              this.sales.balanceLines[i].itemName.substring(0, 3) === 'Tar' ||
-              this.sales.balanceLines[i].itemName.substring(0, 3) === 'Val' ||
-              this.sales.balanceLines[i].itemName.substring(0, 3) === 'Vir' ||
-              this.sales.balanceLines[i].itemName.substring(0, 3) === 'Otr' ||
-              this.sales.balanceLines[i].itemName.substring(0, 3) === 'Bon' ||
-              this.sales.balanceLines[i].itemName.substring(0, 3) === 'Rec'
+              this.operations.balanceLines[i].itemName.substring(0, 3) === 'Efe' ||
+              this.operations.balanceLines[i].itemName.substring(0, 3) === 'Tar' ||
+              this.operations.balanceLines[i].itemName.substring(0, 3) === 'Val' ||
+              this.operations.balanceLines[i].itemName.substring(0, 3) === 'Vir' ||
+              this.operations.balanceLines[i].itemName.substring(0, 3) === 'Otr' ||
+              this.operations.balanceLines[i].itemName.substring(0, 3) === 'Bon' ||
+              this.operations.balanceLines[i].itemName.substring(0, 3) === 'Rec'
             ) {
-              this.totalPercentage = this.totalPercentage + this.sales.balanceLines[i].percentage;
-              this.totalValuePercentage = this.totalValuePercentage + this.sales.balanceLines[i].total / Math.pow(10, this.sales.balanceLines[i].decimals);
+              this.totalPercentage = this.totalPercentage + this.operations.balanceLines[i].percentage;
+              this.totalValuePercentage = this.totalValuePercentage + this.operations.balanceLines[i].total / Math.pow(10, this.operations.balanceLines[i].decimals);
             }
           }
           this.emptySearch = false;
@@ -332,12 +333,12 @@ export class ReportsComponent implements OnInit, OnDestroy {
    * Obtiene el informe de ventas desde el servicio correspondiente.
    * Calcula totales de unidades y valor.
    */
-  private getSalesReport() {
+  private getOperationsReport() {
     this.loadCompleted = false;
-    this.salesReportService.getSalesReport(this.sinceDateMilli, this.tilDateMilli, this.terminalSelected === this.translate.instant('dpos.filter.all') ? null : this.terminalSelected, this.commerceId).subscribe({
-      next: (salesReport) => {
-        this.salesReports = salesReport;
-        this.indexProduct = Object.values(salesReport.aggregations);
+    this.operationsReportService.getOperationsReport(this.sinceDateMilli, this.tilDateMilli, this.terminalSelected === this.translate.instant('dpos.filter.all') ? null : this.terminalSelected, this.commerceId).subscribe({
+      next: (operationsReport) => {
+        this.operationsReports = operationsReport;
+        this.indexProduct = Object.values(operationsReport.aggregations);
         this.totalUnits = 0;
         this.totalUnitsValor = 0;
         if (this.indexProduct !== null && this.indexProduct.length > 0) {
@@ -352,7 +353,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
         this.loadCompleted = true;
       },
       error: (error) => {
-        this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.sales.report'));
+        this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.operations.report'));
         if (error.status === 400 || error.status === 404 || error.status === 401 || error.status === 500) {
           this.emptySearch = true;
           this.loadCompleted = true;

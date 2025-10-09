@@ -40,13 +40,13 @@ export class CategoryModalComponent implements OnInit {
   showModal = false;
   modalTitle = '';
   modalMessage = '';
-  isLoading  = false;
+  isLoading = false;
 
   constructor() {
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
     this.idCategory = this.data.id;
     this.categoryForm = this.fb.group({
-      categoryName: ['', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ0-9][A-Za-zÀ-ÖØ-öø-ÿ0-9 ]{0,98}[A-Za-zÀ-ÖØ-öø-ÿ0-9]$/)]],
+      categoryName: ['', [Validators.required, Validators.pattern(/^$|^[\wÀ-ÖØ-öø-ÿ%€+.,&'-](?:[\wÀ-ÖØ-öø-ÿ %€+.,&'-]*[\wÀ-ÖØ-öø-ÿ%€+.,&'-])?$/),]],
     });
   }
 
@@ -60,7 +60,7 @@ export class CategoryModalComponent implements OnInit {
       this.titlePage = this.translate.instant('dpos.category.modal.title.edit');
     } else {
       this.titlePage = this.translate.instant('dpos.category.modal.title.add');
-      this.isLoading  = false;
+      this.isLoading = false;
     }
   }
 
@@ -125,7 +125,7 @@ export class CategoryModalComponent implements OnInit {
     this.showModal = false;
     this.dialogRef.close(this.savedCategory);
   }
-  
+
   /**
    * Actualiza una categoría existente.
    */
@@ -159,7 +159,7 @@ export class CategoryModalComponent implements OnInit {
         this.savedCategory = savedCategory;
         this.isLoading = false;
       },
-       error: () => {
+      error: () => {
         this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.category.create'));
         this.savedCategory = null;
         this.isLoading = false;

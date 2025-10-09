@@ -51,7 +51,7 @@
             <span>{{ 'dpos.balances-details.balance.totaloperations.label' | translate }}</span>
           </div>
           <div class="col text-end">
-            <span>{{ balances.salesCount + balances.refundsCount + balances.rectifyCount }}</span>
+            <span>{{ balances.operationsCount + balances.refundsCount + balances.rectifyCount }}</span>
           </div>
         </div>
         <div class="row px-2 pb-1">
@@ -59,7 +59,7 @@
             <span>{{ 'dpos.balances-details.balance.sells.label' | translate }}</span>
           </div>
           <div class="col text-end">
-            <span>{{ balances.sales / Math.pow(10, balances.decimals) | currency : "Eur" : "€" }}</span>
+            <span>{{ balances.operations / Math.pow(10, balances.decimals) | currency : "Eur" : "€" }}</span>
           </div>
         </div>
         <div class="row px-2 pb-1">
@@ -110,7 +110,7 @@
         </div>
         <div class="row px-2 pt-2 pb-1" *ngFor="let item of [
           {label: 'dpos.balances-details.cashbalance.initial.label', value: balances.opening},
-          {label: 'dpos.balances-details.cashbalance.sells.label', value: balances.sales},
+          {label: 'dpos.balances-details.cashbalance.sells.label', value: balances.operations},
           {label: 'dpos.balances-details.cashbalance.in.label', value: balances.in},
           {label: 'dpos.balances-details.cashbalance.out.label', value: balances.out},
           {label: 'dpos.balances-details.cashbalance.refund.label', value: balances.refunds},

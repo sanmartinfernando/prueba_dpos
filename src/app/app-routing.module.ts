@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { SalesComponent } from './sales/sales.component';
-import { DetailsComponent } from './sales/details/details.component';
+import { OperationsComponent } from './operations/operations.component';
+import { DetailsComponent } from './operations/details/details.component';
 import { ReportsComponent } from './reports/reports.component';
 import { LoginComponent } from './common/login/login.component';
 import { PwrecoveryComponent } from './common/login/pwrecovery/pwrecovery.component';
@@ -31,12 +31,12 @@ const routes: Routes = [
   { path: 'privacy-policy', component: PrivacyPolicyComponent, title: 'Política de privacidad' },
   { path: 'login', component: LoginComponent, title: 'DPOS - Login' },
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard], title: 'DPOS - Inicio' },
-  { path: 'sales', component: SalesComponent, canActivate: [AuthGuard], title: 'DPOS - Ventas' },
+  { path: 'operations', component: OperationsComponent, canActivate: [AuthGuard], title: 'DPOS - Operaciones' },
   { path: 'customers', component: CustomersComponent, canActivate: [AuthGuard], title: 'DPOS - Clientes' },
   { path: 'documents', component: DocumentsComponent, canActivate: [AuthGuard], title: 'DPOS - Documentos' },
   { path: 'reports', component: ReportsComponent, canActivate: [AuthGuard], title: 'DPOS - Informes' },
   { path: 'balances', component: BalancesComponent, canActivate: [AuthGuard], title: 'DPOS - Cierres' },
-  { path: 'details/:id', component: DetailsComponent, canActivate: [AuthGuard], title: 'DPOS - Ventas' },
+  { path: 'details/:id', component: DetailsComponent, canActivate: [AuthGuard], title: 'DPOS - Operaciones' },
   { path: 'balances-details/:id', component: BalancesDetailsComponent, canActivate: [AuthGuard], title: 'DPOS - Cierres' },
   { path: 'customer-details', component: CustomerDetailsComponent, canActivate: [AuthGuard], title: 'DPOS - Clientes' },
   { path: 'customer-details/:id', component: CustomerDetailsComponent, canActivate: [AuthGuard], title: 'DPOS - Clientes' },

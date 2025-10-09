@@ -1,25 +1,36 @@
-<div class="container mt-5 col-md-3 offset-md-5">
-  <div class="card p-5">
-    <h2><b>{{ 'dpos.login.title' | translate }}</b></h2>
-    <span *ngIf="!isLoggedIn">{{ 'dpos.login.accountdetails.label' | translate }}</span>
-    <div class="mt-3">
+<div class="container mt-5 d-flex justify-content-center">
+  <div class="col-11 col-sm-10 col-md-10 col-lg-6 col-xl-4">
+    <div class="card p-4 p-sm-5 shadow-sm"> 
+      <h2 class="text-center mb-4"><b>{{ 'dpos.login.title' | translate }}</b></h2>
+      <span *ngIf="!isLoggedIn" class="text-center d-block mb-3">
+        {{ 'dpos.login.accountdetails.label' | translate }}
+      </span>
+
       <form *ngIf="!isLoggedIn" [formGroup]="loginForm" (ngSubmit)="loginForm.valid && onSubmit()" novalidate>
         <!-- Campo usuario -->
-        <div class="my-3">
-          <label for="username" class="form-label">{{ 'dpos.login.username.label' | translate }}</label>
-          <input type="email" class="form-control" formControlName="username" autocomplete="username"/>
-          <div *ngIf="loginForm.value.username.errors && loginForm.submitted" class="invalid-feedback">
+        <div class="mb-3">
+          <label for="username" class="form-label">
+            {{ 'dpos.login.username.label' | translate }}
+          </label>
+          <input type="email" class="form-control" formControlName="username" autocomplete="username" />
+          <div *ngIf="loginForm.value.username?.errors && loginForm.submitted" class="invalid-feedback">
             {{ 'dpos.login.username.required.label' | translate }}
           </div>
         </div>
+
         <!-- Campo contraseña -->
-        <div class="my-3">
-          <label for="password" class="form-label">{{ 'dpos.login.password.label' | translate }}</label>
-          <input type="password" matInput class="form-control" formControlName="pw" minlength="4" autocomplete="current-password" />
-          <div style="padding: 5px;">
-            <a [routerLink]="code"><small>{{ 'dpos.login.password.forget.label' | translate }}</small></a>
+        <div class="mb-3">
+          <label for="password" class="form-label">
+            {{ 'dpos.login.password.label' | translate }}
+          </label>
+          <input type="password" matInput class="form-control" formControlName="pw" minlength="4"
+            autocomplete="current-password" />
+          <div class="text-end mt-1">
+            <a [routerLink]="code">
+              <small>{{ 'dpos.login.password.forget.label' | translate }}</small>
+            </a>
           </div>
-          <div *ngIf="loginForm.value.pw.errors && loginForm.submitted" class="invalid-feedback">
+          <div *ngIf="loginForm.value.pw?.errors && loginForm.submitted" class="invalid-feedback d-block">
             <div *ngIf="loginForm.value.pw.errors['required']">
               {{ 'dpos.login.password.required.label' | translate }}
             </div>
@@ -28,14 +39,14 @@
             </div>
           </div>
         </div>
-        <!-- Botón de envío, deshabilitado si formulario inválido -->
+
+
         <div class="my-3 text-center">
           <button [disabled]="!loginForm.valid" type="submit" class="btn button">
             <span *ngIf="loading">{{ 'dpos.login.loading.btn' | translate }}</span>
             <span *ngIf="!loading">{{ 'dpos.login.login.btn' | translate }}</span>
           </button>
         </div>
-        <!-- Mensaje error global en login fallido -->
         <div *ngIf="isLoginFailed" class="alert alert-danger" role="alert">
           {{ 'dpos.login.login.failed.label' | translate }} {{ errorMessage }}
         </div>

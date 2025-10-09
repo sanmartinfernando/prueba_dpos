@@ -1,4 +1,4 @@
-import { EncryptionService } from './../_services/encryption.service';
+import { EncryptionService } from '../_services/encryption.service';
 import { DownloadCsvService } from '../_services/download-csv.service';
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { OrderInfo } from '../_models/order-info.model';
@@ -18,7 +18,7 @@ import { UIStateService } from '../_services/ui-state.service';
 import { Router } from '@angular/router';
 
 /**
- * @class SalesComponent
+ * @class OperationsComponent
  * @description
  * Componente encargado de la gestión y visualización de ventas. Proporciona funcionalidades para:
  * - Aplicar y recordar filtros de búsqueda (fechas, comercio, terminal, tipo de operación, documento).
@@ -27,10 +27,11 @@ import { Router } from '@angular/router';
  * - Navegar al detalle de una venta con cifrado de identificador.
  */
 @Component({
-  selector: 'app-dpos-sales',
-  templateUrl: './sales.component.html',
+  selector: 'app-dpos-operations',
+  templateUrl: './operations.component.html',
+  styleUrls: ['./operations.component.css']
 })
-export class SalesComponent implements OnInit, OnDestroy {
+export class OperationsComponent implements OnInit, OnDestroy {
 
   private encryptionService = inject(EncryptionService);
   private ordersService = inject(OrdersService);
@@ -45,13 +46,14 @@ export class SalesComponent implements OnInit, OnDestroy {
   private router = inject(Router);
 
   size = 10000;
-  sales: OrderInfo;
-  selectSales = new Array(3);
-  salesTicketBai = [];
+  operations: OrderInfo;
+  selectoperations = new Array(3);
+  operationsTicketBai = [];
   operationN: number;
-  totalSales = 0;
-  totalSalesString: string;
+  totaloperations = 0;
+  totaloperationsString: string;
   page = 0;
+  itemsPerPage: number = 10
   loadCompleted = false;
   isLoggedIn = true;
   Math = Math;
@@ -90,6 +92,8 @@ export class SalesComponent implements OnInit, OnDestroy {
 
   isComercia = false;
 
+  sortColumn: string = '';
+  sortDirection: 'asc' | 'desc' = 'asc';
   constructor() {
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
 
@@ -100,9 +104,9 @@ export class SalesComponent implements OnInit, OnDestroy {
       this.terminalsNumber[0] = this.translate.instant('dpos.filter.all');
     });
     this.opTypes = [
-      { name: this.translate.instant('dpos.sales.operation.order.label'), value: Order.TYPE_SALE },
-      { name: this.translate.instant('dpos.sales.operation.refund.label'), value: Order.TYPE_REFUND },
-      { name: this.translate.instant('dpos.sales.operation.rectification.label'), value: Order.TYPE_RECTIFY }
+      { name: this.translate.instant('dpos.operations.operation.order.label'), value: Order.TYPE_SALE },
+      { name: this.translate.instant('dpos.operations.operation.refund.label'), value: Order.TYPE_REFUND },
+      { name: this.translate.instant('dpos.operations.operation.rectification.label'), value: Order.TYPE_RECTIFY }
     ];
   }
 
@@ -121,12 +125,12 @@ export class SalesComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadCompleted = false;
 
-    if (this.sessionService.getItem(SessionService.SALES_FROM_DATE) !== null) {
-      this.sinceDate = this.formatDate(this.sessionService.getItem(SessionService.SALES_FROM_DATE));
+    if (this.sessionService.getItem(SessionService.OPERATIONS_FROM_DATE) !== null) {
+      this.sinceDate = this.formatDate(this.sessionService.getItem(SessionService.OPERATIONS_FROM_DATE));
     }
 
-    if (this.sessionService.getItem(SessionService.SALES_TO_DATE) !== null) {
-      this.tilDate = this.formatDate(this.sessionService.getItem(SessionService.SALES_TO_DATE));
+    if (this.sessionService.getItem(SessionService.OPERATIONS_TO_DATE) !== null) {
+      this.tilDate = this.formatDate(this.sessionService.getItem(SessionService.OPERATIONS_TO_DATE));
     }
 
     if (this.sessionService.getItem(SessionService.OP_TYPE) !== null) {
@@ -166,7 +170,7 @@ export class SalesComponent implements OnInit, OnDestroy {
               } else {
                 this.terminalSelected = this.sessionService.getItem(SessionService.TERMINAL_NUMBER);
               }
-              this.searchSales();
+              this.searchoperations();
             },
             error: (error) => {
               this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.terminals'));
@@ -185,7 +189,7 @@ export class SalesComponent implements OnInit, OnDestroy {
   /**
    * Construye la consulta con los filtros correspondientes y lanza la búsqueda de ventas.
    */
-  public searchSales() {
+  public searchoperations() {
 
     this.validationVariable = false;
     this.loadCompleted = false;
@@ -251,13 +255,13 @@ export class SalesComponent implements OnInit, OnDestroy {
         andFilters.push({ or: orTypes });
       } else {
         switch (this.typeVarSearch) {
-          case this.translate.instant('dpos.sales.operation.order.label'):
+          case this.translate.instant('dpos.operations.operation.order.label'):
             this.selTransTypeVarSearch = 0;
             break;
-          case this.translate.instant('dpos.sales.operation.refund.label'):
+          case this.translate.instant('dpos.operations.operation.refund.label'):
             this.selTransTypeVarSearch = 2;
             break;
-          case this.translate.instant('dpos.sales.operation.rectification.label'):
+          case this.translate.instant('dpos.operations.operation.rectification.label'):
             this.selTransTypeVarSearch = 5;
         }
         andFilters.push({ field: 'Type', op: '=', value: this.selTransTypeVarSearch });
@@ -287,9 +291,9 @@ export class SalesComponent implements OnInit, OnDestroy {
    * 
    * @param id Identificador de la venta.
    */
-  public sendSalesDetails(id: string) {
+  public sendoperationsDetails(id: string) {
     const encryptedId = this.encryptionService.encryptData(id);
-    const route:string = '/details/' + this.encryptionService.encode(encryptedId);
+    const route: string = '/details/' + this.encryptionService.encode(encryptedId);
     this.router.navigate([route]);
   }
 
@@ -297,7 +301,7 @@ export class SalesComponent implements OnInit, OnDestroy {
    * Descarga el CSV de ventas.
    */
   public downloadCSV() {
-    this.downloadCsvService.downloadSalesFile(this.sales, this.translate.instant('dpos.sales.page.title'), this.currentLang);
+    this.downloadCsvService.downloadOperationsFile(this.operations, this.translate.instant('dpos.operations.page.title'), this.currentLang);
   }
 
   /**
@@ -311,11 +315,11 @@ export class SalesComponent implements OnInit, OnDestroy {
    * Actualiza y guarda en sesión la fecha "desde".
    */
   public onSinceDateChange(): void {
-    this.sessionService.setItem(SessionService.SALES_FROM_DATE, this.terminalSelected);
+    this.sessionService.setItem(SessionService.OPERATIONS_FROM_DATE, this.terminalSelected);
     this.sinceDate = (document.getElementById('sinceDate') as HTMLInputElement).value;
     if (this.sinceDate.length > 0) {
       this.sinceDateMilli = Date.parse(this.sinceDate);
-      this.sessionService.setItem(SessionService.SALES_FROM_DATE, this.sinceDateMilli);
+      this.sessionService.setItem(SessionService.OPERATIONS_FROM_DATE, this.sinceDateMilli);
     }
   }
 
@@ -323,11 +327,11 @@ export class SalesComponent implements OnInit, OnDestroy {
    * Actualiza y guarda en sesión la fecha "hasta".
    */
   public onTilDateChange(): void {
-    this.sessionService.setItem(SessionService.SALES_TO_DATE, this.terminalSelected);
+    this.sessionService.setItem(SessionService.OPERATIONS_TO_DATE, this.terminalSelected);
     this.tilDate = (document.getElementById('tilDate') as HTMLInputElement).value;
     if (this.tilDate.length > 0) {
       this.tilDateMilli = Date.parse(this.tilDate);
-      this.sessionService.setItem(SessionService.SALES_TO_DATE, this.tilDateMilli);
+      this.sessionService.setItem(SessionService.OPERATIONS_TO_DATE, this.tilDateMilli);
     }
   }
 
@@ -390,7 +394,7 @@ export class SalesComponent implements OnInit, OnDestroy {
     this.modalMessage = message;
     this.showModal = true;
   }
-  
+
   /**
    * Cierra el modal de mensajes.
    */
@@ -405,111 +409,111 @@ export class SalesComponent implements OnInit, OnDestroy {
   private getOrderInfo(qsString: string) {
 
     this.ordersService.getOrderInfo(this.size, qsString).subscribe(
-      (sale) => {
-        this.sales = sale;
-        if (this.sales.data.length !== 0) {
-          this.operationN = this.sales.data.length;
-          this.totalSales = 0;
-          for (const sale of this.sales.data) {
-            if (sale.type === Order.TYPE_SALE) {
-              this.totalSales += Number(sale.total);
-            } else if (sale.type === Order.TYPE_REFUND) {
-              this.totalSales -= Number(sale.total);
+      (operation) => {
+        this.operations = operation;
+        if (this.operations.data.length !== 0) {
+          this.operationN = this.operations.data.length;
+          this.totaloperations = 0;
+          for (const operation of this.operations.data) {
+            if (operation.type === Order.TYPE_SALE) {
+              this.totaloperations += Number(operation.total);
+            } else if (operation.type === Order.TYPE_REFUND) {
+              this.totaloperations -= Number(operation.total);
             }
           }
 
-          this.totalSalesString = (this.currencyPipe.transform(this.totalSales / (Math.pow(10, 2)), 'EUR', '€') || '');
+          this.totaloperationsString = (this.currencyPipe.transform(this.totaloperations / (Math.pow(10, 2)), 'EUR', '€') || '');
 
           for (let i = 0; i < 3; i++) {
-            this.selectSales[i] = new Array(this.sales.data.length);
+            this.selectoperations[i] = new Array(this.operations.data.length);
           }
 
-          for (let i = 0; i < this.sales.data.length; i++) {
+          for (let i = 0; i < this.operations.data.length; i++) {
             let counterSelect = false;
             if (i === 0) {
-              this.selectSales[0][i] = this.sales.data[i].terminalNumber;
+              this.selectoperations[0][i] = this.operations.data[i].terminalNumber;
             } else {
               for (let z = 0; z <= i; z++) {
-                if (this.selectSales[0][z] === this.sales.data[i].terminalNumber || counterSelect === true) {
+                if (this.selectoperations[0][z] === this.operations.data[i].terminalNumber || counterSelect === true) {
                   counterSelect = true;
                 }
                 if (counterSelect === false && z === i) {
-                  this.selectSales[0][i] = this.sales.data[i].terminalNumber;
+                  this.selectoperations[0][i] = this.operations.data[i].terminalNumber;
                 }
               }
               counterSelect = false;
             }
 
             if (i === 0) {
-              this.selectSales[1][i] = this.sales.data[i].type;
+              this.selectoperations[1][i] = this.operations.data[i].type;
             } else {
               for (let z = 0; z <= i; z++) {
-                if (this.selectSales[1][z] === this.sales.data[i].type || counterSelect === true) {
+                if (this.selectoperations[1][z] === this.operations.data[i].type || counterSelect === true) {
                   counterSelect = true;
                 }
                 if (counterSelect === false && z === i) {
-                  this.selectSales[1][i] = this.sales.data[i].type;
+                  this.selectoperations[1][i] = this.operations.data[i].type;
                 }
               }
               counterSelect = false;
             }
 
             if (i === 0) {
-              this.selectSales[2][i] = this.sales.data[i].reference;
+              this.selectoperations[2][i] = this.operations.data[i].reference;
             } else {
               for (let z = 0; z <= i; z++) {
-                if (this.selectSales[2][z] === this.sales.data[i].reference || counterSelect === true) {
+                if (this.selectoperations[2][z] === this.operations.data[i].reference || counterSelect === true) {
                   counterSelect = true;
                 }
 
                 if (counterSelect === false && z === i) {
-                  this.selectSales[2][i] = this.sales.data[i].reference;
+                  this.selectoperations[2][i] = this.operations.data[i].reference;
                 }
               }
               counterSelect = false;
             }
           }
 
-          for (let i = this.sales.data.length - 1; i >= 0; i--) {
-            if (this.selectSales[0][i] === null) {
-              this.selectSales[0].splice(i, 1);
+          for (let i = this.operations.data.length - 1; i >= 0; i--) {
+            if (this.selectoperations[0][i] === null) {
+              this.selectoperations[0].splice(i, 1);
             }
           }
-          for (let i = this.sales.data.length - 1; i >= 0; i--) {
-            if (this.selectSales[1][i] === null) {
-              this.selectSales[1].splice(i, 1);
+          for (let i = this.operations.data.length - 1; i >= 0; i--) {
+            if (this.selectoperations[1][i] === null) {
+              this.selectoperations[1].splice(i, 1);
             }
           }
-          for (let i = this.sales.data.length - 1; i >= 0; i--) {
-            if (this.selectSales[2][i] === null) {
-              this.selectSales[2].splice(i, 1);
+          for (let i = this.operations.data.length - 1; i >= 0; i--) {
+            if (this.selectoperations[2][i] === null) {
+              this.selectoperations[2].splice(i, 1);
             }
           }
-          for (let i = this.selectSales[1].length; i >= 0; i--) {
-            this.translatedTypeVarSearch[i] = this.selectSales[1][i];
-            switch (this.selectSales[1][i]) {
+          for (let i = this.selectoperations[1].length; i >= 0; i--) {
+            this.translatedTypeVarSearch[i] = this.selectoperations[1][i];
+            switch (this.selectoperations[1][i]) {
               case 0:
-                this.selectSales[1][i] = this.translate.instant('dpos.sales.operation.order.label');
+                this.selectoperations[1][i] = this.translate.instant('dpos.operations.operation.order.label');
                 break;
               case 2:
-                this.selectSales[1][i] = this.translate.instant('dpos.sales.operation.refund.label');
+                this.selectoperations[1][i] = this.translate.instant('dpos.operations.operation.refund.label');
                 break;
               case 5:
-                this.selectSales[1][i] = this.translate.instant('dpos.sales.operation.rectification.label');
+                this.selectoperations[1][i] = this.translate.instant('dpos.operations.operation.rectification.label');
             }
           }
 
-          this.salesTicketBai = []
-          for (let i = 0; i <= this.sales.data.length; i++) {
-            if (this.sales.data[i] != null && this.sales.data[i].orderTicketBai != null) {
-              if (this.sales.data[i].orderTicketBai.status === '00' && this.sales.data[i].orderTicketBai.warns.length <= 0) {
-                this.salesTicketBai[i] = 0
+          this.operationsTicketBai = []
+          for (let i = 0; i <= this.operations.data.length; i++) {
+            if (this.operations.data[i] != null && this.operations.data[i].orderTicketBai != null) {
+              if (this.operations.data[i].orderTicketBai.status === '00' && this.operations.data[i].orderTicketBai.warns.length <= 0) {
+                this.operationsTicketBai[i] = 0
               }
-              if (this.sales.data[i].orderTicketBai.status === '00' && this.sales.data[i].orderTicketBai.warns.length > 0) {
-                this.salesTicketBai[i] = 1
+              if (this.operations.data[i].orderTicketBai.status === '00' && this.operations.data[i].orderTicketBai.warns.length > 0) {
+                this.operationsTicketBai[i] = 1
               }
-              if (this.sales.data[i].orderTicketBai.status === '01') {
-                this.salesTicketBai[i] = 2
+              if (this.operations.data[i].orderTicketBai.status === '01') {
+                this.operationsTicketBai[i] = 2
               }
             }
           }
@@ -539,13 +543,13 @@ export class SalesComponent implements OnInit, OnDestroy {
     if (opType !== null) {
       switch (opType) {
         case Order.TYPE_SALE:
-          opTypeValue = this.translate.instant('dpos.sales.operation.order.label');
+          opTypeValue = this.translate.instant('dpos.operations.operation.order.label');
           break;
         case Order.TYPE_REFUND:
-          opTypeValue = this.translate.instant('dpos.sales.operation.refund.label');
+          opTypeValue = this.translate.instant('dpos.operations.operation.refund.label');
           break;
         case Order.TYPE_RECTIFY:
-          opTypeValue = this.translate.instant('dpos.sales.operation.rectification.label');
+          opTypeValue = this.translate.instant('dpos.operations.operation.rectification.label');
           break;
       }
     }
@@ -561,13 +565,13 @@ export class SalesComponent implements OnInit, OnDestroy {
     let opType = -1;
     if (this.typeVarSearch !== null) {
       switch (this.typeVarSearch) {
-        case this.translate.instant('dpos.sales.operation.order.label'):
+        case this.translate.instant('dpos.operations.operation.order.label'):
           opType = Order.TYPE_SALE;
           break;
-        case this.translate.instant('dpos.sales.operation.refund.label'):
+        case this.translate.instant('dpos.operations.operation.refund.label'):
           opType = Order.TYPE_REFUND;
           break;
-        case this.translate.instant('dpos.sales.operation.rectification.label'):
+        case this.translate.instant('dpos.operations.operation.rectification.label'):
           opType = Order.TYPE_RECTIFY;
           break;
       }
@@ -602,4 +606,83 @@ export class SalesComponent implements OnInit, OnDestroy {
     const year = date.getFullYear();
     return `${year}-${month}-${day}`;
   }
+
+
+
+  /**
+   * Ordena la tabla en base a las columnas.
+   * 
+   * @returns la tabla ordenada o 0 si no hay cambios.
+   */
+  sortBy(column: string) {
+    if (this.sortColumn === column) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
+    }
+
+    const getValue = (obj: any, path: string) => {
+      // soporta propiedades anidadas, ej: 'orderVerifactu.status'
+      return path.split('.').reduce((o, key) => (o ? o[key] : null), obj);
+    };
+
+    this.operations.data.sort((a: any, b: any) => {
+      let valA: any;
+      let valB: any;
+
+      switch (column) {
+        case 'totalBase':
+          valA = this.getTotalBase(a.orderTaxes);
+          valB = this.getTotalBase(b.orderTaxes);
+          break;
+        case 'totalTaxes':
+          valA = this.getTotalTaxes(a.orderTaxes);
+          valB = this.getTotalTaxes(b.orderTaxes);
+          break;
+        case 'total':
+          valA = a.total / Math.pow(10, a.decimals);
+          valB = b.total / Math.pow(10, b.decimals);
+          break;
+        default:
+          valA = getValue(a, column);
+          valB = getValue(b, column);
+      }
+
+      // Normalizar nulos
+      if (valA == null) valA = '';
+      if (valB == null) valB = '';
+
+      // Números
+      if (typeof valA === 'number' && typeof valB === 'number') {
+        return this.sortDirection === 'asc' ? valA - valB : valB - valA;
+      }
+
+      // Strings
+      if (typeof valA === 'string' && typeof valB === 'string') {
+        return this.sortDirection === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+      }
+
+      // Boolean
+      if (typeof valA === 'boolean' && typeof valB === 'boolean') {
+        return this.sortDirection === 'asc'
+          ? Number(valA) - Number(valB)
+          : Number(valB) - Number(valA);
+      }
+
+      // Fechas
+      if (valA instanceof Date && valB instanceof Date) {
+        return this.sortDirection === 'asc'
+          ? valA.getTime() - valB.getTime()
+          : valB.getTime() - valA.getTime();
+      }
+
+      return 0;
+    });
+  }
+
+
+
+
+
 }

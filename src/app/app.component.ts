@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { InactivityService } from './_services/inactivity.service';
+import { StorageService } from './_services/storage.service';
 
 /**
  * @class AppComponent
@@ -23,6 +24,7 @@ export class AppComponent implements OnInit, OnDestroy {
    */
   ngOnInit(): void {
     this.inactivityService.startMonitoring();
+  
   }
 
   /**

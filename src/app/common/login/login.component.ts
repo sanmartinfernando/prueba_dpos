@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit {
   errorMessage = '';
   roles: string[] = [];
   token: [] = [];
-  componentSelected: string;
+  componentSelected: string; 
   loading = false;
 
   /**

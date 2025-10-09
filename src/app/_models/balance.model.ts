@@ -15,7 +15,7 @@ export class Balance {
 
   balanceId: string;
   reference: string;
-  sales: number;
+  operations: number;
   refunds: number;
   in: number;
   out: number;
@@ -23,12 +23,12 @@ export class Balance {
   outCount: number;
   opening: number;
   nextOpening: number;
-  cashSales: number;
+  cashOperations: number;
   cashRefunds: number;
   autoCashRecount: number;
   manualCashRecount: number;
   total: number;
-  salesCount: number;
+  operationsCount: number;
   refundsCount: number;
   rectifyCount: number;
   startedAt: number;

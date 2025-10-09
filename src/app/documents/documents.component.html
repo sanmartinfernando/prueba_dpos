@@ -5,16 +5,9 @@
   <div class="card mt-3">
     <div class="card-body">
       <!-- Componente modal para mensajes -->
-      <app-modal
-        [showModal]="showModal"
-        [modalTitle]="modalTitle"
-        [modalMessage]="modalMessage"
-        [showAcceptButton]="showAcceptButton"
-        [showCancelButton]="showCancelButton"
-        (acceptAction)="onAcceptModal()"
-        (cancelAction)="closeModal()"
-        (closeModal)="closeModal()"
-      ></app-modal>
+      <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage"
+        [showAcceptButton]="showAcceptButton" [showCancelButton]="showCancelButton" (acceptAction)="onAcceptModal()"
+        (cancelAction)="closeModal()" (closeModal)="closeModal()"></app-modal>
 
       <div class="row mb-4 align-items-center">
         <!-- Título y botón de exportar solo en móviles -->
@@ -37,7 +30,8 @@
 
         <!-- Botones en pantallas grandes (Nuevo, Importar, Exportar) -->
         <div class="col-12 col-md-6 text-md-end mt-3 mt-md-0 d-flex flex-wrap gap-2 justify-content-end">
-          <input type="file" #documentFileInput style="display: none" accept=".csv" (change)="onDocumentFileSelected($event)" />
+          <input type="file" #documentFileInput style="display: none" accept=".csv"
+            (change)="onDocumentFileSelected($event)" />
           <button class="btn btn-primary btn-round d-none d-md-inline-flex" (click)="exportDocuments()">
             <img *ngIf="isComercia" src="assets/img/ic-download.svg" alt="Icono exportar datos" />
             <i *ngIf="!isComercia" class="fa-solid fa-download fa-xl"></i>
@@ -66,43 +60,36 @@
             </thead>
             <ng-template #empty>
               <td colspan="3">
-                <b>{{ 'dpos.sales.operation.nodata.label' | translate }}</b>
+                <b>{{ 'dpos.operations.operation.nodata.label' | translate }}</b>
               </td>
             </ng-template>
-<tbody>
-  <ng-container *ngIf="loadCompleted && documents; else empty">
-    <tr
-      *ngFor="let document of documents | paginate : { itemsPerPage: 10, currentPage: page }; index as i"
-      (click)="sendDocumentDetails(document.documentId)"
-    >
-      <!-- NOMBRE DEL DOCUMENTO -->
-      <td class="align-middle" (click)="$event.stopPropagation()">
-        <span
-          class="table-title"
-          style="cursor: pointer; color: inherit; text-decoration: none;"
-          (click)="document._isApi ? openApiDoc(document._apiParams, $event) : openExternal(document.url, $event)"
-          title="Abrir documento"
-        >
-          {{ document.name }}
-        </span>
-      </td>
+            <tbody>
+              <ng-container *ngIf="loadCompleted && documents; else empty">
+                <tr *ngFor="let document of documents | paginate : { itemsPerPage: 10, currentPage: page }; index as i"
+                  (click)="sendDocumentDetails(document.documentId)">
+                  <!-- NOMBRE DEL DOCUMENTO -->
+                  <td class="align-middle" (click)="$event.stopPropagation()">
+                    <span class="table-title" style="cursor: pointer; color: inherit; text-decoration: none;"
+                      (click)="document._isApi ? openApiDoc(document._apiParams, $event) : openExternal(document.url, $event)"
+                      title="Abrir documento">
+                      {{ document.name }}
+                    </span>
+                  </td>
 
-      <!-- FECHA DE INCLUSIÓN -->
+                  <!-- FECHA DE INCLUSIÓN -->
 
 
-      <!-- BOTÓN DE ELIMINAR -->
-      
-    </tr>
-  </ng-container>
-</tbody>
+                  <!-- BOTÓN DE ELIMINAR -->
+
+                </tr>
+              </ng-container>
+            </tbody>
           </table>
 
-          <div *ngIf="loadCompleted && emptySearch === false" class="text-start mt-3">
-            <pagination-controls
-              (pageChange)="page = $event"
+          <div *ngIf="loadCompleted && emptySearch === false && documents.length > 10" class="text-start mt-3">
+            <pagination-controls (pageChange)="page = $event"
               previousLabel="{{ 'dpos.pagination.previous' | translate }}"
-              nextLabel="{{ 'dpos.pagination.next' | translate }}"
-            ></pagination-controls>
+              nextLabel="{{ 'dpos.pagination.next' | translate }}"></pagination-controls>
           </div>
         </div>
       </div>

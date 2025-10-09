@@ -2,7 +2,7 @@
 <div class="container-fluid header-main">
   <div class="d-flex justify-content-between mb-2">
     <!-- Barra superior con botón de volver y botón para descargar PDF -->
-    <a [routerLink]="['/sales']" type="button" style="text-decoration: none;">
+    <a [routerLink]="['/operations']" type="button" style="text-decoration: none;">
       <i class="fa-solid fa-angle-left"></i> {{ 'dpos.details.back.button.label' | translate }}
     </a>
     <button class="btn btn-danger btn-round" (click)="downloadPDF()">
@@ -157,24 +157,24 @@
           </div>
         </div>
         <!-- Sección para TBAI si existe -->
-        <div class="row px-2 pb-1 pt-3" *ngIf="salesTicketBai.length > 0">
+        <div class="row px-2 pb-1 pt-3" *ngIf="operationsTicketBai.length > 0">
           <div class="text-start">
-            <span id="ticket_bai"><b>{{'dpos.details.order.tbai.label' | translate}}</b> {{ salesTicketBai[0] }}</span>
+            <span id="ticket_bai"><b>{{'dpos.details.order.tbai.label' | translate}}</b> {{ operationsTicketBai[0] }}</span>
           </div>
           <div class="text-center my-2">
-            <qrcode [qrdata]="salesTicketBai[1]" [width]="200" [errorCorrectionLevel]="'M'"></qrcode>
+            <qrcode [qrdata]="operationsTicketBai[1]" [width]="200" [errorCorrectionLevel]="'M'"></qrcode>
           </div>
         </div>
         <!-- Sección para Verifactu si existe -->
-        <div class="row px-2 pb-1 pt-3" *ngIf="salesVerifactu.length > 0">
+        <div class="row px-2 pb-1 pt-3" *ngIf="operationsVerifactu.length > 0">
           <div class="text-start">
             <span id="ticket_bai">
               <b>{{'dpos.details.order.verifactu.label' | translate}}</b>&nbsp;
-              <a href="{{ salesVerifactu[0] }}" target="_blank" rel="noopener">{{ salesVerifactu[0] }}</a>
+              <a href="{{ operationsVerifactu[0] }}" target="_blank" rel="noopener">{{ operationsVerifactu[0] }}</a>
             </span>
           </div>
           <div class="text-center my-2">
-            <qrcode [qrdata]="salesVerifactu[1]" [width]="200" [errorCorrectionLevel]="'M'"></qrcode>
+            <qrcode [qrdata]="operationsVerifactu[1]" [width]="200" [errorCorrectionLevel]="'M'"></qrcode>
           </div>
         </div>
       </div>

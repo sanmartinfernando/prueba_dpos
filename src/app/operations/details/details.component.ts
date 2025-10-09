@@ -36,8 +36,8 @@ export class DetailsComponent implements OnInit {
   public loadCompleted = false;
   public isLoggedIn = true;
   public Math = Math;
-  public salesTicketBai: string[];
-  public salesVerifactu: string[];
+  public operationsTicketBai: string[];
+  public operationsVerifactu: string[];
   public totalBase: number;
 
   modalTitle = '';
@@ -59,17 +59,17 @@ export class DetailsComponent implements OnInit {
     this.orderId = this.encryptionService.decrypt(iddecode);
 
     this.ordersService.getOrderDetail(this.orderId).subscribe({
-      next: (ticketVentas) => {
-        this.ticket = ticketVentas;
-        this.salesTicketBai = [];
+      next: (ticketOperaciones) => {
+        this.ticket = ticketOperaciones;
+        this.operationsTicketBai = [];
         if (this.ticket.orderTicketBai) {
-          this.salesTicketBai[0] = this.ticket.orderTicketBai.ticketBaiId;
-          this.salesTicketBai[1] = this.ticket.orderTicketBai.url;
+          this.operationsTicketBai[0] = this.ticket.orderTicketBai.ticketBaiId;
+          this.operationsTicketBai[1] = this.ticket.orderTicketBai.url;
         }
-        this.salesVerifactu = [];
+        this.operationsVerifactu = [];
         if (this.ticket.orderVerifactu) {
-          this.salesVerifactu[0] = this.ticket.orderVerifactu.url;
-          this.salesVerifactu[1] = this.ticket.orderVerifactu.url;
+          this.operationsVerifactu[0] = this.ticket.orderVerifactu.url;
+          this.operationsVerifactu[1] = this.ticket.orderVerifactu.url;
         }
         this.totalBase = 0;
         for (const tax of this.ticket.orderTaxes) {

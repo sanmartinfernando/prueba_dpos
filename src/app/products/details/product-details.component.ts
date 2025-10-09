@@ -48,10 +48,10 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
   public titlePage: string;
   public commerceId: string = null;
   
-  public salesStartDate: string;
-  public salesStartDateMilli: number;
-  public salesEndDate: string;
-  public salesEndDateMilli: number;
+  public operationsStartDate: string;
+  public operationsStartDateMilli: number;
+  public operationsEndDate: string;
+  public operationsEndDateMilli: number;
 
   public epigraphs: Epigraph[] = [];
   public categories: Category[] = [];

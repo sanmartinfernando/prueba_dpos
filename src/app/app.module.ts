@@ -24,11 +24,11 @@ import { HeaderComponent } from './common/header/header.component';
 import { FooterComponent } from './common/footer/footer.component';
 import { LangSwitcherComponent } from './common/lang-switcher/lang-switcher.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { SalesComponent } from './sales/sales.component';
+import { OperationsComponent } from './operations/operations.component';
 import { ReportsComponent } from './reports/reports.component';
 import { LoginComponent } from './common/login/login.component';
 import { BalancesComponent } from './balances/balances.component';
-import { DetailsComponent } from './sales/details/details.component';
+import { DetailsComponent } from './operations/details/details.component';
 import { BalancesDetailsComponent } from './balances/balances-details/balances-details.component';
 import { PwrecoveryComponent } from './common/login/pwrecovery/pwrecovery.component';
 import { PwresetComponent } from './common/login/pwreset/pwreset.component';
@@ -71,7 +71,7 @@ registerLocaleData(localeEs);
         UseConditionsComponent,
         LangSwitcherComponent,
         DashboardComponent,
-        SalesComponent,
+        OperationsComponent,
         CustomersComponent,
         DocumentsComponent,
         CustomerDetailsComponent,

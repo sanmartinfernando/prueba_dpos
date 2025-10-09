@@ -22,6 +22,7 @@ import { UIStateService } from '../_services/ui-state.service';
 import { Order } from '../_models/order.model';
 import { Commerce } from '../_models/commerce.model';
 import { debounceTime, fromEvent } from 'rxjs';
+import { Color } from '@swimlane/ngx-charts';
 
 /**
  * @class DashboardComponent
@@ -33,7 +34,7 @@ import { debounceTime, fromEvent } from 'rxjs';
 @Component({
   selector: 'app-dpos-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: [],
+  styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
 
@@ -66,7 +67,7 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
   public cashMovementsOperationsResult = 0;
   public balanceResult = 0;
 
-  public showSalesVar = false;
+  public showOperationsVar = false;
   public showRefundsVar = false;
   public showAverageTicketVar = false;
   public showCashMovVar = false;
@@ -95,6 +96,7 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
   private hexColorsPM: string[] = [];
   private hexColorsTop3: string[] = [];
 
+
   public datasetKPI = [];
   public datasetTop3: DataSetTop3[];
   public datasetPM = [
@@ -110,6 +112,9 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
   public colorsKPI = [];
   public colorsPM = [];
   public colorsTop3 = [];
+  schemePM: any = {
+    domain: this.colorsPM.map(c => c.value)
+  };
 
   currentLang: string;
   langSubscription: Subscription;
@@ -117,7 +122,7 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
   @ViewChild('top3ChartContainer', { static: false }) top3ChartContainer!: ElementRef;
   @ViewChild('pmChartContainer', { static: false }) pmChartContainer!: ElementRef;
   @ViewChild('KPIChartContainer', { static: false }) KPIChartContainer!: ElementRef;
-  
+
   // Tamaños configurables
   private readonly barHeight = 40;
   private readonly padding = 20;
@@ -170,9 +175,9 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
             this.commerceId = commerces[0].commerceId;
             this.sessionService.setItem(SessionService.COMMERCE_ID, this.commerceId);
           }
-          
+
           this.isComercia = this.sessionService.getItem(SessionService.RESELLER_NAME) === Commerce.RESELLER_COMERCIA;
-          if(this.isComercia) {
+          if (this.isComercia) {
             this.hexColorsKPI = ['#40B3E4', '#40B3E4', '#40B3E4', '#40B3E4', '#40B3E4', '#40B3E4', '#40B3E4'];
             this.hexColorsPM = ['#40B3E4', '#7A9F3F', '#33658A', '#FFCC00', '#FF6F3C', '#00BFA6', '#7A7A7A'];
             this.hexColorsTop3 = ['#40B3E4', '#7A9F3F', '#33658A', '#FFCC00', '#FFCC00', '#FFCC00', '#FFCC00'];
@@ -181,7 +186,7 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
             this.hexColorsPM = ['#6DB9FF', '#1FCC92', '#FF803C', '#F598F5', '#FF6E6E', '#FFCC4D', '#7C77FE'];
             this.hexColorsTop3 = ['#6DB9FF', '#1FCC92', '#FF803C', '#F598F5', '#FF6E6E', '#FFCC4D', '#7C77FE'];
           }
-          
+
           this.terminalsService.getTerminalList().subscribe({
             next: (terminals) => {
               terminals = terminals.filter(terminal => terminal.commerceId === this.commerceId && terminal.terminalNumber !== null);
@@ -221,7 +226,7 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
       this.recalcViewsSoon();
     }
   }
-  
+
   ngAfterViewInit() {
     // Primer cálculo de tamaño de charts justo después del primer render
     this.recalcViewsSoon();
@@ -329,7 +334,7 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
 
     this.loadedKPIChart = false;
     this.emptyKPIChart = true;
-    let idElement = 'sales';
+    let idElement = 'operations';
     if (event !== undefined) {
       const target = event.target as HTMLElement;
       idElement = target.id.slice(0, 5);
@@ -337,16 +342,16 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
     switch (idElement) {
       case undefined:
       default:
-      case 'sales':
-        this.showSalesVar = true;
+      case 'operations':
+        this.showOperationsVar = true;
         this.showRefundsVar = false;
         this.showAverageTicketVar = false;
         this.showCashMovVar = false;
         this.showResultsVar = false;
-        this.printSalesEvoChart();
+        this.printOperationsEvoChart();
         break;
       case 'avera':
-        this.showSalesVar = false;
+        this.showOperationsVar = false;
         this.showRefundsVar = false;
         this.showAverageTicketVar = true;
         this.showCashMovVar = false;
@@ -354,7 +359,7 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
         this.printAverageEvoChart();
         break;
       case 'refun':
-        this.showSalesVar = false;
+        this.showOperationsVar = false;
         this.showRefundsVar = true;
         this.showAverageTicketVar = false;
         this.showCashMovVar = false;
@@ -362,7 +367,7 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
         this.printRefundEvoChart();
         break;
       case 'casmo':
-        this.showSalesVar = false;
+        this.showOperationsVar = false;
         this.showRefundsVar = false;
         this.showAverageTicketVar = false;
         this.showCashMovVar = true;
@@ -370,7 +375,7 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
         this.printCMEvoChart();
         break;
       case 'balan':
-        this.showSalesVar = false;
+        this.showOperationsVar = false;
         this.showRefundsVar = false;
         this.showAverageTicketVar = false;
         this.showCashMovVar = false;
@@ -419,7 +424,7 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
     this.modalMessage = message;
     this.showModal = true;
   }
-  
+
   /**
    * Cierra el modal de mensajes.
    */
@@ -444,9 +449,10 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
       const height = this.datasetTop3.length * this.barHeight + this.padding;
       this.top3View = [width, height];
     }
+
     if (this.pmChartContainer) {
-      const width = this.pmChartContainer.nativeElement.offsetWidth;
-      const height = this.datasetPM.length * this.barHeight + this.padding;
+      const width = 400; // fijas un ancho constante para el pie/donut
+      const height = 200; // fijas un alto constante más grande para el pie/donut
       this.pmView = [width, height];
     }
     if (this.KPIChartContainer) {
@@ -459,7 +465,7 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
   /**
    * Carga y muestra el gráfico de evolución de ventas.
    */
-  private printSalesEvoChart() {
+  private printOperationsEvoChart() {
     this.idEvo[1].$match.type = 0;
     for (const color of this.colorsKPI) {
       color.value = this.hexColorsKPI[0];
@@ -585,7 +591,7 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
           valueArrayCashMovements[i] = valueGraphArrayIn[i] - valueGraphArrayOut[i];
         }
       }
-      const valueGraphArraySales = new Array(12);
+      const valueGraphArrayOperations = new Array(12);
       const valueGraphArrayRefunds = new Array(12);
       this.ordersService.getOrderAggregate(this.idEvoResults).subscribe((aggregationsEvoOrder) => {
         if (aggregationsEvoOrder.length !== 0) {
@@ -594,13 +600,13 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
           });
           this.resetKpiDataset();
           for (let i = 0; i < this.datasetKPI.length; i++) {
-            valueGraphArraySales[i] = 0;
+            valueGraphArrayOperations[i] = 0;
             valueGraphArrayRefunds[i] = 0;
           }
           for (const aggregation of aggregationsEvoOrder) {
             switch (aggregation._id.type) {
               case Order.TYPE_SALE:
-                valueGraphArraySales[aggregation._id.month - 1] = aggregation.total / 100;
+                valueGraphArrayOperations[aggregation._id.month - 1] = aggregation.total / 100;
                 break;
               case Order.TYPE_REFUND:
                 valueGraphArrayRefunds[aggregation._id.month - 1] = aggregation.total / 100;
@@ -608,7 +614,7 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
             }
           }
           for (let i = 0; i < this.datasetKPI.length; i++) {
-            this.datasetKPI[i].value = valueGraphArraySales[i] - valueGraphArrayRefunds[i] + valueArrayCashMovements[i];
+            this.datasetKPI[i].value = valueGraphArrayOperations[i] - valueGraphArrayRefunds[i] + valueArrayCashMovements[i];
           }
           this.datasetKPI = [...this.datasetKPI];
           this.loadedKPIChart = true;
@@ -738,7 +744,7 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
                 const data = new DataSetTop3(dataName, dataValue);
                 this.datasetTop3.push(data);
               }
-              
+
               this.datasetTop3 = [...this.datasetTop3];
               this.recalcViewsSoon();
               this.loadedTPChart = true;
@@ -810,6 +816,10 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
           { name: 'Bono Denda', value: this.hexColorsPM[5] },
           { name: 'Rectificación', value: this.hexColorsPM[6] },
         ];
+
+        this.schemePM = {
+          domain: this.colorsPM.map(c => c.value),
+        };
 
         this.datasetPM = [...this.datasetPM].filter(item => item.value > 0);
         this.recalcViewsSoon();

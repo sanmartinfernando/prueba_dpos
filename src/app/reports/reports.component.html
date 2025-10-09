@@ -84,7 +84,7 @@
               </ng-template>
               <tbody>
                 <ng-container *ngIf="loadCompleted && emptySearch === false; else empty">
-                  <tr *ngFor="let taxes of sales.balanceLines | paginate : { itemsPerPage: 10, currentPage: page }">
+                  <tr *ngFor="let taxes of operations.balanceLines | paginate : { itemsPerPage: 10, currentPage: page }">
                     <ng-container *ngIf="taxes.itemType === 1 && taxes.itemValue !== -1 ">
                       <td class="text-start align-middle"><span>{{ taxes.itemName }}</span></td>
                       <td class="text-end align-middle">{{ taxes.base / Math.pow(10, taxes.decimals) | currency : "Eur" : "€" }}</td>
@@ -170,7 +170,7 @@
               </ng-template>
               <tbody>
                 <ng-container *ngIf="loadCompleted && emptySearch === false; else empty">
-                  <tr *ngFor="let paymentmethod of sales.balanceLines; index as i">
+                  <tr *ngFor="let paymentmethod of operations.balanceLines; index as i">
                     <ng-container *ngIf="paymentmethod.itemType === 2">
                       <td class="text-start align-middle">{{ paymentmethod.itemName }}</td>
                       <td></td>
@@ -188,7 +188,7 @@
               </tbody>
             </table>
             <!-- Controles de paginación -->
-            <div class="text-start mt-3">
+            <div class="text-start mt-3" *ngIf="operations.balanceLines.length > 10">
               <pagination-controls (pageChange)="page = $event" previousLabel="{{ 'dpos.pagination.previous' | translate }}" nextLabel="{{ 'dpos.pagination.next' | translate }}"></pagination-controls>
             </div>
           </div>

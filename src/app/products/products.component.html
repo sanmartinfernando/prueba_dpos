@@ -88,7 +88,7 @@
             </thead>
             <ng-template #empty>
               <td colspan="7">
-                <b>{{ 'dpos.sales.operation.nodata.label' | translate }}</b>
+                <b>{{ 'dpos.operations.operation.nodata.label' | translate }}</b>
               </td>
             </ng-template>
             <tbody>
@@ -107,7 +107,7 @@
             </tbody>
           </table>
           <!-- Controles de paginación -->
-          <div *ngIf="loadCompleted && emptySearch === false" class="text-start mt-3">
+          <div *ngIf="loadCompleted && emptySearch === false && products.length > 10" class="text-start mt-3">
             <pagination-controls (pageChange)="currentProductsPage = $event" id="productsList" previousLabel="{{ 'dpos.pagination.previous' | translate }}" nextLabel="{{ 'dpos.pagination.next' | translate }}"></pagination-controls>
           </div>
         </div>

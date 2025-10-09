@@ -272,35 +272,35 @@ export class BalancesComponent implements OnInit, OnDestroy {
   private getBalanceInfo(): void {
     this.loadCompleted = false;
     const size = 10000;
-    const selectSales = Array(3);
+    const selectOperations = Array(3);
 
     this.balancesService.getBalanceInfo(size, this.varSearch).subscribe({
       next: (balanceInfo) => {
         this.balances = balanceInfo.data;
         if (this.balances.length) {
           for (let i = 0; i < 3; i++) {
-            selectSales[i] = Array(this.balances.length);
+            selectOperations[i] = Array(this.balances.length);
           }
           for (let i = 0; i < this.balances.length; i++) {
             const balance: Balance = this.balances[i];
             this.mismatch[i] = Math.abs(balance.manualCashRecount) - Math.abs(balance.autoCashRecount);
             let counterSelect = false;
             if (i === 0) {
-              selectSales[0][i] = balance.terminalNumber;
+              selectOperations[0][i] = balance.terminalNumber;
             } else {
               for (let z = 0; z <= i; z++) {
-                if (selectSales[0][z] === balance.terminalNumber || counterSelect) {
+                if (selectOperations[0][z] === balance.terminalNumber || counterSelect) {
                   counterSelect = true;
                 }
                 if (!counterSelect && z === i) {
-                  selectSales[0][i] = balance.terminalNumber;
+                  selectOperations[0][i] = balance.terminalNumber;
                 }
               }
               counterSelect = false;
             }
             for (let j = this.balances.length - 1; j >= 0; j--) {
-              if (selectSales[0][j] === null) {
-                selectSales[0].splice(j, 1);
+              if (selectOperations[0][j] === null) {
+                selectOperations[0].splice(j, 1);
               }
             }
           }

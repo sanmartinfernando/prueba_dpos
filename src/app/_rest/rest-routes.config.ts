@@ -37,7 +37,7 @@ export const RestRoutes = {
   ORDERS: `${API}/${ORDERS}/`,
   ORDERS_INFO: `${API}/${ORDERS}`,
   ORDERS_AGGREGATE: `${API}/${ORDERS}/aggregate`,
-  SALES_REPORT: `${API}/${ORDERS}/generate/sales-report?fromDate=`,
+  OPERATIONS_REPORT: `${API}/${ORDERS}/generate/operations-report?fromDate=`,
 
   BALANCES: `${API}/${BALANCES}/`,
   BALANCES_INFO: `${API}/${BALANCES}?size=`,
