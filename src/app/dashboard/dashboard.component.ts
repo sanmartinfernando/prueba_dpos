@@ -23,6 +23,8 @@ import { Order } from '../_models/order.model';
 import { Commerce } from '../_models/commerce.model';
 import { debounceTime, fromEvent } from 'rxjs';
 import { Color } from '@swimlane/ngx-charts';
+import { LegendPosition } from '@swimlane/ngx-charts';
+
 
 /**
  * @class DashboardComponent
@@ -129,7 +131,7 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
 
   kpiView: [number, number] | null = null;
   top3View: [number, number] | null = null;
-  pmView: [number, number] | null = null;
+  pmView: [number, number] | null = [300, 200];
 
   containerWidthTop3 = 400;
   containerWidthPM = 400;
@@ -139,6 +141,7 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
   modalMessage = '';
 
   isComercia = false;
+  legendPosition: LegendPosition = LegendPosition.Below; 
 
   constructor() {
 
@@ -234,6 +237,10 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
     this.resizeSub = fromEvent(window, 'resize')
       .pipe(debounceTime(150))
       .subscribe(() => this.updateChartSizes());
+
+
+    this.updatePMChartView();
+    window.addEventListener('resize', () => this.updatePMChartView());
   }
 
   /**
@@ -252,8 +259,12 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
    * @param value Valor numérico a formatear.
    * @returns Cadena con el valor en porcentaje.
    */
-  public formatPercentageLabel(value: number) {
-    return value + '%';
+  public formatPercentageLabel(value: number): string {
+
+    return value < 5 ? `${value}%` : `${value}%`;
+  }
+  public formatPercentageLabelHorizontal(value: number): string {
+    return value < 5 ? `${value}%` : `${value}%`;
   }
 
   /**
@@ -450,16 +461,25 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
       this.top3View = [width, height];
     }
 
-    if (this.pmChartContainer) {
-      const width = 400; // fijas un ancho constante para el pie/donut
-      const height = 200; // fijas un alto constante más grande para el pie/donut
-      this.pmView = [width, height];
-    }
+    /*  if (this.pmChartContainer) {
+       const width = 400; // fijas un ancho constante para el pie/donut
+       const height = 200; // fijas un alto constante más grande para el pie/donut
+       this.pmView = [width, height];
+     } */
     if (this.KPIChartContainer) {
       const width = this.KPIChartContainer.nativeElement.offsetWidth;
       const height = 300;
       this.kpiView = [width, height];
     }
+  }
+
+  private updatePMChartView(): void {
+    if (!this.pmChartContainer) return;
+
+    const width = this.pmChartContainer.nativeElement.offsetWidth;
+    const height = Math.max(width * 0.6, 250); // proporción 3:2 mínima 250px
+
+    this.pmView = [width, height];
   }
 
   /**
@@ -871,4 +891,7 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
       { name: this.translate.instant('dpos.month.diciembre'), value: this.hexColorsKPI[0] },
     ];
   }
+
+
+
 }

@@ -53,3 +53,54 @@ form.row .form-select {
   align-items: center;
   gap: 0.25rem;
 }
+
+
+
+.ngx-charts-outer {
+  width: 100% !important; /* fuerza a que ocupe todo el contenedor */
+  height: 100% !important; /* fuerza a que ocupe todo el contenedor */
+} 
+
+.inner-chart {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+/* Móvil */
+@media (max-width: 576px) {
+  .inner-chart {
+    max-width: 100%;
+    padding: 0.5rem;
+  }
+}
+
+/* Tablet */
+@media (min-width: 577px) and (max-width: 991px) {
+  .inner-chart {
+    max-width: 700px;
+  }
+}
+
+/* Escritorio */
+@media (min-width: 992px) {
+  .inner-chart {
+    max-width: 900px;
+  }
+}
+
+
+::ng-deep .ngx-charts-outer {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+
+
+
+.inner-chart ngx-charts-outer {
+  display: block;
+  margin: 0 auto; /* centra el gráfico */
+}
+

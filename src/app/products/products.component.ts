@@ -347,8 +347,6 @@ export class ProductsComponent implements OnInit, OnDestroy {
     this.productsService.getProducts(this.size, this.commerceId.toString(), this.varSearch).subscribe({
       next: products => {
         this.products = products.data.filter(product => !product.deleted);
-
-        console.log(this.products);
         this.emptySearch = this.products.length === 0;
         this.loadCompleted = true;
       },

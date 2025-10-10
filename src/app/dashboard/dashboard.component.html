@@ -197,11 +197,14 @@
           <ng-container *ngIf="loadedTPChart; else spinner">
             <div class="inner-chart" #top3ChartContainer>
               <ngx-charts-bar-horizontal [results]="datasetTop3" [view]="top3View" [animations]="true"
-                [showDataLabel]="true" [xAxis]="false" [yAxis]="true" [customColors]="colorsTop3"
-                [dataLabelFormatting]="formatPercentageLabel" *ngIf="top3View && !emptyKPIChart; else noTop3Data">
+                [showDataLabel]="true" [xAxis]="false" [yAxis]="true" [customColors]="colorsTop3" [barPadding]="10"
+                [groupPadding]="3" [dataLabelFormatting]="formatPercentageLabelHorizontal"
+                [dataLabelTemplate]="labelTemplate" *ngIf="top3View && !emptyKPIChart; else noTop3Data">
               </ngx-charts-bar-horizontal>
+
             </div>
           </ng-container>
+
         </div>
       </div>
       <!-- Sección de gráfico de métodos de pago -->
@@ -213,16 +216,22 @@
           </h5>
           <ng-template #noPMData><br /><b><i>{{ 'dpos.dashboard.nodata.label' | translate }}</i></b></ng-template>
           <ng-container *ngIf="loadedPMChart; else spinner">
-            <div class="inner-chart" #pmChartContainer>
-              <ngx-charts-pie-chart [results]="datasetPM" [view]="pmView" [scheme]="schemePM" [animations]="true"
-                [labels]="true" [legend]="true" [doughnut]="false" [explodeSlices]="false" [gradient]="false"
+            <div class="inner-chart w-100" #pmChartContainer>
+              <ngx-charts-pie-chart [results]="datasetPM" [view]="pmView" [scheme]="schemePM" [legend]="true"
+                [legendPosition]="legendPosition" [labels]="true" [doughnut]="true" [arcWidth]="0.4" [animations]="true"
                 [labelFormatting]="formatPercentageLabel" *ngIf="pmView && !emptyKPIChart; else noPMData">
               </ngx-charts-pie-chart>
-
             </div>
+
           </ng-container>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<ng-template #labelTemplate let-model="model">
+  <svg:text [attr.x]="model.value + 5" [attr.y]="model.y + model.height / 2" dy=".35em" text-anchor="start">
+    {{ model.value }}%
+  </svg:text>
+</ng-template>

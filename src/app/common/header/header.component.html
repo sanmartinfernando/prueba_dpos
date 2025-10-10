@@ -43,8 +43,9 @@
           <img src="assets/img/ic-inicio.svg" alt="Icono Inicio" class="active-icon-link me-2">
           <span>{{ 'dpos.nav.menu.dashboard' | translate }}</span>
         </a>
-        <a class="nav-link m-2 d-flex align-items-center" (click)="handlePageClick('dpos.nav.menu.operations', 'operations')"
-          routerLink="/operations" routerLinkActive="active-link">
+        <a class="nav-link m-2 d-flex align-items-center"
+          (click)="handlePageClick('dpos.nav.menu.operations', 'operations')" routerLink="/operations"
+          routerLinkActive="active-link">
           <img src="assets/img/ic-operations.svg" alt="Icono Operaciones" class="active-icon-link me-2">
           <span><span>{{ 'dpos.nav.menu.operations' | translate }}</span></span>
         </a>
@@ -62,11 +63,13 @@
         <a class="nav-link m-2 d-flex align-items-center"
           (click)="handlePageClick('dpos.nav.menu.customers', 'customers')" routerLink="/customers"
           routerLinkActive="active-link">
-          <img src="assets/img/ic-reports.svg" alt="Icono Informes" class="active-icon-link me-2">
+          <img src="assets/img/ic-clients.svg" alt="Icono Clientes" class="active-icon-link me-2" width="24" height="24">
           <span>{{ 'dpos.nav.menu.customers' | translate }}</span>
         </a>
-        <a class="nav-link m-2 d-flex align-items-center" (click)="handlePageClick('dpos.nav.menu.articles', 'products')" routerLink="/products" routerLinkActive="active-link">
-          <img src="assets/img/ic-reports.svg" alt="Icono Informes" class="active-icon-link me-2">
+        <a class="nav-link m-2 d-flex align-items-center"
+          (click)="handlePageClick('dpos.nav.menu.articles', 'products')" routerLink="/products"
+          routerLinkActive="active-link">
+          <img src="assets/img/ic-article_white.svg" alt="Icono Artículos" class="active-icon-link me-2" width="24" height="24">
           <span>{{ 'dpos.nav.menu.articles' | translate }}</span>
         </a>
         <a class="nav-link m-2 d-flex align-items-center"
@@ -105,8 +108,7 @@
         <!-- Selector de comercio -->
         <li class="mx-2 nav-item w-100 w-md-auto">
           <select [disabled]="!formSelectEnabled" class="form-select responsive-input" id="searchCommerce"
-            name="commerce" [(ngModel)]="commerceSelected" (change)="onCommerceChange()"
-            *ngIf="username;">
+            name="commerce" [(ngModel)]="commerceSelected" (change)="onCommerceChange()" *ngIf="username;">
             <option *ngFor="let commerce of commerces" [value]="commerce.commerceId">
               {{ commerce.commerceNumber + ' - ' + commerce.resellerName }}
             </option>
