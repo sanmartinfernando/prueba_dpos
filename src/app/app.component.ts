@@ -18,13 +18,13 @@ export class AppComponent implements OnInit, OnDestroy {
   private inactivityService = inject(InactivityService);
 
   public navIsOpen = true;
-
+  isIframe = window.self !== window.top;
   /**
    * Inicializa el componente y comienza el monitoreo de inactividad.
    */
   ngOnInit(): void {
     this.inactivityService.startMonitoring();
-  
+    console.log('AppComponent is running inside an iframe:', this.isIframe);
   }
 
   /**

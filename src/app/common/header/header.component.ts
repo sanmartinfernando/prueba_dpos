@@ -45,7 +45,7 @@ export class HeaderComponent implements OnInit {
   isComercia = false;
   formSelectEnabled = true;
   iconsLoaded = false;
-
+  isIframe = window.self !== window.top;
   constructor() {
     this.pages = this.pagesService.pages;
     this.uiStateService.formSelectEnabled$.subscribe(enabled => {
@@ -58,6 +58,8 @@ export class HeaderComponent implements OnInit {
    * Inicializa el componente cargando el tema y validando el usuario.
    */
   ngOnInit(): void {
+    console.log('AppComponent is running inside an iframe:', this.isIframe);
+
     this.loadThemeByResellerName();
 
     this.storageService.userInfo.subscribe(user => {
@@ -165,7 +167,7 @@ export class HeaderComponent implements OnInit {
   private titleHeader(name: string): void {
     this.title = name;
   }
-  
+
   /**
    * Guarda el componente seleccionado en almacenamiento.
    * 
@@ -174,7 +176,7 @@ export class HeaderComponent implements OnInit {
   private component(component: string): void {
     this.storageService.setComponent(component);
   }
-  
+
   /**
    * Obtiene el comercio actualmente seleccionado.
    * 
