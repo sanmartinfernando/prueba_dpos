@@ -6,9 +6,9 @@ frontend:
         - npm install
     build:
       commands:
-        - npm run dev
+        - npm run build:inte
   artifacts:
-    baseDirectory: /dist/diu.mdm.web/browser
+    baseDirectory: /dist/diu.pos.webc.angular/browser
     files:
       - '**/*'
   cache:
