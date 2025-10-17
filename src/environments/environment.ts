@@ -9,6 +9,6 @@ export const environment = {
     urlWS:'https://api.dpos.es/wstickets/',
     urlAuth:'https://dpos.diusframi.tech:39443/wsauth/',
     urlSettings:'https://3yh5mb6hfj.execute-api.eu-south-2.amazonaws.com/pre',
-    urlDocuments: ''
+    urlDocuments: 'https://d1v0i5k89q4x6i.cloudfront.net/'
 };
 

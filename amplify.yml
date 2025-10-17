@@ -1,3 +1,4 @@
+
 version: 1
 frontend:
   phases:
@@ -6,7 +7,14 @@ frontend:
         - npm install
     build:
       commands:
-        - npm run build:inte
+        # Lógica condicional: si la rama es 'main' (o 'master'), ejecuta 'build:prod',
+        # de lo contrario, ejecuta 'build:inte'.
+        - |
+          if [ "$AWS_BRANCH" == "main" ]; then
+            npm run build:prod
+          else
+            npm run build:inte
+          fi
   artifacts:
     baseDirectory: /dist/diu.pos.webc.angular/browser
     files:
