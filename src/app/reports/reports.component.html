@@ -4,7 +4,7 @@
   <form class="row g-3 px-2">
     <div class="col-12 col-sm-6 col-md-3 col-lg-2">
       <label class="form-label" for="report">{{ 'dpos.filter.reporttype' | translate }}</label>
-      <select class="form-select" [(ngModel)]="reportVarSearch" name="report" id="report" (change)="onReportTypeChange()">
+      <select class="form-select" [(ngModel)]="reportVarSearch" name="report" id="report" >
         <option selected>{{ 'dpos.reports.taxes.label' | translate }}</option>
         <option>{{ 'dpos.reports.products.label' | translate }}</option>
         <option>{{ 'dpos.reports.paymentmethods.label' | translate }}</option>
@@ -12,7 +12,7 @@
     </div>
     <div class="col-12 col-sm-6 col-md-3 col-lg-2">
       <label class="form-label" for="searchTer">{{ 'dpos.filter.terminal' | translate }}</label>
-      <select class="form-select" id="searchTer" name="terminal" [(ngModel)]="terminalSelected" (change)="onTerminalChange()">
+      <select class="form-select" id="searchTer" name="terminal" [(ngModel)]="terminalSelected" >
         <option *ngFor="let terminal of terminalsNumber" [value]="terminal">{{ terminal }}</option>
       </select>
     </div>
@@ -29,7 +29,7 @@
       <button type="button" class="btn btn-primary" (click)="searchReports()">
         <i class="fas fa-search"></i>&nbsp;{{ 'dpos.action.search' | translate }}
       </button>
-      <button type="reset" class="btn btn-outline-info btn-round">
+      <button type="button" (click)="resetReports()" class="btn btn-outline-info btn-round">
         <img src="assets/img/ic-clean-filters.svg" alt="Icono limpiar filtros">
       </button>
     </div>

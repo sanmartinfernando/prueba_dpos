@@ -4,22 +4,27 @@
   <form class="row g-3 px-2">
     <div class="col-12 col-sm-6 col-md-4 col-lg-2">
       <label class="form-label" for="customerNif">{{ 'dpos.customers.nif.label' | translate }}</label>
-      <input type="text" class="form-control" name="customerNif" id="customerNif" [(ngModel)]="customerNifVarSearch" (change)="onCustomerNifChange()">
+      <input type="text" class="form-control" name="customerNif" id="customerNif" [(ngModel)]="customerNifVarSearch"
+        (change)="onCustomerNifChange()">
     </div>
     <div class="col-12 col-sm-6 col-md-4 col-lg-2">
       <label class="form-label" for="customerName">{{ 'dpos.customers.name.label' | translate }}</label>
-      <input type="text" class="form-control" name="customerName" id="customerName" [(ngModel)]="customerNameVarSearch" (change)="onCustomerNameChange()">
+      <input type="text" class="form-control" name="customerName" id="customerName" [(ngModel)]="customerNameVarSearch"
+        (change)="onCustomerNameChange()">
     </div>
     <div class="col-12 col-sm-6 col-md-4 col-lg-2">
       <label class="form-label" for="customerPhone">{{ 'dpos.customers.phone.label' | translate }}</label>
-      <input type="text" class="form-control" name="customerPhone" id="customerPhone" [(ngModel)]="customerPhoneVarSearch" (change)="onCustomerPhoneChange()">
+      <input type="text" class="form-control" name="customerPhone" id="customerPhone"
+        [(ngModel)]="customerPhoneVarSearch" (change)="onCustomerPhoneChange()">
     </div>
     <div class="col-12 col-sm-6 col-md-4 col-lg-2">
       <label class="form-label" for="customerEmail">{{ 'dpos.customers.mail.label' | translate }}</label>
-      <input type="text" class="form-control" name="customerEmail" id="customerEmail" [(ngModel)]="customerEmailVarSearch" (change)="onCustomerEmailChange()">
+      <input type="text" class="form-control" name="customerEmail" id="customerEmail"
+        [(ngModel)]="customerEmailVarSearch" (change)="onCustomerEmailChange()">
     </div>
     <!-- Botones para limpiar campos y buscar clientes -->
-    <div class="col-12 col-md-4 col-lg-4 d-flex flex-wrap gap-2 align-items-end justify-content-md-start justify-content-end">
+    <div
+      class="col-12 col-md-4 col-lg-4 d-flex flex-wrap gap-2 align-items-end justify-content-md-start justify-content-end">
       <button type="button" class="btn btn-primary" (click)="searchCustomers()">
         <i class="fas fa-search"></i>&nbsp;{{ 'dpos.action.search' | translate }}
       </button>
@@ -32,7 +37,9 @@
   <div class="card mt-3">
     <div class="card-body">
       <!-- Componente modal para mensajes -->
-      <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage" [showAcceptButton]="showAcceptButton" [showCancelButton]="showCancelButton" (acceptAction)="onAcceptModal()" (cancelAction)="closeModal()" (closeModal)="closeModal()"></app-modal>
+      <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage"
+        [showAcceptButton]="showAcceptButton" [showCancelButton]="showCancelButton" (acceptAction)="onAcceptModal()"
+        (cancelAction)="closeModal()" (closeModal)="closeModal()"></app-modal>
       <div class="row mb-4 align-items-center">
         <!-- Título y botón de descarga solo en móviles -->
         <div class="col-12 d-flex justify-content-between align-items-center d-md-none">
@@ -58,7 +65,8 @@
           <button class="btn btn-primary" (click)="importCustomers()">
             {{ 'dpos.customers.import.label' | translate }}
           </button>
-          <input type="file" #customerFileInput style="display: none" accept=".csv" (change)="onCustomerFileSelected($event)" />
+          <input type="file" #customerFileInput style="display: none" accept=".csv"
+            (change)="onCustomerFileSelected($event)" />
           <button class="btn btn-primary btn-round d-none d-md-inline-flex" (click)="downloadCSV()">
             <img *ngIf="isComercia" src="assets/img/ic-download.svg" alt="Icono descargar datos">
             <i *ngIf="!isComercia" class="fa-solid fa-download fa-xl"></i>
@@ -66,15 +74,15 @@
         </div>
       </div>
       <!-- Spinner de carga mientras no se complete la carga -->
-      <div *ngIf="!loadCompleted && !emptySearch" class="d-flex justify-content-center">
+      <div *ngIf="!loadCompleted " class="d-flex justify-content-center my-5">
         <div class="spinner-border text-danger"></div>
       </div>
       <!-- Mensaje cuando no hay resultados después de la búsqueda -->
-      <div *ngIf="loadCompleted && emptySearch" class="d-flex justify-content-center">
+      <div *ngIf="loadCompleted && customers.length === 0" class="d-flex justify-content-center">
         <b><i>{{ 'dpos.dashboard.nodata.label' | translate }}</i></b>
       </div>
       <!-- Tabla con resultados de clientes, visible si hay resultados -->
-      <div class="row" *ngIf="loadCompleted && !emptySearch">
+      <div class="row" *ngIf="loadCompleted && customers.length > 0">
         <div class="table-responsive">
           <table class="table table-hover">
             <thead class="text-customer">
@@ -96,7 +104,8 @@
             </ng-template>
             <tbody>
               <ng-container *ngIf="loadCompleted && customers; else empty">
-                <tr *ngFor="let customer of customers | paginate : { itemsPerPage: 10, currentPage: page }; index as i" (click)="sendCustomerDetails(customer.clientId)">
+                <tr *ngFor="let customer of customers | paginate : { itemsPerPage: 10, currentPage: page }; index as i"
+                  (click)="sendCustomerDetails(customer.clientId)">
                   <td class="align-middle"><span class="table-title">{{ customer.identityDocument }}</span></td>
                   <td class="align-middle">{{ customer.clientName }}</td>
                   <td class="align-middle">{{ customer.address }}</td>
@@ -113,8 +122,10 @@
               </ng-container>
             </tbody>
           </table>
-          <div *ngIf="loadCompleted && emptySearch === false && customers.length > 10" class="text-start mt-3">
-            <pagination-controls (pageChange)="page = $event" previousLabel="{{ 'dpos.pagination.previous' | translate }}" nextLabel="{{ 'dpos.pagination.next' | translate }}"></pagination-controls>
+          <div *ngIf="customers.length > 10" class="text-start mt-3">
+            <pagination-controls (pageChange)="page = $event"
+              previousLabel="{{ 'dpos.pagination.previous' | translate }}"
+              nextLabel="{{ 'dpos.pagination.next' | translate }}"></pagination-controls>
           </div>
         </div>
       </div>

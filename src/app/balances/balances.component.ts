@@ -82,13 +82,6 @@ export class BalancesComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    if (this.sessionService.getItem(SessionService.BALANCES_FROM_DATE) !== null) {
-      this.sinceDate = this.formatDate(this.sessionService.getItem(SessionService.BALANCES_FROM_DATE));
-    }
-
-    if (this.sessionService.getItem(SessionService.BALANCES_TO_DATE) !== null) {
-      this.tilDate = this.formatDate(this.sessionService.getItem(SessionService.BALANCES_TO_DATE));
-    }
 
     this.commercesService.getCommerceList().subscribe({
       next: (commerces) => {
@@ -105,23 +98,23 @@ export class BalancesComponent implements OnInit, OnDestroy {
                 this.terminalsNumber = terminals.map(t => t.terminalNumber);
               }
               this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
-              if (this.sessionService.getItem(SessionService.TERMINAL_NUMBER) === null) {
+              if (this.terminalSelected === null) {
                 this.terminalSelected = this.terminalsNumber[0];
-                this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
+
               } else {
-                this.terminalSelected = this.sessionService.getItem(SessionService.TERMINAL_NUMBER);
+                this.terminalSelected = this.terminalsNumber[0];
               }
               this.searchBalances();
             },
             error: (error) => {
-              this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.terminals')); 
+              this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.terminals'));
               console.error('Error Terminals:', error);
             }
           });
         });
       },
       error: (error) => {
-        this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.commerces')); 
+        this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.commerces'));
         console.error('Error Commerces:', error)
       }
     });
@@ -129,6 +122,18 @@ export class BalancesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.langSubscription.unsubscribe();
+  }
+
+  /**
+  * Resetea los filtros de búsqueda a sus valores por defecto.
+  */
+  public resetReports() {
+    this.terminalSelected = this.terminalsNumber[0];
+    const yearDate = new Date(new Date().getFullYear(), 0);
+    this.tilDateMilli = yearDate.getTime() + 31536000000;
+    this.tilDate = this.formatDate(this.tilDateMilli);
+    this.varSearch = '';
+    this.getBalanceInfo();
   }
 
   /**
@@ -216,22 +221,15 @@ export class BalancesComponent implements OnInit, OnDestroy {
     );
   }
 
-  /**
-   * Evento al cambiar el terminal seleccionado.
-   */
-  public onTerminalChange(): void {
-    this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
-  }
+
 
   /**
    * Evento al cambiar la fecha "desde".
    */
   public onSinceDateChange(): void {
-    this.sessionService.setItem(SessionService.BALANCES_FROM_DATE, this.terminalSelected);
     this.sinceDate = (document.getElementById('sinceDate') as HTMLInputElement).value;
     if (this.sinceDate.length > 0) {
       this.sinceDateMilli = Date.parse(this.sinceDate);
-      this.sessionService.setItem(SessionService.BALANCES_FROM_DATE, this.sinceDateMilli);
     }
   }
 
@@ -239,11 +237,9 @@ export class BalancesComponent implements OnInit, OnDestroy {
    * Evento al cambiar la fecha "hasta".
    */
   public onTilDateChange(): void {
-    this.sessionService.setItem(SessionService.BALANCES_TO_DATE, this.terminalSelected);
     this.tilDate = (document.getElementById('tilDate') as HTMLInputElement).value;
     if (this.tilDate.length > 0) {
       this.tilDateMilli = Date.parse(this.tilDate);
-      this.sessionService.setItem(SessionService.BALANCES_TO_DATE, this.tilDateMilli);
     }
   }
 
@@ -319,7 +315,7 @@ export class BalancesComponent implements OnInit, OnDestroy {
       }
     });
   }
-  
+
   /**
    * Convierte un timestamp a formato YYYY-MM-DD.
    * 

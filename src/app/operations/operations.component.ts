@@ -125,25 +125,8 @@ export class OperationsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadCompleted = false;
 
-    if (this.sessionService.getItem(SessionService.OPERATIONS_FROM_DATE) !== null) {
-      this.sinceDate = this.formatDate(this.sessionService.getItem(SessionService.OPERATIONS_FROM_DATE));
-    }
 
-    if (this.sessionService.getItem(SessionService.OPERATIONS_TO_DATE) !== null) {
-      this.tilDate = this.formatDate(this.sessionService.getItem(SessionService.OPERATIONS_TO_DATE));
-    }
 
-    if (this.sessionService.getItem(SessionService.OP_TYPE) !== null) {
-      this.typeVarSearch = this.getTypeVarSearch(this.sessionService.getItem(SessionService.OP_TYPE));
-    }
-    else {
-      this.sessionService.setItem(SessionService.OP_TYPE, -1);
-      this.typeVarSearch = this.translate.instant('dpos.filter.all');
-    }
-
-    if (this.sessionService.getItem(SessionService.DOC_NUMBER) !== null) {
-      this.documentVarSearch = this.sessionService.getItem(SessionService.DOC_NUMBER);
-    }
 
     this.commercesService.getCommerceList().subscribe({
       next: (commerces) => {
@@ -164,11 +147,11 @@ export class OperationsComponent implements OnInit, OnDestroy {
                 this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
               }
               this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
-              if (this.sessionService.getItem(SessionService.TERMINAL_NUMBER) === null) {
+              if (this.terminalSelected === null) {
                 this.terminalSelected = this.terminalsNumber[0];
-                this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
+
               } else {
-                this.terminalSelected = this.sessionService.getItem(SessionService.TERMINAL_NUMBER);
+                this.terminalSelected = this.terminalsNumber[0];
               }
               this.searchoperations();
             },
@@ -190,7 +173,8 @@ export class OperationsComponent implements OnInit, OnDestroy {
    * Construye la consulta con los filtros correspondientes y lanza la búsqueda de ventas.
    */
   public searchoperations() {
-
+    console.log("documentVarSearch", this.documentVarSearch);
+    console.log("typeVarSearch", this.typeVarSearch);
     this.validationVariable = false;
     this.loadCompleted = false;
 
@@ -246,14 +230,8 @@ export class OperationsComponent implements OnInit, OnDestroy {
     }
 
     if (this.typeVarSearch !== null) {
-      if (this.typeVarSearch === this.translate.instant('dpos.filter.all')) {
-        const orTypes = this.opTypes.map(t => ({
-          field: 'Type',
-          op: '=',
-          value: t.value
-        }));
-        andFilters.push({ or: orTypes });
-      } else {
+      if (this.typeVarSearch != this.translate.instant('dpos.filter.all')) {
+        console.log("typeVarSearch", this.typeVarSearch);
         switch (this.typeVarSearch) {
           case this.translate.instant('dpos.operations.operation.order.label'):
             this.selTransTypeVarSearch = 0;
@@ -287,6 +265,23 @@ export class OperationsComponent implements OnInit, OnDestroy {
   }
 
   /**
+* Resetea los filtros de búsqueda a sus valores por defecto.
+*/
+  public resetReports() {
+
+    this.sinceDate = '';
+    this.sinceDateMilli = null;
+    this.tilDate = '';
+    this.tilDateMilli = null;
+
+    this.terminalSelected = this.terminalsNumber[0];
+    this.typeVarSearch = this.translate.instant('dpos.filter.all');
+    this.documentVarSearch = null;
+    this.searchoperations();
+
+  }
+
+  /**
    * Navega al detalle de una venta cifrando y codificando el ID.
    * 
    * @param id Identificador de la venta.
@@ -304,22 +299,15 @@ export class OperationsComponent implements OnInit, OnDestroy {
     this.downloadCsvService.downloadOperationsFile(this.operations, this.translate.instant('dpos.operations.page.title'), this.currentLang);
   }
 
-  /**
-   * Guarda en sesión el terminal seleccionado.
-   */
-  public onTerminalChange(): void {
-    this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
-  }
 
   /**
    * Actualiza y guarda en sesión la fecha "desde".
    */
   public onSinceDateChange(): void {
-    this.sessionService.setItem(SessionService.OPERATIONS_FROM_DATE, this.terminalSelected);
+
     this.sinceDate = (document.getElementById('sinceDate') as HTMLInputElement).value;
     if (this.sinceDate.length > 0) {
       this.sinceDateMilli = Date.parse(this.sinceDate);
-      this.sessionService.setItem(SessionService.OPERATIONS_FROM_DATE, this.sinceDateMilli);
     }
   }
 
@@ -327,27 +315,14 @@ export class OperationsComponent implements OnInit, OnDestroy {
    * Actualiza y guarda en sesión la fecha "hasta".
    */
   public onTilDateChange(): void {
-    this.sessionService.setItem(SessionService.OPERATIONS_TO_DATE, this.terminalSelected);
     this.tilDate = (document.getElementById('tilDate') as HTMLInputElement).value;
     if (this.tilDate.length > 0) {
       this.tilDateMilli = Date.parse(this.tilDate);
-      this.sessionService.setItem(SessionService.OPERATIONS_TO_DATE, this.tilDateMilli);
     }
   }
 
-  /**
-   * Almacena en sesión el tipo de operación seleccionado.
-   */
-  public onOpTypeChange(): void {
-    this.sessionService.setItem(SessionService.OP_TYPE, this.getOpType());
-  }
 
-  /**
-   * Almacena en sesión el número de documento introducido.
-   */
-  public onDocNumberChange(): void {
-    this.sessionService.setItem(SessionService.DOC_NUMBER, this.documentVarSearch);
-  }
+
 
   /**
    * Calcula la base imponible total del array de impuestos de la venta.
@@ -408,6 +383,7 @@ export class OperationsComponent implements OnInit, OnDestroy {
    */
   private getOrderInfo(qsString: string) {
 
+    console.log("Query String: ", qsString);
     this.ordersService.getOrderInfo(this.size, qsString).subscribe(
       (operation) => {
         this.operations = operation;

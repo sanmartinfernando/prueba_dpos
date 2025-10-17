@@ -4,8 +4,7 @@
   <form class="row g-3 px-2">
     <div class="col-12 col-sm-6 col-md-4 col-lg-2">
       <label for="searchTer" class="form-label">{{ 'dpos.filter.terminal' | translate }}</label>
-      <select class="form-select" id="searchTer" name="terminal" [(ngModel)]="terminalSelected"
-        (change)="onTerminalChange()">
+      <select class="form-select" id="searchTer" name="terminal" [(ngModel)]="terminalSelected">
         <option *ngFor="let terminal of terminalsNumber" [value]="terminal">{{ terminal }}</option>
       </select>
     </div>
@@ -19,16 +18,14 @@
     </div>
     <div class="col-12 col-sm-6 col-md-4 col-lg-2">
       <label class="form-label" for="operation">{{ 'dpos.filter.operationtype' | translate }}</label>
-      <select class="form-select" name="operation" id="operation" [(ngModel)]="typeVarSearch"
-        (change)="onOpTypeChange()">
+      <select class="form-select" name="operation" id="operation" [(ngModel)]="typeVarSearch">
         <option>{{ 'dpos.filter.all' | translate }}</option>
         <option *ngFor="let type of opTypes">{{ type.name }}</option>
       </select>
     </div>
     <div class="col-12 col-sm-6 col-md-4 col-lg-2">
       <label class="form-label" for="documentN">{{ 'dpos.filter.docnumber' | translate }}</label>
-      <input type="text" class="form-control" name="documentN" id="documentN" [(ngModel)]="documentVarSearch"
-        (change)="onDocNumberChange()">
+      <input type="text" class="form-control" name="documentN" id="documentN" [(ngModel)]="documentVarSearch">
     </div>
     <!-- Botones para resetear filtros y buscar -->
     <div
@@ -36,7 +33,7 @@
       <button type="button" class="btn btn-primary" (click)="searchoperations()">
         <i class="fas fa-search"></i>&nbsp;{{ 'dpos.action.search' | translate }}
       </button>
-      <button type="reset" class="btn btn-outline-info btn-round">
+      <button type="button" (click)="resetReports()" class="btn btn-outline-info btn-round">
         <img src="assets/img/ic-clean-filters.svg" alt="Icono limpiar filtros">
       </button>
     </div>

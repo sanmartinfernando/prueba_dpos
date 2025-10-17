@@ -55,7 +55,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
 
   terminalsNumber: string[];
   terminalSelected: string = null;
-  reportVarSearch: string = this.translate.instant('dpos.reports.taxes.label');;
+  reportVarSearch: string = this.translate.instant('dpos.reports.taxes.label');
   searchCounter = false;
   sinceDate: string;
   sinceDateMilli = 0;
@@ -74,6 +74,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
   modalMessage = '';
 
   isComercia = false;
+
 
   /**
    * Constructor del componente.
@@ -102,19 +103,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
    */
   ngOnInit(): void {
     this.loadCompleted = false;
-    if (this.sessionService.getItem(SessionService.REPORTS_FROM_DATE) !== null) {
-      this.sinceDate = this.formatDate(this.sessionService.getItem(SessionService.REPORTS_FROM_DATE));
-    }
-    if (this.sessionService.getItem(SessionService.REPORTS_TO_DATE) !== null) {
-      this.tilDate = this.formatDate(this.sessionService.getItem(SessionService.REPORTS_TO_DATE));
-    }
-    if (this.sessionService.getItem(SessionService.REPORT_TYPE) !== null) {
-      this.reportVarSearch = this.getReportVarSearch(this.sessionService.getItem(SessionService.REPORT_TYPE));
-    }
-    else {
-      this.sessionService.setItem(SessionService.REPORT_TYPE, -1);
-      this.reportVarSearch = this.translate.instant('dpos.reports.taxes.label');
-    }
+
 
     this.commercesService.getCommerceList().subscribe({
       next: (commerces) => {
@@ -133,11 +122,11 @@ export class ReportsComponent implements OnInit, OnDestroy {
                 this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
               }
               this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
-              if (this.sessionService.getItem(SessionService.TERMINAL_NUMBER) === null) {
+              if (this.terminalSelected === null) {
                 this.terminalSelected = this.terminalsNumber[0];
-                this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
+
               } else {
-                this.terminalSelected = this.sessionService.getItem(SessionService.TERMINAL_NUMBER);
+                this.terminalSelected = this.terminalsNumber[0];
               }
               this.searchReports();
             },
@@ -168,7 +157,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
     } else {
       this.sinceDateMilli = yearDate.getTime();
       this.sinceDate = this.formatDate(this.sinceDateMilli);
-      this.sessionService.setItem(SessionService.REPORTS_TO_DATE, this.sinceDateMilli);
     }
 
     if (this.tilDateMilli > 0) {
@@ -178,7 +166,6 @@ export class ReportsComponent implements OnInit, OnDestroy {
     } else {
       this.tilDateMilli = yearDate.getTime() + 31536000000;
       this.tilDate = this.formatDate(this.tilDateMilli);
-      this.sessionService.setItem(SessionService.REPORTS_TO_DATE, this.tilDateMilli);
     }
 
     if (this.sinceDateMilli > 0) {
@@ -205,6 +192,19 @@ export class ReportsComponent implements OnInit, OnDestroy {
   }
 
   /**
+    * Resetea los filtros de búsqueda a sus valores por defecto.
+    */
+  public resetReports() {
+    this.reportVarSearch = this.translate.instant('dpos.reports.taxes.label');
+    this.terminalSelected = this.terminalsNumber[0];
+    const yearDate = new Date(new Date().getFullYear(), 0);
+    this.tilDateMilli = yearDate.getTime() + 31536000000;
+    this.tilDate = this.formatDate(this.tilDateMilli);
+    this.getArqueoX();
+  }
+
+  
+  /**
    * Descarga el informe actual en formato CSV según el tipo de informe.
    */
   public downloadReports() {
@@ -217,24 +217,16 @@ export class ReportsComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Evento al cambiar el terminal seleccionado.
-   * Actualiza el valor en la sesión.
-   */
-  public onTerminalChange(): void {
-    this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
-  }
 
   /**
    * Evento al cambiar la fecha inicial.
    * Actualiza la fecha en la sesión y la almacena en milisegundos.
    */
   public onSinceDateChange(): void {
-    this.sessionService.setItem(SessionService.REPORTS_FROM_DATE, this.terminalSelected);
     this.sinceDate = (document.getElementById('sinceDate') as HTMLInputElement).value;
     if (this.sinceDate.length > 0) {
       this.sinceDateMilli = Date.parse(this.sinceDate);
-      this.sessionService.setItem(SessionService.REPORTS_FROM_DATE, this.sinceDateMilli);
+
     }
   }
 
@@ -243,11 +235,9 @@ export class ReportsComponent implements OnInit, OnDestroy {
    * Actualiza la fecha en la sesión y la almacena en milisegundos.
    */
   public onTilDateChange(): void {
-    this.sessionService.setItem(SessionService.REPORTS_TO_DATE, this.terminalSelected);
     this.tilDate = (document.getElementById('tilDate') as HTMLInputElement).value;
     if (this.tilDate.length > 0) {
       this.tilDateMilli = Date.parse(this.tilDate);
-      this.sessionService.setItem(SessionService.REPORTS_TO_DATE, this.tilDateMilli);
     }
   }
 
@@ -255,9 +245,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
    * Evento al cambiar el tipo de informe.
    * Actualiza el tipo en la sesión.
    */
-  public onReportTypeChange(): void {
-    this.sessionService.setItem(SessionService.REPORT_TYPE, this.getReportType());
-  }
+
 
   /**
    * Abre el modal de mensajes estableciendo el título y el mensaje.
@@ -283,7 +271,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
    * Calcula totales de base, cuota, impuestos y porcentajes.
    */
   private getArqueoX() {
-    
+
     this.loadCompleted = false;
     this.arqueoXService.getArqueoX(this.sinceDateMilli, this.tilDateMilli, this.terminalSelected === this.translate.instant('dpos.filter.all') ? null : this.terminalSelected, this.commerceId).subscribe({
       next: (arqueo) => {

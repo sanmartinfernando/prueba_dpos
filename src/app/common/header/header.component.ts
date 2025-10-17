@@ -19,7 +19,7 @@ import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-dpos-header',
   templateUrl: './header.component.html',
-  styleUrls: []
+  styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
 
