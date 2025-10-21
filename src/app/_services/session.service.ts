@@ -41,6 +41,11 @@ export class SessionService {
   static readonly PRODUCT_NAME = 'productName';
   static readonly PRODUCT_FAVOURITE = 'productFavourite';
 
+
+  // Keys settings
+  static readonly BILL_SYSTEM = 'billSystem';
+  static readonly TAX_TYPE = 'taxType';
+
   private commerceId = new BehaviorSubject<number>(this.getItem(SessionService.COMMERCE_ID) || 0);
   private commerce = new BehaviorSubject<Commerce>(this.getItem(SessionService.COMMERCE) || null);
 

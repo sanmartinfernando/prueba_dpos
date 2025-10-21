@@ -173,8 +173,6 @@ export class OperationsComponent implements OnInit, OnDestroy {
    * Construye la consulta con los filtros correspondientes y lanza la búsqueda de ventas.
    */
   public searchoperations() {
-    console.log("documentVarSearch", this.documentVarSearch);
-    console.log("typeVarSearch", this.typeVarSearch);
     this.validationVariable = false;
     this.loadCompleted = false;
 
@@ -231,7 +229,6 @@ export class OperationsComponent implements OnInit, OnDestroy {
 
     if (this.typeVarSearch !== null) {
       if (this.typeVarSearch != this.translate.instant('dpos.filter.all')) {
-        console.log("typeVarSearch", this.typeVarSearch);
         switch (this.typeVarSearch) {
           case this.translate.instant('dpos.operations.operation.order.label'):
             this.selTransTypeVarSearch = 0;
@@ -382,8 +379,6 @@ export class OperationsComponent implements OnInit, OnDestroy {
    * listas de selección y estados de TicketBAI/Verifactu.
    */
   private getOrderInfo(qsString: string) {
-
-    console.log("Query String: ", qsString);
     this.ordersService.getOrderInfo(this.size, qsString).subscribe(
       (operation) => {
         this.operations = operation;

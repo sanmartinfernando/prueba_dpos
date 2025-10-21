@@ -1,6 +1,6 @@
 <div class="container mt-5 d-flex justify-content-center">
   <div class="col-11 col-sm-10 col-md-10 col-lg-6 col-xl-4">
-    <div class="card p-4 p-sm-5 shadow-sm"> 
+    <div class="card p-4 p-sm-5 shadow-sm">
       <h2 class="text-center mb-4"><b>{{ 'dpos.login.title' | translate }}</b></h2>
       <span *ngIf="!isLoggedIn" class="text-center d-block mb-3">
         {{ 'dpos.login.accountdetails.label' | translate }}
@@ -52,5 +52,7 @@
         </div>
       </form>
     </div>
+    <app-dpos-footer></app-dpos-footer>
   </div>
+
 </div>

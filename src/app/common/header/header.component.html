@@ -1,126 +1,148 @@
-<div class="d-md-none d-flex justify-content-end px-3">
-  <button class="btn btn-dark toggle-nav-btn" (click)="toggleNav()">
-    <i class="fa fa-bars fa-lg"></i>
-  </button>
-</div>
+<div class="app-layout-container">
+  <div class="d-md-none d-flex justify-content-end px-3">
+    <button class="btn btn-dark toggle-nav-btn" (click)="toggleNav()">
+      <i class="fa fa-bars fa-lg"></i>
+    </button>
+  </div>
+  <ng-template class="d-flex justify-content-center" #spinner>
+    <div class="spinner-border text-danger"></div>
+  </ng-template>
 
-<ng-template class="d-flex justify-content-center" #spinner>
-  <div class="spinner-border text-danger"></div>
-</ng-template>
+  <nav *ngIf="isLoggedIn" class="sidenav vh-100 d-flex flex-column overflow-auto"
+    [ngClass]="{ 'd-none': !showNav, 'd-flex': showNav, 'd-md-flex': true }">
 
-<nav *ngIf="isLoggedIn" class="sidenav vh-100 d-flex flex-column overflow-auto"
-  [ngClass]="{ 'd-none': !showNav, 'd-flex': showNav, 'd-md-flex': true }">
-
-  <div class="logo flex-shrink-0 p-2 text-white text-center">
-    <a class="d-flex align-items-center justify-content-center text-white text-decoration-none" (click)="getTitle()"
-      routerLink="/dashboard">
-      <ng-container *ngIf="iconsLoaded; else spinner">
+    <div class="logo flex-shrink-0 p-2 text-white text-center">
+      <a class="d-flex align-items-center justify-content-center text-white text-decoration-none" (click)="getTitle()"
+        routerLink="/dashboard">
+        <ng-container *ngIf="iconsLoaded; else spinner">
+          <ng-container *ngIf="!isComercia">
+            <i class="fa-solid fa-box py-2 logo"></i>
+          </ng-container>
+          <ng-container *ngIf="isComercia">
+            <img src="assets/img/logo-lacaixa.png" alt="Logotipo La Caixa" class="logoLaCaixa">
+          </ng-container>
+        </ng-container>
+      </a>
+    </div>
+    <div id="navBar1" class="flex-shrink-0">
+      <ul id="navBarMain" class="navbar-nav flex-column align-items-center align-items-md-stretch w-100">
         <ng-container *ngIf="!isComercia">
-          <i class="fa-solid fa-box py-2 logo"></i>
+          <li *ngFor="let page of pages" class="nav-item w-100">
+            <a class="nav-link m-3 d-flex flex-column align-items-center"
+              (click)="handlePageClick(page.text, page.code)" routerLink="/{{ page.code }}"
+              routerLinkActive="active-link">
+              <i class="{{ page.icon }} active-icon-link fa-2xl mt-3"></i>{{ page.text }}
+            </a>
+          </li>
         </ng-container>
         <ng-container *ngIf="isComercia">
-          <img src="assets/img/logo-lacaixa.png" alt="Logotipo La Caixa" class="logoLaCaixa">
-        </ng-container>
-      </ng-container>
-    </a>
-  </div>
-  <!-- Lista de enlaces de navegación -->
-  <div id="navBar1" class="flex-shrink-0">
-    <ul id="navBarMain" class="navbar-nav flex-column align-items-center align-items-md-stretch w-100">
-      <ng-container *ngIf="!isComercia">
-        <li *ngFor="let page of pages" class="nav-item w-100">
-          <a class="nav-link m-3 d-flex flex-column align-items-center" (click)="handlePageClick(page.text, page.code)"
-            routerLink="/{{ page.code }}" routerLinkActive="active-link">
-            <i class="{{ page.icon }} active-icon-link fa-2xl mt-3"></i>{{ page.text }}
+          <a class="nav-link m-2 d-flex align-items-center"
+            (click)="handlePageClick('dpos.nav.menu.dashboard', 'dashboard')" routerLink="/dashboard"
+            routerLinkActive="active-link">
+            <img src="assets/img/ic-inicio.svg" alt="Icono Inicio" class="active-icon-link me-2">
+            <span>{{ 'dpos.nav.menu.dashboard' | translate }}</span>
           </a>
-        </li>
-      </ng-container>
-      <ng-container *ngIf="isComercia">
-        <a class="nav-link m-2 d-flex align-items-center"
-          (click)="handlePageClick('dpos.nav.menu.dashboard', 'dashboard')" routerLink="/dashboard"
-          routerLinkActive="active-link">
-          <img src="assets/img/ic-inicio.svg" alt="Icono Inicio" class="active-icon-link me-2">
-          <span>{{ 'dpos.nav.menu.dashboard' | translate }}</span>
-        </a>
-        <a class="nav-link m-2 d-flex align-items-center"
-          (click)="handlePageClick('dpos.nav.menu.operations', 'operations')" routerLink="/operations"
-          routerLinkActive="active-link">
-          <img src="assets/img/ic-operations.svg" alt="Icono Operaciones" class="active-icon-link me-2">
-          <span><span>{{ 'dpos.nav.menu.operations' | translate }}</span></span>
-        </a>
-        <a class="nav-link m-2 d-flex align-items-center"
-          (click)="handlePageClick('dpos.nav.menu.balances', 'balances')" routerLink="/balances"
-          routerLinkActive="active-link">
-          <img src="assets/img/ic-balances.svg" alt="Icono Cierres" class="active-icon-link me-2">
-          <span>{{ 'dpos.nav.menu.balances' | translate }}</span>
-        </a>
-        <a class="nav-link m-2 d-flex align-items-center" (click)="handlePageClick('dpos.nav.menu.reports', 'reports')"
-          routerLink="/reports" routerLinkActive="active-link">
-          <img src="assets/img/ic-reports.svg" alt="Icono Informes" class="active-icon-link me-2">
-          <span>{{ 'dpos.nav.menu.reports' | translate }}</span>
-        </a>
-        <a class="nav-link m-2 d-flex align-items-center"
-          (click)="handlePageClick('dpos.nav.menu.customers', 'customers')" routerLink="/customers"
-          routerLinkActive="active-link">
-          <img src="assets/img/ic-clients.svg" alt="Icono Clientes" class="active-icon-link me-2" width="24" height="24">
-          <span>{{ 'dpos.nav.menu.customers' | translate }}</span>
-        </a>
-        <a class="nav-link m-2 d-flex align-items-center"
-          (click)="handlePageClick('dpos.nav.menu.articles', 'products')" routerLink="/products"
-          routerLinkActive="active-link">
-          <img src="assets/img/ic-article.svg" alt="Icono Artículos" class="active-icon-link me-2" width="24" height="24">
-          <span>{{ 'dpos.nav.menu.articles' | translate }}</span>
-        </a>
-        <a class="nav-link m-2 d-flex align-items-center"
-          (click)="handlePageClick('dpos.nav.menu.documents', 'documents')" routerLink="/documents"
-          routerLinkActive="active-link">
-          <img src="assets/img/ic-reports.svg" alt="Icono Informes" class="active-icon-link me-2">
-          <span>{{ 'dpos.nav.menu.documents' | translate }}</span>
-        </a>
-      </ng-container>
-    </ul>
-  </div>
-</nav>
-<header class="bg-customer">
-  <div class="clearfix header-main container-fluid py-2">
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
-
-
-      <div *ngIf="isLoggedIn">
-        <ng-container *ngIf="iconsLoaded; else spinner">
-          <h3 class="p-3 pb-2 mb-0 order-0">
-            <b>{{ title }}</b>
-          </h3>
+          <a class="nav-link m-2 d-flex align-items-center"
+            (click)="handlePageClick('dpos.nav.menu.operations', 'operations')" routerLink="/operations"
+            routerLinkActive="active-link">
+            <img src="assets/img/ic-operations.svg" alt="Icono Operaciones" class="active-icon-link me-2">
+            <span><span>{{ 'dpos.nav.menu.operations' | translate }}</span></span>
+          </a>
+          <a class="nav-link m-2 d-flex align-items-center"
+            (click)="handlePageClick('dpos.nav.menu.balances', 'balances')" routerLink="/balances"
+            routerLinkActive="active-link">
+            <img src="assets/img/ic-balances.svg" alt="Icono Cierres" class="active-icon-link me-2">
+            <span>{{ 'dpos.nav.menu.balances' | translate }}</span>
+          </a>
+          <a class="nav-link m-2 d-flex align-items-center"
+            (click)="handlePageClick('dpos.nav.menu.reports', 'reports')" routerLink="/reports"
+            routerLinkActive="active-link">
+            <img src="assets/img/ic-reports.svg" alt="Icono Informes" class="active-icon-link me-2">
+            <span>{{ 'dpos.nav.menu.reports' | translate }}</span>
+          </a>
+          <a class="nav-link m-2 d-flex align-items-center"
+            (click)="handlePageClick('dpos.nav.menu.customers', 'customers')" routerLink="/customers"
+            routerLinkActive="active-link">
+            <img src="assets/img/ic-clients.svg" alt="Icono Clientes" class="active-icon-link me-2" width="24"
+              height="24">
+            <span>{{ 'dpos.nav.menu.customers' | translate }}</span>
+          </a>
+          <a class="nav-link m-2 d-flex align-items-center"
+            (click)="handlePageClick('dpos.nav.menu.articles', 'products')" routerLink="/products"
+            routerLinkActive="active-link">
+            <img src="assets/img/ic-article.svg" alt="Icono Artículos" class="active-icon-link me-2" width="24"
+              height="24">
+            <span>{{ 'dpos.nav.menu.articles' | translate }}</span>
+          </a>
+          <a class="nav-link m-2 d-flex align-items-center"
+            (click)="handlePageClick('dpos.nav.menu.documents', 'documents')" routerLink="/documents"
+            routerLinkActive="active-link">
+            <img src="assets/img/ic-reports.svg" alt="Icono Informes" class="active-icon-link me-2">
+            <span>{{ 'dpos.nav.menu.documents' | translate }}</span>
+          </a>
+          <a class="nav-link m-2 d-flex align-items-center"
+            (click)="handlePageClick('dpos.nav.menu.settings', 'settings')" routerLink="/settings"
+            routerLinkActive="active-link">
+            <img src="assets/img/ic-reports.svg" alt="Icono Informes" class="active-icon-link me-2">
+            <span>{{ 'dpos.nav.menu.settings' | translate }}</span>
+          </a>
         </ng-container>
-      </div>
-
-
-      <ul
-        class="navbar-nav d-flex flex-column flex-md-row align-items-end align-items-md-center ms-md-auto px-3 gap-2 order-1 order-md-1 mt-3 mb-2 mt-md-0 mb-md-0">
-
-        <li class="mx-2 nav-item w-100 w-md-auto">
-          <app-dpos-lang-switcher></app-dpos-lang-switcher>
-        </li>
-
-        <li class="mx-2 nav-item w-100 w-md-auto">
-          <select [disabled]="!formSelectEnabled" class="form-select responsive-input" id="searchCommerce"
-            name="commerce" [(ngModel)]="commerceSelected" (change)="onCommerceChange()" *ngIf="username;">
-            <option *ngFor="let commerce of commerces" [value]="commerce.commerceId">
-              {{ commerce.commerceNumber + ' - ' + commerce.resellerName }}
-            </option>
-          </select>
-        </li>
-
-        <!-- Botón de cerrar sesión -->
-        <li class="mx-2 nav-item w-100 w-md-auto">
-          <button class="btn btn-light d-flex align-items-center gap-2 responsive-button w-100 w-md-auto"
-            *ngIf="username" (click)="logOut()" style="cursor: pointer">
-            <i class="fa-regular fa-circle-user fa-lg btn-light-icon"></i>
-            <span>{{ username }}</span>
-            <i class="fa-solid fa-power-off"></i>
-          </button>
-        </li>
       </ul>
     </div>
+  </nav>
+
+  <div class="main-panel-content">
+    <main class="page-content-wrapper main sticky-footer-main" [ngClass]="{'main-logged-in': !isLoggedIn}">
+
+      <div class="main-content-area">
+        <header class="bg-customer">
+          <div class="clearfix header-main container-fluid py-2">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+
+
+              <div *ngIf="isLoggedIn">
+                <ng-container *ngIf="iconsLoaded; else spinner">
+                  <h3 class="p-3 pb-2 mb-0 order-0">
+                    <b>{{ title }}</b>
+                  </h3>
+                </ng-container>
+              </div>
+
+
+              <ul
+                class="navbar-nav d-flex flex-column flex-md-row align-items-end align-items-md-center ms-md-auto px-3 gap-2 order-1 order-md-1 mt-3 mb-2 mt-md-0 mb-md-0">
+
+                <li class="mx-2 nav-item w-100 w-md-auto">
+                  <app-dpos-lang-switcher></app-dpos-lang-switcher>
+                </li>
+
+                <li class="mx-2 nav-item w-100 w-md-auto">
+                  <select [disabled]="!formSelectEnabled" class="form-select responsive-input" id="searchCommerce"
+                    name="commerce" [(ngModel)]="commerceSelected" (change)="onCommerceChange()" *ngIf="username;">
+                    <option *ngFor="let commerce of commerces" [value]="commerce.commerceId">
+                      {{ commerce.commerceNumber + ' - ' + commerce.resellerName }}
+                    </option>
+                  </select>
+                </li>
+
+                <li class="mx-2 nav-item w-100 w-md-auto">
+                  <button class="btn btn-light d-flex align-items-center gap-2 responsive-button w-100 w-md-auto"
+                    *ngIf="username" (click)="logOut()" style="cursor: pointer">
+                    <i class="fa-regular fa-circle-user fa-lg btn-light-icon"></i>
+                    <span>{{ username }}</span>
+                    <i class="fa-solid fa-power-off"></i>
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </header>
+        <router-outlet></router-outlet>
+      </div>
+      <ng-container *ngIf="isLoggedIn">
+        <app-dpos-footer></app-dpos-footer>
+      </ng-container>
+
+    </main>
   </div>
-</header>
+</div>

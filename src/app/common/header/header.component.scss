@@ -1,0 +1,62 @@
+/* Estilos para el Layout General */
+.app-layout-container {
+    display: flex;
+    /* Habilitar Flexbox */
+    min-height: 100vh;
+    /* Ocupar toda la altura de la ventana */
+    width: 100%;
+}
+
+/* Estilos de la Barra de Navegación */
+.sidenav {
+    /* Define el ancho fijo de la barra de navegación para desktops */
+
+    flex-shrink: 0;
+    /* Asegura que la barra no se encoja */
+    /* ... otros estilos de fondo, etc. ... */
+}
+
+/* Estilos del Contenedor del Header y Contenido */
+.main-panel-content {
+    /* Ocupa todo el espacio horizontal restante */
+    flex-grow: 1;
+    /* Permite que el contenido se desplace verticalmente, 
+       pero el header y el nav deben permanecer fijos. */
+    display: flex;
+    flex-direction: column;
+    height: 100%vh
+}
+
+.main-content-area {
+    height: 100%;
+}
+
+/* Estilos para el Área de Contenido de la Página */
+.page-content-wrapper {
+    /* Ocupa el espacio restante después del header */
+    flex-grow: 1;
+    /* Aquí es donde se aplica el scroll si el contenido es demasiado largo */
+    overflow-y: auto;
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
+}
+
+/* Asegurar que el header esté fijo en su posición superior */
+header.bg-customer {
+    flex-shrink: 0;
+    /* Evita que el header se encoja */
+    /* Si quieres que el header flote sobre el contenido, podrías usar position: sticky o position: fixed */
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+
+.main-logged-in {
+    margin-left: 0px !important;
+    margin-top: 0px !important;
+
+    padding: 0px 10px;
+    /* Mantén el padding interno */
+}

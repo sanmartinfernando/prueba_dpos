@@ -1,9 +1,12 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
+import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment.dev-inte';
+import { RestRoutes } from '../_rest/rest-routes.config';
 
 /**
- * @class BalancesService
+ * @class SettingsService
  * @description
  * Servicio para gestionar cierres de caja y obtener detalles e información agregada desde el backend.
  */
@@ -19,31 +22,6 @@ export class SettingsService {
     }),
   };
 
-  /**
-   * Crea o actualiza la configuración de un comercio según tenga definido el commerceId.
-   * Si commerceId no existe, se realiza un POST; de lo contrario, un PUT.
-   * 
-   * @param commerceSettings Objeto CommerceSettings con los datos de configuración del comercio
-   * @param commerceId Id del comercio asociado.
-   * @returns Observable con el comercio creado o actualizado.
-   */
-  /*
-  public saveCommerce(commerceSettings: CommerceSettings, commerceId: string): Observable<CommerceSettings> {
-    /*
-    if (!commerce || !commerceId || (commerce.commerceId === null)) {
-      return throwError(() => new Error(this.translate.instant('dpos.error.msg.params')));
-    }
-
-    const params = new HttpParams().set('commerceId', commerceId);
-    const url = commerce.commerceId
-      ? `${environment.urlSettings}${RestRoutes.COMMERCE}/${commerce.commerceId}`
-      : `${environment.urlSettings}${RestRoutes.COMMERCE}`;
-
-    return commerce.commerceId
-      ? this.http.put<CommerceSettings>(url, commerce, { headers: this.httpOptions.headers, params })
-      : this.http.post<CommerceSettings>(url, commerce, { headers: this.httpOptions.headers, params });
-  }
-  */
 
   private validateParams(...params: any[]): void {
     for (const param of params) {
@@ -51,5 +29,24 @@ export class SettingsService {
         throw new Error(this.translate.instant('dpos.error.msg.params'));
       }
     }
+  }
+
+public getSettingsCommerce(commerceId: string): Observable<any> {
+    this.validateParams(commerceId);
+  
+    const url = `${environment.urlSettings}${RestRoutes.SETTINGS_COMMERCE}${commerceId}`;
+  
+    return this.http.get<any>(url); 
+  }
+
+  public updateSettings(commerceId: string, settings: any): Observable<any> {
+    this.validateParams(commerceId, settings);
+    const url = `${environment.urlSettings}${RestRoutes.SETTINGS_COMMERCE}/${commerceId}`;
+    return this.http.put<any>(url, settings);
+  }
+
+  public getAllTaxes(): Observable<any[]> {
+    const url = `${environment.urlSettings}${RestRoutes.TAXES_COMMERCE}`;
+    return this.http.get<any[]>(url);
   }
 }

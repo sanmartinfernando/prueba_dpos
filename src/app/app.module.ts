@@ -53,6 +53,7 @@ import { SessionService } from './_services/session.service';
 
 import localeEs from '@angular/common/locales/es';
 import { CurrencyInputDirective } from './_utils/currency-input.directive';
+import { SettingsComponent } from './settings/settings.component';
 registerLocaleData(localeEs);
 
 /**
@@ -88,7 +89,9 @@ registerLocaleData(localeEs);
         BalancesDetailsComponent,
         ReportsComponent,
         PwrecoveryComponent,
-        PwresetComponent
+        PwresetComponent,
+        SettingsComponent
+        
 
     ],
     bootstrap: [AppComponent],

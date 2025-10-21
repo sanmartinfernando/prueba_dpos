@@ -379,12 +379,13 @@
     "dpos.exempt-code.code.e4": "Salbuetsia 23. eta 24. artikuluengatik",
     "dpos.exempt-code.code.e5": "Salbuetsia 25. artikuluagatik",
     "dpos.exempt-code.code.e6": "Salbuetsia besteengatik",
-    "dpos.exempt-code.code.none": "Salbuespen kode okerra",
+    "dpos.exemp/* F */t-code.code.none": "Salbuespen kode okerra",
     "dpos.no-apply-code.code.ot": "NEz dago zerga subjekturik BEZaren 7. artikuluaren arabera. Beste ez-subjektu kasuak.",
     "dpos.no-apply-code.code.rl": "Ez dago zerga subjekturik kokapen arauen arabera.",
     "dpos.no-apply-code.code.vt": "Ez dago zerga subjekturik, hirugarrenen konturako salmentak (EBZ eta IRPF-ren helburuetarako zenbatekoa kontuan hartu gabe).",
     "dpos.no-apply-code.code.ie": "Ez dago TAI-n subjekturik kokapen arauen arabera, baina atzerriko zerga, IPSI/IGIC edo BEZa aplikatzen du beste EBko estatu kide batean.",
     "dpos.no-apply-code.code.n1": "Ez-subjektu Operazioa 7., 14. artikuluak, besteak.",
     "dpos.no-apply-code.code.n2": "Ez-subjektu Operazioa kokapen arauen arabera.",
-    "dpos.no-apply-code.code.none": "Ez-subjektu kode okerra"
+    "dpos.no-apply-code.code.none": "Ez-subjektu kode okerra",
+    "dpos.nav.menu.settings": "Settings"
 }

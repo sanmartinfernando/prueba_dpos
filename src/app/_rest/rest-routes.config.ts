@@ -6,8 +6,9 @@ const ORDERS = 'Orders';
 const BALANCES = 'Balances';
 const CASHMOVEMENTS = 'CashMovements';
 const CUSTOMER = 'client';
-const DOCUMENT = 'document';
+const DOCUMENT = 'settings';
 const DOCUMENTS = 'documents';
+const SETTINGS = 'settings';
 const CUSTOMERS = 'clients';
 const CATEGORIES = 'category';
 const MODIFIERS = 'modifier';
@@ -72,5 +73,9 @@ export const RestRoutes = {
   PARAM_TERMINALNUMBER: `&terminalNumber=`,
   PARAM_COMMERCEID: `&CommerceId=`,
 
-  VERIFACTU_REPRESENTATION_DOCUMENT_DOWNLOAD: `${REPRESENTATION_DOCUMENT_DOWNLOAD}`
+  VERIFACTU_REPRESENTATION_DOCUMENT_DOWNLOAD: `${REPRESENTATION_DOCUMENT_DOWNLOAD}`,
+
+
+  SETTINGS_COMMERCE: `${SETTINGS}/commerce?commerceId=`,
+  TAXES_COMMERCE: `tax/all`,
 };

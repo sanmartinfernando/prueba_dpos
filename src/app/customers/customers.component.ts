@@ -54,6 +54,9 @@ export class CustomersComponent implements OnInit, OnDestroy {
   customerPhoneVarSearch: string = null;
   customerEmailVarSearch: string = null;
 
+  filteredCustomers: any[] = [];
+
+
   emptySearch = false;
   showModal = false;
   modalTitle = '';
@@ -104,7 +107,7 @@ export class CustomersComponent implements OnInit, OnDestroy {
    */
   public searchCustomers(): void {
     this.loadCompleted = false;
-    
+
     const filters = [
       { field: 'identityDocument', value: this.customerNifVarSearch, op: '=' },
       { field: 'clientName', value: this.customerNameVarSearch, op: '=*.*' },
@@ -177,7 +180,7 @@ export class CustomersComponent implements OnInit, OnDestroy {
     this.loadCompleted = false;
     this.customersService.deleteCustomer(clientId, this.commerceId.toString()).subscribe({
       next: () => {
-        this.showModal = false; 
+        this.showModal = false;
         this.loadCompleted = true;
         this.searchCustomers();
         this.openModal(this.translate.instant('dpos.customer.details.modal.delete.title'), this.translate.instant('dpos.customer.details.modal.delete.message'));
@@ -209,7 +212,7 @@ export class CustomersComponent implements OnInit, OnDestroy {
     }
     this.showModal = false;
   }
-  
+
   /**
    * Abre el modal de mensajes estableciendo el título y el mensaje.
    *
@@ -223,14 +226,14 @@ export class CustomersComponent implements OnInit, OnDestroy {
     this.showCancelButton = false;
     this.showModal = true;
   }
-  
+
   /**
    * Cierra la ventana modal.
    */
   public closeModal(): void {
     this.showModal = false;
   }
-  
+
   /**
    * Guarda en la sesión el NIF del cliente introducido en el campo de búsqueda.
    */
@@ -241,10 +244,30 @@ export class CustomersComponent implements OnInit, OnDestroy {
   /**
    * Guarda en la sesión el nombre del cliente introducido en el campo de búsqueda.
    */
-  public onCustomerNameChange(): void {
-    this.sessionService.setItem(SessionService.CUSTOMER_NAME, this.customerNameVarSearch);
+  /*   public onCustomerNameChange(): void {
+      this.sessionService.setItem(SessionService.CUSTOMER_NAME, this.customerNameVarSearch);
+    } */
+
+  onCustomerNameChange() {
+    this.applyFilter();
   }
 
+
+  applyFilter() {
+    const searchTerm = this.customerNameVarSearch ? this.customerNameVarSearch.toLowerCase().trim() : '';
+    if (!searchTerm) {
+      this.filteredCustomers = this.customers;
+      return;
+    }
+    this.filteredCustomers = this.customers.filter(customer => {
+      const nameMatch = customer.clientName.toLowerCase().includes(searchTerm);
+      const identityMatch = customer.identityDocument.toLowerCase().includes(searchTerm);
+      return nameMatch || identityMatch; 
+    });
+    this.page = 1;
+  }
+
+  
   /**
    * Guarda en la sesión el teléfono del cliente introducido en el campo de búsqueda.
    */
@@ -273,7 +296,7 @@ export class CustomersComponent implements OnInit, OnDestroy {
     this.onCustomerPhoneChange();
     this.onCustomerEmailChange();
   }
-  
+
   /**
    * Restaura los parámetros de búsqueda desde la sesión.
    */
@@ -309,28 +332,37 @@ export class CustomersComponent implements OnInit, OnDestroy {
       }
     });
   }
-  
+
   /**
    * Obtiene la lista de clientes desde la llamada al servicio correspondiente.
    */
-  private getCustomers(): void {
-    this.emptySearch = true;
-    this.loadCompleted = false;
+private getCustomers(): void {
+  this.emptySearch = true;
+  this.loadCompleted = false;
 
-    this.customersService.getCustomers(this.size, this.commerceId.toString(), this.varSearch).subscribe({
-      next: customers => {
-        this.customers = customers.data.filter(customer => !customer.deleted);
-        this.emptySearch = this.customers.length === 0;
-        this.loadCompleted = true;
-      },
-      error: () => {
-        this.customers = [];
-        this.emptySearch = true;
-        this.loadCompleted = true;
-      }
-    });
-  }
-  
+  this.customersService.getCustomers(this.size, this.commerceId.toString(), this.varSearch).subscribe({
+    next: customers => {
+      // 1. Asigna la lista completa a 'customers'
+      this.customers = customers.data.filter(customer => !customer.deleted);
+      
+      // 2. ¡AQUÍ ESTÁ LA CLAVE! Inicializa la lista filtrada con la lista completa
+      this.filteredCustomers = [...this.customers]; 
+
+      this.emptySearch = this.customers.length === 0;
+      this.loadCompleted = true;
+      
+      // Opcional: Reiniciar la paginación a la página 1 después de una nueva carga
+      this.page = 1; 
+    },
+    error: () => {
+      this.customers = [];
+      this.filteredCustomers = []; // También vacía la lista filtrada en caso de error
+      this.emptySearch = true;
+      this.loadCompleted = true;
+    }
+  });
+}
+
   /**
    * Procesa y agrega clientes desde el contenido de un CSV.
    */

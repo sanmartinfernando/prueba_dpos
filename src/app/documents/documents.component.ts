@@ -11,6 +11,7 @@ import { ThemeService } from '../_services/theme.service';
 import { UIStateService } from '../_services/ui-state.service';
 import { Commerce } from '../_models/commerce.model';
 import { Document } from '../_models/documents.model';
+import { environment } from 'src/environments/environment.dev-inte';
 
 type DocumentRow = Document & {
   _isApi?: boolean;
@@ -120,6 +121,7 @@ export class DocumentsComponent implements OnInit, OnDestroy {
 
   /** Inicializa el componente cargando datos de sesión, comercios y documentos. */
   ngOnInit(): void {
+    const urlDocuments = environment.urlDocuments;
     this.loadCompleted = false;
     this.restoreSearchParams();
     this.loadCommerces();

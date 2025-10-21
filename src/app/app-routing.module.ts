@@ -23,6 +23,7 @@ import { PrivacyPolicyComponent } from './common/footer/privacy-policy.component
 import { AuthGuard } from './_guard/auth.guard';
 import { AuthService } from './_services/auth.service';
 import { InactivityService } from './_services/inactivity.service';
+import { SettingsComponent } from './settings/settings.component';
 
 const routes: Routes = [
   { path: '', component: DashboardComponent, canActivate: [AuthGuard], title: 'DPOS - Inicio' },
@@ -46,6 +47,7 @@ const routes: Routes = [
   { path: 'taxes', component: TaxesComponent, canActivate: [AuthGuard], title: 'DPOS - Impuestos' },
   { path: 'login/password-recovery', component: PwrecoveryComponent, title: 'DPOS - Recuperación de contraseña' },
   { path: 'password-reset', component: PwresetComponent, title: 'DPOS - Recuperación de contraseña' },
+  { path: 'settings', component: SettingsComponent, title: 'Settings' },
   { path: '**', redirectTo: '/login' }
 ];
 

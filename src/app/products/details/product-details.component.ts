@@ -19,6 +19,7 @@ import { ReplaySubject, Subject, takeUntil } from 'rxjs';
 import { Tax } from 'src/app/_models/tax.model';
 import { TaxRegimen, TBAIIVATaxRegimen, VerifactuIGICTaxRegimen, VerifactuIVATaxRegimen } from 'src/app/_models/tax-regimen.model';
 import { TaxExemptCode, TBAIExemptCode, TBAINoApplyCode, VerifactuExemptCode, VerifactuNoApplyCode } from '../../_models/tax-exempt-code.model';
+import { SettingsService } from 'src/app/_services/settings.service';
 
 /**
  * @class ProductDetailsComponent
@@ -43,11 +44,12 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
   private epigraphsService = inject(EpigraphsService);
   private dialog = inject(MatDialog);
   private router = inject(Router);
+  private settingsService = inject(SettingsService);
 
   public isLoading = false;
   public titlePage: string;
   public commerceId: string = null;
-  
+
   public operationsStartDate: string;
   public operationsStartDateMilli: number;
   public operationsEndDate: string;
@@ -77,8 +79,10 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
   public isTicketBai = true;
   public isVerifactu = false;
 
+  public taxType: number = -1;
+
   private _onDestroy = new Subject<void>();
-  
+
   public unitMeasurementOptions = Object.values(UnitMeasurement)
     .filter(value => typeof value === 'number')
     .map(value => ({
@@ -92,7 +96,15 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
       value: value as PriceType,
       label: PriceTypeLabel[value as PriceType]
     }));
-    
+
+  taxesPossible: any[] = [];
+  availableTaxes: any[] = [];
+  availableTaxRegimens: any[] = [];
+  availableTaxExemptCodes: any[] = [];
+  availableTaxNoApplyCodes: any[] = [];
+
+  commerceSelected: number;
+
   constructor() {
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
     this.uiStateService.setFormSelectEnabled(false);
@@ -126,7 +138,11 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
    * Inicializa el componente obteniendo información del producto si existe.
    */
   ngOnInit(): void {
-    
+    console.log('ProductDetailsComponent initialized');
+    this.commerceSelected = this.sessionService.getItem(SessionService.COMMERCE_ID);
+    if (this.commerceSelected) {
+      this.getTaxes();
+    }
     this.productForm.get('tax')?.valueChanges.subscribe((selectedTaxId) => {
       this.selectedTax = this.taxes.find(t => t.id === selectedTaxId);
       this.getTaxRegimenes();
@@ -143,7 +159,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
         this.productForm.get('price')?.enable();
       }
     });
-    
+
     this.commerceId = this.sessionService.getItem(SessionService.COMMERCE_ID);
     const idParam = this.activatedRoute.snapshot.params['id'];
 
@@ -166,7 +182,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
     this._onDestroy.next();
     this._onDestroy.complete();
   }
-  
+
   /**
    * Obtiene la información de un producto.
    */
@@ -176,25 +192,26 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
       next: (product) => {
         this.isLoading = false;
         this.product = product;
-        
-        const matchedTax = this.taxes.find(t => 
+
+        const matchedTax = this.taxes.find(t =>
           t.taxValue === this.product.tax?.taxValue &&
           t.taxType === this.product.tax?.taxType
         );
 
-        this.productForm.patchValue({ productName: this.product.productName,
-                                  price: this.product.price,
-                                  priceType: this.product.priceType,
-                                  categoryId: this.product.categoryId,
-                                  modifiers: this.product.modifiers,
-                                  unitMeasurement: this.product.unitMeasurement,
-                                  stock: this.product.stock,
-                                  tax: matchedTax?.id ?? null,
-                                  taxExemptCode: this.product.taxExemptCode,
-                                  taxRegimen: this.product.taxRegimen,
-                                  epigraph: this.product.epigraph,
-                                  });
-        
+        this.productForm.patchValue({
+          productName: this.product.productName,
+          price: this.product.price,
+          priceType: this.product.priceType,
+          categoryId: this.product.categoryId,
+          modifiers: this.product.modifiers,
+          unitMeasurement: this.product.unitMeasurement,
+          stock: this.product.stock,
+          tax: matchedTax?.id ?? null,
+          taxExemptCode: this.product.taxExemptCode,
+          taxRegimen: this.product.taxRegimen,
+          epigraph: this.product.epigraph,
+        });
+
         // Forzar que el input de precio se formatee como en blur
         setTimeout(() => {
           const priceInput: HTMLInputElement | null = document.querySelector<HTMLInputElement>('#price');
@@ -311,7 +328,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
     this.modalMessage = message;
     this.showModal = true;
   }
-  
+
   /**
    * Cierra el modal de mensajes.
    */
@@ -418,13 +435,13 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
     const isIgic = this.selectedTax.taxType == Tax.TYPE_IGIC;
     this.productForm.get('taxRegimen')?.enable();
 
-    if(this.isVerifactu && isIva) {
+    if (this.isVerifactu && isIva) {
       const verifactuIvaTaxRegimen = new VerifactuIVATaxRegimen("");
       this.taxRegimenes = verifactuIvaTaxRegimen.getTaxRegimens();
-    }else if (this.isVerifactu && isIgic){
-      const verifactuIgicTaxRegimen = new VerifactuIGICTaxRegimen(""); 
+    } else if (this.isVerifactu && isIgic) {
+      const verifactuIgicTaxRegimen = new VerifactuIGICTaxRegimen("");
       this.taxRegimenes = verifactuIgicTaxRegimen.getTaxRegimens();
-    }else if (this.isTicketBai) {
+    } else if (this.isTicketBai) {
       const tbaiIvaTaxRegimen = new TBAIIVATaxRegimen("");
       this.taxRegimenes = tbaiIvaTaxRegimen.getTaxRegimens();
     } else {
@@ -439,17 +456,17 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
     const isNoApply = this.selectedTax.taxValue == Tax.NO_APPLY_VALUE;
     this.productForm.get('taxExemptCode')?.enable();
 
-    if(this.isTicketBai && isExempt) {
-      const tbaiExemptCode = new TBAIExemptCode(""); 
-      this.taxExemptCodes = tbaiExemptCode.getTaxExemptCodes(); 
-    }else if (this.isTicketBai && isNoApply){
-      const tbaiNoApplyCode = new TBAINoApplyCode(""); 
+    if (this.isTicketBai && isExempt) {
+      const tbaiExemptCode = new TBAIExemptCode("");
+      this.taxExemptCodes = tbaiExemptCode.getTaxExemptCodes();
+    } else if (this.isTicketBai && isNoApply) {
+      const tbaiNoApplyCode = new TBAINoApplyCode("");
       this.taxExemptCodes = tbaiNoApplyCode.getTaxExemptCodes();
     } else if (this.isVerifactu && isExempt) {
-      const verifactuNoApplyCode = new VerifactuExemptCode(""); 
+      const verifactuNoApplyCode = new VerifactuExemptCode("");
       this.taxExemptCodes = verifactuNoApplyCode.getTaxExemptCodes();
     } else if (this.isVerifactu && isNoApply) {
-      const verifactuNoApplyCode = new VerifactuNoApplyCode(""); 
+      const verifactuNoApplyCode = new VerifactuNoApplyCode("");
       this.taxExemptCodes = verifactuNoApplyCode.getTaxExemptCodes();
     } else {
       this.taxExemptCodes = [];
@@ -483,8 +500,40 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
    */
   private setProductFields(): void {
     Object.assign(this.product, this.productForm.value);
-    if(this.selectedTax) {
+    if (this.selectedTax) {
       this.product.tax = this.selectedTax;
     }
+  }
+
+  private getTaxes(): void {
+
+    this.settingsService.getAllTaxes().subscribe({
+      next: (data) => {
+        console.log('Configuración del comercio obtenida:', data);
+        this.taxesPossible = data;
+        this.filterAndSeparateTaxes(data);
+      },
+      error: (err) => {
+        console.error('Error al cargar la configuración:', err);
+
+      }
+    });
+  }
+
+  private filterAndSeparateTaxes(data: any): void {
+    this.taxType = this.sessionService.getItem(SessionService.TAX_TYPE);
+    if (!data || this.taxType === null) return;
+    this.taxType = Number(this.taxType);
+    console.log('Filtrando impuestos para el tipo:', this.taxType);
+    console.log('Filtrando impuestos para el tipo:', typeof (this.taxType));
+    console.log('Datos originales de impuestos:', data.tax);
+    this.availableTaxes = data.tax.filter((item: any) => item.type === this.taxType);
+    this.availableTaxRegimens = data.taxRegimen.filter((item: any) => item.type === this.taxType);
+    this.availableTaxExemptCodes = data.taxExemptCode.filter((item: any) => item.type === this.taxType);
+    this.availableTaxNoApplyCodes = data.taxNoApplyCode.filter((item: any) => item.type === this.taxType);
+    console.log('Filtros aplicados. Impuestos disponibles:', this.availableTaxes);
+    console.log('Regímenes disponibles:', this.availableTaxRegimens);
+    console.log('availableTaxExemptCodes:', this.availableTaxExemptCodes);
+    console.log('availableTaxNoApplyCodes:', this.availableTaxNoApplyCodes);
   }
 }

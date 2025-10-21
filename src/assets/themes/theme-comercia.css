@@ -161,8 +161,7 @@ small,
 
 main,
 .main {
-  margin-left: 180px;
-  margin-top: 60px;
+  margin-left: 160px;
   padding: 0px 10px;
   min-height: 80vh;
 }
@@ -228,7 +227,7 @@ label.me-2 {
 .header-main,
 .footer-main {
   background-color: var(--bs-color-black-100);
-  padding: 5px 10px 5px 120px;
+  padding: 5px 10px 5px;
 }
 
 /*** MENU LATERAL ***/
@@ -287,6 +286,7 @@ label.me-2 {
   border-radius: var(--bs-border-radius);
   color: var(--bs-color-white-100);
 }
+
 
 .nav-pills .nav-link.nav-customer {
   color: var(--bs-color-white-100);

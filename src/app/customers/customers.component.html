@@ -7,11 +7,11 @@
       <input type="text" class="form-control" name="customerNif" id="customerNif" [(ngModel)]="customerNifVarSearch"
         (change)="onCustomerNifChange()">
     </div>
-    <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+<!--     <div class="col-12 col-sm-6 col-md-4 col-lg-2">
       <label class="form-label" for="customerName">{{ 'dpos.customers.name.label' | translate }}</label>
       <input type="text" class="form-control" name="customerName" id="customerName" [(ngModel)]="customerNameVarSearch"
         (change)="onCustomerNameChange()">
-    </div>
+    </div> -->
     <div class="col-12 col-sm-6 col-md-4 col-lg-2">
       <label class="form-label" for="customerPhone">{{ 'dpos.customers.phone.label' | translate }}</label>
       <input type="text" class="form-control" name="customerPhone" id="customerPhone"
@@ -82,29 +82,33 @@
         <b><i>{{ 'dpos.dashboard.nodata.label' | translate }}</i></b>
       </div>
       <!-- Tabla con resultados de clientes, visible si hay resultados -->
-      <div class="row" *ngIf="loadCompleted && customers.length > 0">
-        <div class="table-responsive">
-          <table class="table table-hover">
-            <thead class="text-customer">
-              <tr>
-                <th>{{ 'dpos.customers.nif.label' | translate }}</th>
-                <th>{{ 'dpos.customers.name.label' | translate }}</th>
-                <th>{{ 'dpos.customers.address.label' | translate }}</th>
-                <th>{{ 'dpos.customers.city.label' | translate }}</th>
-                <th>{{ 'dpos.customers.state.label' | translate }}</th>
-                <th>{{ 'dpos.customers.mail.label' | translate }}</th>
-                <th class="text-center">{{ 'dpos.customers.phone.label' | translate }}</th>
-                <th class="text-center">{{ 'dpos.customers.delete.label' | translate }}</th>
-              </tr>
-            </thead>
-            <ng-template #empty>
-              <td colspan="7">
-                <b>{{ 'dpos.operations.operation.nodata.label' | translate }}</b>
-              </td>
-            </ng-template>
-            <tbody>
-              <ng-container *ngIf="loadCompleted && customers; else empty">
-                <tr *ngFor="let customer of customers | paginate : { itemsPerPage: 10, currentPage: page }; index as i"
+      <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+        <label class="form-label" for="customerName">{{ 'dpos.customers.name.label' | translate }}</label>
+        <input type="text" class="form-control" name="customerName" id="customerName"
+          [(ngModel)]="customerNameVarSearch" (input)="onCustomerNameChange()">
+      </div>
+
+      <hr>
+
+      <div class="row" *ngIf="loadCompleted">
+        <div *ngIf="filteredCustomers.length > 0; else empty">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead class="text-customer">
+                <tr>
+                  <th>{{ 'dpos.customers.nif.label' | translate }}</th>
+                  <th>{{ 'dpos.customers.name.label' | translate }}</th>
+                  <th>{{ 'dpos.customers.address.label' | translate }}</th>
+                  <th>{{ 'dpos.customers.city.label' | translate }}</th>
+                  <th>{{ 'dpos.customers.state.label' | translate }}</th>
+                  <th>{{ 'dpos.customers.mail.label' | translate }}</th>
+                  <th class="text-center">{{ 'dpos.customers.phone.label' | translate }}</th>
+                  <th class="text-center">{{ 'dpos.customers.delete.label' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  *ngFor="let customer of filteredCustomers | paginate : { itemsPerPage: 10, currentPage: page }; index as i"
                   (click)="sendCustomerDetails(customer.clientId)">
                   <td class="align-middle"><span class="table-title">{{ customer.identityDocument }}</span></td>
                   <td class="align-middle">{{ customer.clientName }}</td>
@@ -119,16 +123,23 @@
                     </button>
                   </td>
                 </tr>
-              </ng-container>
-            </tbody>
-          </table>
-          <div *ngIf="customers.length > 10" class="text-start mt-3">
+              </tbody>
+            </table>
+          </div>
+
+          <div *ngIf="filteredCustomers.length > 10" class="text-start mt-3">
             <pagination-controls (pageChange)="page = $event"
               previousLabel="{{ 'dpos.pagination.previous' | translate }}"
               nextLabel="{{ 'dpos.pagination.next' | translate }}"></pagination-controls>
           </div>
         </div>
       </div>
+
+      <ng-template #empty>
+        <div class=" text-center mt-3">
+          <b>{{ 'dpos.operations.operation.nodata.label' | translate }}</b>
+        </div>
+      </ng-template>
     </div>
   </div>
 </div>

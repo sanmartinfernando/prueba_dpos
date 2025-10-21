@@ -1,0 +1,157 @@
+<div *ngIf="isLoading">
+  Cargando configuración...
+</div>
+
+<div *ngIf="errorMessage" class="alert alert-danger">
+  {{ errorMessage }}
+</div>
+
+<div *ngIf="settings && !isLoading">
+  <div class="container-fluid mt-4">
+    <h2>Configuración General del Comercio</h2>
+    <hr>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card h-100 bg-dark text-white border-secondary"> 
+            <div class="card-body">
+                <h5 class="card-title text-info">Sistema de Facturación</h5> 
+                <p class="card-text">
+                    <strong>Modo:</strong> {{ settings.mode }} <br>
+                    <strong>Sistema:</strong> {{ settings.billSystem }}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="row">
+
+      <div class="col-lg-6 col-xl-4 mb-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Ajustes de Cabecera (Ticket)</h5>
+          </div>
+          <div class="card-body">
+            <p><strong>Nombre Comercio:</strong> {{ settings.orderHeaderSettings.name }}</p>
+            <p><strong>Razón Social:</strong> {{ settings.orderHeaderSettings.tradeName }}</p>
+            <p><strong>NIF:</strong> {{ settings.orderHeaderSettings.nif }}</p>
+            <p><strong>Número Comercio:</strong> {{ settings.orderHeaderSettings.commerceNumber }}</p>
+            <p><strong>Dirección:</strong> {{ settings.orderHeaderSettings.address }}, {{
+              settings.orderHeaderSettings.city }} ({{ settings.orderHeaderSettings.postalCode }})</p>
+            <p><strong>Contacto:</strong> {{ settings.orderHeaderSettings.phone }} / {{
+              settings.orderHeaderSettings.email }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6 col-xl-4 mb-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-header bg-info text-white">
+            <h5 class="mb-0">Impuestos y Pagos</h5>
+          </div>
+          <div class="card-body">
+            <h6>Ajustes de Impuestos</h6>
+            <p><strong>Régimen por Defecto:</strong> {{ settings.taxSettings.defaultTaxRegimen }}</p>
+            <p><strong>Tax ID por Defecto:</strong> {{ settings.taxSettings.defaultTax }}</p>
+            <p><strong>Tipo de Impuesto:</strong> {{ settings.taxSettings.taxType }}</p>
+
+            <h6 class="mt-4">Opciones de Pago y Ticket</h6>
+            <p><strong>Permitir División de Pago:</strong>
+              <span class="badge"
+                [ngClass]="{'bg-success': settings.splitSettings.allowSplit, 'bg-danger': !settings.splitSettings.allowSplit}">
+                {{ settings.splitSettings.allowSplit ? 'Sí' : 'No' }}
+              </span>
+            </p>
+            <p><strong>Permitir Ticket Regalo:</strong>
+              <span class="badge"
+                [ngClass]="{'bg-success': settings.giftTicketSettings.allowGiftTicket, 'bg-danger': !settings.giftTicketSettings.allowGiftTicket}">
+                {{ settings.giftTicketSettings.allowGiftTicket ? 'Sí' : 'No' }}
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6 col-xl-4 mb-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-header bg-warning text-dark">
+            <h5 class="mb-0">Propinas y Pie de Página</h5>
+          </div>
+          <div class="card-body">
+            <h6>Ajustes de Propina</h6>
+            <p><strong>Permitir Propina:</strong>
+              <span class="badge"
+                [ngClass]="{'bg-success': settings.tipSettings.allowTip, 'bg-danger': !settings.tipSettings.allowTip}">
+                {{ settings.tipSettings.allowTip ? 'Sí' : 'No' }}
+              </span>
+            </p>
+            <p><strong>Valores Sugeridos (%):</strong>
+              {{ settings.tipSettings.tipOne }}%,
+              {{ settings.tipSettings.tipTwo }}%,
+              {{ settings.tipSettings.tipThree }}%
+            </p>
+
+            <h6 class="mt-4">Pie de Página del Pedido</h6>
+            <p><strong>Texto de Pie de Página:</strong> <em>"{{ settings.orderFooterSettings.textFooter }}"</em></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6 col-xl-8 mb-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-header bg-secondary text-white">
+            <h5 class="mb-0">Regulación Fiscal (Verifactu / TicketBai)</h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6">
+                <h6>Verifactu</h6>
+                <p><strong>Tipo Certificado:</strong> {{ settings.verifactuSettings.certType }}</p>
+                <p><strong>Fecha Setup:</strong> {{ settings.verifactuSettings.setupDate === -1 ? 'N/A' :
+                  settings.verifactuSettings.setupDate }}</p>
+                <p><strong>Fecha Terminación:</strong> {{ settings.verifactuSettings.terminationDate === -1 ? 'N/A' :
+                  settings.verifactuSettings.terminationDate }}</p>
+              </div>
+              <div class="col-md-6">
+                <h6>TicketBai</h6>
+                <p><strong>Habilitado:</strong>
+                  <span class="badge"
+                    [ngClass]="{'bg-success': settings.ticketBaiSettings.enabled, 'bg-danger': !settings.ticketBaiSettings.enabled}">
+                    {{ settings.ticketBaiSettings.enabled ? 'Sí' : 'No' }}
+                  </span>
+                </p>
+                <p><strong>Fecha Habilitación:</strong> {{ settings.ticketBaiSettings.enabledDate === -1 ? 'N/A' :
+                  settings.ticketBaiSettings.enabledDate }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6 col-xl-4 mb-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-header bg-success text-white">
+            <h5 class="mb-0">Producto Rápido</h5>
+          </div>
+          <div class="card-body">
+            <p><strong>Nombre Producto:</strong> {{ settings.quickProductSettings.name }}</p>
+            <p><strong>Epígrafe:</strong> {{ settings.quickProductSettings.epigraph || 'Ninguno' }}</p>
+            <p><strong>Régimen Fiscal:</strong> {{ settings.quickProductSettings.taxRegimen }}</p>
+
+            <h6 class="mt-4">Detalles del Impuesto</h6>
+            <p><strong>Nombre:</strong> {{ settings.quickProductSettings.tax.name }}</p>
+            <p><strong>Valor:</strong> {{ settings.quickProductSettings.tax.value / 100 }}%</p>
+            <p><strong>Habilitado:</strong>
+              <span class="badge"
+                [ngClass]="{'bg-success': settings.quickProductSettings.tax.enabled, 'bg-danger': !settings.quickProductSettings.tax.enabled}">
+                {{ settings.quickProductSettings.tax.enabled ? 'Sí' : 'No' }}
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

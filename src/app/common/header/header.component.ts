@@ -59,6 +59,9 @@ export class HeaderComponent implements OnInit {
    */
   ngOnInit(): void {
     console.log('AppComponent is running inside an iframe:', this.isIframe);
+    if (this.storageService.isLoggedIn()) {
+      this.isLoggedIn = true;
+    }
 
     this.loadThemeByResellerName();
 
