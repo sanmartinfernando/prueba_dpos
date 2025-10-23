@@ -171,12 +171,9 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
       this.terminalsNumber[0] = this.translate.instant('dpos.filter.all');
       this.searchTerminal();
     });
-
-    this.translate.onLangChange.subscribe(() => {
-        this.translate.get('dpos.dashboard.paymentmethods.legend')
-            .subscribe((traduccion: string) => {
-                this.titleLegend = traduccion;
-            });
+    this.loadTitleLegend();
+    this.langSubscription = this.translate.onLangChange.subscribe(() => {
+      this.loadTitleLegend();
     });
 
     this.commercesService.getCommerceList().subscribe({
@@ -902,6 +899,15 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
     ];
   }
 
+  private loadTitleLegend(): void {
+    this.translate.get('dpos.dashboard.paymentmethods.legend')
+      .subscribe((traduccion: string) => {
+        // Actualiza la variable que usa el HTML
+        this.titleLegend = traduccion;
 
+        // ✅ CONSOLE.LOG PARA VERIFICAR:
+        console.log('Título de la Leyenda cargado/actualizado:', this.titleLegend);
+      });
+  }
 
 }

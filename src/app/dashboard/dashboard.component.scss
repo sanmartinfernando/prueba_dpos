@@ -1,20 +1,83 @@
+/* ==========================================================
+   ESTILOS ESPECÍFICOS PARA EL COMPONENTE DE LA GRÁFICA
+   (Ajustados para penetrar el Shadow DOM de ngx-charts)
+   ========================================================== */
+
+:host ::ng-deep {
+    
+    /* ----------------------------------------------------------
+       1. Overrides de Layout (ngx-charts)
+       ---------------------------------------------------------- */
+
+    .ngx-charts-outer {
+        /* Fuerza a que el gráfico ocupe todo el contenedor para evitar recortes */
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    .inner-chart {
+        width: 100%;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 1rem;
+        
+        /* Asegura que el ngx-charts-outer dentro de inner-chart se centre */
+        ngx-charts-outer {
+            display: block;
+            margin: 0 auto;
+        }
+    }
+
+    /* ----------------------------------------------------------
+       2. Estilos de Texto (Solución de Visibilidad)
+       ---------------------------------------------------------- */
+
+    /* Aplica el estilo BLANCO CON BORDE NEGRO a las etiquetas de porcentaje
+       (Los números que están sobre los arcos del pie chart) */
+    .pie-chart .pie-label {
+        fill: #ffffff;             /* Color de relleno (letra blanca) */
+        stroke: #000000;           /* Color del borde (negro) */
+        stroke-width: 0.5px;       /* Grosor del borde */
+        paint-order: stroke fill;  /* Asegura que el borde se pinte primero */
+    }
+
+    /* ✅ Solución para el TÍTULO DE LA LEYENDA (el texto de [legendTitle]) */
+    .chart-legend .legend-title {
+        fill: #ffffff;             /* Color de relleno (letra blanca) */
+        stroke: #000000;           /* Color del borde (negro) */
+        stroke-width: 0.5px;       /* Grosor del borde */
+        paint-order: stroke fill;  
+    }
+    
+    /* Opcional: Aplica el mismo estilo al TEXTO DE LAS ETIQUETAS INDIVIDUALES de la leyenda
+       (Los nombres de las series) */
+    .chart-legend .legend-label .legend-label-text {
+        fill: #ffffff;
+        stroke: #000000;
+        stroke-width: 0.5px;
+        paint-order: stroke fill;
+    }
+
+}
+
+
+/* ==========================================================
+   ESTILOS GENERALES (Sin cambios, para referencia)
+   ========================================================== */
+
 form.row .form-control,
 form.row .form-select {
   min-width: 0;
-  /* evita overflow en flex */
 }
 
 .btn-round img {
   height: 1em;
-  /* para que el icono no desborde */
 }
 
 .btn i {
   margin-bottom: 2px;
-  /* ajustar hasta que quede alineado con el texto */
 }
 
-/* Alinea el ícono al fondo */
 .icon-bottom {
   align-self: flex-end;
 }
@@ -29,9 +92,6 @@ form.row .form-select {
   margin-bottom: 0;
 }
 
-.kpi-card {}
-
-
 .kpi-card {
   display: flex;
   flex-direction: column;
@@ -43,7 +103,6 @@ form.row .form-select {
 
 .kpi-title {
   margin-bottom: auto;
-  /* empuja el resto hacia abajo */
   text-align: center;
 }
 
@@ -52,25 +111,8 @@ form.row .form-select {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  /* centra verticalmente */
   align-items: center;
   gap: 0.25rem;
-}
-
-
-
-.ngx-charts-outer {
-  width: 100% !important;
-  /* fuerza a que ocupe todo el contenedor */
-  height: 100% !important;
-  /* fuerza a que ocupe todo el contenedor */
-}
-
-.inner-chart {
-  width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 1rem;
 }
 
 /* Móvil */
@@ -93,35 +135,4 @@ form.row .form-select {
   .inner-chart {
     max-width: 900px;
   }
-}
-
-
-::ng-deep .ngx-charts-outer {
-  width: 100% !important;
-  height: 100% !important;
-}
-
-
-
-
-.inner-chart ngx-charts-outer {
-  display: block;
-  margin: 0 auto;
-  /* centra el gráfico */
-}
-
-
-.pie-chart .pie-label {
-  fill: #ffffff;
-  stroke: #000000;
-  stroke-width: 0.5px;
-  paint-order: stroke fill;
-}
-
-// Si quieres que el título de la leyenda también tenga este efecto
-.chart-legend .legend-title {
-  fill: #ffffff;
-  stroke: #000000;
-  stroke-width: 0.5px;
-  paint-order: stroke fill;
 }
