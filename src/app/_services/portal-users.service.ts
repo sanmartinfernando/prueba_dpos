@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment.dev-inte';
 import { RestRoutes } from '../_rest/rest-routes.config';
 import { PortalUserToken } from '../_models/portal-user-token.model';
@@ -32,9 +32,13 @@ export class PortalUsersService {
    * @returns Observable con el token de usuario.
    */
   public getToken(user: User): Observable<PortalUserToken> {
-    const loginRequest = { userName: user.user, password: user.pwd };
-    const url = `${environment.urlAuth}${RestRoutes.AUTH_PORTALUSERS_LOGIN}`;
-    return this.http.post<PortalUserToken>(url, loginRequest);
+    console.log('PortalUsersService - getToken', user);
+    if (user) {
+      const loginRequest = { userName: user.user, password: user.pwd };
+      const url = `${environment.urlAuth}${RestRoutes.AUTH_PORTALUSERS_LOGIN}`;
+      return this.http.post<PortalUserToken>(url, loginRequest);
+    }
+    return throwError(() => new Error('Datos de usuario no proporcionados.'));  
   }
 
   /**

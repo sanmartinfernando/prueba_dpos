@@ -36,7 +36,7 @@ import { LegendPosition } from '@swimlane/ngx-charts';
 @Component({
   selector: 'app-dpos-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+  styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
 
@@ -110,7 +110,7 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
     { name: 'Bono Denda', value: 0 },
     { name: 'Rectificación', value: 0 },
   ];
-
+  titleLegend: string = '';
   public colorsKPI = [];
   public colorsPM = [];
   public colorsTop3 = [];
@@ -141,9 +141,18 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
   modalMessage = '';
 
   isComercia = false;
-  legendPosition: LegendPosition = LegendPosition.Below; 
+  legendPosition: LegendPosition = LegendPosition.Below;
 
   constructor() {
+
+
+  }
+
+  /**
+   * Evento del ciclo de vida de Angular que se ejecuta al inicializar el componente.
+   * Configura la vista, obtiene la información del usuario y carga los datos iniciales de comercios y terminales.
+   */
+  ngOnInit(): void {
 
     this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
     this.uiStateService.setFormSelectEnabled(true);
@@ -162,13 +171,14 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
       this.terminalsNumber[0] = this.translate.instant('dpos.filter.all');
       this.searchTerminal();
     });
-  }
 
-  /**
-   * Evento del ciclo de vida de Angular que se ejecuta al inicializar el componente.
-   * Configura la vista, obtiene la información del usuario y carga los datos iniciales de comercios y terminales.
-   */
-  ngOnInit(): void {
+    this.translate.onLangChange.subscribe(() => {
+        this.translate.get('dpos.dashboard.paymentmethods.legend')
+            .subscribe((traduccion: string) => {
+                this.titleLegend = traduccion;
+            });
+    });
+
     this.commercesService.getCommerceList().subscribe({
       next: (commerces) => {
         this.sessionService.getCommerceId().subscribe((commerceId) => {

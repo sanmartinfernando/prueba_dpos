@@ -157,6 +157,7 @@
     "dpos.dashboard.nodata.label": "No hay datos que mostrar",
     "dpos.dashboard.topsells.label": "Artículos más vendidos",
     "dpos.dashboard.paymentmethods.label": "Métodos de pago",
+    "dpos.dashboard.paymentmethods.legend": "Métodos",
     "dpos.reports.page.title": "Informes",
     "dpos.reports.taxes.label": "Impuestos",
     "dpos.reports.products.label": "Productos",

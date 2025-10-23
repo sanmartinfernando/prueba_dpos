@@ -216,9 +216,9 @@
           </h5>
           <ng-template #noPMData><br /><b><i>{{ 'dpos.dashboard.nodata.label' | translate }}</i></b></ng-template>
           <ng-container *ngIf="loadedPMChart; else spinner">
-            <div class="inner-chart w-100" #pmChartContainer>
+            <div class="inner-chart w-100" #pmChartContainer >
               <ngx-charts-pie-chart [results]="datasetPM" [view]="pmView" [scheme]="schemePM" [legend]="true"
-                [legendPosition]="legendPosition" [labels]="true" [doughnut]="true" [arcWidth]="0.4" [animations]="true"
+                [legendPosition]="legendPosition" [legendTitle]="titleLegend" [labels]="true" [doughnut]="true" [arcWidth]="0.4" [animations]="true"
                 [labelFormatting]="formatPercentageLabel" *ngIf="pmView && !emptyKPIChart; else noPMData">
               </ngx-charts-pie-chart>
             </div>

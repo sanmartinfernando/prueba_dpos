@@ -7,7 +7,7 @@
       <input type="text" class="form-control" name="customerNif" id="customerNif" [(ngModel)]="customerNifVarSearch"
         (change)="onCustomerNifChange()">
     </div>
-<!--     <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+    <!--     <div class="col-12 col-sm-6 col-md-4 col-lg-2">
       <label class="form-label" for="customerName">{{ 'dpos.customers.name.label' | translate }}</label>
       <input type="text" class="form-control" name="customerName" id="customerName" [(ngModel)]="customerNameVarSearch"
         (change)="onCustomerNameChange()">
@@ -82,15 +82,16 @@
         <b><i>{{ 'dpos.dashboard.nodata.label' | translate }}</i></b>
       </div>
       <!-- Tabla con resultados de clientes, visible si hay resultados -->
-      <div class="col-12 col-sm-6 col-md-4 col-lg-2">
-        <label class="form-label" for="customerName">{{ 'dpos.customers.name.label' | translate }}</label>
-        <input type="text" class="form-control" name="customerName" id="customerName"
-          [(ngModel)]="customerNameVarSearch" (input)="onCustomerNameChange()">
-      </div>
 
-      <hr>
 
       <div class="row" *ngIf="loadCompleted">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+          <label class="form-label" for="customerName">{{ 'dpos.customers.name.label' | translate }}</label>
+          <input type="text" class="form-control" name="customerName" id="customerName"
+            [(ngModel)]="customerNameVarSearch" (input)="onCustomerNameChange()">
+        </div>
+
+        <hr>
         <div *ngIf="filteredCustomers.length > 0; else empty">
           <div class="table-responsive">
             <table class="table table-hover">

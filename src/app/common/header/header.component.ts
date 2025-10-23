@@ -63,21 +63,23 @@ export class HeaderComponent implements OnInit {
       this.isLoggedIn = true;
     }
 
-    this.loadThemeByResellerName();
-
     this.storageService.userInfo.subscribe(user => {
       if (user) {
+        console.log('HeaderComponent user info:', user);
         this.isLoggedIn = true;
         this.username = user.user;
         this.commercesService.getCommerceList().subscribe({
           next: commerces => {
             this.commerces = commerces;
             this.commerceSelected = this.sessionService.getItem(SessionService.COMMERCE_ID);
+            console.log('Selected commerce ID:', this.commerceSelected);
             if (this.commerceSelected === null) {
               const firstCommerce = commerces[0];
               this.commerceSelected = firstCommerce.commerceId;
               this.sessionService.setItem(SessionService.COMMERCE_ID, firstCommerce.commerceId);
               this.sessionService.setItem(SessionService.RESELLER_NAME, firstCommerce.resellerName);
+              this.loadThemeByResellerName();
+            } else {
               this.loadThemeByResellerName();
             }
           },
@@ -115,6 +117,7 @@ export class HeaderComponent implements OnInit {
    * @param code Código de la opción seleccionada.
    */
   public handlePageClick(labelKey: string, code: string): void {
+    console.log('HeaderComponent handlePageClick:', labelKey, code);
     const label = this.translate.instant(labelKey);
     this.titleHeader(label);
     this.component(code);
@@ -149,7 +152,7 @@ export class HeaderComponent implements OnInit {
       this.sessionService.setItem(SessionService.COMMERCE_ID, commerce.commerceId);
       this.sessionService.setItem(SessionService.RESELLER_NAME, commerce.resellerName);
       this.sessionService.setCommerceId(commerce.commerceId);
-      this.loadThemeByResellerName();
+      window.location.reload();
     }
   }
 
@@ -194,7 +197,22 @@ export class HeaderComponent implements OnInit {
    */
   private loadThemeByResellerName(): void {
     this.iconsLoaded = false;
-    this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
+    console.log('Loading theme for reseller:', this.sessionService.getItem(SessionService.RESELLER_NAME));
+    const resellerName = this.sessionService.getItem(SessionService.RESELLER_NAME);
+    if (resellerName) {
+      this.themeService.loadTheme(this.sessionService.getItem(SessionService.RESELLER_NAME));
+
+    } else {
+      console.log(this.commerces)
+      const firstCommerce = this.commerces[0];
+      this.commerceSelected = firstCommerce.commerceId;
+      this.sessionService.setItem(SessionService.COMMERCE_ID, firstCommerce.commerceId);
+      this.sessionService.setItem(SessionService.RESELLER_NAME, firstCommerce.resellerName);
+        this.loadThemeByResellerName();
+    }
+
+
+
     this.isComercia = this.isComerciaTheme();
     this.getTitle();
     this.iconsLoaded = true;

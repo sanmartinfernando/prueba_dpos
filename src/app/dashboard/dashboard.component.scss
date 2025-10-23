@@ -1,14 +1,17 @@
 form.row .form-control,
 form.row .form-select {
-  min-width: 0; /* evita overflow en flex */
+  min-width: 0;
+  /* evita overflow en flex */
 }
 
 .btn-round img {
-  height: 1em; /* para que el icono no desborde */
+  height: 1em;
+  /* para que el icono no desborde */
 }
 
 .btn i {
-  margin-bottom: 2px; /* ajustar hasta que quede alineado con el texto */
+  margin-bottom: 2px;
+  /* ajustar hasta que quede alineado con el texto */
 }
 
 /* Alinea el ícono al fondo */
@@ -22,13 +25,11 @@ form.row .form-select {
   align-items: center;
 }
 
-.button{
-    margin-bottom: 0;
+.button {
+  margin-bottom: 0;
 }
 
-.kpi-card {
-
-}
+.kpi-card {}
 
 
 .kpi-card {
@@ -36,12 +37,13 @@ form.row .form-select {
   flex-direction: column;
   align-items: center;
   height: 100%;
-  min-height: 140px; 
+  min-height: 140px;
   padding: 1rem;
 }
 
 .kpi-title {
-  margin-bottom: auto; /* empuja el resto hacia abajo */
+  margin-bottom: auto;
+  /* empuja el resto hacia abajo */
   text-align: center;
 }
 
@@ -49,7 +51,8 @@ form.row .form-select {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center; /* centra verticalmente */
+  justify-content: center;
+  /* centra verticalmente */
   align-items: center;
   gap: 0.25rem;
 }
@@ -57,9 +60,11 @@ form.row .form-select {
 
 
 .ngx-charts-outer {
-  width: 100% !important; /* fuerza a que ocupe todo el contenedor */
-  height: 100% !important; /* fuerza a que ocupe todo el contenedor */
-} 
+  width: 100% !important;
+  /* fuerza a que ocupe todo el contenedor */
+  height: 100% !important;
+  /* fuerza a que ocupe todo el contenedor */
+}
 
 .inner-chart {
   width: 100%;
@@ -101,6 +106,22 @@ form.row .form-select {
 
 .inner-chart ngx-charts-outer {
   display: block;
-  margin: 0 auto; /* centra el gráfico */
+  margin: 0 auto;
+  /* centra el gráfico */
 }
 
+
+.pie-chart .pie-label {
+  fill: #ffffff;
+  stroke: #000000;
+  stroke-width: 0.5px;
+  paint-order: stroke fill;
+}
+
+// Si quieres que el título de la leyenda también tenga este efecto
+.chart-legend .legend-title {
+  fill: #ffffff;
+  stroke: #000000;
+  stroke-width: 0.5px;
+  paint-order: stroke fill;
+}

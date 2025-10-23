@@ -234,6 +234,8 @@ export class ProductsComponent implements OnInit, OnDestroy {
         this.modalMessage = 'Productos importados correctamente';
         this.products = [...(this.products || []), ...products];
         if (this.products.length) this.emptySearch = false;
+
+        console.log("Productos importados: ", this.products);
       }
     };
     reader.readAsText(file);

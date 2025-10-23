@@ -108,52 +108,52 @@
             <tr>
               <th (click)="sortBy('reference')" class="text-center sortable">
                 {{ 'dpos.operations.operation.document.label' | translate }}
-                <i *ngIf="sortColumn === 'reference'" class="fa"
+                <i class="fa"
                   [ngClass]="sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down'"></i>
               </th>
               <th (click)="sortBy('type')" class="text-center sortable">{{ 'dpos.operations.operation.type.label' |
                 translate }}
-                <i *ngIf="sortColumn === 'type'" class="fa"
+                <i *class="fa"
                   [ngClass]="sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down'"></i>
               </th>
               <th (click)="sortBy('createdAt')" class="text-center sortable">{{ 'dpos.operations.operation.data.label' |
                 translate }}
-                <i *ngIf="sortColumn === 'createdAt'" class="fa"
+                <i  class="fa"
                   [ngClass]="sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down'"></i>
               </th>
               <th (click)="sortBy('terminalNumber')" class="text-center sortable">{{
                 'dpos.operations.operation.terminal.label' | translate }}
-                <i *ngIf="sortColumn === 'terminalNumber'" class="fa"
+                <i  class="fa"
                   [ngClass]="sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down'"></i>
               </th>
               <th (click)="sortBy('orderVerifactu.status')" class="text-center sortable">{{
                 'dpos.operations.operation.tbai.label' | translate }}
-                <i *ngIf="sortColumn === 'orderVerifactu.status'" class="fa"
+                <i  class="fa"
                   [ngClass]="sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down'"></i>
               </th>
               <th (click)="sortBy('total')" class="text-end sortable">{{ 'dpos.operations.operation.subtotal.label' |
                 translate }}
-                <i *ngIf="sortColumn === 'total'" class="fa"
+                <i  class="fa"
                   [ngClass]="sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down'"></i>
               </th>
               <th (click)="sortBy('totalDiscount')" class="text-end sortable">{{
                 'dpos.operations.operation.discount.label' | translate }}
-                <i *ngIf="sortColumn === 'totalDiscount'" class="fa"
+                <i  class="fa"
                   [ngClass]="sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down'"></i>
               </th>
               <th (click)="sortBy('totalBase')" class="text-end sortable">{{ 'dpos.operations.operation.base.label' |
                 translate }}
-                <i *ngIf="sortColumn === 'totalBase'" class="fa"
+                <i class="fa"
                   [ngClass]="sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down'"></i>
               </th>
               <th (click)="sortBy('totalTaxes')" class="text-end sortable">{{ 'dpos.operations.operation.tax.label' |
                 translate }}
-                <i *ngIf="sortColumn === 'totalTaxes'" class="fa"
+                <i  class="fa"
                   [ngClass]="sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down'"></i>
               </th>
               <th (click)="sortBy('total')" class="text-end sortable">{{ 'dpos.operations.operation.total.label' |
                 translate }}
-                <i *ngIf="sortColumn === 'total'" class="fa"
+                <i  class="fa"
                   [ngClass]="sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down'"></i>
               </th>
             </tr>
