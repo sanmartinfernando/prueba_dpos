@@ -40,13 +40,14 @@ export class LangSwitcherComponent {
     const selectElement = event.target as HTMLSelectElement;
     const isAllSelected =
       this.sessionService.getItem(SessionService.TERMINAL_NUMBER) === this.translate.instant('dpos.filter.all');
-
+    console.log('LangSwitcherComponent switchLang:', selectElement.value);
     this.translate.use(selectElement.value).subscribe(() => {
       this.translate.get('dpos.filter.all').subscribe(() => {
         if (isAllSelected) {
           this.sessionService.setItem(
             SessionService.TERMINAL_NUMBER,
             this.translate.instant('dpos.filter.all')
+
           );
         }
       });
