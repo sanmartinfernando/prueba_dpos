@@ -6,5 +6,5 @@ export const environment = {
     urlAuth: "https://dpos.diusframi.es/wsauth/",
     urlWE:  "https://dpos.diusframi.es/wsenrollment/",
     urlSettings:'https://idws5x62hc.execute-api.eu-south-2.amazonaws.com/prod/',
-    urlDocuments: ''
+    urlDocuments: 'https://d3m5lpwci8und2.cloudfront.net/'
 };
