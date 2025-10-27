@@ -4,11 +4,12 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "start:inte": "ng serve  --watch --configuration=inte",
     "build": "ng build",
-    "watch": "ng build --watch --configuration development",
+    "watch": "ng build --watch --configuration inte",
     "test": "ng test",
     "lint": "ng lint",
-    "build:inte": "ng build --configuration=development",
+    "build:inte": "ng build --configuration=inte",
     "build:prod": "ng build --configuration=production"
   },
   "private": true,
