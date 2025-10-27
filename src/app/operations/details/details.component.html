@@ -10,14 +10,43 @@
     </button>
   </div>
   <!-- Modal para mensajes -->
-  <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage" (closeModal)="closeModal()"></app-modal>
+  <app-modal [showModal]="showModal" [modalTitle]="modalTitle" [modalMessage]="modalMessage"
+    (closeModal)="closeModal()"></app-modal>
   <!-- Spinner mientras se carga la información -->
   <div *ngIf="!loadCompleted" class="d-flex justify-content-center">
     <div class="spinner-border text-danger"></div>
   </div>
   <div class="col-12 col-sm-8 offset-sm-2 col-lg-5 offset-lg-3">
     <!-- Información del ticket -->
+
     <div class="card card-customer" *ngIf="ticket">
+      <!-- Sección para TBAI si existe -->
+
+      <div class="text-center my-2">
+        <div class="row px-2 pb-1 pt-3" *ngIf="operationsTicketBai.length > 0">
+          <div class="text-start">
+            <span id="ticket_bai"><b>{{'dpos.details.order.tbai.label' | translate}}</b> {{ operationsTicketBai[0]
+              }}</span>
+          </div>
+          <div class="text-center my-2">
+            <qrcode [qrdata]="operationsTicketBai[1]" [width]="200" [errorCorrectionLevel]="'M'"></qrcode>
+          </div>
+        </div>
+        <!-- Sección para Verifactu si existe -->
+        <div class="row px-2 pb-1 pt-3" *ngIf="operationsVerifactu.length > 0">
+          <div class="text-start">
+            <span id="ticket_bai">
+              <b>{{'dpos.details.order.verifactu.label' | translate}}</b>&nbsp;
+              <a href="{{ operationsVerifactu[0] }}" target="_blank" rel="noopener">{{ operationsVerifactu[0] }}</a>
+            </span>
+          </div>
+          <div class="text-center my-2">
+            <qrcode [qrdata]="operationsVerifactu[1]" [width]="200" [errorCorrectionLevel]="'M'"></qrcode>
+          </div>
+        </div>
+      </div>
+
+
       <div class="card-header d-flex">
         <div class="d-flex flex-column justify-content-between">
           <h4 class="card-title">{{ ticket.orderCommerce.name }}</h4>
@@ -52,7 +81,8 @@
                   <tr *ngFor="let orders of ticket.orderLines">
                     <td class="text-start">{{ orders.productName }}</td>
                     <td class="text-end">{{ orders.quantity }}</td>
-                    <td *ngIf="ticket.type === 2; else unitPrice" class="text-end text-nowrap text-red">{{ (orders.unitPrice / 100).toFixed(2) }}&nbsp;€</td>
+                    <td *ngIf="ticket.type === 2; else unitPrice" class="text-end text-nowrap text-red">{{
+                      (orders.unitPrice / 100).toFixed(2) }}&nbsp;€</td>
                     <ng-template #unitPrice>
                       <td class="text-end text-nowrap">{{ (orders.unitPrice / 100).toFixed(2) }}&nbsp;€</td>
                     </ng-template>
@@ -97,7 +127,8 @@
                   {{ ticket.totalDiscount / Math.pow(10, ticket.decimals) | currency : "Eur" : "€" }}
                 </span>
                 <ng-template #totalDiscount>
-                  <span id="lbldiscount">{{ ticket.totalDiscount / Math.pow(10, ticket.decimals) | currency : "Eur" : "€" }}</span>
+                  <span id="lbldiscount">{{ ticket.totalDiscount / Math.pow(10, ticket.decimals) | currency : "Eur" :
+                    "€" }}</span>
                 </ng-template>
               </div>
             </div>
@@ -106,7 +137,8 @@
                 <span id="lbltaxbase_title" class="small">{{'dpos.details.order.base.label' | translate}}</span>
               </div>
               <div class="col-5 col-md-2 text-end">
-                <span *ngIf="ticket.type === 2; else base" class="text-red" id="lbltaxbase">{{ totalBase | currency : "Eur" : "€" }}</span>
+                <span *ngIf="ticket.type === 2; else base" class="text-red" id="lbltaxbase">{{ totalBase | currency :
+                  "Eur" : "€" }}</span>
                 <ng-template #base>
                   <span id="lbltaxbase">{{ totalBase | currency : "Eur" : "€" }}</span>
                 </ng-template>
@@ -139,7 +171,8 @@
               {{ (ticket.total / 100).toFixed(2) }}&nbsp;€
             </span>
             <ng-template #total>
-              <span id="lbltotal"><b>{{ ticket.total / Math.pow(10, ticket.decimals) | currency : "Eur" : "€" }}</b></span>
+              <span id="lbltotal"><b>{{ ticket.total / Math.pow(10, ticket.decimals) | currency : "Eur" : "€"
+                  }}</b></span>
             </ng-template>
           </div>
         </div>
@@ -152,31 +185,12 @@
               {{ (orderPayment.amount / 100).toFixed(2) }}&nbsp;€
             </span>
             <ng-template #amount>
-              <span id="lblcash">{{ orderPayment.amount / Math.pow(10, orderPayment.decimals) | currency : "Eur" : "€" }}</span>
+              <span id="lblcash">{{ orderPayment.amount / Math.pow(10, orderPayment.decimals) | currency : "Eur" : "€"
+                }}</span>
             </ng-template>
           </div>
         </div>
-        <!-- Sección para TBAI si existe -->
-        <div class="row px-2 pb-1 pt-3" *ngIf="operationsTicketBai.length > 0">
-          <div class="text-start">
-            <span id="ticket_bai"><b>{{'dpos.details.order.tbai.label' | translate}}</b> {{ operationsTicketBai[0] }}</span>
-          </div>
-          <div class="text-center my-2">
-            <qrcode [qrdata]="operationsTicketBai[1]" [width]="200" [errorCorrectionLevel]="'M'"></qrcode>
-          </div>
-        </div>
-        <!-- Sección para Verifactu si existe -->
-        <div class="row px-2 pb-1 pt-3" *ngIf="operationsVerifactu.length > 0">
-          <div class="text-start">
-            <span id="ticket_bai">
-              <b>{{'dpos.details.order.verifactu.label' | translate}}</b>&nbsp;
-              <a href="{{ operationsVerifactu[0] }}" target="_blank" rel="noopener">{{ operationsVerifactu[0] }}</a>
-            </span>
-          </div>
-          <div class="text-center my-2">
-            <qrcode [qrdata]="operationsVerifactu[1]" [width]="200" [errorCorrectionLevel]="'M'"></qrcode>
-          </div>
-        </div>
+
       </div>
     </div>
   </div>

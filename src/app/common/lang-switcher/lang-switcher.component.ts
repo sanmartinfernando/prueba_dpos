@@ -30,7 +30,7 @@ export class LangSwitcherComponent {
       });
     });
   }
-
+ 
   /**
    * Cambia el idioma de la aplicación en función de la selección del usuario.
    * 

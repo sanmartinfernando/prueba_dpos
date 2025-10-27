@@ -169,7 +169,8 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
         this.monthVarSearch = this.translate.instant('dpos.filter.all');
       }
       this.terminalsNumber[0] = this.translate.instant('dpos.filter.all');
-      this.searchTerminal();
+/* 
+      this.searchTerminal(); */
     });
     this.loadTitleLegend();
     this.langSubscription = this.translate.onLangChange.subscribe(() => {
@@ -232,6 +233,8 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
 
   ngOnChanges(changes: SimpleChanges) {
     // Recalcular tras cualquier cambio relevante:
+    
+ 
     if (changes['datasetTop3'] || changes['datasetPM'] || changes['datasetKPI'] || changes['loadedTPChart'] || changes['loadedPMChart'] || changes['loadedKPIChart']) {
       this.recalcViewsSoon();
     }
@@ -902,11 +905,7 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
   private loadTitleLegend(): void {
     this.translate.get('dpos.dashboard.paymentmethods.legend')
       .subscribe((traduccion: string) => {
-        // Actualiza la variable que usa el HTML
         this.titleLegend = traduccion;
-
-        // ✅ CONSOLE.LOG PARA VERIFICAR:
-        console.log('Título de la Leyenda cargado/actualizado:', this.titleLegend);
       });
   }
 

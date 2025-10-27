@@ -32,7 +32,6 @@ export class PortalUsersService {
    * @returns Observable con el token de usuario.
    */
   public getToken(user: User): Observable<PortalUserToken> {
-    console.log('PortalUsersService - getToken', user);
     if (user) {
       const loginRequest = { userName: user.user, password: user.pwd };
       const url = `${environment.urlAuth}${RestRoutes.AUTH_PORTALUSERS_LOGIN}`;
