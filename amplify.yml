@@ -7,8 +7,6 @@ frontend:
         - npm install
     build:
       commands:
-        # Lógica condicional: si la rama es 'main' (o 'master'), ejecuta 'build:prod',
-        # de lo contrario, ejecuta 'build:inte'.
         - |
           if [ "$AWS_BRANCH" == "main" ]; then
             npm run build:prod

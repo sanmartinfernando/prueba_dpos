@@ -122,6 +122,10 @@ export class DocumentsComponent implements OnInit, OnDestroy {
   /** Inicializa el componente cargando datos de sesión, comercios y documentos. */
   ngOnInit(): void {
     const urlDocuments = environment.urlDocuments;
+<<<<<<< HEAD
+=======
+    console.log('DocumentsComponent initialized', urlDocuments);
+>>>>>>> 5dc3582d40d58a7ff7c47028d75878803e3febb1
     this.loadCompleted = false;
     this.restoreSearchParams();
     this.loadCommerces();

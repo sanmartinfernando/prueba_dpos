@@ -47,6 +47,7 @@ export class LangSwitcherComponent {
           this.sessionService.setItem(
             SessionService.TERMINAL_NUMBER,
             this.translate.instant('dpos.filter.all')
+
           );
         }
       });
