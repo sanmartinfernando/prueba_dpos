@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment.dev-inte';
+import { environment } from 'src/environments/environment';
 import { RestRoutes } from '../_rest/rest-routes.config';
 
 /**

@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from 'src/environments/environment.dev-inte';
+import { environment } from 'src/environments/environment';
 import { RestRoutes } from '../_rest/rest-routes.config';
 import { OrderAggregation } from '../_models/order-aggregation.model';
 import { TranslateService } from '@ngx-translate/core';

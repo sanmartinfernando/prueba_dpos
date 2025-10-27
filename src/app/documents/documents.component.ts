@@ -11,11 +11,7 @@ import { ThemeService } from '../_services/theme.service';
 import { UIStateService } from '../_services/ui-state.service';
 import { Commerce } from '../_models/commerce.model';
 import { Document } from '../_models/documents.model';
-<<<<<<< HEAD
-import { environment } from 'src/environments/environment.development';
-=======
 import { environment } from 'src/environments/environment';
->>>>>>> 742e2e47a694d5cce006ecc3c5c6a818c64b8b51
 
 type DocumentRow = Document & {
   _isApi?: boolean;
@@ -44,11 +40,6 @@ export class DocumentsComponent implements OnInit, OnDestroy {
   private themeService = inject(ThemeService);
   private uiStateService = inject(UIStateService);
   private router = inject(Router);
-<<<<<<< HEAD
-  private readonly STATIC_DOC_URL_1 = environment.urlDocuments + 'Comercia/Declaracion_Responsable_TPVGO.pdf';
-  private readonly STATIC_DOC_URL_2 = environment.urlDocuments + 'https://d1v0i5k89q4x6i.cloudfront.net/DPOS/Declaracion_Responsable_DPOS.pdf';
-=======
->>>>>>> 742e2e47a694d5cce006ecc3c5c6a818c64b8b51
 
   private readonly STATIC_DOC_URL_1 = environment.urlDocuments + 'Comercia/Declaracion_Responsable_TPVGO.pdf';
     private readonly STATIC_DOC_URL_2 = environment.urlDocuments + 'https://d1v0i5k89q4x6i.cloudfront.net/DPOS/Declaracion_Responsable_DPOS.pdf';

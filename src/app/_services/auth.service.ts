@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Subject, firstValueFrom } from 'rxjs';
-import { environment } from 'src/environments/environment.development';
+import { environment } from 'src/environments/environment';
 import { User } from '../_models/user.model';
 import { RestRoutes } from '../_rest/rest-routes.config';
 import { LoginRequest } from '../_models/login-request.model';

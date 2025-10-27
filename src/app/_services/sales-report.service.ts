@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import { environment } from 'src/environments/environment.dev-inte';
+import { environment } from 'src/environments/environment';
 import { RestRoutes } from '../_rest/rest-routes.config';
 import { OperationsReport } from '../_models/operations-report.model';
 import { TranslateService } from '@ngx-translate/core';

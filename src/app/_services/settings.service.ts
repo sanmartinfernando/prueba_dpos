@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
-import { environment } from 'src/environments/environment.dev-inte';
+import { environment } from 'src/environments/environment';
 import { RestRoutes } from '../_rest/rest-routes.config';
 
 /**

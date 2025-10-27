@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { environment } from 'src/environments/environment.dev-inte';
+import { environment } from 'src/environments/environment';
 import { RestRoutes } from '../_rest/rest-routes.config';
 import { PortalUserToken } from '../_models/portal-user-token.model';
 import { User } from '../_models/user.model';
