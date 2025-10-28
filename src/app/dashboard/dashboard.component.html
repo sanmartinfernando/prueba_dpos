@@ -185,27 +185,27 @@
     <div class="col-12 col-lg-4 d-flex flex-column">
       <!-- Sección de gráfico de top ventas -->
       <div class="card mb-3">
-        <div class="card-body">
-          <h5 class="mb-4">
-            <i class="text-success me-2"></i>
-            <b>{{ 'dpos.dashboard.topsells.label' | translate }}</b>
-          </h5>
-          <ng-template #noTop3Data>
-            <br />
-            <b><i>{{ 'dpos.dashboard.nodata.label' | translate }}</i></b>
-          </ng-template>
-          <ng-container *ngIf="loadedTPChart; else spinner">
-            <div class="inner-chart" #top3ChartContainer>
-              <ngx-charts-bar-horizontal [results]="datasetTop3" [view]="top3View" [animations]="true"
-                [showDataLabel]="true" [xAxis]="false" [yAxis]="true" [customColors]="colorsTop3" [barPadding]="10"
-                [groupPadding]="3" [dataLabelFormatting]="formatPercentageLabelHorizontal"
-                [dataLabelTemplate]="labelTemplate" *ngIf="top3View && !emptyKPIChart; else noTop3Data">
-              </ngx-charts-bar-horizontal>
+        <h5 class="mb-4">
+          <i class="text-success me-2"></i>
+          <b>{{ 'dpos.dashboard.topsells.label' | translate }}</b>
+        </h5>
+        <ng-template #noTop3Data>
+          <br />
+          <b><i>{{ 'dpos.dashboard.nodata.label' | translate }}</i></b>
+        </ng-template>
+        <ng-container *ngIf="loadedTPChart; else spinner">
+          <div class="inner-chart" #top3ChartContainer>
+            <ngx-charts-bar-horizontal [results]="datasetTop3" [view]="top3View" [animations]="true"
+              [showDataLabel]="true" [xAxis]="false" [yAxis]="true" [customColors]="colorsTop3" [barPadding]="5 "
+              [groupPadding]="0" [dataLabelFormatting]="formatPercentageLabelHorizontal"
+              [dataLabelTemplate]="labelTemplate" [trimLabels]="true"
+              *ngIf="top3View && !emptyKPIChart; else noTop3Data">
+            </ngx-charts-bar-horizontal>
 
-            </div>
-          </ng-container>
+          </div>
+        </ng-container>
 
-        </div>
+
       </div>
       <!-- Sección de gráfico de métodos de pago -->
       <div class="card">
@@ -216,14 +216,16 @@
           </h5>
           <ng-template #noPMData><br /><b><i>{{ 'dpos.dashboard.nodata.label' | translate }}</i></b></ng-template>
           <ng-container *ngIf="loadedPMChart; else spinner">
-            <div class="inner-chart w-100" #pmChartContainer >
+            <div class="inner-chart w-100" #pmChartContainer>
               <ngx-charts-pie-chart [results]="datasetPM" [view]="pmView" [scheme]="schemePM" [legend]="true"
-                [legendPosition]="legendPosition" [legendTitle]="titleLegend" [labels]="true" [doughnut]="true" [arcWidth]="0.4" [animations]="true"
-                [labelFormatting]="formatPercentageLabel" *ngIf="pmView && !emptyKPIChart; else noPMData">
+                [legendPosition]="legendPosition" [legendTitle]="titleLegend" [labels]="false" [doughnut]="true"
+                [arcWidth]="0.4" [animations]="true" [labelFormatting]="formatPercentageLabel"
+                *ngIf="pmView && !emptyKPIChart; else noPMData">
               </ngx-charts-pie-chart>
             </div>
 
           </ng-container>
+
         </div>
       </div>
     </div>

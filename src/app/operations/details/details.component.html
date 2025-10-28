@@ -23,26 +23,22 @@
       <!-- Sección para TBAI si existe -->
 
       <div class="text-center my-2">
-        <div class="row px-2 pb-1 pt-3" *ngIf="operationsTicketBai.length > 0">
-          <div class="text-start">
-            <span id="ticket_bai"><b>{{'dpos.details.order.tbai.label' | translate}}</b> {{ operationsTicketBai[0]
-              }}</span>
-          </div>
-          <div class="text-center my-2">
-            <qrcode [qrdata]="operationsTicketBai[1]" [width]="200" [errorCorrectionLevel]="'M'"></qrcode>
-          </div>
-        </div>
         <!-- Sección para Verifactu si existe -->
         <div class="row px-2 pb-1 pt-3" *ngIf="operationsVerifactu.length > 0">
-          <div class="text-start">
+          <div class="text-center">
+            <span> <strong>{{'dpos.details.bill.label' | translate}}</strong></span>
+          </div>
+          <div class="text-center my-2">
+            <qrcode [qrdata]="operationsVerifactu[1]" [width]="125" [errorCorrectionLevel]="'M'"></qrcode>
+          </div>
+          <div class="text-center">
             <span id="ticket_bai">
               <b>{{'dpos.details.order.verifactu.label' | translate}}</b>&nbsp;
+              <br>
               <a href="{{ operationsVerifactu[0] }}" target="_blank" rel="noopener">{{ operationsVerifactu[0] }}</a>
             </span>
           </div>
-          <div class="text-center my-2">
-            <qrcode [qrdata]="operationsVerifactu[1]" [width]="200" [errorCorrectionLevel]="'M'"></qrcode>
-          </div>
+
         </div>
       </div>
 
@@ -60,6 +56,31 @@
           <span id="lbldate" type="date" class="small text-customer">
             {{ ticket.finishedAt | date : "yyyy-MM-dd HH:mm" }}
           </span>
+        </div>
+
+      </div>
+
+      <div class="card-body">
+        <div *ngIf="ticket.orderCustomer as customer">
+          <hr>
+
+          <div>
+            <span> <b> {{ 'dpos.details.bill.addressee' | translate }} </b></span>
+            <span>{{ ticket.orderCustomer.name }} {{ ticket.orderCustomer.lastname }}</span>
+          </div>
+
+          <div>
+            <span> <b> {{ 'dpos.details.bill.document' | translate }}: </b> </span>
+            <span>{{ ticket.orderCustomer.nif }} </span>
+          </div>
+
+          <div>
+            <span> <b> {{ 'dpos.details.bill.address' | translate }}: </b></span>
+            <span>{{ ticket.orderCustomer.address }}, {{ ticket.orderCustomer.postalCode }}, {{
+              ticket.orderCustomer.city }} </span>
+          </div>
+
+          <hr>
         </div>
       </div>
       <div class="card-body">
@@ -191,6 +212,19 @@
           </div>
         </div>
 
+      </div>
+
+      <div class="text-center my-2">
+        <!-- Sección para Ticket bai si existe -->
+        <div class="row px-2 pb-1 pt-3" *ngIf="operationsTicketBai.length > 0">
+          <div class="text-center">
+            <span id="ticket_bai"><strong>{{'dpos.details.order.tbai.label' | translate}}</strong> {{
+              operationsTicketBai[0] }}</span>
+          </div>
+          <div class="text-center my-2">
+            <qrcode [qrdata]="operationsTicketBai[1]" [width]="200" [errorCorrectionLevel]="'M'"></qrcode>
+          </div>
+        </div>
       </div>
     </div>
   </div>

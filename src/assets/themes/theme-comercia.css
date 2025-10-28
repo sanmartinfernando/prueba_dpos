@@ -735,17 +735,16 @@ input[type=number] {
 
 /*** CHARTS ***/
 
-
+/* 
 
 ngx-charts-bar-vertical ngx-charts-chart .ngx-charts-outer .ngx-charts .bar-chart.chart .ng-star-inserted .ng-star-inserted .ng-star-inserted .textDataLabel {
   transform: rotate(0deg) !important;
   transform: translate(-13px, -3px) !important;
   font-weight: bold !important;
 }
-
+ */
 .textDataLabel {
-  transform: translateX(-35px);
-  fill: var(--bs-color-black-100) !important;
+  fill: white!important;
   font-weight: 600;
 }
 
@@ -758,9 +757,9 @@ text.pie-label {
   display: none !important;
 }
 
-.ngx-charts {
+/* .ngx-charts {
   width: 350px !important;
-}
+} */
 
 .inner-chart {
   display: block;

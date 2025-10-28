@@ -218,7 +218,7 @@
     "dpos.details.order.base.label": "Zerga-oinarria",
     "dpos.details.order.total.label": "Guztira",
     "dpos.details.order.tbai.label": "TicketBAI:",
-    "dpos.details.order.verifactu.label": "Veri*Factu:",
+    "dpos.details.order.verifactu.label": "Veri*Factu",
     "dpos.details.refund.label": "ITZULERA",
     "dpos.modal.fromDate.title": "Data-errorea",
     "dpos.modal.fromDate.message": "Hasierako data ezin da izan To Date baino handiagoa.",
@@ -388,5 +388,9 @@
     "dpos.no-apply-code.code.n1": "Ez-subjektu Operazioa 7., 14. artikuluak, besteak.",
     "dpos.no-apply-code.code.n2": "Ez-subjektu Operazioa kokapen arauen arabera.",
     "dpos.no-apply-code.code.none": "Ez-subjektu kode okerra",
-    "dpos.nav.menu.settings": "Settings"
+    "dpos.nav.menu.settings": "Settings",
+    "dpos.details.bill.label": "QR Zerga:",
+    "dpos.details.bill.addressee": "Hartzailea",
+    "dpos.details.bill.document": "Dokumentua",
+    "dpos.details.bill.address": "Helbidea"
 }

@@ -42,7 +42,7 @@ export class Order {
   orderTaxes: OrderTax[];
   orderPayments: OrderPayment[];
   orderCommerce: OrderCommerce;
-  orderCustomer: string;
+  orderCustomer: any;
   orderTicketBai: OrderTicketBai;
   orderVerifactu: OrderVerifactu;
   orderDiscounts: string;

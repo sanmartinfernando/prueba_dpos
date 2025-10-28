@@ -394,5 +394,9 @@
     "dpos.documents.page.title": "Documentos",
     "dpos.documents.new.label": "Nuevo Documento",
     "dpos.documents.import.label": "Importar Documento",
-    "dpos.nav.menu.settings": "Settings"
+    "dpos.nav.menu.settings": "Settings",
+    "dpos.details.bill.label": "QR Tributario:",
+    "dpos.details.bill.addressee": "Destinatario",
+    "dpos.details.bill.document": "Documento",
+    "dpos.details.bill.address": "Dirección"
 }

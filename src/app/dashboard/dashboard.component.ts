@@ -25,7 +25,7 @@ import { debounceTime, fromEvent } from 'rxjs';
 import { Color } from '@swimlane/ngx-charts';
 import { LegendPosition } from '@swimlane/ngx-charts';
 
-
+const LABEL_AREA_WIDTH_MARGIN = 200;
 /**
  * @class DashboardComponent
  * @description
@@ -131,7 +131,7 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
 
   kpiView: [number, number] | null = null;
   top3View: [number, number] | null = null;
-  pmView: [number, number] | null = [300, 200];
+  pmView: [number, number] | null = null;
 
   containerWidthTop3 = 400;
   containerWidthPM = 400;
@@ -169,8 +169,8 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
         this.monthVarSearch = this.translate.instant('dpos.filter.all');
       }
       this.terminalsNumber[0] = this.translate.instant('dpos.filter.all');
-/* 
-      this.searchTerminal(); */
+      /* 
+            this.searchTerminal(); */
     });
     this.loadTitleLegend();
     this.langSubscription = this.translate.onLangChange.subscribe(() => {
@@ -233,8 +233,8 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
 
   ngOnChanges(changes: SimpleChanges) {
     // Recalcular tras cualquier cambio relevante:
-    
- 
+
+
     if (changes['datasetTop3'] || changes['datasetPM'] || changes['datasetKPI'] || changes['loadedTPChart'] || changes['loadedPMChart'] || changes['loadedKPIChart']) {
       this.recalcViewsSoon();
     }
@@ -470,12 +470,24 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
       const height = this.datasetTop3.length * this.barHeight + this.padding;
       this.top3View = [width, height];
     }
+    if (this.top3ChartContainer) {
+      const containerWidth = this.top3ChartContainer.nativeElement.offsetWidth;
 
-    /*  if (this.pmChartContainer) {
-       const width = 400; // fijas un ancho constante para el pie/donut
-       const height = 200; // fijas un alto constante más grande para el pie/donut
-       this.pmView = [width, height];
-     } */
+      const height = this.datasetTop3.length * this.barHeight + this.padding;
+      const width = containerWidth + LABEL_AREA_WIDTH_MARGIN;
+      const MIN_CHART_WIDTH = 500;
+
+      this.top3View = [Math.max(width, MIN_CHART_WIDTH), height];
+    }
+
+    if (this.pmChartContainer) {
+      /*       const width = 400; // fijas un ancho constante para el pie/donut
+            const height = 200; // fijas un alto constante más grande para el pie/donut */
+      const width = this.top3ChartContainer.nativeElement.offsetWidth;
+      const height = this.datasetPM.length * this.barHeight + this.padding;
+      this.top3View = [width, height];
+      this.pmView = [300, 200];
+    }
     if (this.KPIChartContainer) {
       const width = this.KPIChartContainer.nativeElement.offsetWidth;
       const height = 300;
@@ -484,12 +496,12 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
   }
 
   private updatePMChartView(): void {
-    if (!this.pmChartContainer) return;
-
-    const width = this.pmChartContainer.nativeElement.offsetWidth;
-    const height = Math.max(width * 0.6, 250); // proporción 3:2 mínima 250px
-
-    this.pmView = [width, height];
+    /*    if (!this.pmChartContainer) return;
+   
+       const width = this.pmChartContainer.nativeElement.offsetWidth;
+       const height = Math.max(width * 0.6, 250); // proporción 3:2 mínima 250px
+   
+       this.pmView = [width, height]; */
   }
 
   /**
@@ -515,7 +527,10 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
       }
     });
   }
-
+  yTickFormat(val: number): string {
+    // Usar toLocaleString para formatear con separadores de miles
+    return '€' + val.toLocaleString('es-ES');
+  }
   /**
    * Carga y muestra el gráfico de evolución de devoluciones.
    */

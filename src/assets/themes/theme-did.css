@@ -607,19 +607,19 @@ i {
 
 /*** CHARTS ***/
 
-ngx-charts-bar-vertical ngx-charts-chart .ngx-charts-outer .ngx-charts .bar-chart.chart .ng-star-inserted .ng-star-inserted .ng-star-inserted .textDataLabel {
+/* ngx-charts-bar-vertical ngx-charts-chart .ngx-charts-outer .ngx-charts .bar-chart.chart .ng-star-inserted .ng-star-inserted .ng-star-inserted .textDataLabel {
   transform: rotate(0deg) !important;
   transform: translate(-13px, -3px) !important;
   font-weight: bold !important;
-}
+} */
 
 .gridline-path-vertical {
   display: none !important;
 }
 
-.ngx-charts {
+/* .ngx-charts {
   width: 350px !important;
-}
+} */
 
 .inner-chart {
   display: block;

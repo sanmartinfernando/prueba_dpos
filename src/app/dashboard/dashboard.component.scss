@@ -4,59 +4,72 @@
    ========================================================== */
 
 :host ::ng-deep {
-    
-    /* ----------------------------------------------------------
+
+  /* ----------------------------------------------------------
        1. Overrides de Layout (ngx-charts)
        ---------------------------------------------------------- */
 
-    .ngx-charts-outer {
-        /* Fuerza a que el gráfico ocupe todo el contenedor para evitar recortes */
-        width: 100% !important;
-        height: 100% !important;
-    }
+  .ngx-charts-outer {
+    /* Fuerza a que el gráfico ocupe todo el contenedor para evitar recortes */
+    width: 100% !important;
+    height: 100% !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-flow: column;
+  }
 
-    .inner-chart {
-        width: 100%;
-        max-width: 900px;
-        margin: 0 auto;
-        padding: 1rem;
-        
-        /* Asegura que el ngx-charts-outer dentro de inner-chart se centre */
-        ngx-charts-outer {
-            display: block;
-            margin: 0 auto;
-        }
-    }
+  .inner-chart {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
 
-    /* ----------------------------------------------------------
+    /* Asegura que el ngx-charts-outer dentro de inner-chart se centre */
+    ngx-charts-outer {
+      display: block;
+      margin: 0 auto;
+    }
+  }
+
+  /* ----------------------------------------------------------
        2. Estilos de Texto (Solución de Visibilidad)
        ---------------------------------------------------------- */
 
-    /* Aplica el estilo BLANCO CON BORDE NEGRO a las etiquetas de porcentaje
+  /* Aplica el estilo BLANCO CON BORDE NEGRO a las etiquetas de porcentaje
        (Los números que están sobre los arcos del pie chart) */
-    .pie-chart .pie-label {
-        fill: #ffffff;             /* Color de relleno (letra blanca) */
-        stroke: #000000;           /* Color del borde (negro) */
-        stroke-width: 0.5px;       /* Grosor del borde */
-        paint-order: stroke fill;  /* Asegura que el borde se pinte primero */
-    }
+  .pie-chart .pie-label {
+    fill: #ffffff;
+    /* Color de relleno (letra blanca) */
+    stroke: #000000;
+    /* Color del borde (negro) */
+    stroke-width: 0.5px;
+    /* Grosor del borde */
+    paint-order: stroke fill;
+    /* Asegura que el borde se pinte primero */
+  }
+  .chart-legend{
+    width: 100% !important;
+  }
 
-    /* ✅ Solución para el TÍTULO DE LA LEYENDA (el texto de [legendTitle]) */
-    .chart-legend .legend-title {
-        fill: #ffffff;             /* Color de relleno (letra blanca) */
-        stroke: #000000;           /* Color del borde (negro) */
-        stroke-width: 0.5px;       /* Grosor del borde */
-        paint-order: stroke fill;  
-    }
-    
-    /* Opcional: Aplica el mismo estilo al TEXTO DE LAS ETIQUETAS INDIVIDUALES de la leyenda
+  /* ✅ Solución para el TÍTULO DE LA LEYENDA (el texto de [legendTitle]) */
+  .chart-legend .legend-title {
+    fill: #ffffff;
+    /* Color de relleno (letra blanca) */
+    stroke: #000000;
+    /* Color del borde (negro) */
+    stroke-width: 0.5px;
+    /* Grosor del borde */
+    paint-order: stroke fill;
+  }
+
+  /* Opcional: Aplica el mismo estilo al TEXTO DE LAS ETIQUETAS INDIVIDUALES de la leyenda
        (Los nombres de las series) */
-    .chart-legend .legend-label .legend-label-text {
-        fill: #ffffff;
-        stroke: #000000;
-        stroke-width: 0.5px;
-        paint-order: stroke fill;
-    }
+  .chart-legend .legend-label .legend-label-text {
+    fill: #ffffff;
+    stroke: #000000;
+    stroke-width: 0.5px;
+    paint-order: stroke fill;
+  }
 
 }
 
@@ -115,11 +128,42 @@ form.row .form-select {
   gap: 0.25rem;
 }
 
+.ngx-charts-outer {
+  width: 100% !important;
+  /* fuerza a que ocupe todo el contenedor */
+  height: 100% !important;
+  /* fuerza a que ocupe todo el contenedor */
+}
+
+
+::ng-deep .ngx-charts-outer {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+
+
+
+.pie-chart .pie-label {
+  fill: #ffffff;
+  stroke: #000000;
+  stroke-width: 0.5px;
+  paint-order: stroke fill;
+}
+
+// Si quieres que el título de la leyenda también tenga este efecto
+.chart-legend .legend-title {
+  fill: #ffffff;
+  stroke: #000000;
+  color: #ffffff;
+  stroke-width: 0.5px;
+  paint-order: stroke fill;
+}
+
 /* Móvil */
 @media (max-width: 576px) {
   .inner-chart {
     max-width: 100%;
-    padding: 0.5rem;
   }
 }
 
@@ -135,4 +179,14 @@ form.row .form-select {
   .inner-chart {
     max-width: 900px;
   }
+}
+
+/* your-component.component.css */
+:host ::ng-deep ngx-charts-pie-chart {
+  /* OR make it fill its parent container */
+  width: 100%;
+  height: 100%;
+  background-color: red !important;
+
+
 }

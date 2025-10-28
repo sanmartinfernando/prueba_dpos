@@ -60,7 +60,8 @@ export class DetailsComponent implements OnInit {
 
     this.ordersService.getOrderDetail(this.orderId).subscribe({
       next: (ticketOperaciones) => {
-        this.ticket = ticketOperaciones;
+        console.log(ticketOperaciones);
+        this.ticket = ticketOperaciones; 
         this.operationsTicketBai = [];
         if (this.ticket.orderTicketBai) {
           this.operationsTicketBai[0] = this.ticket.orderTicketBai.ticketBaiId;

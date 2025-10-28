@@ -157,7 +157,7 @@
     "dpos.dashboard.nodata.label": "No hi ha dades per mostrar",
     "dpos.dashboard.topsells.label": "Articles més venuts",
     "dpos.dashboard.paymentmethods.label": "Mètodes de pagament",
-        "dpos.dashboard.paymentmethods.legend": "Mètodes",
+    "dpos.dashboard.paymentmethods.legend": "Mètodes",
     "dpos.reports.page.title": "Informes",
     "dpos.reports.taxes.label": "Impostos",
     "dpos.reports.products.label": "Productes",
@@ -388,5 +388,9 @@
     "dpos.no-apply-code.code.n1": "Operació No Subjecta article 7, 14, altres.",
     "dpos.no-apply-code.code.n2": "Operació No Subjecta per Regles de localització.",
     "dpos.no-apply-code.code.none": "Codi de no subjecte erroni",
-    "dpos.nav.menu.settings": "Settings"
+    "dpos.nav.menu.settings": "Settings",
+    "dpos.details.bill": "QR Tributari:",
+    "dpos.details.bill.addressee": "Destinatari",
+    "dpos.details.bill.document": "Document",
+    "dpos.details.bill.address": "Direcció"
 }
