@@ -1,0 +1,22 @@
+customHeaders:
+  - pattern: "**"
+    headers:
+      - key: Content-Security-Policy
+        value: default-src 'self'; style-src 'self' fonts.googleapis.com 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU='; font-src fonts.gstatic.com; connect-src 'self' *.dpos.es
+        value: max-age=31536000; includeSubDomains
+      - key: Cross-Origin-Resource-Policy
+        value: same-site
+      - key: X-Content-Type-Options
+        value: nosniff
+      - key: X-Frame-Options
+        value: DENY
+      - key: Referrer-Policy
+        value: strict-origin-when-cross-origin
+      - key: Permissions-Policy
+        value: geolocation=(), camera=(), microphone=()
+      - key: Cross-Origin-Embedder-Policy
+        value: require-corp
+      - key: Cross-Origin-Opener-Policy
+        value: same-origin
+      - key: server
+        value: webserver

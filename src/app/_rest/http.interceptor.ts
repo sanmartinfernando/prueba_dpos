@@ -23,7 +23,7 @@ import { TokenStorageService } from '../_services/token-storage.service';
  */
 @Injectable()
 export class HttpRequestInterceptor implements HttpInterceptor {
-  
+
   private inactivityService = inject(InactivityService);
   private translate = inject(TranslateService);
   private portalUsersTokenService = inject(PortalUsersTokenService);
@@ -37,7 +37,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
    * @returns Observable con la respuesta del backend
    */
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    //Login inicial no lleva token
+
     if (req.url.endsWith(RestRoutes.AUTH)) {
       return next.handle(req);
     }
@@ -45,12 +45,13 @@ export class HttpRequestInterceptor implements HttpInterceptor {
     if (req.url.includes('PortalUsers/commerces') || req.url.includes('PortalUsers/terminals')) {
       return this.portalUsersTokenService.getValidToken().pipe(
         switchMap(token => {
-          const authReq = req.clone({
+          let authReq = req.clone({
             headers: req.headers.set(
               SecurityConstants.TOKEN_HEADER_KEY,
               `${SecurityConstants.TOKEN_PREFIX} ${token}`
             ),
           });
+          authReq = this.applySecurityHeaders(authReq);
           return next.handle(authReq);
         }),
         catchError(err => this.handleError(err))
@@ -67,6 +68,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
           ),
         });
       }
+      req = this.applySecurityHeaders(req);
       return next.handle(req).pipe(catchError(err => this.handleError(err)));
     }
     //Resto de peticiones → token principal
@@ -79,8 +81,29 @@ export class HttpRequestInterceptor implements HttpInterceptor {
         ),
       });
     }
+    req = this.applySecurityHeaders(req);
     return next.handle(req).pipe(catchError(err => this.handleError(err)));
   }
+  private applySecurityHeaders(req: HttpRequest<any>): HttpRequest<any> {
+    let headers = req.headers
+
+      .set(
+        'Content-Security-Policy',
+        "default-src 'self'; style-src 'self' fonts.googleapis.com 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU='; font-src fonts.gstatic.com; connect-src 'self' *.dpos.es"
+      )
+      .set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains')
+      .set('Cross-Origin-Resource-Policy', 'same-site')
+      .set('X-Content-Type-Options', 'nosniff')
+      .set('X-Frame-Options', 'DENY')
+      .set('Referrer-Policy', 'strict-origin-when-cross-origin')
+      .set('Permissions-Policy', 'geolocation=(), camera=(), microphone=()')
+      .set('Cross-Origin-Embedder-Policy', 'require-corp')
+      .set('Cross-Origin-Opener-Policy', 'same-origin')
+      .set('Server', 'webserver');
+
+    return req.clone({ headers });
+  }
+
 
   /**
    * Maneja los errores HTTP centralmente.
@@ -90,18 +113,18 @@ export class HttpRequestInterceptor implements HttpInterceptor {
    * @returns Observable que lanza el error hacia el flujo de RxJS
    */
   private handleError(error: HttpErrorResponse) {
-    const apiError: ErrorResponse = {
-      StatusCode: error.status,
-      ErrorCode: error.error?.ErrorCode ?? 0,
-      ErrorCodeId: error.error?.ErrorCodeId ?? 'Default',
-      Message: error.error?.Message ?? this.translate.instant('dpos.error.msg.api'),
-    };
-    if (apiError.StatusCode === 401) {
-      console.warn('Error 401 no autorizado, cerrando sesión...');
-      this.inactivityService.logout();
-    }
-    return throwError(() => error);
+  const apiError: ErrorResponse = {
+    StatusCode: error.status,
+    ErrorCode: error.error?.ErrorCode ?? 0,
+    ErrorCodeId: error.error?.ErrorCodeId ?? 'Default',
+    Message: error.error?.Message ?? this.translate.instant('dpos.error.msg.api'),
+  };
+  if (apiError.StatusCode === 401) {
+    console.warn('Error 401 no autorizado, cerrando sesión...');
+    this.inactivityService.logout();
   }
+  return throwError(() => error);
+}
 }
 
 /**
