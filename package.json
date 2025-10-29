@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "start:inte": "ng serve  --watch --configuration=inte",
+    "start:prod": "ng serve  --watch --configuration=production",
     "build": "ng build",
     "watch": "ng build --watch --configuration inte",
     "test": "ng test",

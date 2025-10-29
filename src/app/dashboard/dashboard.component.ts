@@ -200,17 +200,26 @@ export class DashboardComponent implements OnInit, OnDestroy, OnChanges, AfterVi
 
           this.terminalsService.getTerminalList().subscribe({
             next: (terminals) => {
-              terminals = terminals.filter(terminal => terminal.commerceId === this.commerceId && terminal.terminalNumber !== null);
-              if (terminals.length !== 0) {
-                this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
-              }
+              const filteredTerminals = terminals.filter(terminal =>
+                terminal.commerceId === this.commerceId && terminal.terminalNumber !== null
+              );
+
+              this.terminalsNumber = filteredTerminals.map(terminal => terminal.terminalNumber);
+
               this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
+
               if (this.sessionService.getItem(SessionService.TERMINAL_NUMBER) === null) {
                 this.terminalSelected = this.terminalsNumber[0];
                 this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
               } else {
-                this.terminalSelected = this.sessionService.getItem(SessionService.TERMINAL_NUMBER);
+                const storedTerminal = this.sessionService.getItem(SessionService.TERMINAL_NUMBER);
+                if (this.terminalsNumber.includes(storedTerminal)) {
+                  this.terminalSelected = storedTerminal;
+                } else {
+                  this.terminalSelected = this.terminalsNumber[0]; // Selecciona 'Todas'
+                }
               }
+
               this.searchTerminal();
             },
             error: (error) => {
