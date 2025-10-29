@@ -92,18 +92,27 @@ export class BalancesComponent implements OnInit, OnDestroy {
           }
           this.isComercia = this.sessionService.getItem(SessionService.RESELLER_NAME) === Commerce.RESELLER_COMERCIA;
           this.terminalsService.getTerminalList().subscribe({
-            next: (terminals) => {
-              terminals = terminals.filter(t => t.commerceId === this.commerceId && t.terminalNumber !== null);
-              if (terminals.length) {
-                this.terminalsNumber = terminals.map(t => t.terminalNumber);
-              }
-              this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
-              if (this.terminalSelected === null) {
-                this.terminalSelected = this.terminalsNumber[0];
+ next: (terminals) => {
+              const filteredTerminals = terminals.filter(terminal =>
+                terminal.commerceId === this.commerceId && terminal.terminalNumber !== null
+              );
 
-              } else {
+              this.terminalsNumber = filteredTerminals.map(terminal => terminal.terminalNumber);
+
+              this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
+
+              if (this.sessionService.getItem(SessionService.TERMINAL_NUMBER) === null) {
                 this.terminalSelected = this.terminalsNumber[0];
+                this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
+              } else {
+                const storedTerminal = this.sessionService.getItem(SessionService.TERMINAL_NUMBER);
+                if (this.terminalsNumber.includes(storedTerminal)) {
+                  this.terminalSelected = storedTerminal;
+                } else {
+                  this.terminalSelected = this.terminalsNumber[0]; // Selecciona 'Todas'
+                }
               }
+
               this.searchBalances();
             },
             error: (error) => {
@@ -269,7 +278,7 @@ export class BalancesComponent implements OnInit, OnDestroy {
     this.loadCompleted = false;
     const size = 10000;
     const selectOperations = Array(3);
-
+    this.balances = [];
     this.balancesService.getBalanceInfo(size, this.varSearch).subscribe({
       next: (balanceInfo) => {
         this.balances = balanceInfo.data;
@@ -307,7 +316,7 @@ export class BalancesComponent implements OnInit, OnDestroy {
         this.loadCompleted = true;
       },
       error: (error) => {
-        this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.balances'));
+       /*  this.openModal(this.translate.instant('dpos.error.msg.general'), this.translate.instant('dpos.error.msg.service.balances')); */
         if ([401, 500].includes(error.status)) {
           this.emptySearch = true;
           this.loadCompleted = true;

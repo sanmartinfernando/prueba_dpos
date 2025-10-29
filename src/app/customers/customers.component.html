@@ -78,14 +78,14 @@
         <div class="spinner-border text-danger"></div>
       </div>
       <!-- Mensaje cuando no hay resultados después de la búsqueda -->
-      <div *ngIf="loadCompleted && customers.length === 0" class="d-flex justify-content-center">
+<!--       <div *ngIf="loadCompleted && customers.length === 0" class="d-flex justify-content-center">
         <b><i>{{ 'dpos.dashboard.nodata.label' | translate }}</i></b>
-      </div>
+      </div> -->
       <!-- Tabla con resultados de clientes, visible si hay resultados -->
 
 
       <div class="row" *ngIf="loadCompleted">
-        <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-2" *ngIf="filteredCustomers.length > 0">
           <label class="form-label" for="customerName">{{ 'dpos.customers.name.label' | translate }}</label>
           <input type="text" class="form-control" name="customerName" id="customerName"
             [(ngModel)]="customerNameVarSearch" (input)="onCustomerNameChange()">
