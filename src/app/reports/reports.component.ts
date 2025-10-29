@@ -117,17 +117,26 @@ export class ReportsComponent implements OnInit, OnDestroy {
           this.isComercia = this.sessionService.getItem(SessionService.RESELLER_NAME) === Commerce.RESELLER_COMERCIA;
           this.terminalsService.getTerminalList().subscribe({
             next: (terminals) => {
-              terminals = terminals.filter(terminal => terminal.commerceId === this.commerceId && terminal.terminalNumber !== null);
-              if (terminals.length !== 0) {
-                this.terminalsNumber = terminals.map(terminal => terminal.terminalNumber);
-              }
-              this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
-              if (this.terminalSelected === null) {
-                this.terminalSelected = this.terminalsNumber[0];
+              const filteredTerminals = terminals.filter(terminal =>
+                terminal.commerceId === this.commerceId && terminal.terminalNumber !== null
+              );
 
-              } else {
+              this.terminalsNumber = filteredTerminals.map(terminal => terminal.terminalNumber);
+
+              this.terminalsNumber.unshift(this.translate.instant('dpos.filter.all'));
+
+              if (this.sessionService.getItem(SessionService.TERMINAL_NUMBER) === null) {
                 this.terminalSelected = this.terminalsNumber[0];
+                this.sessionService.setItem(SessionService.TERMINAL_NUMBER, this.terminalSelected);
+              } else {
+                const storedTerminal = this.sessionService.getItem(SessionService.TERMINAL_NUMBER);
+                if (this.terminalsNumber.includes(storedTerminal)) {
+                  this.terminalSelected = storedTerminal;
+                } else {
+                  this.terminalSelected = this.terminalsNumber[0]; // Selecciona 'Todas'
+                }
               }
+
               this.searchReports();
             },
             error: (error) => {
@@ -203,7 +212,7 @@ export class ReportsComponent implements OnInit, OnDestroy {
     this.getArqueoX();
   }
 
-  
+
   /**
    * Descarga el informe actual en formato CSV según el tipo de informe.
    */
