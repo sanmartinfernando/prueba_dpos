@@ -87,10 +87,35 @@ export class HttpRequestInterceptor implements HttpInterceptor {
   private applySecurityHeaders(req: HttpRequest<any>): HttpRequest<any> {
     let headers = req.headers
 
-      //   .set(
-      //     'Content-Security-Policy',
-      //     "default-src 'self'; style-src 'self' fonts.googleapis.com 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU='; font-src fonts.gstatic.com; connect-src 'self' *.dpos.es"
-      //   )
+      .set(
+        'Content-Security-Policy',
+        "default-src 'self'; " +
+        "script-src 'self' https://kit.fontawesome.com 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU='; " +
+        "style-src 'self' https://fonts.googleapis.com 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU='; " +
+        "font-src https://fonts.gstatic.com data:; " +
+        "img-src 'self' https://d1v0i5k89q4x6i.cloudfront.net https://d3m5lpwci8und2.cloudfront.net https://*.amazonaws.com data:; " +
+        "connect-src 'self' " +
+        " http://localhost:4200" +
+        "https://q6zmc7oxgg.execute-api.eu-south-2.amazonaws.com " +
+        "https://c9i32wue1f.execute-api.eu-south-2.amazonaws.com " +
+        "https://3yh5mb6hfj.execute-api.eu-south-2.amazonaws.com " +
+        "https://wrjloku8c4.execute-api.eu-south-2.amazonaws.com " +
+        "https://uxojymkenl.execute-api.eu-south-2.amazonaws.com " +
+        "https://idws5x62hc.execute-api.eu-south-2.amazonaws.com " +
+        "https://api.dpos.es " +
+        "https://dpos.diusframi.tech:39443 " +
+        "https://dpos.diusframi.es " +
+        "https://d1v0i5k89q4x6i.cloudfront.net " +
+        "https://d3m5lpwci8und2.cloudfront.net " +
+        "wss://api.dpos.es/wstickets/; " +
+        "object-src 'none'; " +
+        "frame-ancestors 'none'; " +
+        "base-uri 'self'; " +
+        "form-action 'self'; " +
+        "upgrade-insecure-requests;"
+      )
+
+
       .set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains')
       .set('Cross-Origin-Resource-Policy', 'same-site')
       .set('X-Content-Type-Options', 'nosniff')
