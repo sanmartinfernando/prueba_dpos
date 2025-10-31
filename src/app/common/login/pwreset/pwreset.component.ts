@@ -15,7 +15,7 @@ import { PortalUsersService } from 'src/app/_services/portal-users.service';
   templateUrl: './pwreset.component.html'
 })
 export class PwresetComponent {
-  
+
   private router = inject(Router);
   private portalUsersService = inject(PortalUsersService);
 
@@ -55,6 +55,10 @@ export class PwresetComponent {
         next: response => {
           this.responseError = false;
           this.response = response;
+
+          setTimeout(() => {
+            this.router.navigate(['/login']);
+          }, 1000);
         },
         error: error => {
           this.responseError = true;

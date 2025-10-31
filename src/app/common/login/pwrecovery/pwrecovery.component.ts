@@ -1,4 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { CountdownEvent } from 'ngx-countdown';
 import { Subscription } from 'rxjs';
 import { User } from 'src/app/_models/user.model';
@@ -17,10 +18,11 @@ import { StorageService } from 'src/app/_services/storage.service';
   templateUrl: './pwrecovery.component.html'
 })
 export class PwrecoveryComponent implements OnInit {
-  
+
   private storageService = inject(StorageService);
   private portalUsersService = inject(PortalUsersService);
 
+  private router = inject(Router);
   private userSubscription!: Subscription;
 
   disabled = false;
@@ -58,6 +60,9 @@ export class PwrecoveryComponent implements OnInit {
     this.text = 'Si el nombre de usuario es correcto se enviará un correo asociado a la cuenta.';
     this.text2 = 'Si no recibe ningún correo, espere el tiempo mostrado antes de realizar una nueva petición.';
     this.text3 = 'Revise también la carpeta de spam.';
+
+
+  
   }
 
   /**

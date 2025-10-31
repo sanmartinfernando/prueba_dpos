@@ -42,23 +42,23 @@ export class DocumentsComponent implements OnInit, OnDestroy {
   private router = inject(Router);
 
   private readonly STATIC_DOC_URL_1 = environment.urlDocuments + 'Comercia/Declaracion_Responsable_TPVGO.pdf';
-    private readonly STATIC_DOC_URL_2 = environment.urlDocuments + 'https://d1v0i5k89q4x6i.cloudfront.net/DPOS/Declaracion_Responsable_DPOS.pdf';
+  private readonly STATIC_DOC_URL_2 = environment.urlDocuments + 'https://d1v0i5k89q4x6i.cloudfront.net/DPOS/Declaracion_Responsable_DPOS.pdf';
 
   private buildStaticDocumentsForReseller(): DocumentRow[] {
-  const isComercia = this.isComercia; // ya lo calculas en loadCommerces()
-  const url = isComercia ? this.STATIC_DOC_URL_1 : this.STATIC_DOC_URL_2;
-  const name = isComercia
-    ? 'Declaración Responsable TPV&GO VeriFactu'
-    : 'Declaración Responsable DPOS VeriFactu';
+    const isComercia = this.isComercia; // ya lo calculas en loadCommerces()
+    const url = isComercia ? this.STATIC_DOC_URL_1 : this.STATIC_DOC_URL_2;
+    const name = isComercia
+      ? 'Declaración Responsable TPV&GO VeriFactu'
+      : 'Declaración Responsable DPOS VeriFactu';
 
-  return [{
-    documentId: isComercia ? 'static-comercia' : 'static-otros',
-    name,
-    inclusionDate: new Date().toISOString(),
-    url,
-    deleted: false
-  }];
-}
+    return [{
+      documentId: isComercia ? 'static-comercia' : 'static-otros',
+      name,
+      inclusionDate: new Date().toISOString(),
+      url,
+      deleted: false
+    }];
+  }
 
   Math: Math;
 
@@ -76,10 +76,37 @@ export class DocumentsComponent implements OnInit, OnDestroy {
   varSearch: string = null;
 
   public openExternal(url: string, event?: MouseEvent): void {
-  event?.stopPropagation(); // evita que se dispare el click del tr
-  if (!url) return;
-  window.open(url, '_blank', 'noopener'); // abre en nueva pestaña
-}
+    event?.stopPropagation(); // evita que se dispare el click del tr
+    if (!url) return;
+    window.open(url, '_blank', 'noopener'); // abre en nueva pestaña
+  }
+  /*   public openExternal(url: string, event?: MouseEvent): void {
+      event?.stopPropagation();
+      if (!url) return;
+      fetch(url)
+        .then(response => response.blob())
+        .then(blob => {
+          const tempUrl = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+  
+          const nombreArchivo = 'DocumentoDescargado.pdf';
+  
+          a.download = nombreArchivo;
+          a.href = tempUrl;
+  
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+  
+          // 3. Limpiar
+          setTimeout(() => URL.revokeObjectURL(tempUrl), 60000);
+        })
+        .catch(error => {
+          console.error('Error al descargar el archivo:', error);
+          // Si falla la descarga, al menos intenta abrirlo como antes
+          window.open(url, '_blank', 'noopener');
+        });
+    } */
 
   // Filtros DOCUMENTOS
   documentNameVarSearch: string = null;
@@ -194,7 +221,7 @@ export class DocumentsComponent implements OnInit, OnDestroy {
     this.loadCompleted = false;
     this.documentsService.deleteDocument(documentId, this.commerceId.toString()).subscribe({
       next: () => {
-        this.showModal = false; 
+        this.showModal = false;
         this.loadCompleted = true;
         this.searchDocuments();
         this.openModal(
@@ -296,55 +323,55 @@ export class DocumentsComponent implements OnInit, OnDestroy {
 
   /** Obtiene la lista de documentos desde la llamada al servicio correspondiente. */
   /** Obtiene la lista de documentos desde la llamada al servicio correspondiente. */
-/** Obtiene la lista de documentos desde la llamada al servicio correspondiente. */
-private getDocuments(): void {
-  this.emptySearch = true;
-  this.loadCompleted = false;
+  /** Obtiene la lista de documentos desde la llamada al servicio correspondiente. */
+  private getDocuments(): void {
+    this.emptySearch = true;
+    this.loadCompleted = false;
 
-  //Declaracion responsable
-  const staticDoc = this.buildStaticDocumentsForReseller();
+    //Declaracion responsable
+    const staticDoc = this.buildStaticDocumentsForReseller();
 
-  // 📄 Documento que viene de la API Verifactu (se abrirá con token vía HttpClient → Blob)
-  const apiDoc: DocumentRow = {
-    documentId: 'api-001',
-    name: 'Autorización de Representación Para Envío de Registros de Facturación a la AEAT',
-    inclusionDate: new Date().toISOString(),
-    url: null,            // 👈 importante: para que el HTML use la rama _isApi
-    deleted: false,
-    _isApi: true,         // 👈 flag que usa el HTML
-    _apiParams: {         // 👈 params que necesita tu endpoint (ajústalos)
-      ticketId: '12345',
-      format: 'pdf'
-    }
-  };
-
-  // 🧩 Llamada a la API de documentos normal
-  this.documentsService
-    .getDocuments(this.size, this.commerceId.toString(), this.varSearch)
-    .subscribe({
-      next: (documents) => {
-  // Normalizamos SIEMPRE a DocumentRow para evitar el choque de tipos
-  const base: DocumentRow[] = (documents?.data || []).map((d: any) => ({
-    documentId: d.documentId ?? d.id ?? 'unknown',
-    name: d.name ?? d.title ?? 'Documento',
-    inclusionDate: d.inclusionDate ?? d.createdAt ?? new Date().toISOString(),
-    url: d.url ?? d.fileUrl ?? d.link ?? null,
-    deleted: !!d.deleted,  // forzamos booleano para cumplir el requerido
-  }));
-
-  this.documents = [ ...staticDoc, apiDoc, ...base ];
-  this.emptySearch = this.documents.length === 0;
-  this.loadCompleted = true;
-},
-
-      error: () => {
-        // 👇 Si falla la API principal, mostramos el estático y el de la API Verifactu
-        this.documents = [...staticDoc, apiDoc];
-        this.emptySearch = this.documents.length === 0;
-        this.loadCompleted = true;
+    // 📄 Documento que viene de la API Verifactu (se abrirá con token vía HttpClient → Blob)
+    const apiDoc: DocumentRow = {
+      documentId: 'api-001',
+      name: 'Autorización de Representación Para Envío de Registros de Facturación a la AEAT',
+      inclusionDate: new Date().toISOString(),
+      url: null,            // 👈 importante: para que el HTML use la rama _isApi
+      deleted: false,
+      _isApi: true,         // 👈 flag que usa el HTML
+      _apiParams: {         // 👈 params que necesita tu endpoint (ajústalos)
+        ticketId: '12345',
+        format: 'pdf'
       }
-    });
-}
+    };
+
+    // 🧩 Llamada a la API de documentos normal
+    this.documentsService
+      .getDocuments(this.size, this.commerceId.toString(), this.varSearch)
+      .subscribe({
+        next: (documents) => {
+          // Normalizamos SIEMPRE a DocumentRow para evitar el choque de tipos
+          const base: DocumentRow[] = (documents?.data || []).map((d: any) => ({
+            documentId: d.documentId ?? d.id ?? 'unknown',
+            name: d.name ?? d.title ?? 'Documento',
+            inclusionDate: d.inclusionDate ?? d.createdAt ?? new Date().toISOString(),
+            url: d.url ?? d.fileUrl ?? d.link ?? null,
+            deleted: !!d.deleted,  // forzamos booleano para cumplir el requerido
+          }));
+
+          this.documents = [...staticDoc, apiDoc, ...base];
+          this.emptySearch = this.documents.length === 0;
+          this.loadCompleted = true;
+        },
+
+        error: () => {
+          // 👇 Si falla la API principal, mostramos el estático y el de la API Verifactu
+          this.documents = [...staticDoc, apiDoc];
+          this.emptySearch = this.documents.length === 0;
+          this.loadCompleted = true;
+        }
+      });
+  }
 
 
 
@@ -368,19 +395,35 @@ private getDocuments(): void {
   }
 
   public openApiDoc(params: Record<string, string | number | boolean>, event?: MouseEvent) {
-  event?.stopPropagation();
+    event?.stopPropagation();
 
-  this.documentsService.downloadRepresentationDocument(params).subscribe({
-    next: (blob: Blob) => {
-      const url = URL.createObjectURL(blob);
-      window.open(url, '_blank', 'noopener');
-      setTimeout(() => URL.revokeObjectURL(url), 60000);
-    },
-    error: (err) => {
-      console.error('Error descargando documento:', err);
-    },
-  });
-}
+    this.documentsService.downloadRepresentationDocument(params).subscribe({
+      /*       next: (blob: Blob) => {
+              const url = URL.createObjectURL(blob);
+              window.open(url, '_blank', 'noopener');
+              setTimeout(() => URL.revokeObjectURL(url), 60000);
+            }, */
+
+      next: (blob: Blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+
+        // *** AQUI ESTÁ LA CLAVE: Define el nombre de archivo que quieres ***
+        a.download = 'Documento-AmazonS3-Personalizado.pdf';
+
+        a.href = url;
+
+        document.body.appendChild(a);
+        a.click(); // Simula el clic para iniciar la descarga
+        document.body.removeChild(a);
+
+        setTimeout(() => URL.revokeObjectURL(url), 60000);
+      },
+      error: (err) => {
+        console.error('Error descargando documento:', err);
+      },
+    });
+  }
 
 
   /** Obtiene el número de comercio correspondiente al ID. */
