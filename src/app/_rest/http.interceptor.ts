@@ -87,7 +87,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
   private applySecurityHeaders(req: HttpRequest<any>): HttpRequest<any> {
     let headers = req.headers
 
-      .set(
+     /*  .set(
         'Content-Security-Policy',
         "default-src 'self'; " +
         "script-src 'self' https://kit.fontawesome.com 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU='; " +
@@ -125,7 +125,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
       .set('Cross-Origin-Embedder-Policy', 'require-corp')
       .set('Cross-Origin-Opener-Policy', 'same-origin')
       .set('Server', 'webserver');
-
+ */
     return req.clone({ headers });
   }
 
