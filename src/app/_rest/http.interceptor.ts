@@ -87,7 +87,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
   private applySecurityHeaders(req: HttpRequest<any>): HttpRequest<any> {
     let headers = req.headers
 
- /*      .set(
+     .set(
         'Content-Security-Policy',
         "default-src 'self'; style-src 'self' fonts.googleapis.com 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU='; font-src fonts.gstatic.com; connect-src 'self' *.dpos.es"
       )
@@ -99,7 +99,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
       .set('Permissions-Policy', 'geolocation=(), camera=(), microphone=()')
       .set('Cross-Origin-Embedder-Policy', 'require-corp')
       .set('Cross-Origin-Opener-Policy', 'same-origin')
-      .set('Server', 'webserver'); */
+      .set('Server', 'webserver'); 
 
     return req.clone({ headers });
   }
