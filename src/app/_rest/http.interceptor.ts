@@ -87,10 +87,10 @@ export class HttpRequestInterceptor implements HttpInterceptor {
   private applySecurityHeaders(req: HttpRequest<any>): HttpRequest<any> {
     let headers = req.headers
 
-     .set(
-        'Content-Security-Policy',
-        "default-src 'self'; style-src 'self' fonts.googleapis.com 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU='; font-src fonts.gstatic.com; connect-src 'self' *.dpos.es"
-      )
+      //   .set(
+      //     'Content-Security-Policy',
+      //     "default-src 'self'; style-src 'self' fonts.googleapis.com 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU='; font-src fonts.gstatic.com; connect-src 'self' *.dpos.es"
+      //   )
       .set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains')
       .set('Cross-Origin-Resource-Policy', 'same-site')
       .set('X-Content-Type-Options', 'nosniff')
@@ -99,7 +99,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
       .set('Permissions-Policy', 'geolocation=(), camera=(), microphone=()')
       .set('Cross-Origin-Embedder-Policy', 'require-corp')
       .set('Cross-Origin-Opener-Policy', 'same-origin')
-      .set('Server', 'webserver'); 
+      .set('Server', 'webserver');
 
     return req.clone({ headers });
   }
@@ -113,18 +113,18 @@ export class HttpRequestInterceptor implements HttpInterceptor {
    * @returns Observable que lanza el error hacia el flujo de RxJS
    */
   private handleError(error: HttpErrorResponse) {
-  const apiError: ErrorResponse = {
-    StatusCode: error.status,
-    ErrorCode: error.error?.ErrorCode ?? 0,
-    ErrorCodeId: error.error?.ErrorCodeId ?? 'Default',
-    Message: error.error?.Message ?? this.translate.instant('dpos.error.msg.api'),
-  };
-  if (apiError.StatusCode === 401) {
-    console.warn('Error 401 no autorizado, cerrando sesión...');
-    this.inactivityService.logout();
+    const apiError: ErrorResponse = {
+      StatusCode: error.status,
+      ErrorCode: error.error?.ErrorCode ?? 0,
+      ErrorCodeId: error.error?.ErrorCodeId ?? 'Default',
+      Message: error.error?.Message ?? this.translate.instant('dpos.error.msg.api'),
+    };
+    if (apiError.StatusCode === 401) {
+      console.warn('Error 401 no autorizado, cerrando sesión...');
+      this.inactivityService.logout();
+    }
+    return throwError(() => error);
   }
-  return throwError(() => error);
-}
 }
 
 /**
