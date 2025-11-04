@@ -113,7 +113,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
         "base-uri 'self'; " +
         "form-action 'self'; " +
         "upgrade-insecure-requests;"
-      ) */
+      ) 
 
 
       .set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains')
@@ -125,7 +125,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
       .set('Cross-Origin-Embedder-Policy', 'require-corp')
       .set('Cross-Origin-Opener-Policy', 'same-origin')
       .set('Server', 'webserver');
-
+ */
     return req.clone({ headers });
   }
 

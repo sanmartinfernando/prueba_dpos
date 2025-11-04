@@ -45,6 +45,8 @@ customHeaders:
         value: same-origin
       - key: server
         value: webserver
+      - key: Access-Control-Allow-Private-Network: 
+        value: true
 
 #customHeaders:
 #  - pattern: "**"
