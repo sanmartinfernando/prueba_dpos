@@ -86,7 +86,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
   }
   private applySecurityHeaders(req: HttpRequest<any>): HttpRequest<any> {
     let headers = req.headers
-
+/* 
       .set(
         'Content-Security-Policy',
         "default-src 'self'; " +
@@ -113,7 +113,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
         "base-uri 'self'; " +
         "form-action 'self'; " +
         "upgrade-insecure-requests;"
-      )
+      ) */
 
 
       .set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains')
